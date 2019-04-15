@@ -1,0 +1,10 @@
+{
+  "pgSettings": {
+    "search_path": "app,app_private,app_hidden,public"
+  },
+  "placeholders": {
+    ":DATABASE_AUTHENTICATOR": "!ENV",
+    ":DATABASE_VISITOR": "!ENV"
+  },
+  "afterReset": ["afterReset.sql", { "command": "cd server/dist/worker && graphile-worker --once" }]
+}

@@ -1,0 +1,7 @@
+query SharedLayoutQuery {
+  currentUser {
+    id
+    name
+    isAdmin
+  }
+}
