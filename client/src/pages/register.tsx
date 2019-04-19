@@ -69,12 +69,12 @@ function RegistrationForm({
     fieldNames?: Array<string>,
     options?: ValidateFieldsOptions
   ) => Promise<FormValues> = useMemo(
-    () => promisify(form.validateFields.bind(form)),
+    () => promisify((...args) => form.validateFields(...args)),
     [form]
   );
 
   const validateFieldsAndScroll: () => Promise<FormValues> = useMemo(
-    () => promisify(form.validateFieldsAndScroll.bind(form)),
+    () => promisify((...args) => form.validateFieldsAndScroll(...args)),
     [form]
   );
 
@@ -83,7 +83,6 @@ function RegistrationForm({
       e.preventDefault();
       try {
         const values = await validateFieldsAndScroll();
-        console.log("Received values of form: ", values);
         await register({
           variables: {
             username: values.username,
