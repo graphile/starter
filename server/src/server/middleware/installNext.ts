@@ -14,9 +14,18 @@ export default async function installNext(app: Application) {
     quiet: !isDev,
     // Don't specify 'conf' key
   });
-  await nextApp.prepare();
-  const handler = nextApp.getRequestHandler();
-  app.get("*", (req, res) => {
+  const handlerPromise = (async () => {
+    await nextApp.prepare();
+    return nextApp.getRequestHandler();
+  })();
+  // Foo
+  handlerPromise.catch(e => {
+    console.error("Error occurred starting Next.js; aborting process");
+    console.error(e);
+    process.exit(1);
+  });
+  app.get("*", async (req, res) => {
+    const handler = await handlerPromise;
     handler(req, res);
   });
 }
