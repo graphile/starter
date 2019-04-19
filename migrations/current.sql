@@ -380,7 +380,7 @@ comment on function app_public.forgot_password(email text) is
 
 /**********/
 
-create function app_private.login(username text, password text) returns app_private.sessions as $$
+create function app_private.login(username citext, password text) returns app_private.sessions as $$
 declare
   v_user app_public.users;
   v_user_secret app_private.user_secrets;
@@ -446,7 +446,7 @@ begin
 end;
 $$ language plpgsql strict security definer volatile;
 
-comment on function app_private.login(username text, password text) is
+comment on function app_private.login(username citext, password text) is
   E'Returns a user that matches the username/password combo, or null on failure.';
 
 /**********/
@@ -527,7 +527,7 @@ comment on function app_public.reset_password(user_id int, reset_token text, new
 /**********/
 
 create function app_private.really_create_user(
-  username text,
+  username citext,
   email text,
   email_is_verified bool,
   name text,
@@ -536,7 +536,7 @@ create function app_private.really_create_user(
 ) returns app_public.users as $$
 declare
   v_user app_public.users;
-  v_username text = username;
+  v_username citext = username;
 begin
   if password is not null then
     perform app_private.assert_valid_password(password);
@@ -588,7 +588,7 @@ begin
 end;
 $$ language plpgsql volatile set search_path from current;
 
-comment on function app_private.really_create_user(username text, email text, email_is_verified bool, name text, avatar_url text, password text) is
+comment on function app_private.really_create_user(username citext, email text, email_is_verified bool, name text, avatar_url text, password text) is
   E'Creates a user account. All arguments are optional, it trusts the calling method to perform sanitisation.';
 
 /**********/
