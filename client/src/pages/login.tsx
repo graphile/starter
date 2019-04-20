@@ -1,5 +1,10 @@
-import * as React from "react";
-import { FormEvent, useMemo, useCallback } from "react";
+import React, {
+  useRef,
+  useEffect,
+  FormEvent,
+  useMemo,
+  useCallback,
+} from "react";
 import SharedLayout, { Row, Col } from "../components/SharedLayout";
 import Link from "next/link";
 import { Form, Icon, Input, Button } from "antd";
@@ -69,6 +74,12 @@ function LoginForm({
     [client, login, onSuccessRedirectTo, validateFields]
   );
 
+  const focusElement = useRef<Input>(null);
+  useEffect(
+    () => void (focusElement.current && focusElement.current!.focus()),
+    [focusElement]
+  );
+
   const {
     getFieldDecorator,
     getFieldsError,
@@ -101,6 +112,7 @@ function LoginForm({
           <Input
             prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
             placeholder="Username"
+            ref={focusElement}
           />
         )}
       </Form.Item>

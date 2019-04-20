@@ -1,4 +1,11 @@
-import React, { useState, useCallback, useMemo, FocusEvent } from "react";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+  FocusEvent,
+} from "react";
 import SharedLayout from "../components/SharedLayout";
 import { compose, withApollo, WithApolloClient } from "react-apollo";
 import { withRegisterMutation, RegisterMutationMutationFn } from "../graphql";
@@ -128,6 +135,12 @@ function RegistrationForm({
     [form]
   );
 
+  const focusElement = useRef<Input>(null);
+  useEffect(
+    () => void (focusElement.current && focusElement.current!.focus()),
+    [focusElement]
+  );
+
   const { getFieldDecorator } = form;
 
   const formItemLayout = {
@@ -173,7 +186,7 @@ function RegistrationForm({
               whitespace: true,
             },
           ],
-        })(<Input />)}
+        })(<Input ref={focusElement} />)}
       </Form.Item>
       <Form.Item
         label={
