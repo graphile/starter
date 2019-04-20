@@ -1,11 +1,5 @@
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  FocusEvent,
-  useEffect,
-} from "react";
-import SharedLayout, { Row, Col } from "../components/SharedLayout";
+import React, { useState, useCallback, useMemo, FocusEvent } from "react";
+import SharedLayout from "../components/SharedLayout";
 import { compose, withApollo, WithApolloClient } from "react-apollo";
 import { withRegisterMutation, RegisterMutationMutationFn } from "../graphql";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
