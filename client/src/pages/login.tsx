@@ -4,10 +4,11 @@ import React, {
   FormEvent,
   useMemo,
   useCallback,
+  useState,
 } from "react";
 import SharedLayout, { Row, Col } from "../components/SharedLayout";
 import Link from "next/link";
-import { Form, Icon, Input, Button } from "antd";
+import { Form, Icon, Input, Button, Alert } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { promisify } from "util";
 import { compose, withApollo, WithApolloClient } from "react-apollo";
@@ -22,9 +23,14 @@ function hasErrors(fieldsError: Object) {
  * Login page just renders the standard layout and embeds the login form
  */
 export default function Login() {
+  const [error, setError] = useState<Error | null>(null);
   return (
     <SharedLayout title="Login">
-      <WrappedLoginForm onSuccessRedirectTo="/" />
+      <WrappedLoginForm
+        onSuccessRedirectTo="/"
+        error={error}
+        setError={setError}
+      />
     </SharedLayout>
   );
 }
@@ -37,6 +43,8 @@ interface FormValues {
 interface LoginFormProps extends FormComponentProps<FormValues> {
   login: LoginMutationMutationFn;
   onSuccessRedirectTo: string;
+  error: Error | null;
+  setError: (error: Error | null) => void;
 }
 
 function LoginForm({
@@ -44,6 +52,8 @@ function LoginForm({
   client,
   login,
   onSuccessRedirectTo,
+  error,
+  setError,
 }: WithApolloClient<LoginFormProps>) {
   const validateFields: (
     fieldNames?: Array<string>,
@@ -56,6 +66,7 @@ function LoginForm({
   const handleSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault();
+      setError(null);
       try {
         const values = await validateFields();
         await login({
@@ -68,10 +79,10 @@ function LoginForm({
         client.resetStore();
         Router.push(onSuccessRedirectTo);
       } catch (e) {
-        console.error(e);
+        setError(e);
       }
     },
-    [client, login, onSuccessRedirectTo, validateFields]
+    [client, login, onSuccessRedirectTo, setError, validateFields]
   );
 
   const focusElement = useRef<Input>(null);
@@ -91,7 +102,7 @@ function LoginForm({
   const userNameError = isFieldTouched("username") && getFieldError("username");
   const passwordError = isFieldTouched("password") && getFieldError("password");
   return (
-    <Form layout="inline" onSubmit={handleSubmit}>
+    <Form layout="vertical" onSubmit={handleSubmit}>
       <Row>
         <Col>
           <span>
@@ -130,6 +141,14 @@ function LoginForm({
           />
         )}
       </Form.Item>
+
+      {error ? (
+        <Alert
+          type="error"
+          message="Login failed"
+          description={error.message}
+        />
+      ) : null}
       <Form.Item>
         <Button
           type="primary"
@@ -144,7 +163,12 @@ function LoginForm({
 }
 
 const WrappedLoginForm = compose(
-  Form.create({ name: "horizontal_login" }),
+  Form.create<LoginFormProps>({
+    name: "login",
+    onValuesChange(props) {
+      props.setError(null);
+    },
+  }),
   withLoginMutation({ name: "login" }),
   withApollo
 )(LoginForm);
