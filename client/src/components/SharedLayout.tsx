@@ -10,6 +10,7 @@ import {
 import Router from "next/router";
 import { withApollo, compose, WithApolloClient } from "react-apollo";
 import { useCallback } from "react";
+import StandardWidth from "./StandardWidth";
 
 const { Header, Content, Footer } = Layout;
 
@@ -30,12 +31,6 @@ interface SharedLayoutProps {
   children: any;
   noPad?: boolean;
 }
-
-const StandardWidth = ({ children }: { children: React.ReactNode }) => (
-  <Row style={{ padding: "1rem", maxWidth: "48rem", margin: "0 auto" }}>
-    <Col>{children}</Col>
-  </Row>
-);
 
 function SharedLayout({
   title,
