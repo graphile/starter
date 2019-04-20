@@ -2,6 +2,9 @@ import * as React from "react";
 import Layout from "antd/lib/layout";
 import Row from "antd/lib/row";
 import Col from "antd/lib/col";
+import Dropdown from "antd/lib/Dropdown";
+import Icon from "antd/lib/Icon";
+import Menu from "antd/lib/Menu";
 import Link from "next/link";
 import { companyName } from "../../../server/src/config";
 import {
@@ -61,9 +64,24 @@ function SharedLayout({
             <SharedLayoutQueryComponent>
               {({ data }) =>
                 data && data.currentUser ? (
-                  <span>
-                    {data.currentUser.name} <a onClick={handleLogout}>Logout</a>
-                  </span>
+                  <Dropdown
+                    overlay={
+                      <Menu>
+                        <Menu.Item>
+                          <Link href="/settings">
+                            <a>Settings</a>
+                          </Link>
+                        </Menu.Item>
+                        <Menu.Item>
+                          <a onClick={handleLogout}>Logout</a>
+                        </Menu.Item>
+                      </Menu>
+                    }
+                  >
+                    <span>
+                      {data.currentUser.name} <Icon type="down" />
+                    </span>
+                  </Dropdown>
                 ) : (
                   <Link href="/login">
                     <a>Login</a>
