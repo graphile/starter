@@ -16,6 +16,7 @@ import { promisify } from "util";
 import Router from "next/router";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
+import { formItemLayout, tailFormItemLayout } from "../forms";
 
 interface RegisterProps {}
 
@@ -184,29 +185,6 @@ function RegistrationForm({
   );
 
   const { getFieldDecorator } = form;
-
-  const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 8 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 16 },
-    },
-  };
-  const tailFormItemLayout = {
-    wrapperCol: {
-      xs: {
-        span: 24,
-        offset: 0,
-      },
-      sm: {
-        span: 16,
-        offset: 8,
-      },
-    },
-  };
 
   const code = getCodeFromError(error);
   return (

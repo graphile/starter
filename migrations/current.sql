@@ -538,6 +538,44 @@ comment on function app_public.reset_password(user_id int, reset_token text, new
 
 /**********/
 
+create function app_public.change_password(old_password text, new_password text) returns boolean as $$
+declare
+  v_user app_public.users;
+  v_user_secret app_private.user_secrets;
+begin
+  select users.* into v_user
+  from app_public.users
+  where id = app_public.current_user_id();
+
+  if not (v_user is null) then
+    -- Load their secrets
+    select * into v_user_secret from app_private.user_secrets
+    where user_secrets.user_id = v_user.id;
+
+    if v_user_secret.password_hash = crypt(old_password, v_user_secret.password_hash) then
+      perform app_private.assert_valid_password(new_password);
+      -- Reset the password as requested
+      update app_private.user_secrets
+      set
+        password_hash = crypt(new_password, gen_salt('bf'))
+      where user_secrets.user_id = v_user.id;
+      return true;
+    else
+      raise exception 'Incorrect password' using errcode = 'CREDS';
+    end if;
+  else
+    raise exception 'You must log in to change your password' using errcode = 'LOGIN';
+  end if;
+end;
+$$ language plpgsql strict volatile security definer;
+
+comment on function app_public.change_password(old_password text, new_password text) is
+  E'@resultFieldName success\nEnter your old password and a new password to change your password.';
+
+grant execute on function app_public.change_password(text, text) to :DATABASE_VISITOR;
+
+/**********/
+
 create function app_private.really_create_user(
   username citext,
   email text,
