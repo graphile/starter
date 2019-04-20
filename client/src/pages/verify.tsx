@@ -1,5 +1,6 @@
 import * as React from "react";
 import get from "lodash/get";
+import { Alert } from "antd";
 import SharedLayout, { Row, Col } from "../components/SharedLayout";
 import {
   withVerifyEmailMutation,
@@ -63,13 +64,19 @@ function Page(props: IProps) {
     <SharedLayout title="Verify Email Address">
       <Row>
         <Col>
-          {state === "PENDING"
-            ? form()
-            : state === "SUBMITTING"
-            ? "Submitting..."
-            : state === "SUCCESS"
-            ? "Success!"
-            : "Unknown state"}
+          {state === "PENDING" ? (
+            form()
+          ) : state === "SUBMITTING" ? (
+            "Submitting..."
+          ) : state === "SUCCESS" ? (
+            <Alert
+              type="success"
+              message="Email Verified"
+              description="Thank you for verifying your email address!"
+            />
+          ) : (
+            "Unknown state"
+          )}
         </Col>
       </Row>
     </SharedLayout>
