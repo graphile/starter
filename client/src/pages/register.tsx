@@ -109,10 +109,10 @@ function RegistrationForm({
         if (value && confirmDirty) {
           await validateFields(["confirm"], { force: true });
         }
-        callback();
       } catch (e) {
-        callback(e);
+        // Handled elsewhere
       }
+      callback();
     },
     [confirmDirty, validateFields]
   );
