@@ -193,6 +193,18 @@ create table app_public.user_emails (
   updated_at timestamptz not null default now(),
   constraint user_emails_user_id_email_key unique(user_id, email)
 );
+create unique index on app_public.user_emails (email) where (is_verified is true);
+
+create function app_public.tg_user_emails__forbid_if_verified() returns trigger as $$
+begin
+  if exists(select 1 from app_public.user_emails where email = NEW.email and is_verified is true) then
+    raise exception 'An account using that email address has already been created.' using errcode='EMTKN';
+  end if;
+  return NEW;
+end;
+$$ language plpgsql volatile security definer;
+create trigger _200_forbid_existing_email before insert on app_public.user_emails for each row execute procedure app_public.tg_user_emails__forbid_if_verified();
+
 comment on constraint user_emails_user_id_email_key on app_public.user_emails is E'@omit';
 create unique index uniq_user_emails_verified_email on app_public.user_emails(email) where is_verified is true;
 alter table app_public.user_emails enable row level security;

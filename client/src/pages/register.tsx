@@ -106,11 +106,27 @@ function RegistrationForm({
         client.resetStore();
         Router.push(onSuccessRedirectTo);
       } catch (e) {
-        if (getCodeFromError(e) === "WEAKP") {
+        const errcode = getCodeFromError(e);
+        if (errcode === "WEAKP") {
           form.setFields({
             password: {
               value: form.getFieldValue("password"),
-              errors: [extractError(e)],
+              errors: [
+                new Error(
+                  "The server believes this password is too weak, please make it stronger"
+                ),
+              ],
+            },
+          });
+        } else if (errcode === "EMTKN") {
+          form.setFields({
+            email: {
+              value: form.getFieldValue("email"),
+              errors: [
+                new Error(
+                  "An account with this email address has already been registered, consider using the 'Forgot Password' function."
+                ),
+              ],
             },
           });
         } else {

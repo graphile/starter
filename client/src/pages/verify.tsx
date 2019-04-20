@@ -4,7 +4,7 @@ import SharedLayout, { Row, Col } from "../components/SharedLayout";
 import {
   withVerifyEmailMutation,
   VerifyEmailMutationMutationFn,
-} from "../generated/graphql";
+} from "../graphql";
 
 interface IProps {
   id: string;
@@ -44,7 +44,7 @@ function Page(props: IProps) {
           setState("PENDING");
         });
     }
-  }, [id, token, state]);
+  }, [id, token, state, props]);
   function form() {
     return (
       <form onSubmit={() => setState("SUBMITTING")}>

@@ -32,4 +32,5 @@ FFFFF: unknown error
 - WEAKP: password is too weak
 - LOCKD: too many failed login/password reset attempts; try again in 6 hours
 - TAKEN: a different user account is already linked to this profile
+- EMTKN: a different user account is already linked to this email
 - CREDS: bad credentials (incorrect username/password)
