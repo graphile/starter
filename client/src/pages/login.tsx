@@ -49,7 +49,7 @@ function LoginForm({
     fieldNames?: Array<string>,
     options?: ValidateFieldsOptions
   ) => Promise<FormValues> = useMemo(
-    () => promisify(form.validateFields.bind(form)),
+    () => promisify((...args) => form.validateFields(...args)),
     [form]
   );
 
