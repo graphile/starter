@@ -161,7 +161,6 @@ function LoginForm({
                     (Error code: <code>ERR_{code}</code>)
                   </span>
                 ) : null}
-                }
               </span>
             }
           />
@@ -177,7 +176,11 @@ function LoginForm({
         </Button>
       </Form.Item>
       <Form.Item>
-        <p>Forgot password?</p>
+        <p>
+          <Link href="/forgot">
+            <a>Forgot password?</a>
+          </Link>
+        </p>
       </Form.Item>
     </Form>
   );

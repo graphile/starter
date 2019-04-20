@@ -305,7 +305,6 @@ function RegistrationForm({
                     (Error code: <code>ERR_{code}</code>)
                   </span>
                 ) : null}
-                }
               </span>
             }
           />

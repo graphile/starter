@@ -17,7 +17,7 @@ export function extractError(
       error.graphQLErrors &&
       error.graphQLErrors.length &&
       error.graphQLErrors[0]) ||
-    null
+    error
   );
 }
 

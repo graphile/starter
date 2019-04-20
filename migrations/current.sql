@@ -332,7 +332,7 @@ create function app_public.forgot_password(email text) returns boolean as $$
 declare
   v_user_email app_public.user_emails;
   v_reset_token text;
-  v_reset_min_duration_between_emails interval = interval '30 minutes';
+  v_reset_min_duration_between_emails interval = interval '3 minutes';
   v_reset_max_duration interval = interval '3 days';
 begin
   -- Find the matching user_email
