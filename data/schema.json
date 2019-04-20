@@ -2252,12 +2252,12 @@
               "deprecationReason": null
             },
             {
-              "name": "user",
+              "name": "success",
               "description": null,
               "args": [],
               "type": {
-                "kind": "OBJECT",
-                "name": "User",
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -2270,37 +2270,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Query",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "userEdge",
-              "description": "An edge for our `User`. May be used by Relay 1.",
-              "args": [
-                {
-                  "name": "orderBy",
-                  "description": "The method to use when ordering `User`.",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "ENUM",
-                        "name": "UsersOrderBy",
-                        "ofType": null
-                      }
-                    }
-                  },
-                  "defaultValue": "PRIMARY_KEY_ASC"
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "UsersEdge",
                 "ofType": null
               },
               "isDeprecated": false,

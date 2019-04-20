@@ -475,7 +475,7 @@ comment on function app_public.logout() is E'@omit';
 
 /**********/
 
-create function app_public.reset_password(user_id int, reset_token text, new_password text) returns app_public.users as $$
+create function app_public.reset_password(user_id int, reset_token text, new_password text) returns boolean as $$
 declare
   v_user app_public.users;
   v_user_secret app_private.user_secrets;
@@ -516,7 +516,7 @@ begin
         failed_reset_password_attempts = 0,
         first_failed_reset_password_attempt = null
       where user_secrets.user_id = v_user.id;
-      return v_user;
+      return true;
     else
       -- Wrong token, bump all the attempt tracking figures
       update app_private.user_secrets
@@ -534,7 +534,7 @@ end;
 $$ language plpgsql strict volatile security definer set search_path from current;
 
 comment on function app_public.reset_password(user_id int, reset_token text, new_password text) is
-  E'After triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
+  E'@resultFieldName success\nAfter triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
 
 /**********/
 
