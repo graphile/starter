@@ -1,10 +1,5 @@
 import * as React from "react";
-import Layout from "antd/lib/layout";
-import Row from "antd/lib/row";
-import Col from "antd/lib/col";
-import Dropdown from "antd/lib/Dropdown";
-import Icon from "antd/lib/Icon";
-import Menu from "antd/lib/Menu";
+import { Layout, Row, Col, Dropdown, Icon, Menu } from "antd";
 import Link from "next/link";
 import { companyName } from "../../../server/src/config";
 import {
@@ -18,7 +13,17 @@ import { useCallback } from "react";
 
 const { Header, Content, Footer } = Layout;
 
-export { Row, Col, Link };
+/*
+ * For some reason, possibly related to the interaction between
+ * `babel-plugin-import` and https://github.com/babel/babel/pull/9766, we can't
+ * directly export these values, but if we reference them and re-export then we
+ * can.
+ *
+ * TODO: change back to `export { Row, Col, Link }` when this issue is fixed.
+ */
+const _babelHackRow = Row;
+const _babelHackCol = Col;
+export { _babelHackRow as Row, _babelHackCol as Col, Link };
 
 interface SharedLayoutProps {
   title: string;

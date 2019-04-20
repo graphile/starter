@@ -1,7 +1,8 @@
 {
-  "presets": [
-    "next/babel",
-    "@zeit/next-typescript/babel"
+  "presets": ["next/babel", "@zeit/next-typescript/babel"],
+  "plugins": [
+    ["import", { "libraryName": "antd" }, "antd"],
+    ["import", { "libraryName": "lodash", "libraryDirectory": "", "camel2DashComponentName": false }, "lodash"]
   ],
   "env": {
     "development": {

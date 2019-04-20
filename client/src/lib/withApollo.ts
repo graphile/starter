@@ -7,7 +7,7 @@ import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { onError } from "apollo-link-error";
 import ws from "ws";
-import pick from "lodash/pick";
+import { pick } from "lodash";
 
 export default withApollo(
   ({ headers, initialState }) => {

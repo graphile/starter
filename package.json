@@ -80,6 +80,7 @@
     "ws": "^6.2.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.4.3",
     "@graphql-codegen/cli": "^1.1.0",
     "@graphql-codegen/fragment-matcher": "1.1.0",
     "@graphql-codegen/typescript": "1.1.0",
