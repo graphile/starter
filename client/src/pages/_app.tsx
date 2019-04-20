@@ -23,13 +23,17 @@ if (typeof window !== "undefined") {
   });
   Router.events.on("routeChangeError", (err: Error | string) => {
     NProgress.done();
-    notification.open({
-      message: "Page load failed",
-      description: `This is very embarassing! Please reload the page. Further error details: ${
-        typeof err === "string" ? err : err.message
-      }`,
-      duration: 0,
-    });
+    if (err["cancelled"]) {
+      // No worries; you deliberately cancelled it
+    } else {
+      notification.open({
+        message: "Page load failed",
+        description: `This is very embarassing! Please reload the page. Further error details: ${
+          typeof err === "string" ? err : err.message
+        }`,
+        duration: 0,
+      });
+    }
   });
 }
 
