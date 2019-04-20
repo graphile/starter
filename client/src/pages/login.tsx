@@ -14,6 +14,7 @@ import { promisify } from "util";
 import { compose, withApollo, WithApolloClient } from "react-apollo";
 import { withLoginMutation, LoginMutationMutationFn } from "../graphql";
 import Router from "next/router";
+import { ApolloError } from "apollo-client";
 
 function hasErrors(fieldsError: Object) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -23,7 +24,7 @@ function hasErrors(fieldsError: Object) {
  * Login page just renders the standard layout and embeds the login form
  */
 export default function Login() {
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<Error | ApolloError | null>(null);
   return (
     <SharedLayout title="Login">
       <WrappedLoginForm
@@ -43,8 +44,8 @@ interface FormValues {
 interface LoginFormProps extends FormComponentProps<FormValues> {
   login: LoginMutationMutationFn;
   onSuccessRedirectTo: string;
-  error: Error | null;
-  setError: (error: Error | null) => void;
+  error: Error | ApolloError | null;
+  setError: (error: Error | ApolloError | null) => void;
 }
 
 function LoginForm({
@@ -101,6 +102,16 @@ function LoginForm({
   // Only show error after a field is touched.
   const userNameError = isFieldTouched("username") && getFieldError("username");
   const passwordError = isFieldTouched("password") && getFieldError("password");
+
+  const firstError =
+    (error &&
+      "graphQLErrors" in error &&
+      error.graphQLErrors &&
+      error.graphQLErrors.length &&
+      error.graphQLErrors[0]) ||
+    null;
+  const code = firstError && (firstError["errcode"] || firstError["code"]);
+
   return (
     <Form layout="vertical" onSubmit={handleSubmit}>
       <Row>
@@ -143,11 +154,24 @@ function LoginForm({
       </Form.Item>
 
       {error ? (
-        <Alert
-          type="error"
-          message="Login failed"
-          description={error.message}
-        />
+        <Form.Item>
+          <Alert
+            type="error"
+            message={`Login failed`}
+            description={
+              <span>
+                {error.message}
+                {code ? (
+                  <span>
+                    {" "}
+                    (Error code: <code>ERR_{code}</code>)
+                  </span>
+                ) : null}
+                }
+              </span>
+            }
+          />
+        </Form.Item>
       ) : null}
       <Form.Item>
         <Button
