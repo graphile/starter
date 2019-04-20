@@ -10,6 +10,9 @@ const pages = {
   "/settings": {
     title: "Profile",
   },
+  "/settings/security": {
+    title: "Password",
+  },
   "/settings/emails": {
     title: "Emails",
   },
