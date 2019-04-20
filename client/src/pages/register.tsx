@@ -15,20 +15,7 @@ import { SyntheticEvent } from "react";
 import { promisify } from "util";
 import Router from "next/router";
 import { ApolloError } from "apollo-client";
-
-function getCodeFromError(error: null | Error | ApolloError): null | string {
-  const firstSuberror =
-    (error &&
-      "graphQLErrors" in error &&
-      error.graphQLErrors &&
-      error.graphQLErrors.length &&
-      error.graphQLErrors[0]) ||
-    null;
-  return (
-    (firstSuberror && (firstSuberror["errcode"] || firstSuberror["code"])) ||
-    null
-  );
-}
+import { getCodeFromError, extractError } from "../errors";
 
 interface RegisterProps {}
 
@@ -123,7 +110,7 @@ function RegistrationForm({
           form.setFields({
             password: {
               value: form.getFieldValue("password"),
-              errors: [e],
+              errors: [extractError(e)],
             },
           });
         } else {
@@ -295,7 +282,7 @@ function RegistrationForm({
             message={`Registration failed`}
             description={
               <span>
-                {error.message}
+                {extractError(error).message}
                 {code ? (
                   <span>
                     {" "}

@@ -15,6 +15,7 @@ import { compose, withApollo, WithApolloClient } from "react-apollo";
 import { withLoginMutation, LoginMutationMutationFn } from "../graphql";
 import Router from "next/router";
 import { ApolloError } from "apollo-client";
+import { getCodeFromError, extractError } from "../errors";
 
 function hasErrors(fieldsError: Object) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -103,14 +104,7 @@ function LoginForm({
   const userNameError = isFieldTouched("username") && getFieldError("username");
   const passwordError = isFieldTouched("password") && getFieldError("password");
 
-  const firstError =
-    (error &&
-      "graphQLErrors" in error &&
-      error.graphQLErrors &&
-      error.graphQLErrors.length &&
-      error.graphQLErrors[0]) ||
-    null;
-  const code = firstError && (firstError["errcode"] || firstError["code"]);
+  const code = getCodeFromError(error);
 
   return (
     <Form layout="vertical" onSubmit={handleSubmit}>
@@ -160,7 +154,7 @@ function LoginForm({
             message={`Login failed`}
             description={
               <span>
-                {error.message}
+                {extractError(error).message}
                 {code ? (
                   <span>
                     {" "}
@@ -181,6 +175,9 @@ function LoginForm({
         >
           Log in
         </Button>
+      </Form.Item>
+      <Form.Item>
+        <p>Forgot password?</p>
       </Form.Item>
     </Form>
   );
