@@ -4,13 +4,13 @@ import mjml2html = require("mjml");
 import * as html2text from "html-to-text";
 import getTransport from "../transport";
 import { readFile } from "../../fs";
-import { companyName, legalText } from "../../config";
+import { companyName, legalText, fromEmail } from "../../config";
 
 const isDev = process.env.NODE_ENV !== "production";
 
 export interface SendEmailPayload {
   options: {
-    from: string;
+    from?: string;
     to: string;
     subject: string;
   };
@@ -23,7 +23,11 @@ export interface SendEmailPayload {
 const task: Task = async inPayload => {
   const payload: SendEmailPayload = inPayload as any;
   const transport = await getTransport();
-  const { options, template, variables } = payload;
+  const { options: inOptions, template, variables } = payload;
+  const options = {
+    from: fromEmail,
+    ...inOptions,
+  };
   if (template) {
     const templateFn = await loadTemplate(template);
     const html = await templateFn(variables);

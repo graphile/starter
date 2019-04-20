@@ -1,5 +1,4 @@
 import { Task } from "graphile-worker";
-import { fromEmail } from "../../config";
 import { SendEmailPayload } from "./send_email";
 
 interface UserEmailsSendVerificationPayload {
@@ -36,7 +35,6 @@ const task: Task = async (inPayload, { addJob, withPgClient }) => {
   const { email, verification_token, username, name } = userEmail;
   const sendEmailPayload: SendEmailPayload = {
     options: {
-      from: fromEmail,
       to: email,
       subject: "Please verify your email address",
     },
