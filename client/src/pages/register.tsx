@@ -10,10 +10,25 @@ import SharedLayout from "../components/SharedLayout";
 import { compose, withApollo, WithApolloClient } from "react-apollo";
 import { withRegisterMutation, RegisterMutationMutationFn } from "../graphql";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { Form, Input, Tooltip, Icon, Button } from "antd";
+import { Form, Input, Tooltip, Icon, Button, Alert } from "antd";
 import { SyntheticEvent } from "react";
 import { promisify } from "util";
 import Router from "next/router";
+import { ApolloError } from "apollo-client";
+
+function getCodeFromError(error: null | Error | ApolloError): null | string {
+  const firstSuberror =
+    (error &&
+      "graphQLErrors" in error &&
+      error.graphQLErrors &&
+      error.graphQLErrors.length &&
+      error.graphQLErrors[0]) ||
+    null;
+  return (
+    (firstSuberror && (firstSuberror["errcode"] || firstSuberror["code"])) ||
+    null
+  );
+}
 
 interface RegisterProps {}
 
@@ -22,9 +37,14 @@ interface RegisterProps {}
  * registration form.
  */
 export default function Register(_props: RegisterProps) {
+  const [error, setError] = useState<Error | ApolloError | null>(null);
   return (
     <SharedLayout title="Register">
-      <WrappedRegistrationForm onSuccessRedirectTo="/" />
+      <WrappedRegistrationForm
+        onSuccessRedirectTo="/"
+        error={error}
+        setError={setError}
+      />
     </SharedLayout>
   );
 }
@@ -48,6 +68,8 @@ interface FormValues {
 interface RegistrationFormProps extends FormComponentProps<FormValues> {
   register: RegisterMutationMutationFn;
   onSuccessRedirectTo: string;
+  error: Error | ApolloError | null;
+  setError: (error: Error | ApolloError | null) => void;
 }
 
 /**
@@ -62,9 +84,10 @@ function RegistrationForm({
   form,
   client,
   onSuccessRedirectTo,
+  error,
+  setError,
 }: WithApolloClient<RegistrationFormProps>) {
   const [confirmDirty, setConfirmDirty] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
   const validateFields: (
     fieldNames?: Array<string>,
@@ -96,10 +119,26 @@ function RegistrationForm({
         client.resetStore();
         Router.push(onSuccessRedirectTo);
       } catch (e) {
-        setError(e);
+        if (getCodeFromError(e) === "WEAKP") {
+          form.setFields({
+            password: {
+              value: form.getFieldValue("password"),
+              errors: [e],
+            },
+          });
+        } else {
+          setError(e);
+        }
       }
     },
-    [validateFieldsAndScroll, register, client, onSuccessRedirectTo]
+    [
+      validateFieldsAndScroll,
+      register,
+      client,
+      onSuccessRedirectTo,
+      form,
+      setError,
+    ]
   );
 
   const handleConfirmBlur = useCallback(
@@ -166,6 +205,7 @@ function RegistrationForm({
     },
   };
 
+  const code = getCodeFromError(error);
   return (
     <Form {...formItemLayout} onSubmit={handleSubmit}>
       <Form.Item
@@ -248,7 +288,26 @@ function RegistrationForm({
           ],
         })(<Input type="password" onBlur={handleConfirmBlur} />)}
       </Form.Item>
-      {error ? <p>{error.message}</p> : null}
+      {error ? (
+        <Form.Item>
+          <Alert
+            type="error"
+            message={`Registration failed`}
+            description={
+              <span>
+                {error.message}
+                {code ? (
+                  <span>
+                    {" "}
+                    (Error code: <code>ERR_{code}</code>)
+                  </span>
+                ) : null}
+                }
+              </span>
+            }
+          />
+        </Form.Item>
+      ) : null}
       <Form.Item {...tailFormItemLayout}>
         <Button htmlType="submit">Register</Button>
       </Form.Item>
@@ -257,7 +316,12 @@ function RegistrationForm({
 }
 
 const WrappedRegistrationForm = compose(
-  Form.create<FormValues>({ name: "registerform" }),
+  Form.create<RegistrationFormProps>({
+    name: "registerform",
+    onValuesChange(props) {
+      props.setError(null);
+    },
+  }),
   withRegisterMutation({ name: "register" }),
   withApollo
 )(RegistrationForm);
