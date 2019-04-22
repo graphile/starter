@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import SharedLayout, { Row, Col } from "../components/SharedLayout";
+import { NextContext } from "next";
 import Link from "next/link";
 import { Form, Icon, Input, Button, Alert } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
@@ -21,21 +22,35 @@ function hasErrors(fieldsError: Object) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
+interface LoginProps {
+  next?: string;
+}
+
+function isSafe(nextUrl: string | null | void) {
+  return nextUrl && nextUrl[0] === "/";
+}
+
 /**
  * Login page just renders the standard layout and embeds the login form
  */
-export default function Login() {
+export default function Login({ next }: LoginProps) {
   const [error, setError] = useState<Error | ApolloError | null>(null);
   return (
     <SharedLayout title="Login">
       <WrappedLoginForm
-        onSuccessRedirectTo="/"
+        onSuccessRedirectTo={isSafe(next) || "/"}
         error={error}
         setError={setError}
       />
     </SharedLayout>
   );
 }
+
+Login.getInitialProps = ({ query }: NextContext) => {
+  return {
+    next: query.next,
+  };
+};
 
 interface FormValues {
   username: string;
