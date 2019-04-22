@@ -6,7 +6,11 @@ import React, {
   useCallback,
   useState,
 } from "react";
-import SharedLayout, { Row, Col } from "../components/SharedLayout";
+import SharedLayout, {
+  Row,
+  Col,
+  SharedLayoutChildProps,
+} from "../components/SharedLayout";
 import { NextContext } from "next";
 import Link from "next/link";
 import { Form, Icon, Input, Button, Alert } from "antd";
@@ -17,6 +21,7 @@ import { withLoginMutation, LoginMutationMutationFn } from "../graphql";
 import Router from "next/router";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
+import Redirect from "../components/Redirect";
 
 function hasErrors(fieldsError: Object) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -26,8 +31,8 @@ interface LoginProps {
   next?: string;
 }
 
-function isSafe(nextUrl: string | null | void) {
-  return nextUrl && nextUrl[0] === "/";
+function isSafe(nextUrl: string | void | null) {
+  return (nextUrl && nextUrl[0] === "/") || false;
 }
 
 /**
@@ -35,13 +40,20 @@ function isSafe(nextUrl: string | null | void) {
  */
 export default function Login({ next }: LoginProps) {
   const [error, setError] = useState<Error | ApolloError | null>(null);
+  const target: string = isSafe(next) ? next! : "/";
   return (
     <SharedLayout title="Login">
-      <WrappedLoginForm
-        onSuccessRedirectTo={isSafe(next) || "/"}
-        error={error}
-        setError={setError}
-      />
+      {({ currentUser }: SharedLayoutChildProps) =>
+        currentUser ? (
+          <Redirect href={target} />
+        ) : (
+          <WrappedLoginForm
+            onSuccessRedirectTo={target}
+            error={error}
+            setError={setError}
+          />
+        )
+      }
     </SharedLayout>
   );
 }
