@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, SyntheticEvent } from "react";
 import SettingsLayout from "../../components/SettingsLayout";
 import {
   withChangePasswordMutation,
@@ -7,6 +7,8 @@ import {
 import { promisify } from "util";
 import { Form, Input, Alert, Button } from "antd";
 import { compose } from "react-apollo";
+import { ApolloError } from "apollo-client";
+import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { getCodeFromError, extractError } from "../../errors";
 import { formItemLayout, tailFormItemLayout } from "../../forms";
 
@@ -18,6 +20,7 @@ export default function Settings_Security() {
     </SettingsLayout>
   );
 }
+
 /**
  * These are the values in our form
  */
@@ -146,7 +149,7 @@ function ChangePasswordForm({
 }
 
 const WrappedChangePasswordForm = compose(
-  Form.create<RegistrationFormProps>({
+  Form.create<ChangePasswordFormProps>({
     name: "changePasswordForm",
     onValuesChange(props) {
       props.setError(null);
