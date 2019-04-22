@@ -5,7 +5,7 @@ config:
   scalars:
     DateTime: Date
     JSON: '{ [key: string]: any }'
-  noGraphQLTag: true
+  noGraphQLTag: false # There seems to be a bug for fragments when this is true
   withHOC: true
   withComponent: true
   withHooks: false # Can't SSR in combination with react-apollo yet

@@ -6,6 +6,7 @@ import {
   SharedLayoutQueryComponent,
   withLogoutMutation,
   LogoutMutationMutationFn,
+  SharedLayout_UserFragmentFragment,
 } from "../graphql";
 import Router from "next/router";
 import { withApollo, compose, WithApolloClient } from "react-apollo";
@@ -26,9 +27,16 @@ const _babelHackRow = Row;
 const _babelHackCol = Col;
 export { _babelHackRow as Row, _babelHackCol as Col, Link };
 
+export interface SharedLayoutChildProps {
+  loading: boolean;
+  currentUser?: SharedLayout_UserFragmentFragment | null;
+}
+
 interface SharedLayoutProps {
   title: string;
-  children: any;
+  children:
+    | React.ReactNode
+    | ((props: SharedLayoutChildProps) => React.ReactNode);
   noPad?: boolean;
 }
 
@@ -48,22 +56,26 @@ function SharedLayout({
     client.resetStore();
     Router.push("/");
   }, [client, logout]);
+  const renderChildren = (props: SharedLayoutChildProps) => {
+    const inner = typeof children === "function" ? children(props) : children;
+    return noPad ? inner : <StandardWidth>{inner}</StandardWidth>;
+  };
   return (
-    <Layout>
-      <Header>
-        <Row type="flex" justify="space-between">
-          <Col span={6}>
-            <Link href="/">
-              <span>Home</span>
-            </Link>
-          </Col>
-          <Col>
-            <h3>{title}</h3>
-          </Col>
-          <Col span={6} style={{ textAlign: "right" }}>
-            <SharedLayoutQueryComponent>
-              {({ data }) =>
-                data && data.currentUser ? (
+    <SharedLayoutQueryComponent>
+      {({ data, loading }) => (
+        <Layout>
+          <Header>
+            <Row type="flex" justify="space-between">
+              <Col span={6}>
+                <Link href="/">
+                  <span>Home</span>
+                </Link>
+              </Col>
+              <Col>
+                <h3>{title}</h3>
+              </Col>
+              <Col span={6} style={{ textAlign: "right" }}>
+                {data && data.currentUser ? (
                   <Dropdown
                     overlay={
                       <Menu>
@@ -86,20 +98,23 @@ function SharedLayout({
                   <Link href="/login">
                     <a>Login</a>
                   </Link>
-                )
-              }
-            </SharedLayoutQueryComponent>
-          </Col>
-        </Row>
-      </Header>
-      <Content style={{ minHeight: "calc(100vh - 64px - 64px)" }}>
-        {noPad ? children : <StandardWidth>{children}</StandardWidth>}
-      </Content>
-      <Footer>
-        Copyright &copy; {new Date().getFullYear()} {companyName}. All rights
-        reserved.
-      </Footer>
-    </Layout>
+                )}
+              </Col>
+            </Row>
+          </Header>
+          <Content style={{ minHeight: "calc(100vh - 64px - 64px)" }}>
+            {renderChildren({
+              loading,
+              currentUser: data && data.currentUser,
+            })}
+          </Content>
+          <Footer>
+            Copyright &copy; {new Date().getFullYear()} {companyName}. All
+            rights reserved.
+          </Footer>
+        </Layout>
+      )}
+    </SharedLayoutQueryComponent>
   );
 }
 
