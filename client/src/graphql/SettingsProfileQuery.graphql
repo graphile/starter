@@ -1,0 +1,8 @@
+#import "./ProfileSettingsForm_UserFragment.graphql"
+
+query SettingsProfileQuery {
+  currentUser {
+    id
+    ...ProfileSettingsForm_UserFragment
+  }
+}
