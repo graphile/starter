@@ -581,6 +581,9 @@ enum UserEmailsOrderBy {
 
 """Represents an update to a `User`. Fields that are set will be updated."""
 input UserPatch {
+  """Public-facing username (or 'handle') of the user."""
+  username: String
+
   """Public-facing name (or pseudonym) of the user."""
   name: String
 

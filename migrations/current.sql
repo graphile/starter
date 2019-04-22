@@ -104,7 +104,7 @@ create policy update_self on app_public.users for update using (id = app_public.
 create policy delete_self on app_public.users for delete using (id = app_public.current_user_id());
 grant select on app_public.users to :DATABASE_VISITOR;
 -- NOTE: `insert` is not granted, because we'll handle that separately
-grant update(name, avatar_url) on app_public.users to :DATABASE_VISITOR;
+grant update(username, name, avatar_url) on app_public.users to :DATABASE_VISITOR;
 grant delete on app_public.users to :DATABASE_VISITOR;
 
 -- By doing `@omit all` we prevent the `allUsers` field from appearing in our

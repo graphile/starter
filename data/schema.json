@@ -1433,6 +1433,16 @@
           "fields": null,
           "inputFields": [
             {
+              "name": "username",
+              "description": "Public-facing username (or 'handle') of the user.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "name",
               "description": "Public-facing name (or pseudonym) of the user.",
               "type": {
