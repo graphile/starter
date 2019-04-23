@@ -1,0 +1,14 @@
+#import "./EmailsForm_UserFragment.graphql"
+
+mutation AddEmailMutation($email: String!) {
+  createUserEmail(input: { userEmail: { email: $email } }) {
+    user {
+      userEmails {
+        nodes {
+          id
+          ...EmailsForm_UserFragment
+        }
+      }
+    }
+  }
+}
