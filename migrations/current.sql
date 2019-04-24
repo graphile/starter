@@ -669,7 +669,7 @@ declare
   v_user app_public.users;
   v_email citext;
   v_name text;
-  v_username text;
+  v_username citext;
   v_avatar_url text;
   v_user_authentication_id int;
 begin
