@@ -13,7 +13,7 @@ import SharedLayout, {
 } from "../components/SharedLayout";
 import { NextContext } from "next";
 import Link from "next/link";
-import { Form, Icon, Input, Button, Alert } from "antd";
+import { Divider, Form, Icon, Input, Button, Alert } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { promisify } from "util";
 import { compose, withApollo, WithApolloClient } from "react-apollo";
@@ -134,82 +134,111 @@ function LoginForm({
   const code = getCodeFromError(error);
 
   return (
-    <Form layout="vertical" onSubmit={handleSubmit}>
+    <div>
+      <div>
+        <Form layout="vertical" onSubmit={handleSubmit}>
+          <Row>
+            <Col>
+              <span>
+                New user?{" "}
+                <Link href="/register">
+                  <a>Register Here</a>
+                </Link>
+              </span>
+            </Col>
+          </Row>
+          <Form.Item
+            validateStatus={userNameError ? "error" : ""}
+            help={userNameError || ""}
+          >
+            {getFieldDecorator("username", {
+              rules: [
+                { required: true, message: "Please input your username" },
+              ],
+            })(
+              <Input
+                prefix={
+                  <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
+                }
+                placeholder="Username"
+                ref={focusElement}
+              />
+            )}
+          </Form.Item>
+          <Form.Item
+            validateStatus={passwordError ? "error" : ""}
+            help={passwordError || ""}
+          >
+            {getFieldDecorator("password", {
+              rules: [
+                { required: true, message: "Please input your Password" },
+              ],
+            })(
+              <Input
+                prefix={
+                  <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
+                }
+                type="password"
+                placeholder="Password"
+              />
+            )}
+          </Form.Item>
+
+          {error ? (
+            <Form.Item>
+              <Alert
+                type="error"
+                message={`Login failed`}
+                description={
+                  <span>
+                    {extractError(error).message}
+                    {code ? (
+                      <span>
+                        {" "}
+                        (Error code: <code>ERR_{code}</code>)
+                      </span>
+                    ) : null}
+                  </span>
+                }
+              />
+            </Form.Item>
+          ) : null}
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={hasErrors(getFieldsError())}
+            >
+              Log in
+            </Button>
+          </Form.Item>
+          <Form.Item>
+            <p>
+              <Link href="/forgot">
+                <a>Forgot password?</a>
+              </Link>
+            </p>
+          </Form.Item>
+        </Form>
+      </div>
+      <Divider />
       <Row>
-        <Col>
-          <span>
-            New user?{" "}
-            <Link href="/register">
-              <a>Register Here</a>
-            </Link>
-          </span>
+        <Col span={12} offset={6}>
+          <div style={{ textAlign: "center" }}>
+            <p>Alternatively, you can use social login:</p>
+            <Button
+              block
+              type="primary"
+              size="large"
+              icon="github"
+              href="/auth/github"
+            >
+              Login with GitHub
+            </Button>
+          </div>
         </Col>
       </Row>
-      <Form.Item
-        validateStatus={userNameError ? "error" : ""}
-        help={userNameError || ""}
-      >
-        {getFieldDecorator("username", {
-          rules: [{ required: true, message: "Please input your username" }],
-        })(
-          <Input
-            prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
-            placeholder="Username"
-            ref={focusElement}
-          />
-        )}
-      </Form.Item>
-      <Form.Item
-        validateStatus={passwordError ? "error" : ""}
-        help={passwordError || ""}
-      >
-        {getFieldDecorator("password", {
-          rules: [{ required: true, message: "Please input your Password" }],
-        })(
-          <Input
-            prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
-            type="password"
-            placeholder="Password"
-          />
-        )}
-      </Form.Item>
-
-      {error ? (
-        <Form.Item>
-          <Alert
-            type="error"
-            message={`Login failed`}
-            description={
-              <span>
-                {extractError(error).message}
-                {code ? (
-                  <span>
-                    {" "}
-                    (Error code: <code>ERR_{code}</code>)
-                  </span>
-                ) : null}
-              </span>
-            }
-          />
-        </Form.Item>
-      ) : null}
-      <Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          disabled={hasErrors(getFieldsError())}
-        >
-          Log in
-        </Button>
-      </Form.Item>
-      <Form.Item>
-        <p>
-          <Link href="/forgot">
-            <a>Forgot password?</a>
-          </Link>
-        </p>
-      </Form.Item>
-    </Form>
+    </div>
   );
 }
 
