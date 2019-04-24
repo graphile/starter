@@ -507,6 +507,7 @@ type User {
 
   """If true, the user has elevated privileges."""
   isAdmin: Boolean!
+  isVerified: Boolean!
   createdAt: Datetime!
   updatedAt: Datetime!
 

@@ -92,6 +92,7 @@ create table app_public.users (
   name text,
   avatar_url text check(avatar_url ~ '^https?://[^/]+'),
   is_admin boolean not null default false,
+  is_verified boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -808,7 +809,7 @@ $$ language plpgsql volatile security definer;
 
 /**********/
 
-create or replace function app_public.resend_email_verification_code(email_id int) returns boolean as $$
+create function app_public.resend_email_verification_code(email_id int) returns boolean as $$
 begin
   if exists(
     select 1
@@ -824,3 +825,19 @@ begin
 end;
 $$ language plpgsql volatile security definer;
 comment on function app_public.resend_email_verification_code(email_id int) is E'@resultFieldName success';
+
+/**********/
+
+create function app_public.tg_user_emails__verify_account_on_verified() returns trigger as $$
+begin
+  update app_public.users set is_verified = true where id = new.user_id and is_verified is false;
+  return new;
+end;
+$$ language plpgsql volatile security definer;
+
+create trigger _500_verify_account_on_verified
+  after insert or update of is_verified
+  on app_public.user_emails
+  for each row
+  when (new.is_verified is true)
+  execute procedure app_public.tg_user_emails__verify_account_on_verified();

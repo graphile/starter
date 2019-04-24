@@ -13,6 +13,7 @@ import { withApollo, compose, WithApolloClient } from "react-apollo";
 import { useCallback } from "react";
 import StandardWidth from "./StandardWidth";
 import Head from "next/head";
+import Warn from "./Warn";
 
 const { Header, Content, Footer } = Layout;
 
@@ -87,7 +88,11 @@ function SharedLayout({
                       <Menu>
                         <Menu.Item>
                           <Link href="/settings">
-                            <a>Settings</a>
+                            <a>
+                              <Warn okay={data.currentUser.isVerified}>
+                                Settings
+                              </Warn>
+                            </a>
                           </Link>
                         </Menu.Item>
                         <Menu.Item>
@@ -97,7 +102,10 @@ function SharedLayout({
                     }
                   >
                     <span>
-                      {data.currentUser.name} <Icon type="down" />
+                      <Warn okay={data.currentUser.isVerified}>
+                        {data.currentUser.name}
+                      </Warn>{" "}
+                      <Icon type="down" />
                     </span>
                   </Dropdown>
                 ) : (

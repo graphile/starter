@@ -26,6 +26,7 @@ function renderEmail(
     <List.Item
       key={email.id}
       actions={[
+        email.isPrimary && <span>Primary</span>,
         canDelete && (
           <DeleteEmailMutationComponent>
             {mutate => (
