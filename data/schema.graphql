@@ -318,6 +318,12 @@ type Mutation {
     """
     input: MakeEmailPrimaryInput!
   ): MakeEmailPrimaryPayload
+  resendEmailVerificationCode(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: ResendEmailVerificationCodeInput!
+  ): ResendEmailVerificationCodePayload
 
   """
   After triggering forgotPassword, you'll be sent a reset token. Combine this
@@ -391,6 +397,31 @@ input RegisterInput {
 
 type RegisterPayload {
   user: User!
+}
+
+"""All input for the `resendEmailVerificationCode` mutation."""
+input ResendEmailVerificationCodeInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  emailId: Int
+}
+
+"""The output of our `resendEmailVerificationCode` mutation."""
+type ResendEmailVerificationCodePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  success: Boolean
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
 }
 
 """All input for the `resetPassword` mutation."""

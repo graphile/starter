@@ -246,6 +246,7 @@ grant delete on app_public.user_emails to :DATABASE_VISITOR;
 create table app_private.user_email_secrets (
   user_email_id int primary key references app_public.user_emails on delete cascade,
   verification_token text,
+  verification_email_sent_at timestamptz,
   password_reset_email_sent_at timestamptz
 );
 alter table app_private.user_email_secrets enable row level security;
@@ -804,3 +805,20 @@ begin
   return v_user_email;
 end;
 $$ language plpgsql volatile security definer;
+
+/**********/
+
+create function app_public.resend_email_verification_code(email_id int) returns boolean as $$
+begin
+  if exists(
+    select 1
+    from app_public.user_emails
+    where user_emails.id = email_id
+    and user_id = app_public.current_user_id()
+    and is_verified is false
+  ) then
+    perform graphile_worker.add_job('user_emails__send_verification', json_build_object('id', email_id));
+  end if;
+end;
+$$ language plpgsql volatile security definer;
+comment on function app_public.resend_email_verification_code(email_id int) is E'@resultFieldName success';
