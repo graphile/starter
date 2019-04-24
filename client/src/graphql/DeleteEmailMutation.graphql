@@ -3,6 +3,7 @@
 mutation DeleteEmailMutation($emailId: Int!) {
   deleteUserEmail(input: { id: $emailId }) {
     user {
+      id
       userEmails {
         nodes {
           id

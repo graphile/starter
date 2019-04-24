@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Bullet Journalling App",
   "scripts": {
-    "lint": "eslint 'client/src/**/*' 'server/src/**/*'",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx,.graphql 'client/src/**/*' 'server/src/**/*'",
     "setup": "npm run server:src:build && ./scripts/setup",
     "server:src:build": "npm run codegen && cd server && tsc",
     "server:src:watch": "cd server && tsc --watch",

@@ -1,5 +1,6 @@
 query SharedLayoutQuery {
   currentUser {
+    id
     ...SharedLayout_UserFragment
   }
 }

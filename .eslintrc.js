@@ -75,7 +75,7 @@ module.exports = {
     "graphql/template-strings": [
       "error",
       {
-        env: "apollo",
+        env: "literal",
         schemaJson: require("./data/schema.json")
       }
     ],
@@ -88,7 +88,7 @@ module.exports = {
     "graphql/required-fields": [
       "error",
       {
-        env: "apollo",
+        env: "literal",
         schemaJson: require("./data/schema.json"),
         requiredFields: ["nodeId", "id"]
       }

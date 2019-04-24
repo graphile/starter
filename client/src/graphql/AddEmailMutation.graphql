@@ -1,12 +1,13 @@
-#import "./EmailsForm_UserFragment.graphql"
+#import "./EmailsForm_UserEmailFragment.graphql"
 
 mutation AddEmailMutation($email: String!) {
   createUserEmail(input: { userEmail: { email: $email } }) {
     user {
+      id
       userEmails {
         nodes {
           id
-          ...EmailsForm_UserFragment
+          ...EmailsForm_UserEmailFragment
         }
       }
     }
