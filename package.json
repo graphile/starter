@@ -101,8 +101,5 @@
     "nodemon": "^1.18.10",
     "prettier": "^1.16.4",
     "typescript": "^3.4.4"
-  },
-  "optionalDependencies": {
-    "fsevents": "^2.0.6"
   }
 }
