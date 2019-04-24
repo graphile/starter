@@ -12,6 +12,7 @@ import Router from "next/router";
 import { withApollo, compose, WithApolloClient } from "react-apollo";
 import { useCallback } from "react";
 import StandardWidth from "./StandardWidth";
+import Head from "next/head";
 
 const { Header, Content, Footer } = Layout;
 
@@ -65,6 +66,11 @@ function SharedLayout({
       {({ data, loading }) => (
         <Layout>
           <Header>
+            <Head>
+              <title>
+                {title} — {companyName}
+              </title>
+            </Head>
             <Row type="flex" justify="space-between">
               <Col span={6}>
                 <Link href="/">
