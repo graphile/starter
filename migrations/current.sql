@@ -189,11 +189,16 @@ create table app_public.user_emails (
   user_id int not null default app_public.current_user_id() references app_public.users on delete cascade,
   email citext not null check (email ~ '[^@]+@[^@]+\.[^@]+'),
   is_verified boolean not null default false,
+  is_primary boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  constraint user_emails_user_id_email_key unique(user_id, email)
+  constraint user_emails_user_id_email_key unique(user_id, email),
+  constraint user_emails_must_be_verified_to_be_primary check(is_primary is false or is_verified is true)
 );
-create unique index on app_public.user_emails (email) where (is_verified is true);
+-- Once an email is verified, it may only be used by one user
+create unique index uniq_user_emails_verified_email on app_public.user_emails(email) where (is_verified is true);
+-- Only one primary email per user
+create unique index uniq_user_emails_primary_email on app_public.user_emails (user_id) where (is_primary is true);
 
 create function app_public.tg_user_emails__forbid_if_verified() returns trigger as $$
 begin
@@ -205,8 +210,9 @@ end;
 $$ language plpgsql volatile security definer;
 create trigger _200_forbid_existing_email before insert on app_public.user_emails for each row execute procedure app_public.tg_user_emails__forbid_if_verified();
 
+-- We don't need custom finders/relations for this
 comment on constraint user_emails_user_id_email_key on app_public.user_emails is E'@omit';
-create unique index uniq_user_emails_verified_email on app_public.user_emails(email) where is_verified is true;
+
 alter table app_public.user_emails enable row level security;
 create trigger _100_timestamps
   after insert or update on app_public.user_emails
@@ -269,7 +275,14 @@ comment on function app_private.tg_user_email_secrets__insert_with_user_email() 
 
 create function app_public.verify_email(user_email_id int, token text) returns boolean as $$
 begin
-  update app_public.user_emails set is_verified = true where id = user_email_id and exists(
+  update app_public.user_emails
+  set
+    is_verified = true,
+    is_primary = is_primary or not exists(
+      select 1 from app_public.user_emails other_email where other_email.user_id = user_emails.user_id and other_email.is_primary is true
+    )
+  where id = user_email_id
+  and exists(
     select 1 from app_private.user_email_secrets where user_email_secrets.user_email_id = user_emails.id and verification_token = token
   );
   return found;
@@ -771,3 +784,23 @@ $$ language plpgsql volatile security definer set search_path from current;
 
 comment on function app_private.link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) is
   E'If you''re logged in, this will link an additional OAuth login to your account if necessary. If you''re logged out it may find if an account already exists (based on OAuth details or email address) and return that, or create a new user account if necessary.';
+
+/**********/
+
+-- User may only have one primary email (and it must be verified)
+create function app_public.make_email_primary(email_id int) returns app_public.user_emails as $$
+declare
+  v_user_email app_public.user_emails;
+begin
+  select * into v_user_email from app_public.user_emails where id = email_id and user_id = app_public.current_user_id();
+  if v_user_email is null then
+    return null;
+  end if;
+  if v_user_email.is_verified is false then
+    return null;
+  end if;
+  update app_public.user_emails set is_primary = false where user_id = app_public.current_user_id() and is_primary is true and id <> email_id;
+  update app_public.user_emails set is_primary = true where user_id = app_public.current_user_id() and is_primary is not true and id = email_id returning * into v_user_email;
+  return v_user_email;
+end;
+$$ language plpgsql volatile security definer;

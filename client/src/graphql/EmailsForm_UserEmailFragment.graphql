@@ -2,5 +2,6 @@ fragment EmailsForm_UserEmailFragment on UserEmail {
   id
   email
   isVerified
+  isPrimary
   createdAt
 }

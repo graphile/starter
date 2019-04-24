@@ -37,7 +37,11 @@ function renderEmail(email: EmailsForm_UserEmailFragmentFragment) {
               }
             >
               {" "}
-              {email.isVerified ? "✅" : "❓"}{" "}
+              {email.isVerified ? (
+                "✅"
+              ) : (
+                <small style={{ color: "red" }}>(unverified)</small>
+              )}{" "}
             </span>{" "}
           </span>
         }

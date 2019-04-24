@@ -216,6 +216,40 @@ type LogoutPayload {
   success: Boolean
 }
 
+"""All input for the `makeEmailPrimary` mutation."""
+input MakeEmailPrimaryInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  emailId: Int
+}
+
+"""The output of our `makeEmailPrimary` mutation."""
+type MakeEmailPrimaryPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  userEmail: UserEmail
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `User` that is related to this `UserEmail`."""
+  user: User
+
+  """An edge for our `UserEmail`. May be used by Relay 1."""
+  userEmailEdge(
+    """The method to use when ordering `UserEmail`."""
+    orderBy: [UserEmailsOrderBy!] = PRIMARY_KEY_ASC
+  ): UserEmailsEdge
+}
+
 """
 The root mutation type which contains root level fields which mutate data.
 """
@@ -278,6 +312,12 @@ type Mutation {
     """
     input: ForgotPasswordInput!
   ): ForgotPasswordPayload
+  makeEmailPrimary(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: MakeEmailPrimaryInput!
+  ): MakeEmailPrimaryPayload
 
   """
   After triggering forgotPassword, you'll be sent a reset token. Combine this
@@ -517,6 +557,7 @@ type UserEmail {
   the email we sent them, or logging in with a social login provider), false otherwise.
   """
   isVerified: Boolean!
+  isPrimary: Boolean!
   createdAt: Datetime!
   updatedAt: Datetime!
 
