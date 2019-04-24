@@ -1,0 +1,5 @@
+mutation ResendEmailVerificationMutation($emailId: Int!) {
+  resendEmailVerificationCode(input: { emailId: $emailId }) {
+    success
+  }
+}

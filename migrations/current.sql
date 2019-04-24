@@ -808,7 +808,7 @@ $$ language plpgsql volatile security definer;
 
 /**********/
 
-create function app_public.resend_email_verification_code(email_id int) returns boolean as $$
+create or replace function app_public.resend_email_verification_code(email_id int) returns boolean as $$
 begin
   if exists(
     select 1
@@ -818,7 +818,9 @@ begin
     and is_verified is false
   ) then
     perform graphile_worker.add_job('user_emails__send_verification', json_build_object('id', email_id));
+    return true;
   end if;
+  return false;
 end;
 $$ language plpgsql volatile security definer;
 comment on function app_public.resend_email_verification_code(email_id int) is E'@resultFieldName success';

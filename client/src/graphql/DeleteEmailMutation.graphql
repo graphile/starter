@@ -1,0 +1,14 @@
+#import "./EmailsForm_UserEmailFragment.graphql"
+
+mutation DeleteEmailMutation($emailId: Int!) {
+  deleteUserEmail(input: { id: $emailId }) {
+    user {
+      userEmails {
+        nodes {
+          id
+          ...EmailsForm_UserEmailFragment
+        }
+      }
+    }
+  }
+}

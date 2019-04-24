@@ -4,19 +4,49 @@ import {
   SettingsEmailsQueryComponent,
   AddEmailMutationComponent,
   EmailsForm_UserEmailFragmentFragment,
+  ResendEmailVerificationMutationComponent,
+  MakeEmailPrimaryMutationComponent,
+  DeleteEmailMutationComponent,
 } from "../../graphql";
 import { List, Avatar } from "antd";
 import Redirect from "../../components/Redirect";
 
-function renderEmail(email: EmailsForm_UserEmailFragmentFragment) {
-  const canDelete = !email.isPrimary;
+function renderEmail(
+  email: EmailsForm_UserEmailFragmentFragment,
+  hasOtherEmails: boolean
+) {
+  const canDelete = !email.isPrimary && hasOtherEmails;
   return (
     <List.Item
       key={email.id}
       actions={[
-        canDelete && <a>Delete</a>,
-        !email.isVerified && <a>Resend verification</a>,
-        email.isVerified && !email.isPrimary && <a>Make primary</a>,
+        canDelete && (
+          <DeleteEmailMutationComponent>
+            {mutate => (
+              <a onClick={() => mutate({ variables: { emailId: email.id } })}>
+                Delete
+              </a>
+            )}
+          </DeleteEmailMutationComponent>
+        ),
+        !email.isVerified && (
+          <ResendEmailVerificationMutationComponent>
+            {mutate => (
+              <a onClick={() => mutate({ variables: { emailId: email.id } })}>
+                Resend verification
+              </a>
+            )}
+          </ResendEmailVerificationMutationComponent>
+        ),
+        email.isVerified && !email.isPrimary && (
+          <MakeEmailPrimaryMutationComponent>
+            {mutate => (
+              <a onClick={() => mutate({ variables: { emailId: email.id } })}>
+                Make primary
+              </a>
+            )}
+          </MakeEmailPrimaryMutationComponent>
+        ),
       ].filter(_ => _)}
     >
       <List.Item.Meta
@@ -69,7 +99,9 @@ export default function Settings_Emails() {
               <div>
                 <List
                   dataSource={user.userEmails.nodes}
-                  renderItem={renderEmail}
+                  renderItem={email =>
+                    renderEmail(email, user.userEmails.nodes.length > 1)
+                  }
                 />
                 <AddEmailMutationComponent>
                   {mutate => (

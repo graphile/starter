@@ -1,0 +1,12 @@
+mutation MakeEmailPrimaryMutation($emailId: Int!) {
+  makeEmailPrimary(input: { emailId: $emailId }) {
+    user {
+      userEmails {
+        nodes {
+          id
+          isPrimary
+        }
+      }
+    }
+  }
+}
