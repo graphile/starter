@@ -10,7 +10,7 @@ import { promisify } from "util";
 import SharedLayout from "../components/SharedLayout";
 import Link from "next/link";
 import { Form, Icon, Input, Button, Alert } from "antd";
-import { FormComponentProps } from "antd/lib/form/Form";
+import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { compose, withApollo, WithApolloClient } from "react-apollo";
 import {
   withForgotPasswordMutation,

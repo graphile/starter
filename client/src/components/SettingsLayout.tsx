@@ -1,5 +1,7 @@
 import React from "react";
-import SharedLayout from "../components/SharedLayout";
+import SharedLayout, {
+  SharedLayoutChildProps,
+} from "../components/SharedLayout";
 import Link from "next/link";
 import { Layout, Menu } from "antd";
 import StandardWidth from "./StandardWidth";
@@ -33,7 +35,7 @@ export default function SettingsLayout({
   const page = pages[href];
   return (
     <SharedLayout title={`Settings: ${page.title}`} noPad>
-      {({ currentUser }) => (
+      {({ currentUser }: SharedLayoutChildProps) => (
         <Layout style={{ minHeight: "calc(100vh - 64px - 64px)" }} hasSider>
           <Sider>
             <Menu selectedKeys={[href]}>

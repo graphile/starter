@@ -1,5 +1,6 @@
 import { Task } from "graphile-worker";
 import { template as lodashTemplate } from "lodash";
+// @ts-ignore
 import mjml2html = require("mjml");
 import * as html2text from "html-to-text";
 import getTransport from "../transport";

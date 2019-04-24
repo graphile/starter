@@ -1,4 +1,5 @@
 import * as React from "react";
+import { NextContext } from "next";
 import SharedLayout, { Row, Col, Link } from "../components/SharedLayout";
 
 function FourOhFour() {
@@ -7,7 +8,10 @@ function FourOhFour() {
       <h2>Page Not Found</h2>
       <p>
         The page you attempted to load was not found. Please check the URL and
-        try again, or visit <Link href="/">the homepage</Link>
+        try again, or visit{" "}
+        <Link href="/">
+          <a>the homepage</a>
+        </Link>
       </p>
     </div>
   );
@@ -22,13 +26,19 @@ function ErrorOccurred() {
         later, or if this keeps happening then let us know.
       </p>
       <p>
-        <Link href="/">Go to the homepage</Link>
+        <Link href="/">
+          <a>Go to the homepage</a>
+        </Link>
       </p>
     </div>
   );
 }
 
-export default function ErrorPage(props) {
+interface ErrorPageProps {
+  statusCode: number;
+}
+
+export default function ErrorPage(props: ErrorPageProps) {
   const [Component, title] = {
     404: [FourOhFour, "Page Not Found"],
   }[props.statusCode] || [ErrorOccurred, "An Error Occurred"];
@@ -43,6 +53,6 @@ export default function ErrorPage(props) {
   );
 }
 
-ErrorPage.getInitialProps = ({ res, err }) => ({
-  statusCode: res ? res.statusCode : err ? err.statusCode : null,
+ErrorPage.getInitialProps = ({ res, err }: NextContext) => ({
+  statusCode: res ? res.statusCode : err ? err["statusCode"] : null,
 });
