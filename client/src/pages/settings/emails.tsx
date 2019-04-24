@@ -113,9 +113,12 @@ export default function Settings_Emails() {
                 />
                 {!showAddEmailForm ? (
                   <div>
-                    <button onClick={() => setShowAddEmailForm(true)}>
+                    <Button
+                      type="primary"
+                      onClick={() => setShowAddEmailForm(true)}
+                    >
                       Add email
-                    </button>
+                    </Button>
                   </div>
                 ) : (
                   <WrappedAddEmailForm
