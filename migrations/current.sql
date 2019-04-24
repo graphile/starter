@@ -639,8 +639,8 @@ begin
     returning * into v_user;
 
 	-- Add the user's email
-  insert into app_public.user_emails (user_id, email, is_verified)
-  values (v_user.id, email, email_is_verified);
+  insert into app_public.user_emails (user_id, email, is_verified, is_primary)
+  values (v_user.id, email, email_is_verified, email_is_verified);
 
   -- Store the password
   if password is not null then

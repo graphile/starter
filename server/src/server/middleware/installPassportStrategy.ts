@@ -75,41 +75,54 @@ export default (
         done: (error: any, user?: any) => void
       ) => {
         try {
-          const details = await getUserInformation(
+          const userInformation = await getUserInformation(
             profile,
             accessToken,
             refreshToken,
             extra,
             req
           );
-          if (!details.id) {
+          if (!userInformation.id) {
             throw new Error(
               `getUserInformation must return a unique id for each user`
             );
           }
           const {
-            rows: [user],
+            rows: [details],
           } = await rootPgPool.query(
-            `select * from app_private.link_or_register_user($1, $2, $3, $4, $5);`,
+            `with new_user as (
+              select * from app_private.link_or_register_user($1, $2, $3, $4, $5)
+            ), new_session as (
+              insert into app_private.sessions (user_id)
+              select id from new_user
+              returning *
+            )
+            select new_user.id as user_id, new_session.uuid as session_id
+            from new_user, new_session`,
             [
               (req.user && req.user.id) || null,
               service,
-              details.id,
+              userInformation.id,
               JSON.stringify({
-                username: details.username,
-                avatar_url: details.avatarUrl,
-                email: details.email,
-                name: details.displayName,
-                ...details.profile,
+                username: userInformation.username,
+                avatar_url: userInformation.avatarUrl,
+                email: userInformation.email,
+                name: userInformation.displayName,
+                ...userInformation.profile,
               }),
               JSON.stringify({
                 [tokenNames[0]]: accessToken,
                 [tokenNames[1]]: refreshToken,
-                ...details.auth,
+                ...userInformation.auth,
               }),
             ]
           );
-          done(null, user);
+          if (!details || !details.user_id) {
+            const e = new Error("Registration failed");
+            e["code"] = "FFFFF";
+            throw e;
+          }
+          done(null, { session_id: details.session_id });
         } catch (e) {
           done(e);
         }
