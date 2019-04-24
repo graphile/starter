@@ -22,7 +22,7 @@ begin
   perform graphile_worker.add_job(tg_argv[0], json_build_object('id', NEW.id), coalesce(tg_argv[1], public.gen_random_uuid()::text));
   return NEW;
 end;
-$$ language plpgsql volatile set search_path from current;
+$$ language plpgsql volatile security definer set search_path from current;
 comment on function app_private.tg__add_job() is E'Useful shortcut to create a job on insert/update. Pass the task name as the first trigger argument, and optionally the queue name as the second argument. The record id will automatically be available on the JSON payload.';
 
 /**********/
@@ -264,7 +264,7 @@ begin
   insert into app_private.user_email_secrets(user_email_id, verification_token) values(NEW.id, v_verification_token);
   return NEW;
 end;
-$$ language plpgsql volatile set search_path from current;
+$$ language plpgsql volatile security definer set search_path from current;
 create trigger _500_insert_secrets
   after insert on app_public.user_emails
   for each row

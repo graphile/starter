@@ -80,12 +80,7 @@ function ForgotPasswordForm({
     [focusElement]
   );
 
-  const {
-    getFieldDecorator,
-    getFieldsError,
-    getFieldError,
-    isFieldTouched,
-  } = form;
+  const { getFieldDecorator, getFieldError, isFieldTouched } = form;
 
   // Only show error after a field is touched.
   const emailError = isFieldTouched("email") && getFieldError("email");
