@@ -314,7 +314,9 @@ create trigger _100_timestamps
   execute procedure app_private.tg__timestamps();
 
 comment on table app_public.user_authentications is
-  E'@omit all\nContains information about the login providers this user has used, so that they may disconnect them should they wish.';
+  E'@omit';
+  -- TODO: expose user authentications sensibly
+  -- E'@omit all\nContains information about the login providers this user has used, so that they may disconnect them should they wish.';
 comment on column app_public.user_authentications.user_id is
   E'@omit';
 comment on column app_public.user_authentications.service is
