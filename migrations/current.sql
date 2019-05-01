@@ -196,6 +196,7 @@ create table app_public.user_emails (
   constraint user_emails_user_id_email_key unique(user_id, email),
   constraint user_emails_must_be_verified_to_be_primary check(is_primary is false or is_verified is true)
 );
+comment on constraint user_emails_pkey on app_public.user_emails is E'@omit all';
 -- Once an email is verified, it may only be used by one user
 create unique index uniq_user_emails_verified_email on app_public.user_emails(email) where (is_verified is true);
 -- Only one primary email per user
@@ -305,7 +306,10 @@ create table app_public.user_authentications (
   updated_at timestamptz not null default now(),
   constraint uniq_user_authentications unique(service, identifier)
 );
+
+
 comment on constraint uniq_user_authentications on app_public.user_authentications is E'@omit';
+comment on constraint user_authentications_pkey on app_public.user_authentications is E'@omit all';
 alter table app_public.user_authentications enable row level security;
 create index on app_public.user_authentications(user_id);
 create trigger _100_timestamps
