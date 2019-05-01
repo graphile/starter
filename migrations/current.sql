@@ -812,7 +812,7 @@ begin
   return v_user_email;
 end;
 $$ language plpgsql volatile security definer;
-comment on function app_public.make_email_primary(email_id int) is E'Your primary email is where we\'ll notify of account events; other emails may be used for discovery or login. Use this when you''re changing your email address.';
+comment on function app_public.make_email_primary(email_id int) is E'Your primary email is where we''ll notify of account events; other emails may be used for discovery or login. Use this when you''re changing your email address.';
 
 /**********/
 
