@@ -5,6 +5,7 @@ import PgPubsub from "@graphile/pg-pubsub";
 import PgSimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
 import PassportLoginPlugin from "../plugins/PassportLoginPlugin";
 import PrimaryKeyMutationsOnlyPlugin from "../plugins/PrimaryKeyMutationsOnlyPlugin";
+import handleErrors from "../utils/handleErrors";
 
 type UUID = string;
 
@@ -23,7 +24,7 @@ function uuidOrNull(input: string | number | null): UUID | null {
 }
 
 const isDev = process.env.NODE_ENV === "development";
-const isTest = process.env.NODE_ENV === "test";
+//const isTest = process.env.NODE_ENV === "test";
 const pluginHook = makePluginHook([PgPubsub]);
 
 export default function installPostGraphile(app: Application) {
@@ -65,6 +66,15 @@ export default function installPostGraphile(app: Application) {
         // Disable query logging - we're using morgan
         disableQueryLog: true,
 
+        // Custom error handling
+        handleErrors,
+        /*
+         * To use the built in PostGraphile error handling, you can use the
+         * following code instead of `handleErrors` above. Using `handleErrors`
+         * gives you much more control (and stability) over how errors are
+         * output to the user.
+         */
+        /*
         // See https://www.graphile.org/postgraphile/debugging/
         extendedErrors:
           isDev || isTest
@@ -82,12 +92,10 @@ export default function installPostGraphile(app: Application) {
                 "column",
                 "dataType",
                 "constraint",
-                "file",
-                "line",
-                "routine",
               ]
             : ["errcode"],
-        showErrorStack: isDev,
+        showErrorStack: isDev || isTest,
+        */
 
         // Automatically update GraphQL schema when database changes
         watchPg: isDev,

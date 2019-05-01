@@ -1,12 +1,16 @@
 # Error codes
 
-Errors from PostGraphile may come through with one of these error codes.
+PostgreSQL has a built in list of error codes that are associated with the
+errors that it produces. These are outlined [in the PostgreSQL
+documentation](https://www.postgresql.org/docs/current/errcodes-appendix.html).
+
+Our custom functions may also raise exceptions with custom error codes. When we
+add a custom errorcode to our database, we document it in this file.
 
 ## Error code rules
 
-Some error codes are [reserved by
-PostgreSQL](https://www.postgresql.org/docs/current/errcodes-appendix.html),
-so error codes we use must match these criteria:
+To try and avoid clashes with present or future PostgreSQL error codes, we
+require that all custom error codes match the following criteria:
 
 - 5 alphanumeric (capitals) letters
 - First character must be a letter
@@ -25,7 +29,7 @@ Rewritten, the above rules state:
 
 ## General
 
-FFFFF: unknown error
+- FFFFF: unknown error
 
 ## Authentication
 
