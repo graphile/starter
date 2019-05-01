@@ -270,12 +270,23 @@ type Mutation {
     """
     input: ForgotPasswordInput!
   ): ForgotPasswordPayload
+
+  """
+  Your primary email is where we'll notify of account events; other emails may
+  be used for discovery or login. Use this when you're changing your email address.
+  """
   makeEmailPrimary(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
     input: MakeEmailPrimaryInput!
   ): MakeEmailPrimaryPayload
+
+  """
+  If you didn't receive the verification code for this email, we can resend it.
+  We silently cap the rate of resends on the backend, so calls to this function
+  may not result in another email being sent if it has been called recently.
+  """
   resendEmailVerificationCode(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -293,24 +304,41 @@ type Mutation {
     """
     input: ResetPasswordInput!
   ): ResetPasswordPayload
+
+  """
+  Once you have received a verification token for your email, you may call this
+  mutation with that token to make your email verified.
+  """
   verifyEmail(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
     input: VerifyEmailInput!
   ): VerifyEmailPayload
+
+  """
+  Use this mutation to create an account on our system. This may only be used if you are logged out.
+  """
   register(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
     input: RegisterInput!
   ): RegisterPayload
+
+  """
+  Use this mutation to log in to your account; this login uses sessions so you do not need to take further action.
+  """
   login(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
     input: LoginInput!
   ): LoginPayload
+
+  """
+  Use this mutation to logout from your account. Don't forget to clear the client state!
+  """
   logout: LogoutPayload
 }
 

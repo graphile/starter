@@ -291,7 +291,7 @@ begin
   return found;
 end;
 $$ language plpgsql volatile strict security definer;
-comment on function app_public.verify_email(user_email_id int, token text) is E'@resultFieldName success';
+comment on function app_public.verify_email(user_email_id int, token text) is E'@resultFieldName success\nOnce you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
 
 
 /**********/
@@ -812,6 +812,7 @@ begin
   return v_user_email;
 end;
 $$ language plpgsql volatile security definer;
+comment on function app_public.make_email_primary(email_id int) is E'Your primary email is where we\'ll notify of account events; other emails may be used for discovery or login. Use this when you''re changing your email address.';
 
 /**********/
 
@@ -830,7 +831,7 @@ begin
   return false;
 end;
 $$ language plpgsql volatile security definer;
-comment on function app_public.resend_email_verification_code(email_id int) is E'@resultFieldName success';
+comment on function app_public.resend_email_verification_code(email_id int) is E'@resultFieldName success\nIf you didn''t receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.';
 
 /**********/
 

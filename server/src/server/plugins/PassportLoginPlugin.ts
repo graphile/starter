@@ -28,8 +28,17 @@ const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
     }
 
     extend type Mutation {
+      """
+      Use this mutation to create an account on our system. This may only be used if you are logged out.
+      """
       register(input: RegisterInput!): RegisterPayload
+      """
+      Use this mutation to log in to your account; this login uses sessions so you do not need to take further action.
+      """
       login(input: LoginInput!): LoginPayload
+      """
+      Use this mutation to logout from your account. Don't forget to clear the client state!
+      """
       logout: LogoutPayload
     }
   `,

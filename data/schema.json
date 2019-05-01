@@ -990,7 +990,7 @@
             },
             {
               "name": "makeEmailPrimary",
-              "description": null,
+              "description": "Your primary email is where we'll notify of account events; other emails may be used for discovery or login. Use this when you're changing your email address.",
               "args": [
                 {
                   "name": "input",
@@ -1017,7 +1017,7 @@
             },
             {
               "name": "resendEmailVerificationCode",
-              "description": null,
+              "description": "If you didn't receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.",
               "args": [
                 {
                   "name": "input",
@@ -1071,7 +1071,7 @@
             },
             {
               "name": "verifyEmail",
-              "description": null,
+              "description": "Once you have received a verification token for your email, you may call this mutation with that token to make your email verified.",
               "args": [
                 {
                   "name": "input",
@@ -1098,7 +1098,7 @@
             },
             {
               "name": "register",
-              "description": null,
+              "description": "Use this mutation to create an account on our system. This may only be used if you are logged out.",
               "args": [
                 {
                   "name": "input",
@@ -1125,7 +1125,7 @@
             },
             {
               "name": "login",
-              "description": null,
+              "description": "Use this mutation to log in to your account; this login uses sessions so you do not need to take further action.",
               "args": [
                 {
                   "name": "input",
@@ -1152,7 +1152,7 @@
             },
             {
               "name": "logout",
-              "description": null,
+              "description": "Use this mutation to logout from your account. Don't forget to clear the client state!",
               "args": [],
               "type": {
                 "kind": "OBJECT",
