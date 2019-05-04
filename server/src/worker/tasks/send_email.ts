@@ -6,6 +6,8 @@ import * as html2text from "html-to-text";
 import getTransport from "../transport";
 import { readFile } from "../../fs";
 import { companyName, legalText, fromEmail } from "../../config";
+import * as nodemailer from "nodemailer";
+import chalk from "chalk";
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -40,7 +42,13 @@ const task: Task = async inPayload => {
       .replace(/\n\s+\n/g, "\n\n");
     Object.assign(options, { html, text });
   }
-  await transport.sendMail(options);
+  const info = await transport.sendMail(options);
+  if (isDev) {
+    const url = nodemailer.getTestMessageUrl(info);
+    if (url) {
+      console.log(`Development email preview: ${chalk.blue.underline(url)}`);
+    }
+  }
 };
 
 export default task;
