@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# This file contains code that is copyright 2019 Graphile Ltd, see GRAPHILE_LICENSE.md for license information.
+
 set -e
 export NODE_ENV=development
 

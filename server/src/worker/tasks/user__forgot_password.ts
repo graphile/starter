@@ -1,3 +1,5 @@
+/*! This file contains code that is copyright 2019 Graphile Ltd, see
+ * GRAPHILE_LICENSE.md for license information. */
 import { Task } from "graphile-worker";
 import { SendEmailPayload } from "./send_email";
 

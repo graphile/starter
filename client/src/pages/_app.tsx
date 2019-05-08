@@ -1,3 +1,5 @@
+/*! This file contains code that is copyright 2019 Graphile Ltd, see
+ * GRAPHILE_LICENSE.md for license information. */
 import "antd/dist/antd.less";
 import "nprogress/nprogress.css";
 import * as React from "react";

@@ -1,3 +1,5 @@
+/*! This file contains code that is copyright 2019 Graphile Ltd, see
+ * GRAPHILE_LICENSE.md for license information. */
 import * as React from "react";
 import get from "lodash/get";
 import { Alert } from "antd";

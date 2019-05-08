@@ -1,3 +1,5 @@
+/*! This file contains code that is copyright 2019 Graphile Ltd, see
+ * GRAPHILE_LICENSE.md for license information. */
 import { postgraphile, makePluginHook } from "postgraphile";
 import { NodePlugin } from "graphile-build";
 import { Application, Request, Response } from "express";

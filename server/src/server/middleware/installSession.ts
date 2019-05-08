@@ -1,3 +1,5 @@
+/*! This file contains code that is copyright 2019 Graphile Ltd, see
+ * GRAPHILE_LICENSE.md for license information. */
 import * as session from "express-session";
 import * as ConnectRedis from "connect-redis";
 import { Application } from "express";

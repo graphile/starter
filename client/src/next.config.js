@@ -1,3 +1,5 @@
+/*! This file contains code that is copyright 2019 Graphile Ltd, see
+ * GRAPHILE_LICENSE.md for license information. */
 const { compose } = require("react-apollo");
 module.exports = () => {
   const withCss = require("@zeit/next-css");

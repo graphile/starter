@@ -1,20 +1,57 @@
 # PostGraphile Starter
 
+You should replace this README with your own.
+
 ## PROPRIETARY SOFTWARE
 
-This repository is NOT open source software. It is proprietary and confidential.
+This is NOT open source software. It is proprietary and confidential.
 
 **Unauthorized copying of these files, via any medium, is strictly prohibited without a separate written license to do so from Graphile Ltd.**
 
+This software references other software (including, but not limited to, that
+referenced in `package.json` and `yarn.lock`) which has its own licenses — it
+is your responsibility to review the licenses of the referenced software and
+ensure you are happy with their terms.
+
+## Scope
+
+The intention of this software is that you will take the ideas and concepts
+in it and incorporate them into their own project, or build your project on
+top of this software. Please note that this software is not "complete," free
+of software defects, or free of security issues — it is not a finished
+solution, but rather the seed of a solution which you should review,
+customise, fix, and develop further.
+
 ## Getting started
+
+First, you need to install the dependencies with `yarn`. If you don't have
+`yarn` installed, you can install it with `npm install -g yarn`.
 
 ```
 yarn
+```
+
+Next you need to configure a database to use with the project, with the `yarn setup`
+command. We currently expect you to run the database on the same computer as
+the development environment, if this is not the case (or if it is tucked away
+in a VM or a container) you may have some issues - get in touch and we can
+help you resolve them.
+
+```
 yarn setup
+```
+
+Finally you can run the various parts of the system with the `yarn dev` command:
+
+```
 yarn dev
 ```
 
+This runs the various dependencies in parallel.
+
 ## Features
+
+Checked features have been implemented, unchecked features are goals for the future.
 
 - [x] **TypeScript** — make your project maintainable by starting with strong typing throughout
 - [x] **GraphQL** — on the backend through PostGraphile, on the frontend via Apollo client

@@ -1,3 +1,5 @@
+/*! This file contains code that is copyright 2019 Graphile Ltd, see
+ * GRAPHILE_LICENSE.md for license information. */
 import withApollo from "next-with-apollo";
 import { ApolloLink, split } from "apollo-link";
 import { HttpLink } from "apollo-link-http";

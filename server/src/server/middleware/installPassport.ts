@@ -1,3 +1,5 @@
+/*! This file contains code that is copyright 2019 Graphile Ltd, see
+ * GRAPHILE_LICENSE.md for license information. */
 import * as passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github";
 import { get } from "lodash";

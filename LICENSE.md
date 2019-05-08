@@ -1,7 +1,3 @@
-Copyright (C) Graphile Ltd - All Rights Reserved.
+This project contains code that is copyright Graphile Ltd, see GRAPHILE_LICENSE.md for more information.
 
-Proprietary and confidential.
-
-Unauthorized copying of these files, via any medium, is strictly prohibited without a separate written license to do so from Graphile Ltd.
-
-Written by Benjie Gillam <benjie@graphile.com>, May 2019.
+TODO: insert your own copyright notices here.
