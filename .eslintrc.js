@@ -6,26 +6,33 @@ module.exports = {
     "plugin:react/recommended",
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended",
-    "prettier/react"
+    "prettier/react",
   ],
-  plugins: ["jest", "@typescript-eslint", "react-hooks", "react", "prettier", "graphql"],
+  plugins: [
+    "jest",
+    "@typescript-eslint",
+    "react-hooks",
+    "react",
+    "prettier",
+    "graphql",
+  ],
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: "module",
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
     },
   },
   settings: {
     react: {
-      version: "detect"
-    }
+      version: "detect",
+    },
   },
   env: {
     browser: true,
     node: true,
     jest: true,
-    es6: true
+    es6: true,
   },
   rules: {
     "react-hooks/rules-of-hooks": "error",
@@ -36,14 +43,14 @@ module.exports = {
         argsIgnorePattern: "^_",
         varsIgnorePattern: "^_",
         args: "after-used",
-        ignoreRestSiblings: true
-      }
+        ignoreRestSiblings: true,
+      },
     ],
     "no-unused-expressions": [
       "error",
       {
-        allowTernary: true
-      }
+        allowTernary: true,
+      },
     ],
     "no-console": 0,
     "no-confusing-arrow": 0,
@@ -56,16 +63,16 @@ module.exports = {
     "prefer-arrow-callback": [
       "error",
       {
-        allowNamedFunctions: true
-      }
+        allowNamedFunctions: true,
+      },
     ],
     "class-methods-use-this": 0,
     "no-restricted-syntax": 0,
     "no-param-reassign": [
       "error",
       {
-        props: false
-      }
+        props: false,
+      },
     ],
     "react/prop-types": 0,
     "react/no-multi-comp": 0,
@@ -78,26 +85,26 @@ module.exports = {
       "error",
       {
         env: "literal",
-        schemaJson: require("./data/schema.json")
-      }
+        schemaJson: require("./data/schema.json"),
+      },
     ],
     "graphql/named-operations": [
       "error",
       {
-        schemaJson: require("./data/schema.json")
-      }
+        schemaJson: require("./data/schema.json"),
+      },
     ],
     "graphql/required-fields": [
       "error",
       {
         env: "literal",
         schemaJson: require("./data/schema.json"),
-        requiredFields: ["nodeId", "id"]
-      }
+        requiredFields: ["nodeId", "id"],
+      },
     ],
     "react/destructuring-assignment": 0,
 
     "arrow-body-style": 0,
-    "no-nested-ternary": 0
-  }
+    "no-nested-ternary": 0,
+  },
 };
