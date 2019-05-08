@@ -1,6 +1,6 @@
 {
   "pgSettings": {
-    "search_path": "app,app_private,app_hidden,public"
+    "search_path": "app_public,app_private,app_hidden,public"
   },
   "placeholders": {
     ":DATABASE_AUTHENTICATOR": "!ENV",
