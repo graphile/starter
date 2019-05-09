@@ -27,10 +27,14 @@ if [ -x .env ]; then
   echo "Configuration already exists, using existing secrets."
 else
 
-  echo "What's the hostname of your database? [Enter for 'localhost']"
+  echo
+  echo
+  echo "What's the hostname of your database server? [Enter for 'localhost']"
   read DATABASE_HOST
   if [ "$DATABASE_HOST" = "" ]; then DATABASE_HOST="localhost"; fi
 
+  echo
+  echo
   echo "What would you like to call your database? [Enter for 'graphile_starter']"
   read DATABASE_NAME
   if [ "$DATABASE_NAME" = "" ]; then DATABASE_NAME="graphile_starter"; fi
@@ -41,12 +45,21 @@ else
     exit 3
   fi
 
+  echo
+  echo
+  echo "Please enter a superuser connection string to the database (so we can drop/create the '${DATABASE_NAME}' and '${DATABASE_NAME}_shadow' databases): [Enter for 'postgres://${DATABASE_HOST}/template1']"
+  read ROOT_DATABASE_URL
+  if [ "$ROOT_DATABASE_URL" = "" ]; then ROOT_DATABASE_URL="postgres://${DATABASE_HOST}/template1"; fi
+
+
   # This will generate passwords that are safe to use in envvars without needing to be escaped:
   DATABASE_OWNER="${DATABASE_NAME}"
   DATABASE_OWNER_PASSWORD="$(openssl rand -base64 30 | tr '+/' '-_')"
   DATABASE_AUTHENTICATOR="${DATABASE_NAME}_authenticator"
   DATABASE_AUTHENTICATOR_PASSWORD="$(openssl rand -base64 30 | tr '+/' '-_')"
   DATABASE_VISITOR="${DATABASE_NAME}_visitor"
+
+  q_mid=\'\\\'\'
 
   # This is our '.env' config file, we're writing it now so that if something goes wrong we won't lose the passwords.
   cat >> .env <<CONFIG
@@ -56,20 +69,23 @@ export GRAPHILE_LICENSE=""
 # This is a development environment (production wouldn't write envvars to a file)
 export NODE_ENV="development"
 
+# What's the superuser connection string, so databases can be dropped/created (may not be necessary in production)
+export ROOT_DATABASE_URL='${ROOT_DATABASE_URL//\'/$q_mid}'
+
 # Where's the DB, and who owns it?
-export DATABASE_HOST="${DATABASE_HOST}"
-export DATABASE_NAME="${DATABASE_NAME}"
-export DATABASE_OWNER="${DATABASE_OWNER}"
-export DATABASE_OWNER_PASSWORD="$DATABASE_OWNER_PASSWORD"
+export DATABASE_HOST='${DATABASE_HOST//\'/$q_mid}'
+export DATABASE_NAME='${DATABASE_NAME//\'/$q_mid}'
+export DATABASE_OWNER='${DATABASE_OWNER//\'/$q_mid}'
+export DATABASE_OWNER_PASSWORD='${DATABASE_OWNER_PASSWORD//\'/$q_mid}'
 
 
 # Password for the '${DATABASE_AUTHENTICATOR}' user, which has very limited
 # privileges, but can switch into '${DATABASE_VISITOR}'
-export DATABASE_AUTHENTICATOR="${DATABASE_AUTHENTICATOR}"
-export DATABASE_AUTHENTICATOR_PASSWORD="$DATABASE_AUTHENTICATOR_PASSWORD"
+export DATABASE_AUTHENTICATOR='${DATABASE_AUTHENTICATOR//\'/$q_mid}'
+export DATABASE_AUTHENTICATOR_PASSWORD='${DATABASE_AUTHENTICATOR_PASSWORD//\'/$q_mid}'
 
 # Visitor role, cannot be logged into directly
-export DATABASE_VISITOR="${DATABASE_VISITOR}"
+export DATABASE_VISITOR='${DATABASE_VISITOR//\'/$q_mid}'
 
 # This secret is used for signing cookies
 export SECRET="$(openssl rand -base64 48)"
@@ -138,7 +154,7 @@ fi
 
 echo "Installing or reinstalling the roles and database..."
 # Now we can reset the database
-psql -X -v ON_ERROR_STOP=1 template1 <<SQL
+psql -X -v ON_ERROR_STOP=1 "${ROOT_DATABASE_URL}" <<SQL
 -- RESET database
 DROP DATABASE IF EXISTS ${DATABASE_NAME};
 DROP DATABASE IF EXISTS ${DATABASE_NAME}_shadow;
