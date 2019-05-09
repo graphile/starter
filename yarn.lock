@@ -4415,10 +4415,10 @@ graphile-build@4.4.0:
     pluralize "^7.0.0"
     semver "^5.6.0"
 
-graphile-migrate@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/graphile-migrate/-/graphile-migrate-0.0.1.tgz#50be12713a6ce18d32462fd771a0d53a322d291f"
-  integrity sha512-F/7RQ/tlSkTaHfeHsO2MrAeavezU5y7YEP9ry7WRtaVesvQZrMTkI8ZFIr37B4KZrUySTUOwBAky+2wxnc51Pw==
+graphile-migrate@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/graphile-migrate/-/graphile-migrate-0.0.2.tgz#4538905b5366b2414dfe1b47e2d8c1fdc9a14401"
+  integrity sha512-6vj3FPrNlSiKcDYIxE68PaH0hMTMaBkqIhu8kOaQZdt03UKeKEu1qXWqGq7EGwnktNlCrwNAlTQRakogKaUjIQ==
   dependencies:
     "@types/chalk" "^2.2.0"
     "@types/chokidar" "^1.7.5"
@@ -4427,7 +4427,7 @@ graphile-migrate@^0.0.1:
     chokidar "^2.1.1"
     pg ">=6.5 <8"
     pg-connection-string "^2.0.0"
-    pg-minify "^0.5.5"
+    pg-minify "^1.1.0"
 
 graphile-utils@^4.4.0:
   version "4.4.0"
@@ -7389,10 +7389,10 @@ pg-int8@1.0.1:
   resolved "https://registry.yarnpkg.com/pg-int8/-/pg-int8-1.0.1.tgz#943bd463bf5b71b4170115f80f8efc9a0c0eb78c"
   integrity sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==
 
-pg-minify@^0.5.5:
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/pg-minify/-/pg-minify-0.5.5.tgz#6c961a61aa19f469d8edfe5a3c0da58760f3c339"
-  integrity sha512-7Pf9h6nV1RFqED1hkRosePqvpPwNUUtW06TT4+lHwzesxa5gffxkShTjYH6JXV5sSSfh5+2yHOTTWEkCyCQ0Eg==
+pg-minify@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/pg-minify/-/pg-minify-1.1.0.tgz#e5e403f8b52bd967327fe66a3a3bd67e2e0abfd5"
+  integrity sha512-0lKswdS85bVwxIkGJ6mgUuc2nAGcVSQ73fOPB26W/5bu9gAWiOIy1Mh6ex6+U3Eq84St6Qy/d3lFWTyLgJZpOQ==
 
 pg-pool@^2.0.4:
   version "2.0.6"
