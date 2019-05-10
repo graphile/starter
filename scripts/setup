@@ -29,7 +29,7 @@ else
 
   echo
   echo
-  echo "What's the hostname of your database server? [Enter for 'localhost']"
+  echo "What's the hostname of your database server (include :port if it's not the default :5432)? [Enter for 'localhost']"
   read DATABASE_HOST
   if [ "$DATABASE_HOST" = "" ]; then DATABASE_HOST="localhost"; fi
 
