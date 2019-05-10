@@ -34,20 +34,22 @@ yarn
 Next you need to configure a database to use with the project, with the `yarn setup`
 command. We currently expect you to run the database on the same computer as
 the development environment, if this is not the case (or if it is tucked away
-in a VM or a container) you may have some issues - get in touch and we can
-help you resolve them.
+in a VM or a container) you may have some issues - if so, get in touch and we
+can help you resolve them.
 
 ```
 yarn setup
 ```
 
-Finally you can run the various parts of the system with the `yarn dev` command:
+The above command will create a `.env` file for you containing all your
+secrets. Do not commit it! Finally you can run the various parts of the system
+(see below) with the `yarn dev` command:
 
 ```
 yarn dev
 ```
 
-This runs the various dependencies in parallel.
+This runs the various dependencies in parallel using `concurrently`.
 
 ## Features
 
@@ -89,3 +91,48 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [ ] **Production build** — command to generate a production build of the project
 - [ ] **Deployment instructions: Heroku** — how to deploy to Heroku
 - [ ] **Deployment instructions: Docker** — how to deploy with Docker
+
+## Documentation links
+
+The `yarn dev` command runs a number of tasks:
+
+- `db`: uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch the `migrations/current.sql` file for changes, and automatically runs it against your database when it changes
+- `server:src`: watches the TypeScript source code of the server, and compiles it from `server/src` to `server/dist` so node and `graphile-worker` can run the compiled code directly
+- `server:run`: runs the node server that contains, among other things, PostGraphile and Next.js
+- `worker`: runs `graphile-worker` to execute your tasks
+- `codegen`: watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript components/HOCs/etc for you automatically (to save you having to write all the generics yourself)
+
+We use Next.js ([docs](https://nextjs.org/)) to handle the various common
+concerns of a React application for us (server-side rendering, routing,
+bundling, bundle-splitting, etc). The `client/src/pages/_app.tsx` file is a
+[custom &lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to
+add any providers you need to. We've already set it up with `withApollo` from
+`client/src/lib/withApollo` which includes all the Apollo configuration,
+including the client URL.
+
+The component library we're using is AntD ([docs](https://ant.design/)); we've
+demonstrated how to use the form validation components on the login/register
+pages so you can see how to handle errors from the server.
+
+The database is a jumping-off point; customise it as you see fit, and then run
+`yarn db:migrate commit` so you can start implementing your own business logic
+on top. We deliberately do not include functionality that we don't think you'll
+find useful. To read more about migrations with graphile-migrate, see the
+[graphile-migrate docs](https://github.com/graphile/migrate).
+
+We've added a few example workers for you, including the `send_email` worker
+which performs email templating for you. See `server/src/worker/tasks` for the
+tasks we've created (and to add your own), and see the [graphile-worker
+docs](https://github.com/graphile/worker) for more information.
+
+The server entry point is `server/src/server/index.ts`; you'll see that it
+contains documentation and has split the middleware up into a manageable
+fashion. We use traditional cookie sessions, but you can switch this out
+for an alternative.
+
+If you set `GITHUB_KEY` and `GITHUB_SECRET` in your `.env` file then you can
+also use GitHub's OAuth social authentication; you can add similar logic to the
+GitHub logic (in `server/src/server/middleware/installPassport.ts`) to enable
+other social login providers such as Twitter, Facebook, Google, etc. For more
+information, see the [passport.js
+documentation](http://www.passportjs.org/docs/).
