@@ -32,7 +32,7 @@ comment on function app_private.tg__add_job() is E'Useful shortcut to create a j
 create function app_private.tg__timestamps() returns trigger as $$
 begin
   NEW.created_at = (case when TG_OP = 'INSERT' then NOW() else OLD.created_at end);
-  NEW.updated_at = (case when TG_OP = 'UPDATE' and OLD.updated_at <= NOW() then OLD.updated_at + interval '1 millisecond' else NOW() end);
+  NEW.updated_at = (case when TG_OP = 'UPDATE' and OLD.updated_at >= NOW() then OLD.updated_at + interval '1 millisecond' else NOW() end);
   return NEW;
 end;
 $$ language plpgsql volatile set search_path from current;
@@ -131,7 +131,7 @@ comment on column app_public.users.is_admin is
   E'If true, the user has elevated privileges.';
 
 create trigger _100_timestamps
-  after insert or update on app_public.users
+  before insert or update on app_public.users
   for each row
   execute procedure app_private.tg__timestamps();
 
@@ -219,7 +219,7 @@ comment on constraint user_emails_user_id_email_key on app_public.user_emails is
 
 alter table app_public.user_emails enable row level security;
 create trigger _100_timestamps
-  after insert or update on app_public.user_emails
+  before insert or update on app_public.user_emails
   for each row
   execute procedure app_private.tg__timestamps();
 create trigger _900_send_verification_email
@@ -315,7 +315,7 @@ comment on constraint user_authentications_pkey on app_public.user_authenticatio
 alter table app_public.user_authentications enable row level security;
 create index on app_public.user_authentications(user_id);
 create trigger _100_timestamps
-  after insert or update on app_public.user_authentications
+  before insert or update on app_public.user_authentications
   for each row
   execute procedure app_private.tg__timestamps();
 
