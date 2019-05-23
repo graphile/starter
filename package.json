@@ -16,7 +16,9 @@
     "test": ". ./scripts/env && jest",
     "codegen": "graphql-codegen --config codegen.yml",
     "codegen:watch": "graphql-codegen --config codegen.yml --watch",
-    "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md"
+    "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
+    "client:src:build": "cd client/src && next build",
+    "build": "npm run client:src:build && npm run server:src:build"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",

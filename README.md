@@ -85,8 +85,8 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **HTML→text emails** — automated conversion from your pretty templates to plain text emails for users that prefer that
 - [x] **Form validation** — using AntD's `Form` component
 - [x] **Realtime** — PostGraphile is configured with @graphile/pg-pubsub to enable realtime events from the DB; and Apollo is configured to consume them
+- [x] **Production build** — command to generate a production build of the project using `npm run build`
 - [ ] **Testing** — Jest configured to test the database and the GraphQL API
-- [ ] **Production build** — command to generate a production build of the project
 - [ ] **Deployment instructions: Heroku** — how to deploy to Heroku
 
 ## TODO
