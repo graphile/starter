@@ -44,6 +44,7 @@ export default function installPostGraphile(app: Application) {
         // Add websocket support to the PostGraphile server; you still need to use a subscriptions plugin such as
         // @graphile/pg-pubsub
         subscriptions: true,
+        websocketMiddlewares: app.get("websocketMiddlewares"),
 
         // enableQueryBatching: On the client side, use something like apollo-link-batch-http to make use of this
         enableQueryBatching: true,
@@ -178,6 +179,9 @@ export default function installPostGraphile(app: Application) {
          */
         async additionalGraphQLContextFromRequest(req) {
           return {
+            // The current session id
+            sessionId: req.user && uuidOrNull(req.user.session_id),
+
             // Needed so passport can write to the database
             rootPgPool: app.get("rootPgPool"),
 

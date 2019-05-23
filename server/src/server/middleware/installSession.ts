@@ -39,5 +39,5 @@ export default (app: Application) => {
     secret: SECRET,
   });
   app.use(sessionMiddleware);
-  app.get("socketMiddlewares").push(sessionMiddleware);
+  app.get("websocketMiddlewares").push(sessionMiddleware);
 };

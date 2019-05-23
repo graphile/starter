@@ -31,8 +31,8 @@ async function main() {
    * When we're using websockets, we may want them to have access to
    * sessions/etc for authentication.
    */
-  const socketMiddlewares: express.RequestHandler[] = [];
-  app.set("socketMiddlewares", socketMiddlewares);
+  const websocketMiddlewares: express.RequestHandler[] = [];
+  app.set("websocketMiddlewares", websocketMiddlewares);
 
   /*
    * Middleware is installed from the /server/middleware directory. These
