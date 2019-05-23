@@ -18,6 +18,9 @@ const pages = {
   "/settings/security": {
     title: "Password",
   },
+  "/settings/accounts": {
+    title: "Linked Accounts",
+  },
   "/settings/emails": {
     title: "Emails",
     warnIfUnverified: true,

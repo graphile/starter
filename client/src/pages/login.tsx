@@ -40,18 +40,18 @@ function isSafe(nextUrl: string | void | null) {
 /**
  * Login page just renders the standard layout and embeds the login form
  */
-export default function Login({ next }: LoginProps) {
+export default function Login({ next: rawNext }: LoginProps) {
   const [error, setError] = useState<Error | ApolloError | null>(null);
-  const target: string = isSafe(next) ? next! : "/";
+  const next: string = isSafe(rawNext) ? rawNext! : "/";
   return (
     <SharedLayout title="Login">
       {({ currentUser }: SharedLayoutChildProps) =>
         currentUser ? (
-          <Redirect href={target} />
+          <Redirect href={next} />
         ) : (
           <div>
             <WrappedLoginForm
-              onSuccessRedirectTo={target}
+              onSuccessRedirectTo={next}
               error={error}
               setError={setError}
             />

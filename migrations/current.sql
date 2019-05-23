@@ -309,7 +309,6 @@ create table app_public.user_authentications (
   constraint uniq_user_authentications unique(service, identifier)
 );
 
-
 comment on constraint uniq_user_authentications on app_public.user_authentications is E'@omit';
 comment on constraint user_authentications_pkey on app_public.user_authentications is E'@omit all';
 alter table app_public.user_authentications enable row level security;
@@ -320,11 +319,7 @@ create trigger _100_timestamps
   execute procedure app_private.tg__timestamps();
 
 comment on table app_public.user_authentications is
-  E'@omit';
-  -- TODO: expose user authentications sensibly
-  -- E'@omit all\nContains information about the login providers this user has used, so that they may disconnect them should they wish.';
-comment on column app_public.user_authentications.user_id is
-  E'@omit';
+  E'@omit all\n@simpleCollections only\nContains information about the login providers this user has used, so that they may disconnect them should they wish.';
 comment on column app_public.user_authentications.service is
   E'The login service used, e.g. `twitter` or `github`.';
 comment on column app_public.user_authentications.identifier is
