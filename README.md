@@ -75,7 +75,7 @@ Checked features have been implemented, unchecked features are goals for the fut
   - [x] Update profile information
   - [x] Change password flow
   - [x] Forgot password flow
-  - [ ] Unlinking social profiles
+  - [x] Unlinking social profiles
 - [x] **Ant Design** — &ldquo;A design system with values of Nature and Determinacy for better user experience of enterprise applications&rdquo;
 - [x] **Hot reloading** — edit a component and it's re-rendered immediately (warning: state is _not_ restored, because this typically leads to instability); provided by Next.js
 - [x] **SSR with hot reloading** — if you turn JS off and reload the page you should be greeted with the same content anyway; provided by Next.js

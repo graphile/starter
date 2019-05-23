@@ -1,9 +1,12 @@
 /*! This file contains code that is copyright 2019 Graphile Ltd, see
  * GRAPHILE_LICENSE.md for license information. */
-import React from "react";
+import React, { useCallback, useState } from "react";
 import SettingsLayout from "../../components/SettingsLayout";
-import { CurrentUserAuthenticationsComponent } from "../../graphql";
-import { Spin, List, Avatar, Typography } from "antd";
+import {
+  CurrentUserAuthenticationsComponent,
+  UnlinkUserAuthenticationMutationComponent,
+} from "../../graphql";
+import { Spin, List, Avatar, Typography, Modal } from "antd";
 import SocialLoginOptions from "../../components/SocialLoginOptions";
 
 const { Text } = Typography;
@@ -27,9 +30,53 @@ function authAvatar(service: text) {
   }
 }
 
+function UnlinkAccountButtonInner({ id, mutate }: { id: number; mutate: any }) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const handleOpenModal = useCallback(() => {
+    setModalOpen(true);
+  }, [setModalOpen]);
+  const handleCloseModal = useCallback(() => {
+    setModalOpen(false);
+  }, [setModalOpen]);
+  const handleUnlink = useCallback(async () => {
+    setModalOpen(false);
+    setDeleting(true);
+    try {
+      await mutate({ variables: { id } });
+    } catch (e) {
+      setDeleting(false);
+    }
+  }, [id, mutate]);
+  return (
+    <>
+      <Modal
+        title="Are you sure?"
+        visible={modalOpen}
+        onCancel={handleCloseModal}
+        onOk={handleUnlink}
+      >
+        If you unlink this account you won't be able to log in with it any more;
+        please make sure your email is valid.
+      </Modal>
+      <a key="unlink" onClick={handleOpenModal}>
+        {deleting ? <Spin /> : "Unlink"}
+      </a>
+    </>
+  );
+}
+
+function UnlinkAccountButton({ id }: { id: number }) {
+  return (
+    <UnlinkUserAuthenticationMutationComponent>
+      {mutate => <UnlinkAccountButtonInner id={id} mutate={mutate} />}
+    </UnlinkUserAuthenticationMutationComponent>
+  );
+}
+
 function renderAuth(auth) {
   return (
-    <List.Item key={auth.id} actions={[<a key="unlink">Unlink</a>]}>
+    <List.Item key={auth.id} actions={[<UnlinkAccountButton id={auth.id} />]}>
       <List.Item.Meta
         title={<Text strong>{authName(auth.service)}</Text>}
         description={`Added ${new Date(

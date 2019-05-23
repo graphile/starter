@@ -1,0 +1,13 @@
+mutation UnlinkUserAuthenticationMutation($id: Int!) {
+  deleteUserAuthentication(input: { id: $id }) {
+    user {
+      id
+      userAuthenticationsList {
+        id
+        identifier
+        service
+        createdAt
+      }
+    }
+  }
+}
