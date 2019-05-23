@@ -9,6 +9,7 @@ import {
   withLogoutMutation,
   LogoutMutationMutationFn,
   SharedLayout_UserFragmentFragment,
+  CurrentUserSubscriptionComponent,
 } from "../graphql";
 import Router from "next/router";
 import { withApollo, compose, WithApolloClient } from "react-apollo";
@@ -85,31 +86,44 @@ function SharedLayout({
               </Col>
               <Col span={6} style={{ textAlign: "right" }}>
                 {data && data.currentUser ? (
-                  <Dropdown
-                    overlay={
-                      <Menu>
-                        <Menu.Item>
-                          <Link href="/settings">
-                            <a>
-                              <Warn okay={data.currentUser.isVerified}>
-                                Settings
-                              </Warn>
-                            </a>
-                          </Link>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <a onClick={handleLogout}>Logout</a>
-                        </Menu.Item>
-                      </Menu>
-                    }
-                  >
-                    <span>
-                      <Warn okay={data.currentUser.isVerified}>
-                        {data.currentUser.name}
-                      </Warn>{" "}
-                      <Icon type="down" />
-                    </span>
-                  </Dropdown>
+                  <>
+                    {/*
+                     * CurrentUserSubscriptionComponent will set up a GraphQL
+                     * subscription monitoring for changes to the current user.
+                     * Interestingly we don't need to actually _do_ anything,
+                     * no rendering or similar, because the payload of this
+                     * mutation will automatically update Apollo's cache which
+                     * will cause the data to be re-rendered wherever
+                     * appropriate.
+                     */}
+                    <CurrentUserSubscriptionComponent />
+
+                    <Dropdown
+                      overlay={
+                        <Menu>
+                          <Menu.Item>
+                            <Link href="/settings">
+                              <a>
+                                <Warn okay={data.currentUser.isVerified}>
+                                  Settings
+                                </Warn>
+                              </a>
+                            </Link>
+                          </Menu.Item>
+                          <Menu.Item>
+                            <a onClick={handleLogout}>Logout</a>
+                          </Menu.Item>
+                        </Menu>
+                      }
+                    >
+                      <span>
+                        <Warn okay={data.currentUser.isVerified}>
+                          {data.currentUser.name}
+                        </Warn>{" "}
+                        <Icon type="down" />
+                      </span>
+                    </Dropdown>
+                  </>
                 ) : (
                   <Link href="/login">
                     <a>Login</a>

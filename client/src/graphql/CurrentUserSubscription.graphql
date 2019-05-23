@@ -1,0 +1,13 @@
+subscription CurrentUserSubscription {
+  currentUserUpdated {
+    event
+    user {
+      id
+      username
+      name
+      avatarUrl
+      isAdmin
+      isVerified
+    }
+  }
+}

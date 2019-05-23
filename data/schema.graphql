@@ -436,6 +436,14 @@ type ResetPasswordPayload {
   success: Boolean
 }
 
+"""
+The root subscription type: contains realtime events you can subscribe to with the `subscription` operation.
+"""
+type Subscription {
+  """Triggered when the logged in user's record is updated in some way."""
+  currentUserUpdated: UserSubscriptionPayload
+}
+
 """All input for the `updateUser` mutation."""
 input UpdateUserInput {
   """
@@ -632,6 +640,11 @@ enum UsersOrderBy {
   PRIMARY_KEY_DESC
   USERNAME_ASC
   USERNAME_DESC
+}
+
+type UserSubscriptionPayload {
+  event: String
+  user: User
 }
 
 """All input for the `verifyEmail` mutation."""

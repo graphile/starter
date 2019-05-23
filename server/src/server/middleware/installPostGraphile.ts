@@ -7,6 +7,7 @@ import PgPubsub from "@graphile/pg-pubsub";
 import PgSimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
 import PassportLoginPlugin from "../plugins/PassportLoginPlugin";
 import PrimaryKeyMutationsOnlyPlugin from "../plugins/PrimaryKeyMutationsOnlyPlugin";
+import SubscriptionsPlugin from "../plugins/SubscriptionsPlugin";
 import handleErrors from "../utils/handleErrors";
 
 type UUID = string;
@@ -125,6 +126,9 @@ export default function installPostGraphile(app: Application) {
 
           // Adds the `login` mutation to enable users to log in
           PassportLoginPlugin,
+
+          // Adds realtime features to our GraphQL schema
+          SubscriptionsPlugin,
         ],
 
         /*

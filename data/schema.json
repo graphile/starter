@@ -7,7 +7,9 @@
       "mutationType": {
         "name": "Mutation"
       },
-      "subscriptionType": null,
+      "subscriptionType": {
+        "name": "Subscription"
+      },
       "types": [
         {
           "kind": "OBJECT",
@@ -2611,6 +2613,64 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Subscription",
+          "description": "The root subscription type: contains realtime events you can subscribe to with the `subscription` operation.",
+          "fields": [
+            {
+              "name": "currentUserUpdated",
+              "description": "Triggered when the logged in user's record is updated in some way.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserSubscriptionPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UserSubscriptionPayload",
+          "description": null,
+          "fields": [
+            {
+              "name": "event",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "user",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
                 "ofType": null
               },
               "isDeprecated": false,
