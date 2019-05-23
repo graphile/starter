@@ -12,12 +12,14 @@ import {
   MakeEmailPrimaryMutationComponent,
   DeleteEmailMutationComponent,
 } from "../../graphql";
-import { Alert, List, Avatar, Form, Input, Button } from "antd";
+import { Alert, List, Avatar, Form, Input, Button, Typography } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { compose } from "react-apollo";
 import { ApolloError } from "apollo-client";
 import Redirect from "../../components/Redirect";
 import { getCodeFromError, extractError } from "../../errors";
+
+const { Text } = Typography;
 
 function renderEmail(
   email: EmailsForm_UserEmailFragmentFragment,
@@ -107,6 +109,31 @@ export default function Settings_Emails() {
           } else {
             return (
               <div>
+                {user.isVerified ? null : (
+                  <div style={{ marginBottom: "0.5rem" }}>
+                    <Alert
+                      type="warning"
+                      showIcon
+                      message="No verified emails"
+                      description={`
+                        You do not have any verified email addresses, this will make
+                        account recovery impossible and may limit your available
+                        functionality within this application. Please complete email
+                        verification.
+                      `}
+                    />
+                  </div>
+                )}
+                <h2>Email addresses</h2>
+                <p>
+                  <Text strong>
+                    Account notices will be sent your your primary email
+                    address.
+                  </Text>{" "}
+                  Additional email addresses may be added to help with account
+                  recovery (or to change your primary email), but they cannot be
+                  used until verified.
+                </p>
                 <List
                   dataSource={user.userEmails.nodes}
                   renderItem={email =>

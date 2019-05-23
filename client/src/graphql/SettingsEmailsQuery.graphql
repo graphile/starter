@@ -3,6 +3,7 @@
 query SettingsEmailsQuery {
   currentUser {
     id
+    isVerified
     ...EmailsForm_UserFragment
   }
 }
