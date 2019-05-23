@@ -84,12 +84,18 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **Migrations** — we use <a href="https://github.com/graphile/migrate">graphile-migrate</a> but you're welcome to switch to whatever migration library you like
 - [x] **HTML→text emails** — automated conversion from your pretty templates to plain text emails for users that prefer that
 - [x] **Form validation** — using AntD's `Form` component
-- [ ] **File uploads** — user can change their avatar, but this approach can be extended to other areas
 - [ ] **Realtime** — PostGraphile is configured with @graphile/pg-pubsub to enable realtime events from the DB; and Apollo is configured to consume them
 - [ ] **Testing** — Jest configured to test the database and the GraphQL API
-- [ ] **Acceptance testing** — TODO
 - [ ] **Production build** — command to generate a production build of the project
 - [ ] **Deployment instructions: Heroku** — how to deploy to Heroku
+
+## TODO
+
+Here's some more things we'd like to demonstrate that we've not got around to yet. (If you're interested in helping, reach out on Discord: http://discord.gg/graphile)
+
+- [ ] **File uploads** — user can change their avatar, but this approach can be extended to other areas
+- [ ] **Acceptance testing** — TODO
+- [ ] **Docker development flow** — how to work on this project using Docker (rather than running the code/servers directly)
 - [ ] **Deployment instructions: Docker** — how to deploy with Docker
 
 ## Documentation links

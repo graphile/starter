@@ -26,7 +26,13 @@ export default (app: Application) => {
       maxAge: MAXIMUM_SESSION_DURATION_IN_MILLISECONDS,
     },
     store: process.env.REDIS_URL
-      ? new RedisStore({
+      ? /*
+         * Using redis for session storage means the session can be shared
+         * across multiple Node.js instances (and survives a server restart),
+         * see:
+         * https://medium.com/mtholla/managing-node-js-express-sessions-with-redis-94cd099d6f2f
+         */
+        new RedisStore({
           url: process.env.REDIS_URL,
         })
       : undefined,
