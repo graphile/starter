@@ -84,7 +84,7 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **Migrations** — we use <a href="https://github.com/graphile/migrate">graphile-migrate</a> but you're welcome to switch to whatever migration library you like
 - [x] **HTML→text emails** — automated conversion from your pretty templates to plain text emails for users that prefer that
 - [x] **Form validation** — using AntD's `Form` component
-- [ ] **Realtime** — PostGraphile is configured with @graphile/pg-pubsub to enable realtime events from the DB; and Apollo is configured to consume them
+- [x] **Realtime** — PostGraphile is configured with @graphile/pg-pubsub to enable realtime events from the DB; and Apollo is configured to consume them
 - [ ] **Testing** — Jest configured to test the database and the GraphQL API
 - [ ] **Production build** — command to generate a production build of the project
 - [ ] **Deployment instructions: Heroku** — how to deploy to Heroku
