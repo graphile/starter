@@ -12,6 +12,13 @@ export default function Home() {
         things that most projects require, but you're free to remove them or
         replace them with whatever you need.
       </p>
+      <h3>IMPORTANT</h3>
+      <p>
+        The first user to register will automatically be an "admin". To disable
+        this, delete the database function{" "}
+        <code>app_private.tg_users__make_first_user_admin()</code> and related
+        triggers.
+      </p>
       <h3>Page load delays</h3>
       <p>
         We use Next.js to control the React app. This gives us server-side
