@@ -73,8 +73,9 @@ function Page(props: IProps) {
           ) : state === "SUCCESS" ? (
             <Alert
               type="success"
+              showIcon
               message="Email Verified"
-              description="Thank you for verifying your email address!"
+              description="Thank you for verifying your email address. You may now close this window."
             />
           ) : (
             "Unknown state"
