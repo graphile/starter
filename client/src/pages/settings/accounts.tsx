@@ -4,6 +4,8 @@ import React from "react";
 import SettingsLayout from "../../components/SettingsLayout";
 import { CurrentUserAuthenticationsComponent } from "../../graphql";
 import { Spin, List, Avatar, Typography } from "antd";
+import SocialLoginOptions from "../../components/SocialLoginOptions";
+
 const { Text } = Typography;
 
 const AUTH_NAME_LOOKUP = {
@@ -56,6 +58,11 @@ export default function Settings_Accounts() {
           );
         }}
       </CurrentUserAuthenticationsComponent>
+      <h3>Link another account</h3>
+      <SocialLoginOptions
+        next="/settings/accounts"
+        buttonTextFromService={service => `Link ${service} account`}
+      />
     </SettingsLayout>
   );
 }

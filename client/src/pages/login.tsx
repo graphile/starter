@@ -24,6 +24,7 @@ import Router from "next/router";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
 import Redirect from "../components/Redirect";
+import SocialLoginOptions from "../components/SocialLoginOptions";
 
 function hasErrors(fieldsError: Object) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -60,15 +61,7 @@ export default function Login({ next: rawNext }: LoginProps) {
               <Col span={12} offset={6}>
                 <div style={{ textAlign: "center" }}>
                   <p>Alternatively, you can use social login:</p>
-                  <Button
-                    block
-                    type="primary"
-                    size="large"
-                    icon="github"
-                    href={`/auth/github?next=${next}`}
-                  >
-                    Login with GitHub
-                  </Button>
+                  <SocialLoginOptions next={next} />
                 </div>
               </Col>
             </Row>
