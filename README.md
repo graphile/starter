@@ -181,3 +181,12 @@ To delete the heroku app:
 ```
 heroku apps:delete $APP_NAME
 ```
+
+To delete the database/roles (replace `dbname` with your database name):
+
+```
+drop database dbname;
+drop role dbname_visitor;
+drop role dbname_authenticator;
+drop role dbname;
+```

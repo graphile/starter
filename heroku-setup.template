@@ -6,11 +6,13 @@
 
 # The name of the Heroku app to create.
 # Must start with a letter, end with a letter or digit and can only contain lowercase letters, digits, and dashes.
-export APP_NAME="graphile-starter"
+export APP_NAME="PICK-A-UNIQUE-NAME"
 
-# The name of the database to create (this must be under 48 characters long, shorter is better)
+# The name of the database to create.
+# Must be under 48 characters long, shorter is better.
 # Should only contain characters valid in a PostgreSQL identifier (i.e. no hyphens!)
 export DATABASE_NAME="$(echo "$APP_NAME" | tr '-' '_')"
+#e.g. export DATABASE_NAME="my_database_name_here"
 
 # Database location (including :port, if it's not the standard :5432)
 export DATABASE_HOST="DETAILS_FROM.AMAZON_RDS.us-east-1.rds.amazonaws.com"
@@ -107,10 +109,6 @@ heroku config:set \
 
 echo
 echo
-echo "Adding Heroku git remote"
-git remote add heroku git@heroku.com:"$APP_NAME".git
-
-echo
-echo
 echo "Pushing to Heroku"
 git push heroku master:master
+
