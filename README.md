@@ -2,17 +2,6 @@
 
 You should replace this README with your own.
 
-## PROPRIETARY SOFTWARE
-
-This is NOT open source software. It is proprietary and confidential.
-
-**Unauthorized copying of these files, via any medium, is strictly prohibited without a separate written license to do so from Graphile Ltd.**
-
-This software references other software (including, but not limited to, that
-referenced in `package.json` and `yarn.lock`) which has its own licenses — it
-is your responsibility to review the licenses of the referenced software and
-ensure you are happy with their terms.
-
 ## Scope
 
 The intention of this software is that you will take the ideas and concepts
@@ -87,12 +76,12 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **Realtime** — PostGraphile is configured with @graphile/pg-pubsub to enable realtime events from the DB; and Apollo is configured to consume them
 - [x] **Production build** — command to generate a production build of the project using `npm run build`
 - [x] **Deployment instructions: Heroku** — how to deploy to Heroku
-- [ ] **Testing** — Jest configured to test the database and the GraphQL API
 
 ## TODO
 
 Here's some more things we'd like to demonstrate that we've not got around to yet. (If you're interested in helping, reach out on Discord: http://discord.gg/graphile)
 
+- [ ] **Testing** — Jest configured to test the database and the GraphQL API
 - [ ] **File uploads** — user can change their avatar, but this approach can be extended to other areas
 - [ ] **Acceptance testing** — TODO
 - [ ] **Docker development flow** — how to work on this project using Docker (rather than running the code/servers directly)
@@ -255,3 +244,23 @@ drop role dbname_visitor;
 drop role dbname_authenticator;
 drop role dbname;
 ```
+
+## AGPLv3 License
+
+This is open source software; you may use, modify and distribute it under the
+terms of the GNU Affero General Public License Version 3 (AGPLv3, see below).
+One of the requirements of this license is that if you change the software
+(e.g. to add your own features or make it your own) your modified version must
+prominently offer all users interacting with it (including remotely through a
+computer network) an opportunity to receive the source code of your version —
+read below for full details.
+
+If you do not wish your use of the software to be governed by the AGPLv3, an
+alternative commercial license is available for purchase from Graphile Ltd.
+Buying such a license is mandatory as soon as you modify then project and allow
+someone to use it without also disclosing your source code to them.
+
+This software references other software (including, but not limited to, that
+referenced in `package.json` and `yarn.lock`) which has its own licenses — it
+is your responsibility to review the licenses of the referenced software and
+ensure you are happy with their terms.
