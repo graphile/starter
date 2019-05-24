@@ -142,3 +142,42 @@ GitHub logic (in `server/src/server/middleware/installPassport.ts`) to enable
 other social login providers such as Twitter, Facebook, Google, etc. For more
 information, see the [passport.js
 documentation](http://www.passportjs.org/docs/).
+
+## Deploying to Heroku
+
+First set up your database server; we recommend using Amazon RDS.
+
+Once your RDS server is running, you can use our `heroku-setup` script to
+automate the setup process. This script does the following:
+
+- Creates the Heroku app
+- Adds the redis extension to this heroku app
+- Creates the database in the database server
+- Creates the relevant roles, generating random passwords for them
+- Installs some common database extensions
+- Sets the Heroku config variables
+- Adds the heroku app as a git remote named 'heroku'
+- Pushes the 'master' branch to Heroku to perform your initial build
+
+First copy `heroku-setup.template` to `heroku-setup`, then edit it and
+customise the settings at the top. We also recommend reading through the
+script and customising it as you see fit - particularly if you are using
+additional extensions that need installing.
+
+Finally, run the script:
+
+```
+bash heroku-setup
+```
+
+Hopefully all has gone well. If not, step through the remaining tasks in the
+heroku-setup script and fix each task as you go. We've designed the script so
+that if your superuser credentials are wrong, or the heroku app already exists,
+you can just edit the settings and try again. All other errors will probably
+need manual intervention.
+
+To delete the heroku app:
+
+```
+heroku apps:delete $APP_NAME
+```
