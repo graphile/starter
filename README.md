@@ -86,8 +86,8 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **Form validation** — using AntD's `Form` component
 - [x] **Realtime** — PostGraphile is configured with @graphile/pg-pubsub to enable realtime events from the DB; and Apollo is configured to consume them
 - [x] **Production build** — command to generate a production build of the project using `npm run build`
+- [x] **Deployment instructions: Heroku** — how to deploy to Heroku
 - [ ] **Testing** — Jest configured to test the database and the GraphQL API
-- [ ] **Deployment instructions: Heroku** — how to deploy to Heroku
 
 ## TODO
 
