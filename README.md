@@ -145,6 +145,10 @@ documentation](http://www.passportjs.org/docs/).
 
 ## Deploying to Heroku
 
+If you are using `graphile-migrate` make sure that you have executed
+`graphile-migrate commit` to commit the migration, since we only run committed
+migrations in production.
+
 Set up a database server; we recommend using Amazon RDS.
 
 Once your RDS server is running, you can use our `heroku-setup` script to
@@ -193,16 +197,6 @@ Then you can tell Heroku to run the worker too:
 ```
 heroku ps:scale worker=1 -a $APP_NAME
 ```
-
-## Production changes
-
-Change the Procfile release command to:
-
-```
-release: graphile-migrate
-```
-
-so that it only runs committed migrations
 
 ## Cleanup
 
