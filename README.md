@@ -149,9 +149,13 @@ If you are using `graphile-migrate` make sure that you have executed
 `graphile-migrate commit` to commit the migration, since we only run committed
 migrations in production.
 
+Make sure you have customised `server/src/config.ts`.
+
+Make sure everything is committed and pushed.
+
 Set up a database server; we recommend using Amazon RDS.
 
-Once your RDS server is running, you can use our `heroku-setup` script to
+Once your database server is running, you can use our `heroku-setup` script to
 automate the setup process. This script does the following:
 
 - Creates the Heroku app
@@ -163,10 +167,10 @@ automate the setup process. This script does the following:
 - Adds the heroku app as a git remote named 'heroku'
 - Pushes the 'master' branch to Heroku to perform your initial build
 
-First copy `heroku-setup.template` to `heroku-setup`, then edit it and
-customise the settings at the top. We also recommend reading through the
-script and customising it as you see fit - particularly if you are using
-additional extensions that need installing.
+Copy `heroku-setup.template` to `heroku-setup`, then edit it and customise the
+settings at the top. We also recommend reading through the script and
+customising it as you see fit - particularly if you are using additional
+extensions that need installing.
 
 Now run the script:
 
@@ -178,25 +182,53 @@ Hopefully all has gone well. If not, step through the remaining tasks in the
 heroku-setup script and fix each task as you go. We've designed the script so
 that if your superuser credentials are wrong, or the heroku app already exists,
 you can just edit the settings and try again. All other errors will probably
-need manual intervention.
+need manual intervention. Verbosity is high so you can track exactly what
+happened.
 
-The server should be up and running now, but it is not yet capable of sending
-emails. To achieve this, you must configure an email transport. We have
-preconfigured support for Amazon SES, to use this you must set up an Amazon SES
-account, configure the relevant IAM roles, and provide the app with the relevant
-Amazon credentials:
+The server should be up and running now (be sure to access it over HTTPS
+otherwise you will not be able to run GraphQL queries), but it is not yet
+capable of sending emails. To achieve this, you must configure an email
+transport. We have preconfigured support for Amazon SES. Once SES is set up,
+your domain is verified, and you've verified any emails you wish to send email
+to (or have had your sending limits removed), make sure that the `fromEmail` in
+`server/src/config.ts` is correct, and then create an IAM role for your
+PostGraphile server. Here's an IAM template for sending emails - this is the
+only permission required for our IAM role currently, but you may wish to add
+others later.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "ses:SendRawEmail",
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+Generate an Access Key for this IAM role, and then tell Heroku the access key
+id and secret:
 
 ```
 heroku config:set AWS_ACCESS_KEY_ID="..." AWS_SECRET_ACCESS_KEY="..." -a $APP_NAME
 ```
 
-You also need to change the `fromEmail` setting in `server/src/config.ts`.
-
-Then you can tell Heroku to run the worker too:
+Now you can tell Heroku to run the worker process as well as the currently running 'web' process:
 
 ```
 heroku ps:scale worker=1 -a $APP_NAME
 ```
+
+When you register an account on the server you should receive a verification
+email containing a clickable link. When you click the link your email will be
+verified and thanks to GraphQL subscriptions the previous tab should be updated
+to reflect that your account is now verified.
+
+**Remember** the first account registered will be an admin account, so be sure
+to register promptly.
 
 ## Cleanup
 
