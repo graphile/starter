@@ -186,6 +186,14 @@ Amazon credentials:
 heroku config:set AWS_ACCESS_KEY_ID="..." AWS_SECRET_ACCESS_KEY="..." -a $APP_NAME
 ```
 
+You also need to change the `fromEmail` setting in `server/src/config.ts`.
+
+Then you can tell Heroku to run the worker too:
+
+```
+heroku ps:scale worker=1 -a $APP_NAME
+```
+
 ## Production changes
 
 Change the Procfile release command to:
