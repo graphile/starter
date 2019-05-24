@@ -63,7 +63,7 @@ export default function installPostGraphile(app: Application) {
         setofFunctionsContainNulls: false,
 
         // Enable GraphiQL in development
-        graphiql: isDev,
+        graphiql: isDev || !!process.env.ENABLE_GRAPHIQL,
         // Use a fancier GraphiQL with `prettier` for formatting, and header editing.
         enhanceGraphiql: true,
 
