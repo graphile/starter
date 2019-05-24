@@ -11,6 +11,24 @@ of software defects, or free of security issues — it is not a finished
 solution, but rather the seed of a solution which you should review,
 customise, fix, and develop further.
 
+## Prerequisites
+
+- A PostgreSQL v10+ server must be available
+- Node.js v10+ must be installed
+- redis
+
+Redis: after running `yarn setup` you will find `export REDIS_URL="redis://localhost/3"` in your `.env`. You may customise it, as this
+`REDIS_URL` must point to a valid redis instance for sessions to work. If you
+do not have redis available you may comment this line and we'll use in-memory
+sessions, but this means every time the server restarts your session will be
+lost.
+
+This repository currently does not use Docker or have any explicit Docker support.
+
+This software has been developed under Mac and Linux, and should work in a
+`bash` environment. I'm not sure if it works under Windows; PRs to fix Windows
+compatibility issues would be welcome (please keep them small!).
+
 ## Getting started
 
 First, you need to install the dependencies with `yarn`. If you don't have
@@ -83,7 +101,7 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 
 - [ ] **Testing** — Jest configured to test the database and the GraphQL API
 - [ ] **File uploads** — user can change their avatar, but this approach can be extended to other areas
-- [ ] **Acceptance testing** — TODO
+- [ ] **Acceptance testing** — one of Selenium, Cypress, TestCafe, etc
 - [ ] **Docker development flow** — how to work on this project using Docker (rather than running the code/servers directly)
 - [ ] **Deployment instructions: Docker** — how to deploy with Docker
 
