@@ -145,7 +145,7 @@ documentation](http://www.passportjs.org/docs/).
 
 ## Deploying to Heroku
 
-First set up your database server; we recommend using Amazon RDS.
+Set up a database server; we recommend using Amazon RDS.
 
 Once your RDS server is running, you can use our `heroku-setup` script to
 automate the setup process. This script does the following:
@@ -164,7 +164,7 @@ customise the settings at the top. We also recommend reading through the
 script and customising it as you see fit - particularly if you are using
 additional extensions that need installing.
 
-Finally, run the script:
+Now run the script:
 
 ```
 bash heroku-setup
@@ -176,10 +176,32 @@ that if your superuser credentials are wrong, or the heroku app already exists,
 you can just edit the settings and try again. All other errors will probably
 need manual intervention.
 
-To delete the heroku app:
+The server should be up and running now, but it is not yet capable of sending
+emails. To achieve this, you must configure an email transport. We have
+preconfigured support for Amazon SES, to use this you must set up an Amazon SES
+account, configure the relevant IAM roles, and provide the app with the relevant
+Amazon credentials:
 
 ```
-heroku apps:delete $APP_NAME
+heroku config:set AWS_ACCESS_KEY_ID="..." AWS_SECRET_ACCESS_KEY="..." -a $APP_NAME
+```
+
+## Production changes
+
+Change the Procfile release command to:
+
+```
+release: graphile-migrate
+```
+
+so that it only runs committed migrations
+
+## Cleanup
+
+To delete the Heroku app:
+
+```
+heroku apps:delete \$APP_NAME
 ```
 
 To delete the database/roles (replace `dbname` with your database name):

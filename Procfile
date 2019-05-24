@@ -1,3 +1,3 @@
 web: node server/dist/server/index.js
 worker: cd server/dist/worker && graphile-worker
-release: graphile-migrate
+release: graphile-migrate watch --once
