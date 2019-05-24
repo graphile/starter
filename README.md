@@ -230,6 +230,15 @@ to reflect that your account is now verified.
 **Remember** the first account registered will be an admin account, so be sure
 to register promptly.
 
+You can also configure your application for social login. This works the same
+as in development except the callback URL will be different, something like
+`https://MY_HEROKU_APP_NAME.herokuapp.com/auth/github/callback`. Set the GitHub
+OAuth secrets on your Heroku app to trigger a restart and enable social login:
+
+```
+heroku config:set GITHUB_KEY="..." GITHUB_SECRET="..." -a $APP_NAME
+```
+
 ## Cleanup
 
 To delete the Heroku app:
