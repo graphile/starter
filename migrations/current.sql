@@ -198,11 +198,21 @@ create table app_public.user_emails (
   constraint user_emails_user_id_email_key unique(user_id, email),
   constraint user_emails_must_be_verified_to_be_primary check(is_primary is false or is_verified is true)
 );
+alter table app_public.user_emails enable row level security;
+
 comment on constraint user_emails_pkey on app_public.user_emails is E'@omit all';
+-- We don't need custom finders/relations for this
+comment on constraint user_emails_user_id_email_key on app_public.user_emails is E'@omit';
+
 -- Once an email is verified, it may only be used by one user
 create unique index uniq_user_emails_verified_email on app_public.user_emails(email) where (is_verified is true);
 -- Only one primary email per user
 create unique index uniq_user_emails_primary_email on app_public.user_emails (user_id) where (is_primary is true);
+
+create trigger _100_timestamps
+  before insert or update on app_public.user_emails
+  for each row
+  execute procedure app_private.tg__timestamps();
 
 create function app_public.tg_user_emails__forbid_if_verified() returns trigger as $$
 begin
@@ -211,22 +221,15 @@ begin
   end if;
   return NEW;
 end;
-$$ language plpgsql volatile security definer;
+$$ language plpgsql volatile security definer set search_path from current;
 create trigger _200_forbid_existing_email before insert on app_public.user_emails for each row execute procedure app_public.tg_user_emails__forbid_if_verified();
 
--- We don't need custom finders/relations for this
-comment on constraint user_emails_user_id_email_key on app_public.user_emails is E'@omit';
-
-alter table app_public.user_emails enable row level security;
-create trigger _100_timestamps
-  before insert or update on app_public.user_emails
-  for each row
-  execute procedure app_private.tg__timestamps();
 create trigger _900_send_verification_email
   after insert on app_public.user_emails
   for each row
   when (NEW.is_verified is false)
   execute procedure app_private.tg__add_job('user_emails__send_verification');
+
 -- `@omit all` because there's no point exposing `allUserEmails` - you can only
 -- see your own, and having this behaviour can lead to bad practices from
 -- frontend teams.
