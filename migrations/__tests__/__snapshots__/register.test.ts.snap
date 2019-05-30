@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can register user 1`] = `
+Object {
+  "avatar_url": null,
+  "created_at": "[DATE]",
+  "id": "[ID]",
+  "is_admin": true,
+  "is_verified": true,
+  "name": null,
+  "updated_at": "[DATE]",
+  "username": "user",
+}
+`;

@@ -12,8 +12,9 @@
     "server:worker:watch": ". ./scripts/env && cd server/dist/worker && graphile-worker --watch",
     "db:watch": ". ./scripts/env && graphile-migrate watch",
     "db:migrate": ". ./scripts/env && graphile-migrate",
+    "db:reset:test": "./scripts/env && export DATABASE_URL=\"$TEST_DATABASE_URL\" && graphile-migrate reset && graphile-migrate watch --once",
     "dev": "npm run server:src:build && concurrently --kill-others --names 'db,server:src,server:run,worker,codegen' 'npm run db:watch' 'npm run server:src:watch' 'sleep 8; npm run server:watch' 'sleep 5; npm run server:worker:watch' 'npm run codegen:watch'",
-    "test": ". ./scripts/env && jest",
+    "test": ". ./scripts/env && npm run db:reset:test && jest",
     "codegen": "graphql-codegen --config codegen.yml",
     "codegen:watch": "graphql-codegen --config codegen.yml --watch",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
@@ -90,6 +91,7 @@
     "@graphql-codegen/typescript-graphql-files-modules": "1.2.0",
     "@graphql-codegen/typescript-operations": "1.2.0",
     "@graphql-codegen/typescript-react-apollo": "1.2.0",
+    "@types/jest": "^24.0.13",
     "@typescript-eslint/eslint-plugin": "^1.7.0",
     "@typescript-eslint/parser": "^1.7.0",
     "concurrently": "^4.1.0",
@@ -102,8 +104,10 @@
     "eslint-plugin-react-hooks": "^1.6.0",
     "eslint_d": "^7.3.0",
     "graphql": "^14.2.1",
+    "jest": "^24.8.0",
     "nodemon": "^1.18.10",
     "prettier": "^1.16.4",
+    "ts-jest": "^24.0.2",
     "typescript": "^3.4.4"
   }
 }
