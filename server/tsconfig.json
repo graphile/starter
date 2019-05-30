@@ -12,5 +12,6 @@
     "module": "commonjs",
     "skipLibCheck": true,
     "pretty": true
-  }
+  },
+  "include": ["src"]
 }

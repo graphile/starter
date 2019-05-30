@@ -20,7 +20,7 @@ test("can register user", () =>
         "avatar_url": null,
         "created_at": "[DATE]",
         "id": "[ID]",
-        "is_admin": true,
+        "is_admin": false,
         "is_verified": true,
         "name": null,
         "updated_at": "[DATE]",

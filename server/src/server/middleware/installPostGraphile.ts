@@ -1,7 +1,13 @@
 /*! This file contains code that is copyright 2019 Graphile Ltd, see
  * GRAPHILE_LICENSE.md for license information. */
-import { postgraphile, makePluginHook } from "postgraphile";
+import {
+  postgraphile,
+  makePluginHook,
+  PostGraphileOptions,
+  Middleware,
+} from "postgraphile";
 import { NodePlugin } from "graphile-build";
+import { Pool } from "pg";
 import { Application, Request, Response } from "express";
 import PgPubsub from "@graphile/pg-pubsub";
 import PgSimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
@@ -30,55 +36,59 @@ const isDev = process.env.NODE_ENV === "development";
 //const isTest = process.env.NODE_ENV === "test";
 const pluginHook = makePluginHook([PgPubsub]);
 
-export default function installPostGraphile(app: Application) {
-  app.use(
-    postgraphile<Request, Response>(
-      process.env.AUTH_DATABASE_URL,
-      "app_public",
-      {
-        // This is for PostGraphile server plugins: https://www.graphile.org/postgraphile/plugins/
-        pluginHook,
+interface IPostGraphileOptionsOptions {
+  websocketMiddlewares?: Middleware[];
+  rootPgPool: Pool;
+}
 
-        // This is so that PostGraphile installs the watch fixtures, it's also needed to enable live queries
-        ownerConnectionString: process.env.DATABASE_URL,
+export function getPostGraphileOptions({
+  websocketMiddlewares,
+  rootPgPool,
+}: IPostGraphileOptionsOptions) {
+  const options: PostGraphileOptions<Request, Response> = {
+    // This is for PostGraphile server plugins: https://www.graphile.org/postgraphile/plugins/
+    pluginHook,
 
-        // Add websocket support to the PostGraphile server; you still need to use a subscriptions plugin such as
-        // @graphile/pg-pubsub
-        subscriptions: true,
-        websocketMiddlewares: app.get("websocketMiddlewares"),
+    // This is so that PostGraphile installs the watch fixtures, it's also needed to enable live queries
+    ownerConnectionString: process.env.DATABASE_URL,
 
-        // enableQueryBatching: On the client side, use something like apollo-link-batch-http to make use of this
-        enableQueryBatching: true,
+    // Add websocket support to the PostGraphile server; you still need to use a subscriptions plugin such as
+    // @graphile/pg-pubsub
+    subscriptions: true,
+    websocketMiddlewares,
 
-        // dynamicJson: instead of inputting/outputting JSON as strings, input/output raw JSON objects
-        dynamicJson: true,
+    // enableQueryBatching: On the client side, use something like apollo-link-batch-http to make use of this
+    enableQueryBatching: true,
 
-        // ignoreRBAC=false: honour the permissions in your DB - don't expose what you don't GRANT
-        ignoreRBAC: false,
+    // dynamicJson: instead of inputting/outputting JSON as strings, input/output raw JSON objects
+    dynamicJson: true,
 
-        // ignoreIndexes=false: honour your DB indexes - only expose things that are fast
-        ignoreIndexes: false,
+    // ignoreRBAC=false: honour the permissions in your DB - don't expose what you don't GRANT
+    ignoreRBAC: false,
 
-        // setofFunctionsContainNulls=false: reduces the number of nulls in your schema
-        setofFunctionsContainNulls: false,
+    // ignoreIndexes=false: honour your DB indexes - only expose things that are fast
+    ignoreIndexes: false,
 
-        // Enable GraphiQL in development
-        graphiql: isDev || !!process.env.ENABLE_GRAPHIQL,
-        // Use a fancier GraphiQL with `prettier` for formatting, and header editing.
-        enhanceGraphiql: true,
+    // setofFunctionsContainNulls=false: reduces the number of nulls in your schema
+    setofFunctionsContainNulls: false,
 
-        // Disable query logging - we're using morgan
-        disableQueryLog: true,
+    // Enable GraphiQL in development
+    graphiql: isDev || !!process.env.ENABLE_GRAPHIQL,
+    // Use a fancier GraphiQL with `prettier` for formatting, and header editing.
+    enhanceGraphiql: true,
 
-        // Custom error handling
-        handleErrors,
-        /*
-         * To use the built in PostGraphile error handling, you can use the
-         * following code instead of `handleErrors` above. Using `handleErrors`
-         * gives you much more control (and stability) over how errors are
-         * output to the user.
-         */
-        /*
+    // Disable query logging - we're using morgan
+    disableQueryLog: true,
+
+    // Custom error handling
+    handleErrors,
+    /*
+     * To use the built in PostGraphile error handling, you can use the
+     * following code instead of `handleErrors` above. Using `handleErrors`
+     * gives you much more control (and stability) over how errors are
+     * output to the user.
+     */
+    /*
         // See https://www.graphile.org/postgraphile/debugging/
         extendedErrors:
           isDev || isTest
@@ -101,108 +111,107 @@ export default function installPostGraphile(app: Application) {
         showErrorStack: isDev || isTest,
         */
 
-        // Automatically update GraphQL schema when database changes
-        watchPg: isDev,
+    // Automatically update GraphQL schema when database changes
+    watchPg: isDev,
 
-        // Keep data/schema.graphql and data/schema.json up to date
-        sortExport: true,
-        exportGqlSchemaPath: isDev
-          ? `${__dirname}/../../../../data/schema.graphql`
-          : undefined,
-        exportJsonSchemaPath: isDev
-          ? `${__dirname}/../../../../data/schema.json`
-          : undefined,
+    // Keep data/schema.graphql and data/schema.json up to date
+    sortExport: true,
+    exportGqlSchemaPath: isDev
+      ? `${__dirname}/../../../../data/schema.graphql`
+      : undefined,
+    exportJsonSchemaPath: isDev
+      ? `${__dirname}/../../../../data/schema.json`
+      : undefined,
+
+    /*
+     * Plugins to enhance the GraphQL schema, see:
+     *   https://www.graphile.org/postgraphile/extending/
+     */
+    appendPlugins: [
+      // Simplifies the field names generated by PostGraphile.
+      PgSimplifyInflectorPlugin,
+
+      // Omits by default non-primary-key constraint mutations
+      PrimaryKeyMutationsOnlyPlugin,
+
+      // Adds the `login` mutation to enable users to log in
+      PassportLoginPlugin,
+
+      // Adds realtime features to our GraphQL schema
+      SubscriptionsPlugin,
+    ],
+
+    /*
+     * Plugins we don't want in our schema
+     */
+    skipPlugins: [
+      // Disable the 'Node' interface
+      NodePlugin,
+    ],
+
+    graphileBuildOptions: {
+      /*
+       * Any properties here are merged into the settings passed to each Graphile
+       * Engine plugin - useful for configuring how the plugins operate.
+       */
+    },
+
+    /*
+     * Postgres transaction settings for each GraphQL query/mutation to
+     * indicate to Postgres who is attempting to access the resources. These
+     * will be referenced by RLS policies/triggers/etc.
+     *
+     * Settings set here will be set using the equivalent of `SET LOCAL`, so
+     * certain things are not allowed. You can override Postgres settings such
+     * as 'role' and 'search_path' here; but for settings indicating the
+     * current user, session id, or other privileges to be used by RLS policies
+     * the setting names must contain at least one and at most two period
+     * symbols (`.`), and the first segment must not clash with any Postgres or
+     * extension settings. We find `jwt.claims.*` to be a safe namespace,
+     * whether or not you're using JWTs.
+     */
+    async pgSettings(req) {
+      return {
+        // Everyone uses the "visitor" role currently
+        role: process.env.DATABASE_VISITOR,
 
         /*
-         * Plugins to enhance the GraphQL schema, see:
-         *   https://www.graphile.org/postgraphile/extending/
+         * Note, though this says "jwt" it's not actually anything to do with
+         * JWTs, we just know it's a safe namespace to use, and it means you
+         * can use JWTs too, if you like, and they'll use the same settings
+         * names reducing the amount of code you need to write.
          */
-        appendPlugins: [
-          // Simplifies the field names generated by PostGraphile.
-          PgSimplifyInflectorPlugin,
+        "jwt.claims.session_id": req.user && uuidOrNull(req.user.session_id),
+      };
+    },
 
-          // Omits by default non-primary-key constraint mutations
-          PrimaryKeyMutationsOnlyPlugin,
+    /*
+     * These properties are merged into context (the third argument to GraphQL
+     * resolvers). This is useful if you write your own plugins that need
+     * access to, e.g., the logged in user.
+     */
+    async additionalGraphQLContextFromRequest(req) {
+      return {
+        // The current session id
+        sessionId: req.user && uuidOrNull(req.user.session_id),
 
-          // Adds the `login` mutation to enable users to log in
-          PassportLoginPlugin,
+        // Needed so passport can write to the database
+        rootPgPool,
 
-          // Adds realtime features to our GraphQL schema
-          SubscriptionsPlugin,
-        ],
+        // Use this to tell Passport.js we're logged in
+        login: (user: any) =>
+          new Promise((resolve, reject) => {
+            req.login(user, err => (err ? reject(err) : resolve()));
+          }),
 
-        /*
-         * Plugins we don't want in our schema
-         */
-        skipPlugins: [
-          // Disable the 'Node' interface
-          NodePlugin,
-        ],
-
-        graphileBuildOptions: {
-          /*
-           * Any properties here are merged into the settings passed to each Graphile
-           * Engine plugin - useful for configuring how the plugins operate.
-           */
+        logout: () => {
+          req.logout();
+          return Promise.resolve();
         },
+      };
+    },
 
-        /*
-         * Postgres transaction settings for each GraphQL query/mutation to
-         * indicate to Postgres who is attempting to access the resources. These
-         * will be referenced by RLS policies/triggers/etc.
-         *
-         * Settings set here will be set using the equivalent of `SET LOCAL`, so
-         * certain things are not allowed. You can override Postgres settings such
-         * as 'role' and 'search_path' here; but for settings indicating the
-         * current user, session id, or other privileges to be used by RLS policies
-         * the setting names must contain at least one and at most two period
-         * symbols (`.`), and the first segment must not clash with any Postgres or
-         * extension settings. We find `jwt.claims.*` to be a safe namespace,
-         * whether or not you're using JWTs.
-         */
-        async pgSettings(req) {
-          return {
-            // Everyone uses the "visitor" role currently
-            role: process.env.DATABASE_VISITOR,
-
-            /*
-             * Note, though this says "jwt" it's not actually anything to do with
-             * JWTs, we just know it's a safe namespace to use, and it means you
-             * can use JWTs too, if you like, and they'll use the same settings
-             * names reducing the amount of code you need to write.
-             */
-            "jwt.claims.session_id":
-              req.user && uuidOrNull(req.user.session_id),
-          };
-        },
-
-        /*
-         * These properties are merged into context (the third argument to GraphQL
-         * resolvers). This is useful if you write your own plugins that need
-         * access to, e.g., the logged in user.
-         */
-        async additionalGraphQLContextFromRequest(req) {
-          return {
-            // The current session id
-            sessionId: req.user && uuidOrNull(req.user.session_id),
-
-            // Needed so passport can write to the database
-            rootPgPool: app.get("rootPgPool"),
-
-            // Use this to tell Passport.js we're logged in
-            login: (user: any) =>
-              new Promise((resolve, reject) => {
-                req.login(user, err => (err ? reject(err) : resolve()));
-              }),
-
-            logout: () => {
-              req.logout();
-              return Promise.resolve();
-            },
-          };
-        },
-
-        /*
+    /*
       // Pro plugin options (requires GRAPHILE_LICENSE)
 
       defaultPaginationCap:
@@ -215,8 +224,22 @@ export default function installPostGraphile(app: Application) {
         (parseInt(process.env.HIDE_QUERY_COST || "", 10) || 0) < 1,
       // readReplicaPgPool ...,
 
-      */
-      }
+    */
+  };
+  return options;
+}
+
+export default function installPostGraphile(app: Application) {
+  const websocketMiddlewares = app.get("websocketMiddlewares");
+  const rootPgPool: Pool = app.get("rootPgPool");
+  app.use(
+    postgraphile<Request, Response>(
+      process.env.AUTH_DATABASE_URL,
+      "app_public",
+      getPostGraphileOptions({
+        websocketMiddlewares,
+        rootPgPool,
+      })
     )
   );
 }

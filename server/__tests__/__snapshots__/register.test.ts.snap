@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Register 2`] = `
+Object {
+  "data": Object {
+    "register": Object {
+      "user": Object {
+        "avatarUrl": null,
+        "createdAt": "[timestamp]",
+        "id": "[id]",
+        "isAdmin": false,
+        "isVerified": false,
+        "name": "Test User",
+        "updatedAt": "[timestamp]",
+        "username": "testuser",
+      },
+    },
+  },
+}
+`;
