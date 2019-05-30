@@ -655,6 +655,9 @@ begin
     where user_id = v_user.id;
   end if;
 
+  -- Refresh the user
+  select * into v_user from app_public.users where id = v_user.id;
+
   return v_user;
 end;
 $$ language plpgsql volatile set search_path from current;
