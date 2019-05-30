@@ -15,5 +15,16 @@ test("can register user", () =>
     );
     const [user] = result.rows;
     expect(user).not.toBeNull();
-    expect(snapshotSafe(user)).toMatchSnapshot();
+    expect(snapshotSafe(user)).toMatchInlineSnapshot(`
+      Object {
+        "avatar_url": null,
+        "created_at": "[DATE]",
+        "id": "[ID]",
+        "is_admin": true,
+        "is_verified": true,
+        "name": null,
+        "updated_at": "[DATE]",
+        "username": "user",
+      }
+    `);
   }));
