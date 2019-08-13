@@ -8,3 +8,4 @@
 /client/src/graphql/index.tsx
 /client/src/graphql/graphql.d.ts
 /heroku-setup
+/.docker
