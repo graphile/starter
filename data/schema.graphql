@@ -58,7 +58,7 @@ type CreateUserEmailPayload {
   """An edge for our `UserEmail`. May be used by Relay 1."""
   userEmailEdge(
     """The method to use when ordering `UserEmail`."""
-    orderBy: [UserEmailsOrderBy!] = PRIMARY_KEY_ASC
+    orderBy: [UserEmailsOrderBy!] = [PRIMARY_KEY_ASC]
   ): UserEmailsEdge
 }
 
@@ -135,7 +135,7 @@ type DeleteUserEmailPayload {
   """An edge for our `UserEmail`. May be used by Relay 1."""
   userEmailEdge(
     """The method to use when ordering `UserEmail`."""
-    orderBy: [UserEmailsOrderBy!] = PRIMARY_KEY_ASC
+    orderBy: [UserEmailsOrderBy!] = [PRIMARY_KEY_ASC]
   ): UserEmailsEdge
 }
 
@@ -171,7 +171,7 @@ type DeleteUserPayload {
   """An edge for our `User`. May be used by Relay 1."""
   userEdge(
     """The method to use when ordering `User`."""
-    orderBy: [UsersOrderBy!] = PRIMARY_KEY_ASC
+    orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
   ): UsersEdge
 }
 
@@ -243,7 +243,7 @@ type MakeEmailPrimaryPayload {
   """An edge for our `UserEmail`. May be used by Relay 1."""
   userEmailEdge(
     """The method to use when ordering `UserEmail`."""
-    orderBy: [UserEmailsOrderBy!] = PRIMARY_KEY_ASC
+    orderBy: [UserEmailsOrderBy!] = [PRIMARY_KEY_ASC]
   ): UserEmailsEdge
 }
 
@@ -520,7 +520,7 @@ type UpdateUserPayload {
   """An edge for our `User`. May be used by Relay 1."""
   userEdge(
     """The method to use when ordering `User`."""
-    orderBy: [UsersOrderBy!] = PRIMARY_KEY_ASC
+    orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
   ): UsersEdge
 }
 
