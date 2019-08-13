@@ -62,7 +62,7 @@ function SocialAuthError({ provider }: { provider: string }) {
               <code>{`${provider}_key`.toUpperCase()}</code> and any other
               required variables are set in your environment (e.g. <tt>.env</tt>{" "}
               file). If they are, check the provider is configured in{" "}
-              <code>server/src/server/middleware/installPassport.ts</code>
+              <code>backend/src/server/middleware/installPassport.ts</code>
             </div>
           }
         />

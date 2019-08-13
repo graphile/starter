@@ -1,7 +1,7 @@
 .env
 .next
 /dist
-/server/dist
+/backend/dist
 /client/dist
 /node_modules
 /yarn-error.log

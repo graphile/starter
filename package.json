@@ -4,12 +4,12 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx,.graphql 'client/src/**/*' 'server/src/**/*' && tsc --noEmit",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx,.graphql 'client/src/**/*' 'backend/src/**/*' && tsc --noEmit",
     "setup": "npm run server:src:build && ./scripts/setup",
-    "server:src:build": "npm run codegen && cd server && tsc",
-    "server:src:watch": "cd server && tsc --watch",
-    "server:watch": ". ./scripts/env && nodemon --watch 'server/dist/server/**/*.js' -x 'node -r source-map-support/register' server/dist/server/index.js",
-    "server:worker:watch": ". ./scripts/env && cd server/dist/worker && graphile-worker --watch",
+    "server:src:build": "npm run codegen && cd backend && tsc",
+    "server:src:watch": "cd backend && tsc --watch",
+    "server:watch": ". ./scripts/env && nodemon --watch 'backend/dist/server/**/*.js' -x 'node -r source-map-support/register' backend/dist/server/index.js",
+    "server:worker:watch": ". ./scripts/env && cd backend/dist/worker && graphile-worker --watch",
     "db:watch": ". ./scripts/env && graphile-migrate watch",
     "db:migrate": ". ./scripts/env && graphile-migrate",
     "db:reset:test": "./scripts/env && export DATABASE_URL=\"$TEST_DATABASE_URL\" && graphile-migrate reset && graphile-migrate watch --once && psql \"$TEST_DATABASE_URL\" -c 'drop trigger _200_make_first_user_admin on app_public.users;'",
@@ -19,7 +19,8 @@
     "codegen:watch": "graphql-codegen --config codegen.yml --watch",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
     "client:src:build": "cd client/src && next build",
-    "build": "npm run codegen && npm run client:src:build && npm run server:src:build"
+    "build": "npm run codegen && npm run client:src:build && npm run server:src:build",
+    "clean": "rm -Rf backend/dist client/dist .next"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",

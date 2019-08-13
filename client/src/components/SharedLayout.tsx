@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Layout, Row, Col, Dropdown, Icon, Menu } from "antd";
 import Link from "next/link";
-import { companyName } from "../../../server/src/config";
+import { companyName } from "../../../backend/src/config";
 import {
   SharedLayoutQueryComponent,
   withLogoutMutation,

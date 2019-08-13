@@ -105,7 +105,7 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 The `yarn dev` command runs a number of tasks:
 
 - `db`: uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch the `migrations/current.sql` file for changes, and automatically runs it against your database when it changes
-- `server:src`: watches the TypeScript source code of the server, and compiles it from `server/src` to `server/dist` so node and `graphile-worker` can run the compiled code directly
+- `server:src`: watches the TypeScript source code of the server, and compiles it from `backend/src` to `backend/dist` so node and `graphile-worker` can run the compiled code directly
 - `server:run`: runs the node server that contains, among other things, PostGraphile and Next.js
 - `worker`: runs `graphile-worker` to execute your tasks
 - `codegen`: watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript components/HOCs/etc for you automatically (to save you having to write all the generics yourself)
@@ -129,18 +129,18 @@ find useful. To read more about migrations with graphile-migrate, see the
 [graphile-migrate docs](https://github.com/graphile/migrate).
 
 We've added a few example workers for you, including the `send_email` worker
-which performs email templating for you. See `server/src/worker/tasks` for the
+which performs email templating for you. See `backend/src/worker/tasks` for the
 tasks we've created (and to add your own), and see the [graphile-worker
 docs](https://github.com/graphile/worker) for more information.
 
-The server entry point is `server/src/server/index.ts`; you'll see that it
+The server entry point is `backend/src/server/index.ts`; you'll see that it
 contains documentation and has split the middleware up into a manageable
 fashion. We use traditional cookie sessions, but you can switch this out
 for an alternative.
 
 If you set `GITHUB_KEY` and `GITHUB_SECRET` in your `.env` file then you can
 also use GitHub's OAuth social authentication; you can add similar logic to the
-GitHub logic (in `server/src/server/middleware/installPassport.ts`) to enable
+GitHub logic (in `backend/src/server/middleware/installPassport.ts`) to enable
 other social login providers such as Twitter, Facebook, Google, etc. For more
 information, see the [passport.js
 documentation](http://www.passportjs.org/docs/).
@@ -151,7 +151,7 @@ If you are using `graphile-migrate` make sure that you have executed
 `graphile-migrate commit` to commit the migration, since we only run committed
 migrations in production.
 
-Make sure you have customised `server/src/config.ts`.
+Make sure you have customised `backend/src/config.ts`.
 
 Make sure everything is committed and pushed.
 
@@ -193,7 +193,7 @@ capable of sending emails. To achieve this, you must configure an email
 transport. We have preconfigured support for Amazon SES. Once SES is set up,
 your domain is verified, and you've verified any emails you wish to send email
 to (or have had your sending limits removed), make sure that the `fromEmail` in
-`server/src/config.ts` is correct, and then create an IAM role for your
+`backend/src/config.ts` is correct, and then create an IAM role for your
 PostGraphile server. Here's an IAM template for sending emails - this is the
 only permission required for our IAM role currently, but you may wish to add
 others later.

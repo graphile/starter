@@ -6,5 +6,5 @@
     ":DATABASE_AUTHENTICATOR": "!ENV",
     ":DATABASE_VISITOR": "!ENV"
   },
-  "afterReset": ["afterReset.sql", { "command": "cd server/dist/worker && graphile-worker --once" }]
+  "afterReset": ["afterReset.sql", { "command": "cd backend/dist/worker && graphile-worker --once" }]
 }

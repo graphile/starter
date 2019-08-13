@@ -66,7 +66,7 @@ export default function Home() {
       </p>
       <h3>This file</h3>
       <p>
-        This file is located in the client pages folder:
+        This file is located in the client pages folder:{" "}
         <code>client/src/pages/index.tsx</code>. If you edit it and save it
         should update in your browser immediately. Further if you disable JS and
         reload the page you should see the content is still displayed (this is
@@ -76,9 +76,9 @@ export default function Home() {
       </p>
       <h3>The server</h3>
       <p>
-        The entry point to the server is <code>server/src/server/index.ts</code>
-        ; this creates an Express.js server and installs a number of
-        middlewares, including PostGraphile.
+        The entry point to the server is{" "}
+        <code>backend/src/server/index.ts</code>; this creates an Express.js
+        server and installs a number of middlewares, including PostGraphile.
       </p>
       <h3>Realtime</h3>
       <p>
