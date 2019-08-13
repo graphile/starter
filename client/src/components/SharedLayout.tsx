@@ -44,6 +44,22 @@ interface SharedLayoutProps {
   noPad?: boolean;
 }
 
+/* The Apollo `useSubscription` hook doesn't currently allow skipping the
+ * subscription; we only want it when the user is logged in, so we conditionally
+ * call this stub component.
+ */
+function CurrentUserUpdatedSubscription() {
+  /*
+   * This will set up a GraphQL subscription monitoring for changes to the
+   * current user. Interestingly we don't need to actually _do_ anything - no
+   * rendering or similar - because the payload of this mutation will
+   * automatically update Apollo's cache which will cause the data to be
+   * re-rendered wherever appropriate.
+   */
+  useCurrentUserUpdatedSubscription();
+  return null;
+}
+
 function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
   const client = useApolloClient();
   const [logout] = useLogoutMutation();
@@ -58,17 +74,9 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
   };
   const { data, loading } = useSharedLayoutQuery();
 
-  /*
-   * This will set up a GraphQL subscription monitoring for changes to the
-   * current user. Interestingly we don't need to actually _do_ anything - no
-   * rendering or similar - because the payload of this mutation will
-   * automatically update Apollo's cache which will cause the data to be
-   * re-rendered wherever appropriate.
-   */
-  useCurrentUserUpdatedSubscription();
-
   return (
     <Layout>
+      {data && data.currentUser ? <CurrentUserUpdatedSubscription /> : null}
       <Header>
         <Head>
           <title>
