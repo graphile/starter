@@ -49,7 +49,9 @@ secrets. Do not commit it! Finally you can run the various parts of the system
 yarn dev
 ```
 
-This runs the various dependencies in parallel using `concurrently`.
+This runs the various dependencies in parallel using `concurrently`. After a
+short period you should then be able to load the application at
+http://localhost:5678
 
 ## Features
 
