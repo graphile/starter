@@ -47,9 +47,13 @@ else
 
   echo
   echo
-  echo "Please enter a superuser connection string to the database (so we can drop/create the '${DATABASE_NAME}' and '${DATABASE_NAME}_shadow' databases): [Enter for 'postgres://${DATABASE_HOST}/template1']"
+  DEFAULT_HOST="$DATABASE_HOST"
+  if [ "$DEFAULT_HOST" = "localhost" ]; then
+    DEFAULT_HOST=""
+  fi
+  echo "Please enter a superuser connection string to the database (so we can drop/create the '${DATABASE_NAME}' and '${DATABASE_NAME}_shadow' databases): [Enter for 'postgres://${DEFAULT_HOST}/template1']"
   read ROOT_DATABASE_URL
-  if [ "$ROOT_DATABASE_URL" = "" ]; then ROOT_DATABASE_URL="postgres://${DATABASE_HOST}/template1"; fi
+  if [ "$ROOT_DATABASE_URL" = "" ]; then ROOT_DATABASE_URL="postgres://${DEFAULT_HOST}/template1"; fi
 
 
   # This will generate passwords that are safe to use in envvars without needing to be escaped:
