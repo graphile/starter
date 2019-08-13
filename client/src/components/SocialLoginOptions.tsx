@@ -3,7 +3,7 @@ import { Button } from "antd";
 
 interface SocialLoginOptionsProps {
   next: string;
-  buttonTextFromService(service: string): string;
+  buttonTextFromService?: (service: string) => string;
 }
 
 function defaultButtonTextFromService(service: string) {

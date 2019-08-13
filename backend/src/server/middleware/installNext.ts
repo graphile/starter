@@ -1,6 +1,8 @@
 /*! This file contains code that is copyright 2019 Graphile Ltd, see
  * GRAPHILE_LICENSE.md for license information. */
-import next from "next";
+
+// TODO: fix to 'import next' when next fixes the bug
+import * as next from "next";
 import { Application } from "express";
 
 if (!process.env.NODE_ENV) {
@@ -10,6 +12,8 @@ if (!process.env.NODE_ENV) {
 const isDev = process.env.NODE_ENV !== "production";
 
 export default async function installNext(app: Application) {
+  // @ts-ignore Next had a bad typing file, they claim `export default` but should have `export =`
+  // Ref: https://unpkg.com/next@9.0.3/dist/server/next.js
   const nextApp = next({
     dev: isDev,
     dir: `${__dirname}/../../../../client/src`,

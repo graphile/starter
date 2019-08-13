@@ -25,6 +25,7 @@
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",
   "dependencies": {
+    "@apollo/react-hooks": "^3.0.0",
     "@graphile-contrib/pg-simplify-inflector": "^5.0.0-beta.1",
     "@graphile/pg-pubsub": "^4.4.3",
     "@graphile/subscriptions-lds": "^4.4.4",
@@ -78,6 +79,7 @@
     "pg": "^7.12.1",
     "postgraphile": "^4.4.3",
     "react": "^16.9.0",
+    "react-apollo": "^3.0.0",
     "react-dom": "^16.9.0",
     "source-map-support": "^0.5.13",
     "subscriptions-transport-ws": "^0.9.16",
