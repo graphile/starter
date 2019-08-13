@@ -29,12 +29,6 @@ else
 
   echo
   echo
-  echo "What's the hostname of your database server (include :port if it's not the default :5432)? [Enter for 'localhost']"
-  read DATABASE_HOST
-  if [ "$DATABASE_HOST" = "" ]; then DATABASE_HOST="localhost"; fi
-
-  echo
-  echo
   echo "What would you like to call your database? [Enter for 'graphile_starter']"
   read DATABASE_NAME
   if [ "$DATABASE_NAME" = "" ]; then DATABASE_NAME="graphile_starter"; fi
@@ -45,15 +39,26 @@ else
     exit 3
   fi
 
-  echo
-  echo
-  DEFAULT_HOST="$DATABASE_HOST"
-  if [ "$DEFAULT_HOST" = "localhost" ]; then
-    DEFAULT_HOST=""
+  if [ "$1" = "docker" ]; then
+    DATABASE_HOST="pg"
+    ROOT_DATABASE_URL="postgres://postgres@pg/template1"
+  else
+    echo
+    echo
+    echo "What's the hostname of your database server (include :port if it's not the default :5432)? [Enter for 'localhost']"
+    read DATABASE_HOST
+    if [ "$DATABASE_HOST" = "" ]; then DATABASE_HOST="localhost"; fi
+
+    echo
+    echo
+    DEFAULT_HOST="$DATABASE_HOST"
+    if [ "$DEFAULT_HOST" = "localhost" ]; then
+      DEFAULT_HOST=""
+    fi
+    echo "Please enter a superuser connection string to the database server (so we can drop/create the '${DATABASE_NAME}' and '${DATABASE_NAME}_shadow' databases) - IMPORTANT: it must not be a connection to the '${DATABASE_NAME}' database itself, instead try 'template1': [Enter for 'postgres://${DEFAULT_HOST}/template1']"
+    read ROOT_DATABASE_URL
+    if [ "$ROOT_DATABASE_URL" = "" ]; then ROOT_DATABASE_URL="postgres://${DEFAULT_HOST}/template1"; fi
   fi
-  echo "Please enter a superuser connection string to the database server (so we can drop/create the '${DATABASE_NAME}' and '${DATABASE_NAME}_shadow' databases) - IMPORTANT: it must not be a connection to the '${DATABASE_NAME}' database itself, instead try 'template1': [Enter for 'postgres://${DEFAULT_HOST}/template1']"
-  read ROOT_DATABASE_URL
-  if [ "$ROOT_DATABASE_URL" = "" ]; then ROOT_DATABASE_URL="postgres://${DEFAULT_HOST}/template1"; fi
 
 
   # This will generate passwords that are safe to use in envvars without needing to be escaped:

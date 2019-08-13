@@ -1,0 +1,12 @@
+version: "3"
+services:
+  dev:
+    image: node:10
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: yarn dev
+    ports:
+      - 5678:5678
+  pg:
+    image: postgres:12

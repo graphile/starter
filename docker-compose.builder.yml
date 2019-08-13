@@ -1,0 +1,15 @@
+version: "2"
+services:
+  base:
+    image: node:10
+    volumes:
+      - .:/app
+    working_dir: /app
+  install:
+    extends:
+      service: base
+    command: yarn
+  setup:
+    extends:
+      service: base
+    command: yarn setup docker
