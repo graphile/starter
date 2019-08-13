@@ -113,9 +113,6 @@ export PORT=5678
 export ROOT_DOMAIN="localhost:\$PORT"
 export ROOT_URL="http://\$ROOT_DOMAIN"
 
-# Our session store uses redis
-export REDIS_URL="redis://localhost/3"
-
 # To enable login with GitHub, create a GitHub application by visiting
 # https://github.com/settings/applications/new and then enter the Client
 # ID/Secret below

@@ -80,13 +80,6 @@ export default function Home() {
         ; this creates an Express.js server and installs a number of
         middlewares, including PostGraphile.
       </p>
-      <p>
-        To make sessions persistent (which you definitely want, because we
-        restart the server whenever server files change), we've configured
-        Express to use Redis as a session store. You need to ensure redis is
-        installed and running locally, or disable the <code>REDIS_URL</code>{" "}
-        configuration variable in <code>.env</code>.
-      </p>
       <h3>Realtime</h3>
       <p>
         We've configured PostGraphile with @graphile/pg-pubsub to enable

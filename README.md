@@ -15,13 +15,6 @@ customise, fix, and develop further.
 
 - A PostgreSQL v10+ server must be available
 - Node.js v10+ must be installed
-- redis
-
-Redis: after running `yarn setup` you will find `export REDIS_URL="redis://localhost/3"` in your `.env`. You may customise it, as this
-`REDIS_URL` must point to a valid redis instance for sessions to work. If you
-do not have redis available you may comment this line and we'll use in-memory
-sessions, but this means every time the server restarts your session will be
-lost.
 
 This repository currently does not use Docker or have any explicit Docker support.
 
