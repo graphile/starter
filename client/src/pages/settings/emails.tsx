@@ -4,59 +4,59 @@ import React, { useState, useCallback, useMemo } from "react";
 import { promisify } from "util";
 import SettingsLayout from "../../components/SettingsLayout";
 import {
-  SettingsEmailsQueryComponent,
-  withAddEmailMutation,
-  AddEmailMutationMutationFn,
-  EmailsForm_UserEmailFragmentFragment,
-  ResendEmailVerificationMutationComponent,
-  MakeEmailPrimaryMutationComponent,
-  DeleteEmailMutationComponent,
+  useSettingsEmailsQuery,
+  useAddEmailMutation,
+  EmailsForm_UserEmailFragment,
+  useResendEmailVerificationMutation,
+  useMakeEmailPrimaryMutation,
+  useDeleteEmailMutation,
 } from "../../graphql";
 import { Alert, List, Avatar, Form, Input, Button, Typography } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { compose } from "react-apollo";
 import { ApolloError } from "apollo-client";
 import Redirect from "../../components/Redirect";
 import { getCodeFromError, extractError } from "../../errors";
 
 const { Text } = Typography;
 
-function renderEmail(
-  email: EmailsForm_UserEmailFragmentFragment,
-  hasOtherEmails: boolean
-) {
+function Email({
+  email,
+  hasOtherEmails,
+}: {
+  email: EmailsForm_UserEmailFragment;
+  hasOtherEmails: boolean;
+}) {
   const canDelete = !email.isPrimary && hasOtherEmails;
+  const [deleteEmail] = useDeleteEmailMutation();
+  const [resendEmailVerification] = useResendEmailVerificationMutation();
+  const [makeEmailPrimary] = useMakeEmailPrimaryMutation();
   return (
     <List.Item
       key={email.id}
       actions={[
         email.isPrimary && <span>Primary</span>,
         canDelete && (
-          <DeleteEmailMutationComponent>
-            {mutate => (
-              <a onClick={() => mutate({ variables: { emailId: email.id } })}>
-                Delete
-              </a>
-            )}
-          </DeleteEmailMutationComponent>
+          <a onClick={() => deleteEmail({ variables: { emailId: email.id } })}>
+            Delete
+          </a>
         ),
         !email.isVerified && (
-          <ResendEmailVerificationMutationComponent>
-            {mutate => (
-              <a onClick={() => mutate({ variables: { emailId: email.id } })}>
-                Resend verification
-              </a>
-            )}
-          </ResendEmailVerificationMutationComponent>
+          <a
+            onClick={() =>
+              resendEmailVerification({ variables: { emailId: email.id } })
+            }
+          >
+            Resend verification
+          </a>
         ),
         email.isVerified && !email.isPrimary && (
-          <MakeEmailPrimaryMutationComponent>
-            {mutate => (
-              <a onClick={() => mutate({ variables: { emailId: email.id } })}>
-                Make primary
-              </a>
-            )}
-          </MakeEmailPrimaryMutationComponent>
+          <a
+            onClick={() =>
+              makeEmailPrimary({ variables: { emailId: email.id } })
+            }
+          >
+            Make primary
+          </a>
         ),
       ].filter(_ => _)}
     >
@@ -97,72 +97,67 @@ function renderEmail(
 export default function Settings_Emails() {
   const [showAddEmailForm, setShowAddEmailForm] = useState(false);
   const [error, setError] = useState<Error | ApolloError | null>(null);
-  return (
-    <SettingsLayout href="/settings/emails">
-      <SettingsEmailsQueryComponent>
-        {({ data, loading }) => {
-          const user = data && data.currentUser;
-          if (!user && !loading) {
-            return <Redirect href={`/login?next=${"/settings/emails"}`} />;
-          } else if (!user) {
-            return "Loading";
-          } else {
-            return (
-              <div>
-                {user.isVerified ? null : (
-                  <div style={{ marginBottom: "0.5rem" }}>
-                    <Alert
-                      type="warning"
-                      showIcon
-                      message="No verified emails"
-                      description={`
-                        You do not have any verified email addresses, this will make
-                        account recovery impossible and may limit your available
-                        functionality within this application. Please complete email
-                        verification.
-                      `}
-                    />
-                  </div>
-                )}
-                <h2>Email addresses</h2>
-                <p>
-                  <Text strong>
-                    Account notices will be sent your your primary email
-                    address.
-                  </Text>{" "}
-                  Additional email addresses may be added to help with account
-                  recovery (or to change your primary email), but they cannot be
-                  used until verified.
-                </p>
-                <List
-                  dataSource={user.userEmails.nodes}
-                  renderItem={email =>
-                    renderEmail(email, user.userEmails.nodes.length > 1)
-                  }
-                />
-                {!showAddEmailForm ? (
-                  <div>
-                    <Button
-                      type="primary"
-                      onClick={() => setShowAddEmailForm(true)}
-                    >
-                      Add email
-                    </Button>
-                  </div>
-                ) : (
-                  <WrappedAddEmailForm
-                    onComplete={() => setShowAddEmailForm(false)}
-                    error={error}
-                    setError={setError}
-                  />
-                )}
-              </div>
-            );
-          }
-        }}
-      </SettingsEmailsQueryComponent>
-    </SettingsLayout>
-  );
+  const { data, loading } = useSettingsEmailsQuery();
+  const user = data && data.currentUser;
+  const pageContent = (() => {
+    if (!user && !loading) {
+      return <Redirect href={`/login?next=${"/settings/emails"}`} />;
+    } else if (!user) {
+      return "Loading";
+    } else {
+      return (
+        <div>
+          {user.isVerified ? null : (
+            <div style={{ marginBottom: "0.5rem" }}>
+              <Alert
+                type="warning"
+                showIcon
+                message="No verified emails"
+                description={`
+                  You do not have any verified email addresses, this will make
+                  account recovery impossible and may limit your available
+                  functionality within this application. Please complete email
+                  verification.
+                `}
+              />
+            </div>
+          )}
+          <h2>Email addresses</h2>
+          <p>
+            <Text strong>
+              Account notices will be sent your your primary email address.
+            </Text>{" "}
+            Additional email addresses may be added to help with account
+            recovery (or to change your primary email), but they cannot be used
+            until verified.
+          </p>
+          <List
+            dataSource={user.userEmails.nodes}
+            renderItem={email => (
+              <Email
+                email={email}
+                hasOtherEmails={user.userEmails.nodes.length > 1}
+              />
+            )}
+          />
+          {!showAddEmailForm ? (
+            <div>
+              <Button type="primary" onClick={() => setShowAddEmailForm(true)}>
+                Add email
+              </Button>
+            </div>
+          ) : (
+            <WrappedAddEmailForm
+              onComplete={() => setShowAddEmailForm(false)}
+              error={error}
+              setError={setError}
+            />
+          )}
+        </div>
+      );
+    }
+  })();
+  return <SettingsLayout href="/settings/emails">{pageContent}</SettingsLayout>;
 }
 
 interface FormValues {
@@ -170,19 +165,18 @@ interface FormValues {
 }
 
 interface AddEmailFormProps extends FormComponentProps<FormValues> {
-  addEmail: AddEmailMutationMutationFn;
   onComplete: () => void;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
 }
 
 function AddEmailForm({
-  addEmail,
   form,
   error,
   setError,
   onComplete,
 }: AddEmailFormProps) {
+  const [addEmail] = useAddEmailMutation();
   const validateFields: (
     fieldNames?: Array<string>,
     options?: ValidateFieldsOptions
@@ -245,12 +239,9 @@ function AddEmailForm({
   );
 }
 
-const WrappedAddEmailForm = compose(
-  Form.create<AddEmailFormProps>({
-    name: "addEmailForm",
-    onValuesChange(props) {
-      props.setError(null);
-    },
-  }),
-  withAddEmailMutation({ name: "addEmail" })
-)(AddEmailForm);
+const WrappedAddEmailForm = Form.create<AddEmailFormProps>({
+  name: "addEmailForm",
+  onValuesChange(props) {
+    props.setError(null);
+  },
+})(AddEmailForm);

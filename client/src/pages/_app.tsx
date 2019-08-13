@@ -4,7 +4,7 @@ import "antd/dist/antd.less";
 import "nprogress/nprogress.css";
 import * as React from "react";
 import App, { Container } from "next/app";
-import { ApolloProvider } from "react-apollo";
+import { ApolloProvider } from "@apollo/react-hooks";
 import withApollo from "../lib/withApollo";
 import { ApolloClient } from "apollo-client";
 import Router from "next/router";

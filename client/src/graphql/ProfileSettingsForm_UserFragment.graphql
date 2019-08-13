@@ -1,6 +1,0 @@
-fragment ProfileSettingsForm_UserFragment on User {
-  id
-  name
-  username
-  avatarUrl
-}

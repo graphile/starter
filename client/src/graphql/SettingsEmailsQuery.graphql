@@ -1,9 +1,0 @@
-#import "./EmailsForm_UserFragment.graphql"
-
-query SettingsEmailsQuery {
-  currentUser {
-    id
-    isVerified
-    ...EmailsForm_UserFragment
-  }
-}

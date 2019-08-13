@@ -18,8 +18,8 @@ import Link from "next/link";
 import { Divider, Form, Icon, Input, Button, Alert } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { promisify } from "util";
-import { compose, withApollo, WithApolloClient } from "react-apollo";
-import { withLoginMutation, LoginMutationMutationFn } from "../graphql";
+import { useApolloClient } from "@apollo/react-hooks";
+import { useLoginMutation } from "../graphql";
 import Router from "next/router";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
@@ -84,7 +84,6 @@ interface FormValues {
 }
 
 interface LoginFormProps extends FormComponentProps<FormValues> {
-  login: LoginMutationMutationFn;
   onSuccessRedirectTo: string;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
@@ -92,12 +91,12 @@ interface LoginFormProps extends FormComponentProps<FormValues> {
 
 function LoginForm({
   form,
-  client,
-  login,
   onSuccessRedirectTo,
   error,
   setError,
-}: WithApolloClient<LoginFormProps>) {
+}: LoginFormProps) {
+  const [login] = useLoginMutation();
+  const client = useApolloClient();
   const validateFields: (
     fieldNames?: Array<string>,
     options?: ValidateFieldsOptions
@@ -227,13 +226,9 @@ function LoginForm({
   );
 }
 
-const WrappedLoginForm = compose(
-  Form.create<LoginFormProps>({
-    name: "login",
-    onValuesChange(props) {
-      props.setError(null);
-    },
-  }),
-  withLoginMutation({ name: "login" }),
-  withApollo
-)(LoginForm);
+const WrappedLoginForm = Form.create<LoginFormProps>({
+  name: "login",
+  onValuesChange(props) {
+    props.setError(null);
+  },
+})(LoginForm);

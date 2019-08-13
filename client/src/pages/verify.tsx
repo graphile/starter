@@ -1,18 +1,14 @@
 /*! This file contains code that is copyright 2019 Graphile Ltd, see
  * GRAPHILE_LICENSE.md for license information. */
-import * as React from "react";
+import React, { useEffect } from "react";
 import get from "lodash/get";
 import { Alert } from "antd";
 import SharedLayout, { Row, Col } from "../components/SharedLayout";
-import {
-  withVerifyEmailMutation,
-  VerifyEmailMutationMutationFn,
-} from "../graphql";
+import { useVerifyEmailMutation } from "../graphql";
 
 interface IProps {
   id: string;
   token: string | null;
-  verifyEmail: VerifyEmailMutationMutationFn;
 }
 
 function Page(props: IProps) {
@@ -24,16 +20,16 @@ function Page(props: IProps) {
     "PENDING" | "SUBMITTING" | "SUCCESS"
   >(props.id && props.token ? "SUBMITTING" : "PENDING");
   const [error, setError] = React.useState<Error | null>(null);
-  React.useEffect(() => {
+  const [verifyEmail] = useVerifyEmailMutation();
+  useEffect(() => {
     if (state === "SUBMITTING") {
       setError(null);
-      props
-        .verifyEmail({
-          variables: {
-            id,
-            token,
-          },
-        })
+      verifyEmail({
+        variables: {
+          id,
+          token,
+        },
+      })
         .then(result => {
           if (get(result, "data.verifyEmail.success")) {
             setState("SUCCESS");
@@ -47,7 +43,7 @@ function Page(props: IProps) {
           setState("PENDING");
         });
     }
-  }, [id, token, state, props]);
+  }, [id, token, state, props, verifyEmail]);
   function form() {
     return (
       <form onSubmit={() => setState("SUBMITTING")}>
@@ -94,6 +90,4 @@ Page.getInitialProps = ({
   return { id: query["id"], token: query["token"] };
 };
 
-export default withVerifyEmailMutation<IProps>({
-  name: "verifyEmail",
-})(Page);
+export default Page;

@@ -3,8 +3,9 @@
 import React, { useCallback, useState } from "react";
 import SettingsLayout from "../../components/SettingsLayout";
 import {
-  CurrentUserAuthenticationsComponent,
-  UnlinkUserAuthenticationMutationComponent,
+  useCurrentUserAuthenticationsQuery,
+  useUnlinkUserAuthenticationMutation,
+  UserAuthentication,
 } from "../../graphql";
 import { Spin, List, Avatar, Typography, Modal } from "antd";
 import SocialLoginOptions from "../../components/SocialLoginOptions";
@@ -16,23 +17,25 @@ const AUTH_NAME_LOOKUP = {
   facebook: "Facebook",
   twitter: "Twitter",
 };
-function authName(service: text) {
+function authName(service: string) {
   return AUTH_NAME_LOOKUP[service] || service;
 }
 
 const AUTH_ICON_LOOKUP = {
   github: "github",
 };
-function authAvatar(service: text) {
+function authAvatar(service: string) {
   const icon = AUTH_ICON_LOOKUP[service] || null;
   if (icon) {
     return <Avatar size="large" icon={icon} />;
   }
 }
 
-function UnlinkAccountButtonInner({ id, mutate }: { id: number; mutate: any }) {
+function UnlinkAccountButton({ id }: { id: number }) {
+  const [mutate] = useUnlinkUserAuthenticationMutation();
   const [modalOpen, setModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
   const handleOpenModal = useCallback(() => {
     setModalOpen(true);
   }, [setModalOpen]);
@@ -48,6 +51,7 @@ function UnlinkAccountButtonInner({ id, mutate }: { id: number; mutate: any }) {
       setDeleting(false);
     }
   }, [id, mutate]);
+
   return (
     <>
       <Modal
@@ -66,17 +70,14 @@ function UnlinkAccountButtonInner({ id, mutate }: { id: number; mutate: any }) {
   );
 }
 
-function UnlinkAccountButton({ id }: { id: number }) {
+function renderAuth(
+  auth: Pick<UserAuthentication, "id" | "service" | "createdAt">
+) {
   return (
-    <UnlinkUserAuthenticationMutationComponent>
-      {mutate => <UnlinkAccountButtonInner id={id} mutate={mutate} />}
-    </UnlinkUserAuthenticationMutationComponent>
-  );
-}
-
-function renderAuth(auth) {
-  return (
-    <List.Item key={auth.id} actions={[<UnlinkAccountButton id={auth.id} />]}>
+    <List.Item
+      key={auth.id}
+      actions={[<UnlinkAccountButton key="unlink" id={auth.id} />]}
+    >
       <List.Item.Meta
         title={<Text strong>{authName(auth.service)}</Text>}
         description={`Added ${new Date(
@@ -89,22 +90,22 @@ function renderAuth(auth) {
 }
 
 export default function Settings_Accounts() {
+  const { data } = useCurrentUserAuthenticationsQuery();
+
+  const linkedAccounts =
+    !data || !data.currentUser ? (
+      <Spin />
+    ) : (
+      <List
+        dataSource={data.currentUser.authentications}
+        renderItem={renderAuth}
+      />
+    );
+
   return (
     <SettingsLayout href="/settings/accounts">
       <h2>Linked Accounts</h2>
-      <CurrentUserAuthenticationsComponent>
-        {({ data }) => {
-          if (!data.currentUser) {
-            return <Spin />;
-          }
-          return (
-            <List
-              dataSource={data.currentUser.authentications}
-              renderItem={renderAuth}
-            />
-          );
-        }}
-      </CurrentUserAuthenticationsComponent>
+      {linkedAccounts}
       <h3>Link another account</h3>
       <SocialLoginOptions
         next="/settings/accounts"

@@ -4,24 +4,20 @@ import * as React from "react";
 import get from "lodash/get";
 import { Alert } from "antd";
 import SharedLayout, { Row, Col } from "../components/SharedLayout";
-import {
-  withResetPasswordMutation,
-  ResetPasswordMutationMutationFn,
-} from "../graphql";
+import { useResetPasswordMutation } from "../graphql";
 
 interface IProps {
   userId: string;
   token: string | null;
-  resetPassword: ResetPasswordMutationMutationFn;
 }
 
-function Page(props: IProps) {
-  const { resetPassword } = props;
-
+function Page({ userId: rawUserId, token: rawToken }: IProps) {
   const [[userId, token], setIdAndToken] = React.useState<[number, string]>([
-    parseInt(props.userId, 10) || 0,
-    props.token || "",
+    parseInt(rawUserId, 10) || 0,
+    rawToken || "",
   ]);
+
+  const [resetPassword] = useResetPasswordMutation();
 
   const [state, setState] = React.useState<
     "PENDING" | "SUBMITTING" | "SUCCESS"
@@ -107,6 +103,4 @@ Page.getInitialProps = ({
   return { userId: query["user_id"], token: query["token"] };
 };
 
-export default withResetPasswordMutation<IProps>({
-  name: "resetPassword",
-})(Page);
+export default Page;

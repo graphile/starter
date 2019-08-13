@@ -1,0 +1,8 @@
+#import "./ProfileSettingsForm_User.graphql"
+
+query SettingsProfile {
+  currentUser {
+    id
+    ...ProfileSettingsForm_User
+  }
+}

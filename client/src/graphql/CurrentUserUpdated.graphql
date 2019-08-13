@@ -1,4 +1,4 @@
-subscription CurrentUserSubscription {
+subscription CurrentUserUpdated {
   currentUserUpdated {
     event
     user {

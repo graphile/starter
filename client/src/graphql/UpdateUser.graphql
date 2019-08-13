@@ -1,4 +1,4 @@
-mutation UpdateUserMutation($id: Int!, $patch: UserPatch!) {
+mutation UpdateUser($id: Int!, $patch: UserPatch!) {
   updateUser(input: { id: $id, patch: $patch }) {
     clientMutationId
     user {

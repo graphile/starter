@@ -13,11 +13,7 @@ import SharedLayout from "../components/SharedLayout";
 import Link from "next/link";
 import { Form, Icon, Input, Button, Alert } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { compose, withApollo, WithApolloClient } from "react-apollo";
-import {
-  withForgotPasswordMutation,
-  ForgotPasswordMutationMutationFn,
-} from "../graphql";
+import { useForgotPasswordMutation } from "../graphql";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
 
@@ -35,17 +31,16 @@ interface FormValues {
 }
 
 interface ForgotPasswordFormProps extends FormComponentProps<FormValues> {
-  forgotPassword: ForgotPasswordMutationMutationFn;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
 }
 
 function ForgotPasswordForm({
   form,
-  forgotPassword,
   error,
   setError,
-}: WithApolloClient<ForgotPasswordFormProps>) {
+}: ForgotPasswordFormProps) {
+  const [forgotPassword] = useForgotPasswordMutation();
   const [success, setSuccess] = useState(false);
 
   const validateFields: (
@@ -157,13 +152,9 @@ function ForgotPasswordForm({
   );
 }
 
-const WrappedForgotPasswordForm = compose(
-  Form.create<ForgotPasswordFormProps>({
-    name: "forgotPassword",
-    onValuesChange(props) {
-      props.setError(null);
-    },
-  }),
-  withForgotPasswordMutation({ name: "forgotPassword" }),
-  withApollo
-)(ForgotPasswordForm);
+const WrappedForgotPasswordForm = Form.create<ForgotPasswordFormProps>({
+  name: "forgotPassword",
+  onValuesChange(props) {
+    props.setError(null);
+  },
+})(ForgotPasswordForm);

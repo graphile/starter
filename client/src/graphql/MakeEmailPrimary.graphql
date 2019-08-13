@@ -1,4 +1,4 @@
-mutation MakeEmailPrimaryMutation($emailId: Int!) {
+mutation MakeEmailPrimary($emailId: Int!) {
   makeEmailPrimary(input: { emailId: $emailId }) {
     user {
       id

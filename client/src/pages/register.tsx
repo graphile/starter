@@ -9,8 +9,8 @@ import React, {
   FocusEvent,
 } from "react";
 import SharedLayout from "../components/SharedLayout";
-import { compose, withApollo, WithApolloClient } from "react-apollo";
-import { withRegisterMutation, RegisterMutationMutationFn } from "../graphql";
+import { useApolloClient } from "@apollo/react-hooks";
+import { useRegisterMutation } from "../graphql";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { Form, Input, Tooltip, Icon, Button, Alert } from "antd";
 import { SyntheticEvent } from "react";
@@ -56,7 +56,6 @@ interface FormValues {
  * Antd.
  */
 interface RegistrationFormProps extends FormComponentProps<FormValues> {
-  register: RegisterMutationMutationFn;
   onSuccessRedirectTo: string;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
@@ -70,13 +69,13 @@ interface RegistrationFormProps extends FormComponentProps<FormValues> {
  * 'onSuccessRedirectTo'.
  */
 function RegistrationForm({
-  register,
   form,
-  client,
   onSuccessRedirectTo,
   error,
   setError,
-}: WithApolloClient<RegistrationFormProps>) {
+}: RegistrationFormProps) {
+  const [register] = useRegisterMutation();
+  const client = useApolloClient();
   const [confirmDirty, setConfirmDirty] = useState(false);
 
   const validateFields: (
@@ -297,13 +296,9 @@ function RegistrationForm({
   );
 }
 
-const WrappedRegistrationForm = compose(
-  Form.create<RegistrationFormProps>({
-    name: "registerform",
-    onValuesChange(props) {
-      props.setError(null);
-    },
-  }),
-  withRegisterMutation({ name: "register" }),
-  withApollo
-)(RegistrationForm);
+const WrappedRegistrationForm = Form.create<RegistrationFormProps>({
+  name: "registerform",
+  onValuesChange(props) {
+    props.setError(null);
+  },
+})(RegistrationForm);

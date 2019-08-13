@@ -1,0 +1,13 @@
+#import "./EmailsForm_UserEmail.graphql"
+
+fragment EmailsForm_User on User {
+  id
+  userEmails {
+    nodes {
+      ...EmailsForm_UserEmail
+      id
+      email
+      isVerified
+    }
+  }
+}

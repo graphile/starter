@@ -2,13 +2,9 @@
  * GRAPHILE_LICENSE.md for license information. */
 import React, { useState, useCallback, useMemo, SyntheticEvent } from "react";
 import SettingsLayout from "../../components/SettingsLayout";
-import {
-  withChangePasswordMutation,
-  ChangePasswordMutationMutationFn,
-} from "../../graphql";
+import { useChangePasswordMutation } from "../../graphql";
 import { promisify } from "util";
 import { Form, Input, Alert, Button } from "antd";
-import { compose } from "react-apollo";
 import { ApolloError } from "apollo-client";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { getCodeFromError, extractError } from "../../errors";
@@ -32,17 +28,16 @@ interface FormValues {
 }
 
 interface ChangePasswordFormProps extends FormComponentProps<FormValues> {
-  changePassword: ChangePasswordMutationMutationFn;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
 }
 
 function ChangePasswordForm({
-  changePassword,
   form,
   error,
   setError,
 }: ChangePasswordFormProps) {
+  const [changePassword] = useChangePasswordMutation();
   const [success, setSuccess] = useState(false);
   const validateFields: (
     fieldNames?: Array<string>,
@@ -150,12 +145,9 @@ function ChangePasswordForm({
   );
 }
 
-const WrappedChangePasswordForm = compose(
-  Form.create<ChangePasswordFormProps>({
-    name: "changePasswordForm",
-    onValuesChange(props) {
-      props.setError(null);
-    },
-  }),
-  withChangePasswordMutation({ name: "changePassword" })
-)(ChangePasswordForm);
+const WrappedChangePasswordForm = Form.create<ChangePasswordFormProps>({
+  name: "changePasswordForm",
+  onValuesChange(props) {
+    props.setError(null);
+  },
+})(ChangePasswordForm);

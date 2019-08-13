@@ -1,0 +1,9 @@
+#import "./EmailsForm_User.graphql"
+
+query SettingsEmails {
+  currentUser {
+    id
+    isVerified
+    ...EmailsForm_User
+  }
+}

@@ -3,14 +3,12 @@
 import React, { useState, useCallback, useMemo, SyntheticEvent } from "react";
 import SettingsLayout from "../../components/SettingsLayout";
 import {
-  withUpdateUserMutation,
-  UpdateUserMutationMutationFn,
-  SettingsProfileQueryComponent,
-  ProfileSettingsForm_UserFragmentFragment,
+  useUpdateUserMutation,
+  useSettingsProfileQuery,
+  ProfileSettingsForm_UserFragment,
 } from "../../graphql";
 import { promisify } from "util";
 import { Form, Input, Alert, Button } from "antd";
-import { compose } from "react-apollo";
 import { ApolloError } from "apollo-client";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { getCodeFromError, extractError } from "../../errors";
@@ -19,23 +17,20 @@ import Redirect from "../../components/Redirect";
 
 export default function Settings_Profile() {
   const [error, setError] = useState<Error | ApolloError | null>(null);
+  const { data, loading } = useSettingsProfileQuery();
   return (
     <SettingsLayout href="/settings">
-      <SettingsProfileQueryComponent>
-        {({ data, loading }) =>
-          data && data.currentUser ? (
-            <WrappedProfileSettingsForm
-              error={error}
-              setError={setError}
-              user={data.currentUser}
-            />
-          ) : loading ? (
-            "Loading..."
-          ) : (
-            <Redirect href={`/login?next=${encodeURIComponent("/settings")}`} />
-          )
-        }
-      </SettingsProfileQueryComponent>
+      {data && data.currentUser ? (
+        <WrappedProfileSettingsForm
+          error={error}
+          setError={setError}
+          user={data.currentUser}
+        />
+      ) : loading ? (
+        "Loading..."
+      ) : (
+        <Redirect href={`/login?next=${encodeURIComponent("/settings")}`} />
+      )}
     </SettingsLayout>
   );
 }
@@ -49,19 +44,18 @@ interface FormValues {
 }
 
 interface ProfileSettingsFormProps extends FormComponentProps<FormValues> {
-  updateUser: UpdateUserMutationMutationFn;
-  user: ProfileSettingsForm_UserFragmentFragment;
+  user: ProfileSettingsForm_UserFragment;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
 }
 
 function ProfileSettingsForm({
-  updateUser,
   user,
   form,
   error,
   setError,
 }: ProfileSettingsFormProps) {
+  const [updateUser] = useUpdateUserMutation();
   const [success, setSuccess] = useState(false);
   const validateFields: (
     fieldNames?: Array<string>,
@@ -167,12 +161,9 @@ function ProfileSettingsForm({
   );
 }
 
-const WrappedProfileSettingsForm = compose(
-  Form.create<ProfileSettingsFormProps>({
-    name: "updateUserForm",
-    onValuesChange(props) {
-      props.setError(null);
-    },
-  }),
-  withUpdateUserMutation({ name: "updateUser" })
-)(ProfileSettingsForm);
+const WrappedProfileSettingsForm = Form.create<ProfileSettingsFormProps>({
+  name: "updateUserForm",
+  onValuesChange(props) {
+    props.setError(null);
+  },
+})(ProfileSettingsForm);
