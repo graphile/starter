@@ -1,6 +1,6 @@
 /*! This file contains code that is copyright 2019 Graphile Ltd, see
  * GRAPHILE_LICENSE.md for license information. */
-import * as next from "next";
+import next from "next";
 import { Application } from "express";
 
 if (!process.env.NODE_ENV) {

@@ -7,7 +7,6 @@ const compose = ([...fns]) =>
 module.exports = () => {
   const withCss = require("@zeit/next-css");
   const withLess = require("@zeit/next-less");
-  const withTypeScript = require("@zeit/next-typescript");
   const lessToJS = require("less-vars-to-js");
   const fs = require("fs");
   const path = require("path");
@@ -24,10 +23,10 @@ module.exports = () => {
   }
   return compose(
     withCss,
-    withTypeScript,
     withLess
   )({
     distDir: "../../.next",
+    exportTrailingSlash: true,
     lessLoaderOptions: {
       javascriptEnabled: true,
       modifyVars: themeVariables, // make your antd custom effective

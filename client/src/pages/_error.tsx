@@ -1,7 +1,7 @@
 /*! This file contains code that is copyright 2019 Graphile Ltd, see
  * GRAPHILE_LICENSE.md for license information. */
 import * as React from "react";
-import { NextContext } from "next";
+import { NextPageContext } from "next";
 import { Alert, Row, Col } from "antd";
 import Link from "next/link";
 import SharedLayout from "../components/SharedLayout";
@@ -99,7 +99,7 @@ export default function ErrorPage(props: ErrorPageProps) {
   );
 }
 
-ErrorPage.getInitialProps = ({ res, err, asPath }: NextContext) => ({
+ErrorPage.getInitialProps = ({ res, err, asPath }: NextPageContext) => ({
   pathname: asPath,
   statusCode: res ? res.statusCode : err ? err["statusCode"] : null,
 });

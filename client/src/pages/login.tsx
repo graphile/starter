@@ -13,7 +13,7 @@ import SharedLayout, {
   Col,
   SharedLayoutChildProps,
 } from "../components/SharedLayout";
-import { NextContext } from "next";
+import { NextPageContext } from "next";
 import Link from "next/link";
 import { Divider, Form, Icon, Input, Button, Alert } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
@@ -72,7 +72,7 @@ export default function Login({ next: rawNext }: LoginProps) {
   );
 }
 
-Login.getInitialProps = ({ query }: NextContext) => {
+Login.getInitialProps = ({ query }: NextPageContext) => {
   return {
     next: query.next,
   };
