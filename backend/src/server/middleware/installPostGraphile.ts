@@ -114,13 +114,10 @@ export function getPostGraphileOptions({
     // Automatically update GraphQL schema when database changes
     watchPg: isDev,
 
-    // Keep data/schema.graphql and data/schema.json up to date
+    // Keep data/schema.graphql up to date
     sortExport: true,
     exportGqlSchemaPath: isDev
       ? `${__dirname}/../../../../data/schema.graphql`
-      : undefined,
-    exportJsonSchemaPath: isDev
-      ? `${__dirname}/../../../../data/schema.json`
       : undefined,
 
     /*
