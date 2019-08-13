@@ -20,7 +20,7 @@
     "importHelpers": true,
     "suppressImplicitAnyIndexErrors": true,
     "preserveWatchOutput": true,
-
-    "noEmit": true
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   }
 }

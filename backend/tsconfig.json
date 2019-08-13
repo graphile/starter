@@ -1,17 +1,13 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "noEmit": false,
-
     "rootDir": "./src",
     "outDir": "./dist",
     "declarationDir": "./dist",
     "declaration": true,
     "lib": ["es2018", "esnext.asynciterable"],
     "target": "es2018",
-    "module": "commonjs",
-    "skipLibCheck": true,
-    "pretty": true
+    "module": "commonjs"
   },
   "include": ["src"]
 }
