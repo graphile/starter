@@ -15,7 +15,6 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "removeComments": false,
-    "preserveConstEnums": true,
     "strict": true,
     "strictNullChecks": true,
     "importHelpers": true,
