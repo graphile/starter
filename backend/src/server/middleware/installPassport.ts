@@ -40,17 +40,15 @@ export default async (app: Application) => {
       {
         clientID: process.env.GITHUB_KEY,
         clientSecret: process.env.GITHUB_SECRET,
-        includeEmail: true,
+        scope: ["user:email"],
       },
-      {
-        scope: ["include_email=true"],
-      },
+      {},
       async (profile, _accessToken, _refreshToken, _extra, _req) => ({
         id: profile.id,
         displayName: profile.displayName || "",
         username: profile.username,
         avatarUrl: get(profile, "photos.0.value"),
-        email: get(profile, "emails.0.value"),
+        email: profile.email || get(profile, "emails.0.value"),
       }),
       ["token", "tokenSecret"]
     );
