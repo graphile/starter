@@ -10,6 +10,8 @@ services:
     ports:
       - 5678:5678
   pg:
-    image: postgres:12
+    image: postgres:11
     volumes:
       - .docker/postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
