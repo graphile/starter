@@ -24,32 +24,22 @@ compatibility issues would be welcome (please keep them small!).
 
 ## Getting started
 
-First, you need to install the dependencies with `yarn`. If you don't have
-`yarn` installed, you can install it with `npm install -g yarn`.
+We will be using `yarn`. If you don't have `yarn` installed, you can install
+it with `npm install -g yarn`.
 
-```
-yarn
-```
-
-Next you need to configure a database to use with the project, with the `yarn setup`
-command. We currently expect you to run the database on the same computer as
-the development environment, if this is not the case (or if it is tucked away
-in a VM or a container) you may have some issues - if so, get in touch and we
-can help you resolve them.
+To get started we need to install the dependencies, do some initial code
+building, and configure a database to use with the project. The `yarn setup`
+command will ask a few questions and take care of this for us.
 
 ```
 yarn setup
 ```
 
 The above command will create a `.env` file for you containing all your
-secrets. Do not commit it! Finally you can run the various parts of the system
-(see below) with the `yarn dev` command:
+secrets. Do not commit it!
 
-```
-yarn dev
-```
-
-This runs the various dependencies in parallel using `concurrently`. After a
+Finally you can bring the stack up either with `yarn dev` if you said no to
+Docker mode or `docker-compose up` if you went the Docker route. After a
 short period you should then be able to load the application at
 http://localhost:5678
 

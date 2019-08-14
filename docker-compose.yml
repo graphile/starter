@@ -11,3 +11,5 @@ services:
       - 5678:5678
   pg:
     image: postgres:12
+    volumes:
+      - .docker/postgres_data:/var/lib/postgresql/data

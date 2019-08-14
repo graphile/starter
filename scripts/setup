@@ -29,6 +29,22 @@ else
 
   echo
   echo
+  echo "Do you want to use the Docker mode? [Answer 'y' or 'n', press enter for 'n']"
+  read DOCKER_MODE
+  if [ "$DOCKER_MODE" = "" ]; then DOCKER_MODE="n"; fi
+  if [[ "$DOCKER_MODE" =~ ^[yn]$ ]]; then
+    if [ "$DOCKER_MODE" = "y" ]; then
+      echo "Docker mode active"
+    else
+      echo "Traditional mode active"
+    fi
+  else
+    echo "You must enter the single character 'y' or 'n', you entered '$DOCKER_MODE', so we're exiting"
+  fi
+
+
+  echo
+  echo
   echo "What would you like to call your database? [Enter for 'graphile_starter']"
   read DATABASE_NAME
   if [ "$DATABASE_NAME" = "" ]; then DATABASE_NAME="graphile_starter"; fi
@@ -39,7 +55,7 @@ else
     exit 3
   fi
 
-  if [ "$1" = "docker" ]; then
+  if [ "$DOCKER_MODE" = "y" ]; then
     DATABASE_HOST="pg"
     ROOT_DATABASE_URL="postgres://postgres@pg/template1"
   else
@@ -72,13 +88,18 @@ else
 
   # This is our '.env' config file, we're writing it now so that if something goes wrong we won't lose the passwords.
   cat >> .env <<CONFIG
-# If you're financially supporting PostGraphile's development, add your license key from https://store.graphile.com here - thanks!
-export GRAPHILE_LICENSE=""
+# If you're supporting PostGraphile's development via Patreon or Graphile
+# Store, add your license key from https://store.graphile.com here so you can
+# use the Pro plugin - thanks so much!
+export GRAPHILE_LICENSE=''
+
+# Are we using the Docker mode?
+export DOCKER_MODE='${DOCKER_MODE}'
 
 # This is a development environment (production wouldn't write envvars to a file)
-export NODE_ENV="development"
+export NODE_ENV='development'
 
-# What's the superuser connection string, so databases can be dropped/created (may not be necessary in production)
+# Superuser connection string (to a _different_ database), so databases can be dropped/created (may not be necessary in production)
 export ROOT_DATABASE_URL='${ROOT_DATABASE_URL//\'/$q_mid}'
 
 # Where's the DB, and who owns it?
@@ -97,10 +118,10 @@ export DATABASE_AUTHENTICATOR_PASSWORD='${DATABASE_AUTHENTICATOR_PASSWORD//\'/$q
 export DATABASE_VISITOR='${DATABASE_VISITOR//\'/$q_mid}'
 
 # This secret is used for signing cookies
-export SECRET="$(openssl rand -base64 48)"
+export SECRET='$(openssl rand -base64 48)'
 
 # This secret is used for signing JWT tokens (we don't use this by default)
-export JWT_SECRET="$(openssl rand -base64 48)"
+export JWT_SECRET='$(openssl rand -base64 48)'
 
 # These are the connection strings for the DB and the test DB.
 # NOTE: in production you probably want to add ?ssl=1 to force SSL usage.
@@ -127,9 +148,9 @@ export ROOT_URL="http://\$ROOT_DOMAIN"
 #   Authorization callback URL: http://localhost:5678/auth/github/callback
 #
 # Client ID:
-export GITHUB_KEY=""
+export GITHUB_KEY=''
 # Client Secret:
-export GITHUB_SECRET=""
+export GITHUB_SECRET=''
 CONFIG
   echo "Passwords generated and configuration written to .env"
 
@@ -139,7 +160,19 @@ CONFIG
   . .env
 fi
 
+echo
+echo
+echo "Installing dependencies and performing initial build"
+if [ "$DOCKER_MODE" = "y" ]; then
+  docker-compose -f docker-compose.builder.yml run --rm install
+  docker-compose -f docker-compose.builder.yml run --rm server-src-build
+else
+  yarn
+  yarn server:src:build
+fi
+
 cat <<MSG
+
 
 We're going to drop (if necessary):
 
@@ -160,8 +193,21 @@ if [ "$CONFIRM_DROP" != "CONFIRM" ]; then
 fi
 
 echo "Installing or reinstalling the roles and database..."
+PSQL="psql"
+if [ "$DOCKER_MODE" = "y" ]; then
+  PSQL="docker-compose run --rm pg psql"
+fi
+if [ "$DOCKER_MODE" = "y" ]; then
+  docker-compose down
+  docker-compose up -d pg
+  trap 'docker-compose down' EXIT
+  while ! $PSQL "${ROOT_DATABASE_URL}" -c 'select true as "Connection test";'; do
+    sleep 1
+  done
+fi
+
 # Now we can reset the database
-psql -X -v ON_ERROR_STOP=1 "${ROOT_DATABASE_URL}" <<SQL
+$PSQL -X -v ON_ERROR_STOP=1 "${ROOT_DATABASE_URL}" <<SQL
 -- RESET database
 DROP DATABASE IF EXISTS ${DATABASE_NAME};
 DROP DATABASE IF EXISTS ${DATABASE_NAME}_shadow;
@@ -187,5 +233,14 @@ CREATE ROLE ${DATABASE_VISITOR};
 GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
 SQL
 
-graphile-migrate reset
+if [ "$DOCKER_MODE" = "y" ]; then
+  docker-compose -f docker-compose.builder.yml run --rm db-migrate-reset
+else
+  graphile-migrate reset
+fi
+
+if [ "$DOCKER_MODE" = "y" ]; then
+  docker-compose down
+fi
+
 echo "✅ Setup success"
