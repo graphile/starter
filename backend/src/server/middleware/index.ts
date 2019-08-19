@@ -7,6 +7,7 @@ import installLogging from "./installLogging";
 import installSharedStatic from "./installSharedStatic";
 import installPostGraphile from "./installPostGraphile";
 import installNext from "./installNext";
+import installErrorHandler from "./installErrorHandler";
 
 export {
   installDatabasePools,
@@ -16,4 +17,5 @@ export {
   installSharedStatic,
   installPostGraphile,
   installNext,
+  installErrorHandler,
 };

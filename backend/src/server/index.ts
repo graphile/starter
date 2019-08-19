@@ -49,6 +49,11 @@ async function main() {
   await middleware.installPostGraphile(app);
   await middleware.installNext(app);
 
+  /*
+   * Error handling middleware
+   */
+  await middleware.installErrorHandler(app);
+
   // And finally, we open the listen port
   httpServer.listen(PORT, () => {
     const address = httpServer.address();
