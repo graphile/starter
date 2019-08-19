@@ -6,7 +6,7 @@ import {
 } from "postgraphile";
 import { Request, Response } from "express";
 import { graphql, GraphQLSchema, ExecutionResult } from "graphql";
-import { getPostGraphileOptions } from "../src/server/middleware/installPostgraphile";
+import { getPostGraphileOptions } from "../src/server/middleware/installPostGraphile";
 
 const MockReq = require("mock-req");
 
