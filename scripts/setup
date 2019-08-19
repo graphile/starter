@@ -237,6 +237,7 @@ if [ "$DOCKER_MODE" = "y" ]; then
   docker-compose -f docker-compose.builder.yml run --rm db-migrate-reset
 else
   graphile-migrate reset
+  graphile-migrate reset --shadow
 fi
 
 if [ "$DOCKER_MODE" = "y" ]; then
