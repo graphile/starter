@@ -12,6 +12,7 @@
     "server:worker:watch": ". ./scripts/env && cd backend/dist/worker && graphile-worker --watch",
     "db:watch": ". ./scripts/env && graphile-migrate watch",
     "db:migrate": ". ./scripts/env && graphile-migrate",
+    "db:migrate:dump": ". ./scripts/env && graphile-migrate && graphile-migrate reset --shadow && graphile-migrate migrate --shadow --force",
     "db:reset:test": "./scripts/env && export DATABASE_URL=\"$TEST_DATABASE_URL\" && graphile-migrate reset && graphile-migrate watch --once && psql \"$TEST_DATABASE_URL\" -c 'drop trigger _200_make_first_user_admin on app_public.users;'",
     "dev": "yarn server:src:build && concurrently --kill-others --names 'db,server:src,server:run,worker,codegen' 'yarn db:watch' 'yarn server:src:watch' 'sleep 8; yarn server:watch' 'sleep 5; yarn server:worker:watch' 'yarn codegen:watch'",
     "test": ". ./scripts/env && yarn db:reset:test && jest -i",

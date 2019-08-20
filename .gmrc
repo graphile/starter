@@ -7,5 +7,5 @@
     ":DATABASE_VISITOR": "!ENV"
   },
   "afterReset": ["afterReset.sql", { "_": "command", "command": "cd backend/dist/worker && npx --no-install graphile-worker --once" }],
-  "afterAllMigrations": [{ "_": "command", "shadow": false, "command": "pg_dump --no-sync --schema-only --no-owner --exclude-schema=graphile_migrate --exclude-schema=graphile_worker --file=data/schema.sql \"$GM_DBURL\"" }]
+  "afterAllMigrations": [{ "_": "command", "shadow": true, "command": "pg_dump --no-sync --schema-only --no-owner --exclude-schema=graphile_migrate --exclude-schema=graphile_worker --file=data/schema.sql \"$GM_DBURL\"" }]
 }
