@@ -84,10 +84,11 @@ Checked features have been implemented, unchecked features are goals for the fut
 
 Here's some more things we'd like to demonstrate that we've not got around to yet. (If you're interested in helping, reach out on Discord: http://discord.gg/graphile)
 
-- [ ] **Testing** — Jest configured to test the database and the GraphQL API
-- [ ] **File uploads** — user can change their avatar, but this approach can be extended to other areas
-- [ ] **Acceptance testing** — one of Selenium, Cypress, TestCafe, etc
 - [ ] **Docker development flow** — how to work on this project using Docker (rather than running the code/servers directly)
+- [ ] **Testing Database** — Jest configured to test the database
+- [ ] **Testing GraphQL** — Jest configured to test the GraphQL API
+- [ ] **Acceptance testing** — one of Selenium, Cypress, TestCafe, etc
+- [ ] **File uploads** — user can change their avatar, but this approach can be extended to other areas
 - [ ] **Deployment instructions: Docker** — how to deploy with Docker
 
 ## Documentation links
