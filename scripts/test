@@ -17,7 +17,7 @@ graphile-migrate reset --shadow
 graphile-migrate watch --once --shadow 
 
 # If we're in watch mode
-if [[ "$*" == "--watch" ]]; then
+if [[ "$*" == "--watch" ]] || [[ "$*" == "--watchAll" ]]; then
   # We're in watch mode, so keep watching the `current.yml` file
   concurrently \
     --names 'migrate,tests' \
