@@ -16,15 +16,16 @@ export IN_TESTS="1"
 graphile-migrate reset --shadow 
 graphile-migrate watch --once --shadow 
 
-if [ "$1" == "--watch" ]; then
+# If we're in watch mode
+if [[ "$*" == "--watch" ]]; then
   # We're in watch mode, so keep watching the `current.yml` file
   concurrently \
     --names 'migrate,tests' \
     --kill-others \
     --default-input-target tests \
     'graphile-migrate watch --shadow' \
-    'jest --watch'
+    "jest $@"
 else
   # Run once, so just run the tests
-  jest
+  jest "$@"
 fi;
