@@ -1,7 +1,7 @@
 import { withRootDb } from "./test_helpers";
 import { snapshotSafe } from "./test_helpers";
 
-test("can register user", () =>
+test("can register user via OAuth", () =>
   withRootDb(async client => {
     const result = await client.query(
       "SELECT * FROM app_private.link_or_register_user($1, $2, $3, $4, $5)",
@@ -16,20 +16,20 @@ test("can register user", () =>
     const [user] = result.rows;
     expect(user).not.toBeNull();
     expect(snapshotSafe(user)).toMatchInlineSnapshot(`
-      Object {
-        "avatar_url": null,
-        "created_at": "[DATE]",
-        "id": "[ID]",
-        "is_admin": false,
-        "is_verified": true,
-        "name": null,
-        "updated_at": "[DATE]",
-        "username": "user",
-      }
-    `);
+                        Object {
+                          "avatar_url": null,
+                          "created_at": "[DATE]",
+                          "id": "[ID]",
+                          "is_admin": false,
+                          "is_verified": true,
+                          "name": null,
+                          "updated_at": "[DATE]",
+                          "username": "user",
+                        }
+                `);
   }));
 
-test("fails to register without email", () =>
+test("fails to register user via OAuth without email", () =>
   withRootDb(async client => {
     await expect(
       client.query(
@@ -44,5 +44,97 @@ test("fails to register without email", () =>
       )
     ).rejects.toMatchInlineSnapshot(
       `[error: new row for relation "user_emails" violates check constraint "user_emails_email_check"]`
+    );
+  }));
+
+test("can register user with a password", () =>
+  withRootDb(async client => {
+    // Normally PassportLoginPlugin will call this SQL function directly.
+    const result = await client.query(
+      `
+      select new_user.* from app_private.really_create_user(
+        username => $1,
+        email => $2,
+        email_is_verified => false,
+        name => $3,
+        avatar_url => $4,
+        password => $5
+      ) new_user
+      `,
+      [
+        "rcu_test_1",
+        "rcu_test_1@example.com",
+        "RCU Test1",
+        "http://example.com",
+        "SuperSecurePassword1",
+      ]
+    );
+    const [user] = result.rows;
+    expect(user).not.toBeNull();
+    expect(snapshotSafe(user)).toMatchInlineSnapshot(`
+                  Object {
+                    "avatar_url": "http://example.com",
+                    "created_at": "[DATE]",
+                    "id": "[ID]",
+                    "is_admin": false,
+                    "is_verified": false,
+                    "name": "RCU Test1",
+                    "updated_at": "[DATE]",
+                    "username": "rcu_test_1",
+                  }
+            `);
+  }));
+
+test("can register user with just an email", () =>
+  withRootDb(async client => {
+    // Normally PassportLoginPlugin will call this SQL function directly.
+    const result = await client.query(
+      `
+      select new_user.* from app_private.really_create_user(
+        username => $1,
+        email => $2,
+        email_is_verified => false,
+        name => $3,
+        avatar_url => $4,
+        password => $5
+      ) new_user
+      `,
+      [null, "rcu_test_2@example.com", null, null, null]
+    );
+    const [user] = result.rows;
+    expect(user).not.toBeNull();
+    expect(snapshotSafe(user)).toMatchInlineSnapshot(`
+            Object {
+              "avatar_url": null,
+              "created_at": "[DATE]",
+              "id": "[ID]",
+              "is_admin": false,
+              "is_verified": false,
+              "name": null,
+              "updated_at": "[DATE]",
+              "username": "user",
+            }
+        `);
+  }));
+
+test("cannot register user without email", () =>
+  withRootDb(async client => {
+    // Normally PassportLoginPlugin will call this SQL function directly.
+    await expect(
+      client.query(
+        `
+        select new_user.* from app_private.really_create_user(
+          username => $1,
+          email => $2,
+          email_is_verified => false,
+          name => $3,
+          avatar_url => $4,
+          password => $5
+        ) new_user
+        `,
+        [null, null, null, null, null]
+      )
+    ).rejects.toMatchInlineSnapshot(
+      `[error: null value in column "email" violates not-null constraint]`
     );
   }));
