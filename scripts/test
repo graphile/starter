@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Exit on error
+set -e
+
+# Source our configuration variables
+. ./scripts/env
+
+# Dear graphile-migrate, please treat the test DB as if it were the shadow DB
+export SHADOW_DATABASE_URL="$TEST_DATABASE_URL"
+
+# Signal to graphile-migrate scripts that we're in the tests
+export IN_TESTS="1"
+
+# Reset the test database
+graphile-migrate reset --shadow 
+graphile-migrate watch --once --shadow 
+
+if [ "$1" == "--watch" ]; then
+  # We're in watch mode, so keep watching the `current.yml` file
+  concurrently \
+    --names 'migrate,tests' \
+    --kill-others \
+    --default-input-target tests \
+    'graphile-migrate watch --shadow' \
+    'jest --watch'
+else
+  # Run once, so just run the tests
+  jest
+fi;

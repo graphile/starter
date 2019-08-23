@@ -6,6 +6,25 @@
     ":DATABASE_AUTHENTICATOR": "!ENV",
     ":DATABASE_VISITOR": "!ENV"
   },
-  "afterReset": ["afterReset.sql", { "_": "command", "command": "cd backend/dist/worker && npx --no-install graphile-worker --once" }],
-  "afterAllMigrations": [{ "_": "command", "shadow": true, "command": "pg_dump --no-sync --schema-only --no-owner --exclude-schema=graphile_migrate --exclude-schema=graphile_worker --file=data/schema.sql \"$GM_DBURL\"" }]
+  "afterReset": [
+    "afterReset.sql",
+    {
+      "_": "command",
+      "command": "cd backend/dist/worker && npx --no-install graphile-worker --once"
+    }
+  ],
+  "afterAllMigrations": [
+    {
+      "_": "command",
+      "shadow": true,
+      "command": "pg_dump --no-sync --schema-only --no-owner --exclude-schema=graphile_migrate --exclude-schema=graphile_worker --file=data/schema.sql \"$GM_DBURL\""
+    }
+  ],
+  "afterCurrent": [
+    {
+      "_": "command",
+      "shadow": true,
+      "command": "if [ \"$IN_TESTS\" = \"1\" ]; then psql -X1qv ON_ERROR_STOP=1 \"$GM_DBURL\" -f scripts/test_seed.sql; fi"
+    }
+  ]
 }
