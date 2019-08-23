@@ -4975,10 +4975,10 @@ graphile-build@4.4.4:
     pluralize "^7.0.0"
     semver "^6.0.0"
 
-graphile-migrate@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/graphile-migrate/-/graphile-migrate-0.0.7.tgz#48047f2d84edbd12a7757cef6875c0301697f2bf"
-  integrity sha512-MFZyb4j43LozEqo+UHJIgYTeFG01gU8vgwAIxXuaF1DwpNLJwNw53oMoA5gRw0+cb7PzSN4sxYVvW17E+15sbg==
+graphile-migrate@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/graphile-migrate/-/graphile-migrate-0.0.9.tgz#c3aad4763cd8e2473da456f442a70490406cf046"
+  integrity sha512-Sbhgp2rNwCrI/vfuhE8kfFCgKgm29g9vxNwuL9kXhgE++jBPr1S87IRjzWKM4EANrE7iBC/XW6FdM1vIOCaCUg==
   dependencies:
     "@types/chalk" "^2.2.0"
     "@types/chokidar" "^2.1.3"
