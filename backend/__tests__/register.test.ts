@@ -1,5 +1,12 @@
-import { setup, teardown, runGraphQLQuery, sanitise } from "./test_helper";
+import {
+  setup,
+  teardown,
+  runGraphQLQuery,
+  sanitise,
+  deleteTestUsers,
+} from "./helpers";
 
+beforeEach(deleteTestUsers);
 beforeAll(setup);
 afterAll(teardown);
 

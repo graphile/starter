@@ -8,6 +8,8 @@ import { Request, Response } from "express";
 import { graphql, GraphQLSchema, ExecutionResult } from "graphql";
 import { getPostGraphileOptions } from "../src/server/middleware/installPostGraphile";
 
+export { deleteTestUsers } from "../../migrations/__tests__/helpers";
+
 const MockReq = require("mock-req");
 
 // This is the role that your normal PostGraphile connection string would use,

@@ -3,6 +3,11 @@ import { Pool, PoolClient } from "pg";
 
 const pools = {};
 
+const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL;
+if (!TEST_DATABASE_URL) {
+  throw new Error("Cannot run tests without a TEST_DATABASE_URL");
+}
+
 // Make sure we release those pgPools so that our tests exit!
 afterAll(() => {
   const keys = Object.keys(pools);
@@ -24,11 +29,15 @@ afterAll(() => {
 
 type ClientCallback<T = any> = (client: PoolClient) => Promise<T>;
 
-const withDbFromUrl = async <T>(url: string, fn: ClientCallback<T>) => {
+const poolFromUrl = (url: string) => {
   if (!pools[url]) {
     pools[url] = new Pool({ connectionString: url });
   }
-  const pool = pools[url];
+  return pools[url];
+};
+
+const withDbFromUrl = async <T>(url: string, fn: ClientCallback<T>) => {
+  const pool = poolFromUrl(url);
   const client = await pool.connect();
   await client.query("BEGIN ISOLATION LEVEL SERIALIZABLE;");
 
@@ -48,7 +57,7 @@ const withDbFromUrl = async <T>(url: string, fn: ClientCallback<T>) => {
 };
 
 export const withRootDb = <T>(fn: ClientCallback<T>) =>
-  withDbFromUrl(process.env.TEST_DATABASE_URL || "", fn);
+  withDbFromUrl(TEST_DATABASE_URL, fn);
 
 exports.becomeRoot = (client: PoolClient) => client.query("reset role");
 exports.becomeUser = (
@@ -170,3 +179,21 @@ export const deepSnapshotSafe = (obj: { [key: string]: unknown }): any => {
   return obj;
 };
 /******************************************************************************/
+
+export const deleteTestUsers = () => {
+  // We're not using withRootDb because we don't want the transaction rolled back
+  const pool = poolFromUrl(TEST_DATABASE_URL);
+  return pool.query(
+    `
+      delete from app_public.users
+      where username like 'testuser%'
+      or username = 'testuser'
+      or id in
+        (
+          select user_id from app_public.user_emails where email like 'testuser%@example.com'
+        union
+          select user_id from app_public.user_authentications where service = 'facebook' and identifier = '123456%'
+        )
+      `
+  );
+};

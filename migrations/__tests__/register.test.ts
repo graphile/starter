@@ -1,5 +1,6 @@
-import { withRootDb } from "./test_helpers";
-import { snapshotSafe } from "./test_helpers";
+import { withRootDb, snapshotSafe, deleteTestUsers } from "./helpers";
+
+beforeEach(deleteTestUsers);
 
 test("can register user via OAuth", () =>
   withRootDb(async client => {
@@ -62,9 +63,9 @@ test("can register user with a password", () =>
       ) new_user
       `,
       [
-        "rcu_test_1",
-        "rcu_test_1@example.com",
-        "RCU Test1",
+        "testuser",
+        "testuser@example.com",
+        "Test One",
         "http://example.com",
         "SuperSecurePassword1",
       ]
@@ -78,9 +79,9 @@ test("can register user with a password", () =>
                     "id": "[ID]",
                     "is_admin": false,
                     "is_verified": false,
-                    "name": "RCU Test1",
+                    "name": "Test One",
                     "updated_at": "[DATE]",
-                    "username": "rcu_test_1",
+                    "username": "testuser",
                   }
             `);
   }));
@@ -99,7 +100,7 @@ test("can register user with just an email", () =>
         password => $5
       ) new_user
       `,
-      [null, "rcu_test_2@example.com", null, null, null]
+      [null, "testuser@example.com", null, null, null]
     );
     const [user] = result.rows;
     expect(user).not.toBeNull();

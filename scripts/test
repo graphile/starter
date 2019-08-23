@@ -24,8 +24,8 @@ if [[ "$*" == "--watch" ]] || [[ "$*" == "--watchAll" ]]; then
     --kill-others \
     --default-input-target tests \
     'graphile-migrate watch --shadow' \
-    "jest $@"
+    "jest -i $@"
 else
   # Run once, so just run the tests
-  jest "$@"
+  jest -i "$@"
 fi;
