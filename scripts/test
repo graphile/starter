@@ -20,11 +20,10 @@ graphile-migrate watch --once --shadow
 if [[ "$*" == "--watch" ]] || [[ "$*" == "--watchAll" ]]; then
   # We're in watch mode, so keep watching the `current.yml` file
   concurrently \
-    --names 'migrate,tests' \
+    --names 'tests,___db' \
     --kill-others \
-    --default-input-target tests \
-    'graphile-migrate watch --shadow' \
-    "jest -i $@"
+    "jest -i $@" \
+    'graphile-migrate watch --shadow'
 else
   # Run once, so just run the tests
   jest -i "$@"
