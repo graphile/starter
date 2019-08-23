@@ -28,3 +28,21 @@ test("can register user", () =>
       }
     `);
   }));
+
+test("fails to register without email", () =>
+  withRootDb(async client => {
+    await expect(
+      client.query(
+        "SELECT * FROM app_private.link_or_register_user($1, $2, $3, $4, $5)",
+        [
+          null,
+          "facebook",
+          "123456",
+          JSON.stringify({ email: "", firstName: "A", lastName: "B" }),
+          JSON.stringify({}),
+        ]
+      )
+    ).rejects.toMatchInlineSnapshot(
+      `[error: new row for relation "user_emails" violates check constraint "user_emails_email_check"]`
+    );
+  }));
