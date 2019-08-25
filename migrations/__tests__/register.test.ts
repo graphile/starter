@@ -86,6 +86,8 @@ test("can register user with a password", () =>
             `);
   }));
 
+test("cannot register with a weak password");
+
 test("can register user with just an email", () =>
   withRootDb(async client => {
     // Normally PassportLoginPlugin will call this SQL function directly.
