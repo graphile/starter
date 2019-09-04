@@ -17,17 +17,17 @@ test("can register user via OAuth", () =>
     const [user] = result.rows;
     expect(user).not.toBeNull();
     expect(snapshotSafe(user)).toMatchInlineSnapshot(`
-                        Object {
-                          "avatar_url": null,
-                          "created_at": "[DATE]",
-                          "id": "[ID]",
-                          "is_admin": false,
-                          "is_verified": true,
-                          "name": null,
-                          "updated_at": "[DATE]",
-                          "username": "user",
-                        }
-                `);
+      Object {
+        "avatar_url": null,
+        "created_at": "[DATE]",
+        "id": "[ID]",
+        "is_admin": false,
+        "is_verified": true,
+        "name": null,
+        "updated_at": "[DATE]",
+        "username": "user",
+      }
+    `);
   }));
 
 test("fails to register user via OAuth without email", () =>
@@ -73,20 +73,43 @@ test("can register user with a password", () =>
     const [user] = result.rows;
     expect(user).not.toBeNull();
     expect(snapshotSafe(user)).toMatchInlineSnapshot(`
-                  Object {
-                    "avatar_url": "http://example.com",
-                    "created_at": "[DATE]",
-                    "id": "[ID]",
-                    "is_admin": false,
-                    "is_verified": false,
-                    "name": "Test One",
-                    "updated_at": "[DATE]",
-                    "username": "testuser",
-                  }
-            `);
+      Object {
+        "avatar_url": "http://example.com",
+        "created_at": "[DATE]",
+        "id": "[ID]",
+        "is_admin": false,
+        "is_verified": false,
+        "name": "Test One",
+        "updated_at": "[DATE]",
+        "username": "testuser",
+      }
+    `);
   }));
 
-test.todo("cannot register with a weak password");
+test("cannot register with a weak password", () =>
+  withRootDb(async client => {
+    await expect(
+      client.query(
+        `
+      select new_user.* from app_private.really_create_user(
+        username => $1,
+        email => $2,
+        email_is_verified => false,
+        name => $3,
+        avatar_url => $4,
+        password => $5
+      ) new_user
+      `,
+        [
+          "testuser",
+          "testuser@example.com",
+          "Test One",
+          "http://example.com",
+          "WEAK",
+        ]
+      )
+    ).rejects.toMatchInlineSnapshot(`[error: Password is too weak]`);
+  }));
 
 test("can register user with just an email", () =>
   withRootDb(async client => {
@@ -107,17 +130,17 @@ test("can register user with just an email", () =>
     const [user] = result.rows;
     expect(user).not.toBeNull();
     expect(snapshotSafe(user)).toMatchInlineSnapshot(`
-            Object {
-              "avatar_url": null,
-              "created_at": "[DATE]",
-              "id": "[ID]",
-              "is_admin": false,
-              "is_verified": false,
-              "name": null,
-              "updated_at": "[DATE]",
-              "username": "user",
-            }
-        `);
+      Object {
+        "avatar_url": null,
+        "created_at": "[DATE]",
+        "id": "[ID]",
+        "is_admin": false,
+        "is_verified": false,
+        "name": null,
+        "updated_at": "[DATE]",
+        "username": "user",
+      }
+    `);
   }));
 
 test("cannot register user without email", () =>
