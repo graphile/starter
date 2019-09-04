@@ -59,8 +59,8 @@ const withDbFromUrl = async <T>(url: string, fn: ClientCallback<T>) => {
 export const withRootDb = <T>(fn: ClientCallback<T>) =>
   withDbFromUrl(TEST_DATABASE_URL, fn);
 
-exports.becomeRoot = (client: PoolClient) => client.query("reset role");
-exports.becomeUser = (
+export const becomeRoot = (client: PoolClient) => client.query("reset role");
+export const becomeUser = (
   client: PoolClient,
   userOrUserId: { id: number } | number | null
 ) =>
@@ -68,19 +68,37 @@ exports.becomeUser = (
     `
       with new_session as (
         insert into app_private.sessions (user_id)
-        values($2)
+        select * from (values($2::int)) v
         where $2 is not null
         returning *
       )
-      select set_config('role', $1, true), set_config('jwt.claims.session_id', coalesce((select uuid from new_session), ''), true)
+      select set_config('role', $1, true), set_config('jwt.claims.session_id', coalesce((select uuid::text from new_session), ''), true)
     `,
     [
-      "app_visitor",
-      userOrUserId && typeof userOrUserId === "object"
-        ? userOrUserId.id || userOrUserId
+      process.env.DATABASE_VISITOR,
+      userOrUserId
+        ? typeof userOrUserId === "object"
+          ? userOrUserId.id
+          : userOrUserId
         : null,
     ]
   );
+
+/* Quickly becomes root, does the thing, and then reverts back to previous role */
+export const asRoot = async <T>(
+  client: PoolClient,
+  callback: (client: PoolClient) => Promise<T>
+): Promise<T> => {
+  const {
+    rows: [{ role }],
+  } = await client.query("select current_setting('role') as role");
+  await client.query("reset role");
+  try {
+    return await callback(client);
+  } finally {
+    await client.query("select set_config('role', $1, true)", [role]);
+  }
+};
 
 /******************************************************************************/
 
@@ -91,7 +109,7 @@ beforeEach(() => {
   userCreationCounter = 0;
 });
 
-exports.createUsers = async function createUsers(
+export const createUsers = async function createUsers(
   client: PoolClient,
   count: number = 1,
   verified: boolean = true
