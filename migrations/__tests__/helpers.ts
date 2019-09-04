@@ -1,7 +1,7 @@
 import { mapValues } from "lodash";
 import { Pool, PoolClient } from "pg";
 
-type User = { id: number };
+type User = { id: number; _password?: string };
 
 const pools = {};
 const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL;
@@ -139,9 +139,8 @@ export const createUsers = async function createUsers(
   }
   const userLetter = "abcdefghijklmnopqrstuvwxyz"[userCreationCounter];
   for (let i = 0; i < count; i++) {
-    let {
-      rows: [user],
-    } = await client.query(
+    const password = userLetter.repeat(12);
+    const user: User = (await client.query(
       `SELECT * FROM app_private.really_create_user(
         username := $1,
         email := $2,
@@ -156,10 +155,11 @@ export const createUsers = async function createUsers(
         verified,
         `User ${userLetter}`,
         null,
-        userLetter.repeat(12),
+        password,
       ]
-    );
+    )).rows[0];
     expect(user.id).not.toBeNull();
+    user._password = password;
     users.push(user);
   }
   userCreationCounter++;
