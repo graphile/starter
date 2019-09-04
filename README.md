@@ -5,22 +5,24 @@ You should replace this README with your own.
 ## Scope
 
 The intention of this software is that you will take the ideas and concepts
-in it and incorporate them into their own project, or build your project on
-top of this software. Please note that this software is not "complete," free
-of software defects, or free of security issues — it is not a finished
-solution, but rather the seed of a solution which you should review,
-customise, fix, and develop further.
+in it and incorporate them into their own project, or use a copy of this
+software as a starting point for your project. Please note that this software
+is not "complete," free of software defects, or free of security issues — it
+is not a finished solution, but rather the seed of a solution which you
+should review, customise, fix, and develop further.
+
+It is intended that you use a "point in time" version of this software ─ it
+is not intended that you can merge updates to this software into your own
+derivative in an automated fashion.
 
 ## Prerequisites
 
-- A PostgreSQL v10+ server must be available
 - Node.js v10+ must be installed
-
-This repository currently does not use Docker or have any explicit Docker support.
+- Either a PostgreSQL v10+ server must be available, or Docker and docker-compose must be available
 
 This software has been developed under Mac and Linux, and should work in a
-`bash` environment. I'm not sure if it works under Windows; PRs to fix Windows
-compatibility issues would be welcome (please keep them small!).
+`bash` environment. I'm not sure if it works under Windows; PRs to fix
+Windows compatibility issues would be welcome (please keep them small!).
 
 ## Getting started
 
@@ -42,6 +44,9 @@ Finally you can bring the stack up either with `yarn dev` if you said no to
 Docker mode or `docker-compose up` if you went the Docker route. After a
 short period you should then be able to load the application at
 http://localhost:5678
+
+Be careful not to mix and match Docker-mode vs local-mode. Pick one and
+stick to it.
 
 ## Features
 
