@@ -1,4 +1,4 @@
-import { withUserDb, asRoot } from "./helpers";
+import { withUserDb, asRoot, withRootDb, becomeUser } from "./helpers";
 
 it("can change password", () =>
   withUserDb(async (client, user) => {
@@ -17,6 +17,8 @@ it("can change password", () =>
         [newPassword]
       )
     );
+
+    // Check it only changes one person's password
     expect(secrets).toHaveLength(1);
     expect(secrets[0].user_id).toEqual(user.id);
   }));
@@ -32,10 +34,10 @@ it("cannot change password if password is wrong (CREDS)", () =>
     );
 
     // Assertions
-    expect(promise).rejects.toMatchInlineSnapshot(
+    await expect(promise).rejects.toMatchInlineSnapshot(
       `[error: Incorrect password]`
     );
-    expect(promise).rejects.toHaveProperty("code", "CREDS");
+    await expect(promise).rejects.toHaveProperty("code", "CREDS");
   }));
 
 it("cannot set a 'weak' password (WEAKP)", () =>
@@ -50,11 +52,27 @@ it("cannot set a 'weak' password (WEAKP)", () =>
     );
 
     // Assertions
-    expect(promise).rejects.toMatchInlineSnapshot(
+    await expect(promise).rejects.toMatchInlineSnapshot(
       `[error: Password is too weak]`
     );
-    expect(promise).rejects.toHaveProperty("code", "WEAKP");
+    await expect(promise).rejects.toHaveProperty("code", "WEAKP");
   }));
 
-it.todo("only changes one persons password");
-it.todo("gives error if not logged in (LOGIN)");
+it("gives error if not logged in (LOGIN)", () =>
+  withRootDb(async client => {
+    // Setup
+    await becomeUser(client, null);
+    const newPassword = "SECURE_PASSWORD_1!";
+
+    // Action
+    const promise = client.query(
+      "select * from app_public.change_password($1, $2)",
+      ["irrelevant", newPassword]
+    );
+
+    // Assertions
+    await expect(promise).rejects.toMatchInlineSnapshot(
+      `[error: You must log in to change your password]`
+    );
+    await expect(promise).rejects.toHaveProperty("code", "LOGIN");
+  }));
