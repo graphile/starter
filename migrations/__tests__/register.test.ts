@@ -88,9 +88,8 @@ test("can register user with a password", () =>
 
 test("cannot register with a weak password", () =>
   withRootDb(async client => {
-    await expect(
-      client.query(
-        `
+    const promise = client.query(
+      `
       select new_user.* from app_private.really_create_user(
         username => $1,
         email => $2,
@@ -100,15 +99,18 @@ test("cannot register with a weak password", () =>
         password => $5
       ) new_user
       `,
-        [
-          "testuser",
-          "testuser@example.com",
-          "Test One",
-          "http://example.com",
-          "WEAK",
-        ]
-      )
-    ).rejects.toMatchInlineSnapshot(`[error: Password is too weak]`);
+      [
+        "testuser",
+        "testuser@example.com",
+        "Test One",
+        "http://example.com",
+        "WEAK",
+      ]
+    );
+    await expect(promise).rejects.toMatchInlineSnapshot(
+      `[error: Password is too weak]`
+    );
+    await expect(promise).rejects.toHaveProperty("code", "WEAKP");
   }));
 
 test("can register user with just an email", () =>
