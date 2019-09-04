@@ -86,7 +86,7 @@ test("can register user with a password", () =>
             `);
   }));
 
-test("cannot register with a weak password");
+test.todo("cannot register with a weak password");
 
 test("can register user with just an email", () =>
   withRootDb(async client => {
