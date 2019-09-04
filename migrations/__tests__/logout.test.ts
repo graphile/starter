@@ -1,21 +1,28 @@
-import { withRootDb, becomeUser, createUsers, asRoot } from "./helpers";
+import { getSessions, withUserDb } from "./helpers";
 
 it("deletes session when user logs out", () =>
-  withRootDb(async client => {
-    const [user] = await createUsers(client, 1);
-    await becomeUser(client, user.id);
-    const { rows: originalSessions } = await asRoot(client, () =>
-      client.query(`select * from app_private.sessions where user_id = $1`, [
-        user.id,
-      ])
-    );
+  withUserDb(async (client, user) => {
+    // Setup
+    const originalSessions = await getSessions(client, user.id);
     expect(originalSessions).toHaveLength(1);
+
+    // Action
     await client.query("select * from app_public.logout()");
-    const { rows: finalSessions } = await asRoot(client, () =>
-      client.query("select * from app_private.sessions where user_id = $1", [
-        user.id,
-      ])
-    );
+
+    // Assertions
+    const finalSessions = await getSessions(client, user.id);
     expect(finalSessions).toHaveLength(0);
   }));
-it.todo("doesn't throw an error if logged out user logs out (idempotent)");
+
+it("doesn't throw an error if logged out user logs out (idempotent)", () =>
+  withUserDb(async (client, user) => {
+    // Setup
+    await client.query("select * from app_public.logout()");
+
+    // Action/assertion: second logout shouldn't error
+    await expect(
+      client.query("select * from app_public.logout()")
+    ).resolves.toBeTruthy();
+    const finalSessions = await getSessions(client, user.id);
+    expect(finalSessions).toHaveLength(0);
+  }));
