@@ -1,8 +1,9 @@
 import { mapValues } from "lodash";
 import { Pool, PoolClient } from "pg";
 
-const pools = {};
+type User = { id: number };
 
+const pools = {};
 const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL;
 if (!TEST_DATABASE_URL) {
   throw new Error("Cannot run tests without a TEST_DATABASE_URL");
@@ -59,10 +60,19 @@ const withDbFromUrl = async <T>(url: string, fn: ClientCallback<T>) => {
 export const withRootDb = <T>(fn: ClientCallback<T>) =>
   withDbFromUrl(TEST_DATABASE_URL, fn);
 
+export const withUserDb = <T>(
+  fn: (client: PoolClient, user: User) => Promise<T>
+) =>
+  withRootDb(async client => {
+    const [user] = await createUsers(client, 1);
+    await becomeUser(client, user.id);
+    await fn(client, user);
+  });
+
 export const becomeRoot = (client: PoolClient) => client.query("reset role");
 export const becomeUser = (
   client: PoolClient,
-  userOrUserId: { id: number } | number | null
+  userOrUserId: User | number | null
 ) =>
   client.query(
     `
@@ -98,6 +108,15 @@ export const asRoot = async <T>(
   } finally {
     await client.query("select set_config('role', $1, true)", [role]);
   }
+};
+
+export const getSessions = async (client: PoolClient, userId: number) => {
+  const { rows } = await asRoot(client, () =>
+    client.query(`select * from app_private.sessions where user_id = $1`, [
+      userId,
+    ])
+  );
+  return rows;
 };
 
 /******************************************************************************/
