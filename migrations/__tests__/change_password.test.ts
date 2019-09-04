@@ -23,7 +23,7 @@ it("can change password", () =>
 
 it("cannot change password if password is wrong (CREDS)", () =>
   withUserDb(async client => {
-    const newPassword = "can change password test DO_NOT_COPY_THIS";
+    const newPassword = "SECURE_PASSWORD_1!";
 
     // Action
     const promise = client.query(
@@ -38,6 +38,23 @@ it("cannot change password if password is wrong (CREDS)", () =>
     expect(promise).rejects.toHaveProperty("code", "CREDS");
   }));
 
-it.todo("cannot set a 'weak' password (WEAKP)"); // For a given value of 'weak'
+it("cannot set a 'weak' password (WEAKP)", () =>
+  // For a given value of 'weak'
+  withUserDb(async (client, user) => {
+    const newPassword = "WEAK";
+
+    // Action
+    const promise = client.query(
+      "select * from app_public.change_password($1, $2)",
+      [user._password, newPassword]
+    );
+
+    // Assertions
+    expect(promise).rejects.toMatchInlineSnapshot(
+      `[error: Password is too weak]`
+    );
+    expect(promise).rejects.toHaveProperty("code", "WEAKP");
+  }));
+
 it.todo("only changes one persons password");
 it.todo("gives error if not logged in (LOGIN)");
