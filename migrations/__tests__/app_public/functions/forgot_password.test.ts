@@ -16,7 +16,6 @@ export async function forgotPassword(
 it("can trigger user password reset with email, receive email with token", () =>
   withRootDb(async client => {
     const [user] = await createUsers(client, 1, true);
-    await clearJobs(client);
     await forgotPassword(client, user._email!.toLowerCase());
     const jobs = await getJobs(client, "user__forgot_password");
     expect(jobs).toHaveLength(1);
@@ -31,7 +30,6 @@ it("can trigger user password reset with email, receive email with token", () =>
 it("can trigger user password reset with EMAIL, receive email with token", () =>
   withRootDb(async client => {
     const [user] = await createUsers(client, 1, true);
-    await clearJobs(client);
     await forgotPassword(client, user._email!.toUpperCase());
     const jobs = await getJobs(client, "user__forgot_password");
     expect(jobs).toHaveLength(1);

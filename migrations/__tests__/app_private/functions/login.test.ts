@@ -2,7 +2,7 @@ import { withRootDb, snapshotSafe } from "../../helpers";
 import { PoolClient } from "pg";
 import { reallyCreateUser } from "./really_create_user.test";
 
-async function login(
+export async function login(
   client: PoolClient,
   username: string | null,
   password: string | null
