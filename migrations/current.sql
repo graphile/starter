@@ -432,21 +432,23 @@ declare
   v_login_attempt_window_duration interval = interval '6 hours';
   v_session app_private.sessions;
 begin
-  select users.* into v_user
-  from app_public.users
-  where
-    -- Match username against users username, or any verified email address
-    (
-      users.username = login.username
-    or
-      exists(
-        select 1
-        from app_public.user_emails
-        where user_id = users.id
-        and is_verified is true
-        and email = login.username::citext
-      )
-    );
+  if username like '%@%' then
+    -- It's an email
+    select users.* into v_user
+    from app_public.users
+    inner join app_public.user_emails
+    on (user_emails.user_id = users.id)
+    where user_emails.email = login.username
+    order by
+      user_emails.is_verified desc, -- Prefer verified email
+      user_emails.created_at asc -- Failing that, prefer the first registered (unverified users _should_ verify before logging in)
+    limit 1;
+  else
+    -- It's a username
+    select users.* into v_user
+    from app_public.users
+    where users.username = login.username;
+  end if;
 
   if not (v_user is null) then
     -- Load their secrets
