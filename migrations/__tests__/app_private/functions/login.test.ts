@@ -90,5 +90,14 @@ it("can login with EmAiL+password", () =>
     `);
   }));
 
-it.todo("cannot login with wrong password");
+it("cannot login with wrong password", () =>
+  withRootDb(async client => {
+    await setupTestUser(client);
+    const promise = login(client, EMAIL, "WRONG" + PASSWORD);
+    expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
+      `"Incorrect username or password"`
+    );
+    expect(promise).rejects.toMatchObject({ code: "CREDS" });
+  }));
+
 it.todo("prevents too many login attempts");

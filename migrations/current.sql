@@ -484,11 +484,11 @@ begin
         failed_password_attempts = (case when first_failed_password_attempt is null or first_failed_password_attempt < now() - v_login_attempt_window_duration then 1 else failed_password_attempts + 1 end),
         first_failed_password_attempt = (case when first_failed_password_attempt is null or first_failed_password_attempt < now() - v_login_attempt_window_duration then now() else first_failed_password_attempt end)
       where user_id = v_user.id;
-      return null;
+      raise exception 'Incorrect username or password' using errcode = 'CREDS';
     end if;
   else
     -- No user with that email/username was found
-    return null;
+    raise exception 'Incorrect username or password' using errcode = 'CREDS';
   end if;
 end;
 $$ language plpgsql strict security definer volatile;
