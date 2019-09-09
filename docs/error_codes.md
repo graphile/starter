@@ -31,6 +31,10 @@ Rewritten, the above rules state:
 
 - FFFFF: unknown error
 
+## Registration
+
+- MODAT: more data required (e.g. missing email address)
+
 ## Authentication
 
 - WEAKP: password is too weak

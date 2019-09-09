@@ -624,6 +624,10 @@ begin
   if password is not null then
     perform app_private.assert_valid_password(password);
   end if;
+  if email is null then
+    raise exception "Email is required" using errcode = 'MODAT';
+  end if;
+
   -- Sanitise the username, and make it unique if necessary.
   if v_username is null then
     v_username = coalesce(name, 'user');
