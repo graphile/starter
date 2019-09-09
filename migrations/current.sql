@@ -429,7 +429,7 @@ create function app_private.login(username citext, password text) returns app_pr
 declare
   v_user app_public.users;
   v_user_secret app_private.user_secrets;
-  v_login_attempt_window_duration interval = interval '6 hours';
+  v_login_attempt_window_duration interval = interval '5 minutes';
   v_session app_private.sessions;
 begin
   if username like '%@%' then
@@ -461,9 +461,9 @@ begin
     and
       v_user_secret.first_failed_password_attempt > NOW() - v_login_attempt_window_duration
     and
-      v_user_secret.failed_password_attempts >= 20
+      v_user_secret.failed_password_attempts >= 3
     ) then
-      raise exception 'User account locked - too many login attempts. Try again after 6 hours.' using errcode = 'LOCKD';
+      raise exception 'User account locked - too many login attempts. Try again after 5 minutes.' using errcode = 'LOCKD';
     end if;
 
     -- Not too many login attempts, let's check the password.
@@ -484,11 +484,11 @@ begin
         failed_password_attempts = (case when first_failed_password_attempt is null or first_failed_password_attempt < now() - v_login_attempt_window_duration then 1 else failed_password_attempts + 1 end),
         first_failed_password_attempt = (case when first_failed_password_attempt is null or first_failed_password_attempt < now() - v_login_attempt_window_duration then now() else first_failed_password_attempt end)
       where user_id = v_user.id;
-      raise exception 'Incorrect username or password' using errcode = 'CREDS';
+      return null; -- Must not throw otherwise transaction will be aborted and attempts won't be recorded
     end if;
   else
     -- No user with that email/username was found
-    raise exception 'Incorrect username or password' using errcode = 'CREDS';
+    return null;
   end if;
 end;
 $$ language plpgsql strict security definer volatile;

@@ -93,11 +93,21 @@ it("can login with EmAiL+password", () =>
 it("cannot login with wrong password", () =>
   withRootDb(async client => {
     await setupTestUser(client);
-    const promise = login(client, EMAIL, "WRONG" + PASSWORD);
-    expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Incorrect username or password"`
-    );
-    expect(promise).rejects.toMatchObject({ code: "CREDS" });
+    const session = await login(client, EMAIL, "WRONG" + PASSWORD);
+    // Don't care if the session is null or just the user_id is null
+    expect(session && session.user_id).toBe(null);
+    // NOTE: we don't throw an error because we track wrong password attempts
   }));
 
-it.todo("prevents too many login attempts");
+it("prevents too many login attempts", () =>
+  withRootDb(async client => {
+    await setupTestUser(client);
+    await login(client, EMAIL, "WRONG" + PASSWORD).catch(() => {});
+    await login(client, EMAIL, "WRONG" + PASSWORD).catch(() => {});
+    await login(client, EMAIL, "WRONG" + PASSWORD).catch(() => {});
+    const promise = login(client, EMAIL, PASSWORD);
+    expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
+      `"User account locked - too many login attempts. Try again after 5 minutes."`
+    );
+    expect(promise).rejects.toMatchObject({ code: "LOCKD" });
+  }));
