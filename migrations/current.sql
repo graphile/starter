@@ -823,10 +823,11 @@ declare
 begin
   select * into v_user_email from app_public.user_emails where id = email_id and user_id = app_public.current_user_id();
   if v_user_email is null then
+    raise exception 'That''s not your email' using errcode = 'DNIED';
     return null;
   end if;
   if v_user_email.is_verified is false then
-    return null;
+    raise exception 'You may not make an unverified email primary' using errcode = 'VRIFY';
   end if;
   update app_public.user_emails set is_primary = false where user_id = app_public.current_user_id() and is_primary is true and id <> email_id;
   update app_public.user_emails set is_primary = true where user_id = app_public.current_user_id() and is_primary is not true and id = email_id returning * into v_user_email;

@@ -30,6 +30,7 @@ Rewritten, the above rules state:
 ## General
 
 - FFFFF: unknown error
+- DNIED: permission denied
 
 ## Registration
 
@@ -43,3 +44,7 @@ Rewritten, the above rules state:
 - EMTKN: a different user account is already linked to this email
 - CREDS: bad credentials (incorrect username/password)
 - LOGIN: you're not logged in
+
+## Email management
+
+- VRIFY: you need to verify your email before you can do that
