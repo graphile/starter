@@ -361,7 +361,7 @@ alter table app_private.user_authentication_secrets enable row level security;
 
 /**********/
 
-create function app_public.forgot_password(email text) returns boolean as $$
+create function app_public.forgot_password(email citext) returns boolean as $$
 declare
   v_user_email app_public.user_emails;
   v_reset_token text;
@@ -371,7 +371,7 @@ begin
   -- Find the matching user_email
   select user_emails.* into v_user_email
   from app_public.user_emails
-  where user_emails.email = forgot_password.email::citext
+  where user_emails.email = forgot_password.email
   order by is_verified desc, id desc;
 
   if not (v_user_email is null) then
@@ -420,7 +420,7 @@ begin
 end;
 $$ language plpgsql strict security definer volatile set search_path from current;
 
-comment on function app_public.forgot_password(email text) is
+comment on function app_public.forgot_password(email citext) is
   E'@resultFieldName success\nIf you''ve forgotten your password, give us one of your email addresses and we'' send you a reset token. Note this only works if you have added an email address!';
 
 /**********/

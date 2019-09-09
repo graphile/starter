@@ -1,7 +1,7 @@
 import { mapValues } from "lodash";
 import { Pool, PoolClient } from "pg";
 
-type User = { id: number; _password?: string };
+type User = { id: number; _password?: string; _email?: string };
 
 const pools = {};
 const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL;
@@ -69,6 +69,12 @@ export const withUserDb = <T>(
     await fn(client, user);
   });
 
+export const withAnonymousDb = <T>(fn: (client: PoolClient) => Promise<T>) =>
+  withRootDb(async client => {
+    await becomeUser(client, null);
+    await fn(client);
+  });
+
 export const becomeRoot = (client: PoolClient) => client.query("reset role");
 export const becomeUser = (
   client: PoolClient,
@@ -106,7 +112,11 @@ export const asRoot = async <T>(
   try {
     return await callback(client);
   } finally {
-    await client.query("select set_config('role', $1, true)", [role]);
+    try {
+      await client.query("select set_config('role', $1, true)", [role]);
+    } catch (e) {
+      // Transaction was probably aborted, don't clobber the error
+    }
   }
 };
 
@@ -140,6 +150,7 @@ export const createUsers = async function createUsers(
   const userLetter = "abcdefghijklmnopqrstuvwxyz"[userCreationCounter];
   for (let i = 0; i < count; i++) {
     const password = userLetter.repeat(12);
+    const email = `${userLetter}${i || ""}@b.c`;
     const user: User = (await client.query(
       `SELECT * FROM app_private.really_create_user(
         username := $1,
@@ -151,7 +162,7 @@ export const createUsers = async function createUsers(
       )`,
       [
         `user_${userLetter}`,
-        `${userLetter}${i || ""}@b.c`,
+        email,
         verified,
         `User ${userLetter}`,
         null,
@@ -159,6 +170,7 @@ export const createUsers = async function createUsers(
       ]
     )).rows[0];
     expect(user.id).not.toBeNull();
+    user._email = email;
     user._password = password;
     users.push(user);
   }
@@ -246,4 +258,21 @@ export const deleteTestUsers = () => {
         )
       `
   );
+};
+
+export const clearJobs = async (client: PoolClient) => {
+  await asRoot(client, () => client.query("delete from graphile_worker.jobs"));
+};
+
+export const getJobs = async (
+  client: PoolClient,
+  taskIdentifier: string | null = null
+) => {
+  const { rows } = await asRoot(client, () =>
+    client.query(
+      "select * from graphile_worker.jobs where $1::text is null or task_identifier = $1::text",
+      [taskIdentifier]
+    )
+  );
+  return rows;
 };
