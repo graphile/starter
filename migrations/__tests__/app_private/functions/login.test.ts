@@ -102,12 +102,55 @@ it("cannot login with wrong password", () =>
 it("prevents too many login attempts", () =>
   withRootDb(async client => {
     await setupTestUser(client);
-    await login(client, EMAIL, "WRONG" + PASSWORD).catch(() => {});
-    await login(client, EMAIL, "WRONG" + PASSWORD).catch(() => {});
-    await login(client, EMAIL, "WRONG" + PASSWORD).catch(() => {});
-    const promise = login(client, EMAIL, PASSWORD);
+    await login(client, USERNAME, "WRONG" + PASSWORD).catch(() => {});
+    await login(client, USERNAME, "WRONG" + PASSWORD).catch(() => {});
+    await login(client, USERNAME, "WRONG" + PASSWORD).catch(() => {});
+    const promise = login(client, USERNAME, PASSWORD);
     expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
       `"User account locked - too many login attempts. Try again after 5 minutes."`
     );
     expect(promise).rejects.toMatchObject({ code: "LOCKD" });
+  }));
+
+it("too many login attempts resets after 5 minutes", () =>
+  withRootDb(async client => {
+    const testUser = await setupTestUser(client);
+    await login(client, USERNAME, "WRONG" + PASSWORD).catch(() => {});
+    await login(client, USERNAME, "WRONG" + PASSWORD).catch(() => {});
+    await login(client, USERNAME, "WRONG" + PASSWORD).catch(() => {});
+    // Too many attempts
+    const {
+      rows: [secrets],
+    } = await client.query(
+      "select * from app_private.user_secrets where user_id = $1",
+      [testUser.id]
+    );
+    expect(snapshotSafe(secrets)).toMatchInlineSnapshot(`
+      Object {
+        "failed_password_attempts": 3,
+        "failed_reset_password_attempts": 0,
+        "first_failed_password_attempt": "[DATE]",
+        "first_failed_reset_password_attempt": null,
+        "last_login_at": "[DATE]",
+        "password_hash": "[hash]",
+        "reset_password_token": null,
+        "reset_password_token_generated": null,
+        "user_id": "[ID]",
+      }
+    `);
+    const {
+      rows: [{ now }],
+    } = await client.query("select now()");
+    // Because we're in a transaction, it failed now
+    expect(secrets.first_failed_password_attempt).toEqual(now);
+
+    // Now turn the clock forward 5 minutes
+    await client.query(
+      "update app_private.user_secrets set first_failed_password_attempt = now() - interval '5 minutes' where user_id = $1",
+      [testUser.id]
+    );
+
+    const session = await login(client, USERNAME, PASSWORD);
+    expect(session).toBeTruthy();
+    expect(session.user_id).toEqual(testUser.id);
   }));

@@ -209,14 +209,22 @@ export const pruneUUIDs = (row: { [key: string]: unknown }) =>
       : v;
   });
 
+export const pruneHashes = (row: { [key: string]: unknown }) =>
+  mapValues(row, (v, k) =>
+    k.endsWith("_hash") && typeof v === "string" && v[0] === "$" ? "[hash]" : v
+  );
+
 export const snapshotSafe = (obj: { [key: string]: unknown }) =>
-  pruneUUIDs(pruneIds(pruneDates(obj)));
+  pruneHashes(pruneUUIDs(pruneIds(pruneDates(obj))));
 
 export const deepSnapshotSafe = (obj: { [key: string]: unknown }): any => {
   if (Array.isArray(obj)) {
     return obj.map(deepSnapshotSafe);
   } else if (obj && typeof obj === "object") {
-    return mapValues(pruneUUIDs(pruneIds(pruneDates(obj))), deepSnapshotSafe);
+    return mapValues(
+      pruneHashes(pruneUUIDs(pruneIds(pruneDates(obj)))),
+      deepSnapshotSafe
+    );
   }
   return obj;
 };
