@@ -188,24 +188,29 @@ export const pruneDates = (row: { [key: string]: unknown }) =>
 const idReplacement = (v: string | number | null) => (!v ? v : "[ID]");
 export const pruneIds = (row: { [key: string]: unknown }) =>
   mapValues(row, (v, k) =>
-    (k === "id" || k.endsWith("Id")) &&
+    (k === "id" || k.endsWith("_id")) &&
     (typeof v === "string" || typeof v === "number")
       ? idReplacement(v)
       : v
   );
+
+const uuidRegexp = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const pruneUUIDs = (row: { [key: string]: unknown }) =>
-  mapValues(row, (v, k) =>
-    k === "queue_name" &&
-    typeof v === "string" &&
-    v.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)
+  mapValues(row, (v, k) => {
+    if (typeof v !== "string") {
+      return v;
+    }
+    const val = v;
+    return ["uuid", "queue_name"].includes(k) && v.match(uuidRegexp)
       ? "[UUID]"
-      : k === "gravatar" && typeof v === "string" && v.match(/^[0-9a-f]{32}$/i)
+      : k === "gravatar" && val.match(/^[0-9a-f]{32}$/i)
       ? "[gUUID]"
-      : v
-  );
+      : v;
+  });
 
 export const snapshotSafe = (obj: { [key: string]: unknown }) =>
-  pruneIds(pruneDates(obj));
+  pruneUUIDs(pruneIds(pruneDates(obj)));
 
 export const deepSnapshotSafe = (obj: { [key: string]: unknown }): any => {
   if (Array.isArray(obj)) {

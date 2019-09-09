@@ -3,7 +3,7 @@ import { PoolClient } from "pg";
 
 beforeEach(deleteTestUsers);
 
-async function reallyCreateUser(
+export async function reallyCreateUser(
   client: PoolClient,
   username: string | null,
   email: string | null,
