@@ -18,6 +18,7 @@ async function login(
 
 const USERNAME = "username";
 const EMAIL = `${USERNAME}@example.com`;
+const EmAiL = `${USERNAME}@eXaMpLe.cOm`;
 const UsErNaMe = "uSeRnAmE";
 const PASSWORD = "!TestPassword!";
 
@@ -73,6 +74,21 @@ it("can login with email+password", () =>
     `);
   }));
 
-it.todo("can login with EmAiL+password");
+it("can login with EmAiL+password", () =>
+  withRootDb(async client => {
+    const testUser = await setupTestUser(client);
+    const session = await login(client, EmAiL, PASSWORD);
+    expect(session).toBeTruthy();
+    expect(session.user_id).toEqual(testUser.id);
+    expect(snapshotSafe(session)).toMatchInlineSnapshot(`
+      Object {
+        "created_at": "[DATE]",
+        "last_active": "[DATE]",
+        "user_id": "[ID]",
+        "uuid": "[UUID]",
+      }
+    `);
+  }));
+
 it.todo("cannot login with wrong password");
 it.todo("prevents too many login attempts");
