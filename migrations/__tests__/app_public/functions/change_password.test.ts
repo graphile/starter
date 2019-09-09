@@ -1,14 +1,31 @@
-import { withUserDb, asRoot, withRootDb, becomeUser } from "./helpers";
+import { withUserDb, asRoot, withRootDb, becomeUser } from "../../helpers";
+import { PoolClient } from "pg";
+
+async function changePassword(
+  client: PoolClient,
+  oldPassword: string | null | void,
+  newPassword: string | null
+) {
+  const {
+    rows: [row],
+  } = await client.query(
+    `
+      select * from app_public.change_password(
+        $1,
+        $2
+      )
+      `,
+    [oldPassword, newPassword]
+  );
+  return row;
+}
 
 it("can change password", () =>
   withUserDb(async (client, user) => {
     const newPassword = "can change password test DO_NOT_COPY_THIS";
 
     // Action
-    await client.query("select * from app_public.change_password($1, $2)", [
-      user._password,
-      newPassword,
-    ]);
+    await changePassword(client, user._password, newPassword);
 
     // Assertions
     const { rows: secrets } = await asRoot(client, () =>
@@ -28,10 +45,7 @@ it("cannot change password if password is wrong (CREDS)", () =>
     const newPassword = "SECURE_PASSWORD_1!";
 
     // Action
-    const promise = client.query(
-      "select * from app_public.change_password($1, $2)",
-      ["WRONG PASSWORD", newPassword]
-    );
+    const promise = changePassword(client, "WRONG PASSWORD", newPassword);
 
     // Assertions
     await expect(promise).rejects.toMatchInlineSnapshot(
@@ -46,10 +60,7 @@ it("cannot set a 'weak' password (WEAKP)", () =>
     const newPassword = "WEAK";
 
     // Action
-    const promise = client.query(
-      "select * from app_public.change_password($1, $2)",
-      [user._password, newPassword]
-    );
+    const promise = changePassword(client, user._password, newPassword);
 
     // Assertions
     await expect(promise).rejects.toMatchInlineSnapshot(
@@ -65,10 +76,7 @@ it("gives error if not logged in (LOGIN)", () =>
     const newPassword = "SECURE_PASSWORD_1!";
 
     // Action
-    const promise = client.query(
-      "select * from app_public.change_password($1, $2)",
-      ["irrelevant", newPassword]
-    );
+    const promise = changePassword(client, "irrelevant", newPassword);
 
     // Assertions
     await expect(promise).rejects.toMatchInlineSnapshot(

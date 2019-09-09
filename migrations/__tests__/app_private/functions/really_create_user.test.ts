@@ -1,4 +1,4 @@
-import { withRootDb, snapshotSafe, deleteTestUsers } from "./helpers";
+import { withRootDb, snapshotSafe, deleteTestUsers } from "../../helpers";
 import { PoolClient } from "pg";
 
 beforeEach(deleteTestUsers);

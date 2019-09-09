@@ -1,4 +1,4 @@
-import { getSessions, withUserDb } from "./helpers";
+import { getSessions, withUserDb } from "../../helpers";
 
 it("deletes session when user logs out", () =>
   withUserDb(async (client, user) => {
