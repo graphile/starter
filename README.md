@@ -40,13 +40,18 @@ yarn setup
 The above command will create a `.env` file for you containing all your
 secrets. Do not commit it!
 
-Finally you can bring the stack up either with `yarn dev` if you said no to
-Docker mode or `docker-compose up` if you went the Docker route. After a
-short period you should then be able to load the application at
+## Running
+
+Finally you can bring the stack up:
+
+- natively: `yarn dev`
+- with Docker: `docker-compose up`
+
+After a short period you should then be able to load the application at
 http://localhost:5678
 
-Be careful not to mix and match Docker-mode vs local-mode. Pick one and
-stick to it.
+**Be careful not to mix and match Docker-mode vs local-mode.** You should
+stick with the answer you gave during setup.
 
 ## Features
 
