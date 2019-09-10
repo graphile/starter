@@ -8,7 +8,7 @@ import { Request, Response } from "express";
 import { graphql, GraphQLSchema, ExecutionResult } from "graphql";
 import { getPostGraphileOptions } from "../src/server/middleware/installPostGraphile";
 
-export { deleteTestUsers } from "../../__tests__/helpers";
+export * from "../../__tests__/helpers";
 
 const MockReq = require("mock-req");
 

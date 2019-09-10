@@ -4,14 +4,14 @@ import {
   TEST_DATABASE_URL,
   poolFromUrl,
   asRoot,
-  deleteTestUsers,
 } from "../../__tests__/helpers";
 
-// We need to inform jest that these files depend on changes to the database, so we write a dummy file
+// We need to inform jest that these files depend on changes to the database, so
+// we write a dummy file after current.sql is imported
 import { ts } from "./.jest.watch.hack.json";
 ts; // We used it... see?
 
-export { deleteTestUsers, asRoot };
+export * from "../../__tests__/helpers";
 
 type User = { id: number; _password?: string; _email?: string };
 
