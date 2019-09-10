@@ -5,6 +5,9 @@ import {
   poolFromUrl,
   deleteTestData,
   asRoot,
+  User,
+  createUsers,
+  createSession,
 } from "../../__tests__/helpers";
 
 // We need to inform jest that these files depend on changes to the database, so
@@ -15,8 +18,6 @@ ts; // We used it... see?
 export * from "../../__tests__/helpers";
 
 beforeAll(deleteTestData);
-
-type User = { id: number; _password?: string; _email?: string };
 
 /******************************************************************************/
 
@@ -61,29 +62,21 @@ export const withAnonymousDb = <T>(fn: (client: PoolClient) => Promise<T>) =>
   });
 
 export const becomeRoot = (client: PoolClient) => client.query("reset role");
-export const becomeUser = (
+export const becomeUser = async (
   client: PoolClient,
   userOrUserId: User | number | null
-) =>
-  client.query(
-    `
-      with new_session as (
-        insert into app_private.sessions (user_id)
-        select * from (values($2::int)) v
-        where $2 is not null
-        returning *
+) => {
+  const session = userOrUserId
+    ? await createSession(
+        client,
+        typeof userOrUserId === "object" ? userOrUserId.id : userOrUserId
       )
-      select set_config('role', $1, true), set_config('jwt.claims.session_id', coalesce((select uuid::text from new_session), ''), true)
-    `,
-    [
-      process.env.DATABASE_VISITOR,
-      userOrUserId
-        ? typeof userOrUserId === "object"
-          ? userOrUserId.id
-          : userOrUserId
-        : null,
-    ]
+    : null;
+  await client.query(
+    `select set_config('role', $1::text, true), set_config('jwt.claims.session_id', $2::text, true)`,
+    [process.env.DATABASE_VISITOR, session ? session.uuid : ""]
   );
+};
 
 export const getSessions = async (client: PoolClient, userId: number) => {
   const { rows } = await asRoot(client, () =>
@@ -92,55 +85,6 @@ export const getSessions = async (client: PoolClient, userId: number) => {
     ])
   );
   return rows;
-};
-
-/******************************************************************************/
-
-// Enables multiple calls to `createUsers` within the same test to still have
-// deterministic results without conflicts.
-let userCreationCounter = 0;
-beforeEach(() => {
-  userCreationCounter = 0;
-});
-
-export const createUsers = async function createUsers(
-  client: PoolClient,
-  count: number = 1,
-  verified: boolean = true
-) {
-  const users = [];
-  if (userCreationCounter > 25) {
-    throw new Error("Too many users created!");
-  }
-  const userLetter = "abcdefghijklmnopqrstuvwxyz"[userCreationCounter];
-  for (let i = 0; i < count; i++) {
-    const password = userLetter.repeat(12);
-    const email = `${userLetter}${i || ""}@b.c`;
-    const user: User = (await client.query(
-      `SELECT * FROM app_private.really_create_user(
-        username := $1,
-        email := $2,
-        email_is_verified := $3,
-        name := $4,
-        avatar_url := $5,
-        password := $6
-      )`,
-      [
-        `user_${userLetter}`,
-        email,
-        verified,
-        `User ${userLetter}`,
-        null,
-        password,
-      ]
-    )).rows[0];
-    expect(user.id).not.toBeNull();
-    user._email = email;
-    user._password = password;
-    users.push(user);
-  }
-  userCreationCounter++;
-  return users;
 };
 
 /******************************************************************************/

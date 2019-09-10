@@ -7,10 +7,27 @@ import {
 import { Request, Response } from "express";
 import { graphql, GraphQLSchema, ExecutionResult } from "graphql";
 import { getPostGraphileOptions } from "../src/server/middleware/installPostGraphile";
+import {
+  createUsers,
+  poolFromUrl,
+  createSession,
+} from "../../__tests__/helpers";
 
 export * from "../../__tests__/helpers";
 
 const MockReq = require("mock-req");
+
+export async function createUserAndLogIn() {
+  const pool = poolFromUrl(process.env.TEST_DATABASE_URL!);
+  const client = await pool.connect();
+  try {
+    const [user] = await createUsers(pool, 1, true);
+    const session = await createSession(pool, user.id);
+    return { user, session };
+  } finally {
+    client.release();
+  }
+}
 
 /*
  * This function replaces values that are expected to change with static

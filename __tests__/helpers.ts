@@ -7,6 +7,8 @@ if (!process.env.TEST_DATABASE_URL) {
 }
 export const TEST_DATABASE_URL: string = process.env.TEST_DATABASE_URL;
 
+export type User = { id: number; _password?: string; _email?: string };
+
 // Make sure we release those pgPools so that our tests exit!
 afterAll(() => {
   const keys = Object.keys(pools);
@@ -71,4 +73,72 @@ export const asRoot = async <T>(
       // Transaction was probably aborted, don't clobber the error
     }
   }
+};
+
+/******************************************************************************/
+
+// Enables multiple calls to `createUsers` within the same test to still have
+// deterministic results without conflicts.
+let userCreationCounter = 0;
+beforeEach(() => {
+  userCreationCounter = 0;
+});
+
+export const createUsers = async function createUsers(
+  client: PoolClient,
+  count: number = 1,
+  verified: boolean = true
+) {
+  const users = [];
+  if (userCreationCounter > 25) {
+    throw new Error("Too many users created!");
+  }
+  const userLetter = "abcdefghijklmnopqrstuvwxyz"[userCreationCounter];
+  for (let i = 0; i < count; i++) {
+    const password = userLetter.repeat(12);
+    const email = `${userLetter}${i || ""}@b.c`;
+    const user: User = (await client.query(
+      `SELECT * FROM app_private.really_create_user(
+        username := $1,
+        email := $2,
+        email_is_verified := $3,
+        name := $4,
+        avatar_url := $5,
+        password := $6
+      )`,
+      [
+        `testuser_${userLetter}`,
+        email,
+        verified,
+        `User ${userLetter}`,
+        null,
+        password,
+      ]
+    )).rows[0];
+    expect(user.id).not.toBeNull();
+    user._email = email;
+    user._password = password;
+    users.push(user);
+  }
+  userCreationCounter++;
+  return users;
+};
+
+/******************************************************************************/
+
+export const createSession = async (
+  client: PoolClient,
+  userId: number
+): Promise<{ uuid: string }> => {
+  const {
+    rows: [session],
+  } = await client.query(
+    `
+      insert into app_private.sessions (user_id)
+      values ($1::int)
+      returning *
+    `,
+    [userId]
+  );
+  return session;
 };
