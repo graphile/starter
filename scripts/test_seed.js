@@ -4,7 +4,11 @@ const { promisify } = require("util");
 const writeFile = promisify(fs.writeFile);
 
 async function main() {
-  const pgPool = new pg.Pool({ connectionString: process.env.GM_DBURL });
+  const connectionString = process.env.GM_DBURL;
+  if (!connectionString) {
+    throw new Error("GM_DBURL not set!");
+  }
+  const pgPool = new pg.Pool({ connectionString });
   try {
     await pgPool.query(
       "drop trigger _200_make_first_user_admin on app_public.users;"
@@ -21,9 +25,7 @@ async function main() {
   }
 }
 
-if (process.env.IN_TESTS === "1") {
-  main().catch(e => {
-    console.error(e);
-    process.exit(1);
-  });
-}
+main().catch(e => {
+  console.error(e);
+  process.exit(1);
+});

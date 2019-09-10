@@ -17,14 +17,14 @@
     {
       "_": "command",
       "shadow": true,
-      "command": "pg_dump --no-sync --schema-only --no-owner --exclude-schema=graphile_migrate --exclude-schema=graphile_worker --file=data/schema.sql \"$GM_DBURL\""
+      "command": "if [ \"$IN_TESTS\" <> \"1\" ]; then pg_dump --no-sync --schema-only --no-owner --exclude-schema=graphile_migrate --exclude-schema=graphile_worker --file=data/schema.sql \"$GM_DBURL\"; fi"
     }
   ],
   "afterCurrent": [
     {
       "_": "command",
       "shadow": true,
-      "command": "node scripts/test_seed.js"
+      "command": "if [ \"$IN_TESTS\" = \"1\" ]; then node scripts/test_seed.js; fi"
     }
   ]
 }
