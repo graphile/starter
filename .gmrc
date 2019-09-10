@@ -24,7 +24,7 @@
     {
       "_": "command",
       "shadow": true,
-      "command": "if [ \"$IN_TESTS\" = \"1\" ]; then psql -X1qv ON_ERROR_STOP=1 \"$GM_DBURL\" -f scripts/test_seed.sql; touch migrations/__tests__/helpers.ts; fi"
+      "command": "node scripts/test_seed.js"
     }
   ]
 }
