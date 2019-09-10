@@ -1,8 +1,9 @@
 import { mapValues } from "lodash";
 import { PoolClient } from "pg";
 import {
-  poolFromUrl,
   TEST_DATABASE_URL,
+  poolFromUrl,
+  asRoot,
   deleteTestUsers,
 } from "../../__tests__/helpers";
 
@@ -10,7 +11,7 @@ import {
 import { ts } from "./.jest.watch.hack.json";
 ts; // We used it... see?
 
-export { deleteTestUsers };
+export { deleteTestUsers, asRoot };
 
 type User = { id: number; _password?: string; _email?: string };
 
@@ -80,26 +81,6 @@ export const becomeUser = (
         : null,
     ]
   );
-
-/* Quickly becomes root, does the thing, and then reverts back to previous role */
-export const asRoot = async <T>(
-  client: PoolClient,
-  callback: (client: PoolClient) => Promise<T>
-): Promise<T> => {
-  const {
-    rows: [{ role }],
-  } = await client.query("select current_setting('role') as role");
-  await client.query("reset role");
-  try {
-    return await callback(client);
-  } finally {
-    try {
-      await client.query("select set_config('role', $1, true)", [role]);
-    } catch (e) {
-      // Transaction was probably aborted, don't clobber the error
-    }
-  }
-};
 
 export const getSessions = async (client: PoolClient, userId: number) => {
   const { rows } = await asRoot(client, () =>

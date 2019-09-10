@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Pool, PoolClient } from "pg";
 
 const pools = {};
 
@@ -47,4 +47,24 @@ export const deleteTestUsers = () => {
         )
       `
   );
+};
+
+/* Quickly becomes root, does the thing, and then reverts back to previous role */
+export const asRoot = async <T>(
+  client: PoolClient,
+  callback: (client: PoolClient) => Promise<T>
+): Promise<T> => {
+  const {
+    rows: [{ role }],
+  } = await client.query("select current_setting('role') as role");
+  await client.query("reset role");
+  try {
+    return await callback(client);
+  } finally {
+    try {
+      await client.query("select set_config('role', $1, true)", [role]);
+    } catch (e) {
+      // Transaction was probably aborted, don't clobber the error
+    }
+  }
 };
