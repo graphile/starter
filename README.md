@@ -53,6 +53,16 @@ http://localhost:5678
 **Be careful not to mix and match Docker-mode vs local-mode.** You should
 stick with the answer you gave during setup.
 
+## Docker notes
+
+Docker creates the files in `.docker` as root. So you have to `sudo` to deal with them. 🙄
+
+PostgreSQL logs from Docker were overwhelming so we now write them to the
+Postgres data directory `.docker/postgres_data/logs/`. We've enabled
+`log_truncate_on_rotation` but you may need to prune these periodically. See
+[log file
+maintenance](https://www.postgresql.org/docs/current/logfile-maintenance.html).
+
 ## Features
 
 Checked features have been implemented, unchecked features are goals for the future.
