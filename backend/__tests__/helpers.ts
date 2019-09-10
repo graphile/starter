@@ -101,7 +101,7 @@ export const runGraphQLQuery = async function runGraphQLQuery(
   checker: (
     result: ExecutionResult,
     context: { pgClient: PoolClient }
-  ) => ExecutionResult | Promise<ExecutionResult> = result => result // Place test assertions in this function
+  ) => void | ExecutionResult | Promise<void | ExecutionResult> = () => {} // Place test assertions in this function
 ) {
   if (!ctx) throw new Error("No ctx!");
   const { schema, rootPgPool, options } = ctx;
@@ -194,7 +194,7 @@ export const runGraphQLQuery = async function runGraphQLQuery(
         // You don't have to keep this, I just like knowing when things change!
         expect(sanitise(result)).toMatchSnapshot();
 
-        return checkResult;
+        return checkResult == null ? result : checkResult;
       } finally {
         // Rollback the transaction so no changes are written to the DB - this
         // makes our tests fairly deterministic.

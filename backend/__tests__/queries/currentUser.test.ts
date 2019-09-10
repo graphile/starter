@@ -19,8 +19,6 @@ test("currentUser", async () => {
 
     // This function runs all your test assertions:
     async json => {
-      console.dir(json.errors);
-
       expect(json.errors).toBeFalsy();
       expect(json.data).toBeTruthy();
       expect(json.data!.currentUser).toBe(null);
