@@ -5,6 +5,7 @@ import {
   sanitise,
   deleteTestUsers,
 } from "./helpers";
+import { asRoot } from "../../__tests__/helpers";
 
 beforeEach(deleteTestUsers);
 beforeAll(setup);
@@ -72,9 +73,8 @@ test("Register", async () => {
       // If you need to, you can query the DB within the context of this
       // function - e.g. to check that your mutation made the changes you'd
       // expect.
-      const { rows } = await pgClient.query(
-        `SELECT * FROM app_public.users WHERE id = $1`,
-        [id]
+      const { rows } = await asRoot(pgClient, () =>
+        pgClient.query(`SELECT * FROM app_public.users WHERE id = $1`, [id])
       );
       if (rows.length !== 1) {
         throw new Error("User not found!");
