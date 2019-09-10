@@ -84,13 +84,13 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **Realtime** — PostGraphile is configured with @graphile/pg-pubsub to enable realtime events from the DB; and Apollo is configured to consume them
 - [x] **Production build** — command to generate a production build of the project using `npm run build`
 - [x] **Deployment instructions: Heroku** — how to deploy to Heroku
+- [x] **Database tests** — Jest configured to test the database, plus tests for some functions and tables (PRs welcome!)
 
 ## TODO
 
 Here's some more things we'd like to demonstrate that we've not got around to yet. (If you're interested in helping, reach out on Discord: http://discord.gg/graphile)
 
 - [ ] **Docker development flow** — how to work on this project using Docker (rather than running the code/servers directly)
-- [ ] **Testing Database** — Jest configured to test the database
 - [ ] **Testing GraphQL** — Jest configured to test the GraphQL API
 - [ ] **Acceptance testing** — one of Selenium, Cypress, TestCafe, etc
 - [ ] **File uploads** — user can change their avatar, but this approach can be extended to other areas
