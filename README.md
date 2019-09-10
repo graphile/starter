@@ -63,6 +63,10 @@ Postgres data directory `.docker/postgres_data/logs/`. We've enabled
 [log file
 maintenance](https://www.postgresql.org/docs/current/logfile-maintenance.html).
 
+Our Docker setup seems to trigger more watch events than the native one, so
+it seems to do more redundant work/produce more output. A PR to fix this
+would be welcome!
+
 ## Features
 
 Checked features have been implemented, unchecked features are goals for the future.
