@@ -1,19 +1,7 @@
 const fs = require("fs");
 const pg = require("pg");
 const { promisify } = require("util");
-const utimes = promisify(fs.utimes);
-const close = promisify(fs.close);
-const open = promisify(fs.open);
-
-async function touch(filepath) {
-  try {
-    const now = new Date();
-    await utimes(filepath, now, now);
-  } catch (err) {
-    const fd = await open(filepath, "w");
-    await close(fd);
-  }
-}
+const writeFile = promisify(fs.writeFile);
 
 async function main() {
   const pgPool = new pg.Pool({ connectionString: process.env.GM_DBURL });
@@ -22,7 +10,12 @@ async function main() {
       "drop trigger _200_make_first_user_admin on app_public.users;"
     );
     await pgPool.query("delete from graphile_worker.jobs;");
-    await touch("migrations/__tests__/helpers.ts");
+    await writeFile(
+      "migrations/__tests__/.jest.watch.hack.json",
+      JSON.stringify({
+        ts: Date.now(),
+      })
+    );
   } finally {
     await pgPool.end();
   }

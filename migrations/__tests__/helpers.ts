@@ -1,41 +1,20 @@
 import { mapValues } from "lodash";
-import { Pool, PoolClient } from "pg";
+import { PoolClient } from "pg";
+import {
+  poolFromUrl,
+  TEST_DATABASE_URL,
+  deleteTestUsers,
+} from "../../__tests__/helpers";
+// We need to inform jest that these files depend on changes to the database, so we write a dummy file
+import "./.jest.watch.hack.json";
+
+export { deleteTestUsers };
 
 type User = { id: number; _password?: string; _email?: string };
-
-const pools = {};
-const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL;
-if (!TEST_DATABASE_URL) {
-  throw new Error("Cannot run tests without a TEST_DATABASE_URL");
-}
-
-// Make sure we release those pgPools so that our tests exit!
-afterAll(() => {
-  const keys = Object.keys(pools);
-  return Promise.all(
-    keys.map(async key => {
-      try {
-        const pool = pools[key];
-        delete pools[key];
-        await pool.end();
-      } catch (e) {
-        console.error("Failed to release connection!");
-        console.error(e);
-      }
-    })
-  );
-});
 
 /******************************************************************************/
 
 type ClientCallback<T = any> = (client: PoolClient) => Promise<T>;
-
-const poolFromUrl = (url: string) => {
-  if (!pools[url]) {
-    pools[url] = new Pool({ connectionString: url });
-  }
-  return pools[url];
-};
 
 const withDbFromUrl = async <T>(url: string, fn: ClientCallback<T>) => {
   const pool = poolFromUrl(url);
@@ -241,24 +220,6 @@ export const deepSnapshotSafe = (obj: { [key: string]: unknown }): any => {
   return obj;
 };
 /******************************************************************************/
-
-export const deleteTestUsers = () => {
-  // We're not using withRootDb because we don't want the transaction rolled back
-  const pool = poolFromUrl(TEST_DATABASE_URL);
-  return pool.query(
-    `
-      delete from app_public.users
-      where username like 'testuser%'
-      or username = 'testuser'
-      or id in
-        (
-          select user_id from app_public.user_emails where email like 'testuser%@example.com'
-        union
-          select user_id from app_public.user_authentications where service = 'facebook' and identifier = '123456%'
-        )
-      `
-  );
-};
 
 export const clearJobs = async (client: PoolClient) => {
   await asRoot(client, () => client.query("delete from graphile_worker.jobs"));
