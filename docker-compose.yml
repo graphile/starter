@@ -11,6 +11,15 @@ services:
     command: yarn dev
     ports:
       - 5678:5678
+  test:
+    image: node:10
+    environment:
+      - FORCE_COLOR=2
+    volumes:
+      - .:/app
+      - .docker/node_modules:/app/node_modules
+    working_dir: /app
+    command: yarn test:watch
   pg:
     image: postgres:11
     volumes:
