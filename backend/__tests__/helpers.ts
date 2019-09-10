@@ -12,10 +12,6 @@ export * from "../../__tests__/helpers";
 
 const MockReq = require("mock-req");
 
-// This is the role that your normal PostGraphile connection string would use,
-// e.g. `postgres://DATABASE_AUTHENTICATOR:password@host/db`
-const DATABASE_AUTHENTICATOR = process.env.DATABASE_AUTHENTICATOR;
-
 /*
  * This function replaces values that are expected to change with static
  * placeholders so that our snapshot testing doesn't throw an error
@@ -105,7 +101,7 @@ export const runGraphQLQuery = async function runGraphQLQuery(
   checker: (
     result: ExecutionResult,
     context: { pgClient: PoolClient }
-  ) => void = () => {} // Place test assertions in this function
+  ) => ExecutionResult | Promise<ExecutionResult> = result => result // Place test assertions in this function
 ) {
   if (!ctx) throw new Error("No ctx!");
   const { schema, rootPgPool, options } = ctx;
@@ -126,122 +122,83 @@ export const runGraphQLQuery = async function runGraphQLQuery(
     additionalGraphQLContextFromRequest,
   } = options;
   const pgSettings =
-    typeof pgSettingsGenerator === "function"
+    (typeof pgSettingsGenerator === "function"
       ? await pgSettingsGenerator(req)
-      : pgSettingsGenerator;
+      : pgSettingsGenerator) || {};
+
+  // Because we're connected as the database owner, we should manually switch to
+  // the authenticator role
+  if (!pgSettings.role) {
+    pgSettings.role = process.env.DATABASE_AUTHENTICATOR;
+  }
 
   await withPostGraphileContext(
     {
       ...options,
       pgPool: rootPgPool,
       pgSettings,
+      pgForceTransaction: true,
     },
     async context => {
-      /* BEGIN: pgClient REPLACEMENT */
-      // We're not going to use the `pgClient` that came with
-      // `withPostGraphileContext` because we want to ROLLBACK at the end. So
-      // we need to replace it, and re-implement the settings logic. Sorry.
-
-      const replacementPgClient = await rootPgPool.connect();
+      let checkResult;
+      const { pgClient } = context;
       try {
-        await replacementPgClient.query("begin");
-        await replacementPgClient.query(`select set_config('role', $1, true)`, [
-          DATABASE_AUTHENTICATOR,
-        ]);
-
-        const localSettings = new Map();
-
-        // Set the custom provided settings before jwt claims and role are set
-        // this prevents an accidentional overwriting
-        if (typeof pgSettings === "object") {
-          for (const key of Object.keys(pgSettings)) {
-            localSettings.set(key, String(pgSettings[key]));
-          }
-        }
-
-        // If there is at least one local setting.
-        if (localSettings.size !== 0) {
-          // Actually create our query.
-          const values: any[] = [];
-          const sqlQuery = `select ${Array.from(localSettings)
-            .map(([key, value]) => {
-              values.push(key);
-              values.push(value);
-              return `set_config($${values.length - 1}, $${
-                values.length
-              }, true)`;
-            })
-            .join(", ")}`;
-
-          // Execute the query.
-          await replacementPgClient.query(sqlQuery, values);
-        }
-        /* END: pgClient REPLACEMENT */
-
-        let checkResult;
-        try {
-          // This runs our GraphQL query, passing the replacement client
-          const additionalContext = additionalGraphQLContextFromRequest
-            ? await additionalGraphQLContextFromRequest(req, res)
-            : null;
-          const result = await graphql(
-            schema,
-            query,
-            null,
-            {
-              ...context,
-              ...additionalContext,
-              pgClient: replacementPgClient,
-              __TESTING: true,
-            },
-            variables
-          );
-          // Expand errors
-          if (result.errors) {
-            // This does a similar transform that PostGraphile does to errors.
-            // It's not the same. Sorry.
-            // TODO: use `handleErrors` instead, if present
-            result.errors = result.errors.map(rawErr => {
-              const e = Object.create(rawErr);
-              Object.defineProperty(e, "originalError", {
-                value: rawErr.originalError,
-                enumerable: false,
-              });
-
-              if (e.originalError) {
-                Object.keys(e.originalError).forEach(k => {
-                  try {
-                    e[k] = e.originalError[k];
-                  } catch (err) {
-                    // Meh.
-                  }
-                });
-              }
-              return e;
+        // This runs our GraphQL query, passing the replacement client
+        const additionalContext = additionalGraphQLContextFromRequest
+          ? await additionalGraphQLContextFromRequest(req, res)
+          : null;
+        const result = await graphql(
+          schema,
+          query,
+          null,
+          {
+            ...context,
+            ...additionalContext,
+            __TESTING: true,
+          },
+          variables
+        );
+        // Expand errors
+        if (result.errors) {
+          // This does a similar transform that PostGraphile does to errors.
+          // It's not the same. Sorry.
+          // TODO: use `handleErrors` instead, if present
+          result.errors = result.errors.map(rawErr => {
+            const e = Object.create(rawErr);
+            Object.defineProperty(e, "originalError", {
+              value: rawErr.originalError,
+              enumerable: false,
             });
-          }
 
-          // This is were we call the `checker` so you can do your assertions.
-          // Also note that we pass the `replacementPgClient` so that you can
-          // query the data in the database from within the transaction before it
-          // gets rolled back.
-          checkResult = await checker(result, {
-            pgClient: replacementPgClient,
+            if (e.originalError) {
+              Object.keys(e.originalError).forEach(k => {
+                try {
+                  e[k] = e.originalError[k];
+                } catch (err) {
+                  // Meh.
+                }
+              });
+            }
+            return e;
           });
-
-          // You don't have to keep this, I just like knowing when things change!
-          expect(sanitise(result)).toMatchSnapshot();
-
-          // For type safety we must return the result even though we don't use it.
-          return result;
-        } finally {
-          // Rollback the transaction so no changes are written to the DB - this
-          // makes our tests fairly deterministic.
-          await replacementPgClient.query("rollback");
         }
+
+        // This is were we call the `checker` so you can do your assertions.
+        // Also note that we pass the `replacementPgClient` so that you can
+        // query the data in the database from within the transaction before it
+        // gets rolled back.
+        checkResult = await checker(result, {
+          pgClient,
+        });
+
+        // You don't have to keep this, I just like knowing when things change!
+        expect(sanitise(result)).toMatchSnapshot();
+
         return checkResult;
       } finally {
-        replacementPgClient.release();
+        // Rollback the transaction so no changes are written to the DB - this
+        // makes our tests fairly deterministic.
+        await pgClient.query("rollback");
       }
     }
   );
