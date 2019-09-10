@@ -1,7 +1,5 @@
-import { withRootDb, snapshotSafe, deleteTestUsers } from "../../helpers";
+import { withRootDb, snapshotSafe } from "../../helpers";
 import { PoolClient } from "pg";
-
-beforeEach(deleteTestUsers);
 
 export async function reallyCreateUser(
   client: PoolClient,

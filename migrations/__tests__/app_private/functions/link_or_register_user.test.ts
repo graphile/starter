@@ -1,4 +1,4 @@
-import { withRootDb, snapshotSafe, deleteTestUsers } from "../../helpers";
+import { withRootDb, snapshotSafe } from "../../helpers";
 import { PoolClient } from "pg";
 
 async function linkOrRegisterUser(
@@ -25,8 +25,6 @@ async function linkOrRegisterUser(
 }
 
 describe("when account doesn't already exist", () => {
-  beforeEach(deleteTestUsers);
-
   it("can login with full oauth details", () =>
     withRootDb(async client => {
       const user = await linkOrRegisterUser(

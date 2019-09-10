@@ -49,6 +49,10 @@ export const deleteTestUsers = () => {
   );
 };
 
+export const deleteTestData = async () => {
+  await deleteTestUsers();
+};
+
 /* Quickly becomes root, does the thing, and then reverts back to previous role */
 export const asRoot = async <T>(
   client: PoolClient,

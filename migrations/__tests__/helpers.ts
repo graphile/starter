@@ -3,6 +3,7 @@ import { PoolClient } from "pg";
 import {
   TEST_DATABASE_URL,
   poolFromUrl,
+  deleteTestData,
   asRoot,
 } from "../../__tests__/helpers";
 
@@ -12,6 +13,8 @@ import { ts } from "./.jest.watch.hack.json";
 ts; // We used it... see?
 
 export * from "../../__tests__/helpers";
+
+beforeAll(deleteTestData);
 
 type User = { id: number; _password?: string; _email?: string };
 
