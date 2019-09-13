@@ -48,23 +48,23 @@ export default function Login({ next: rawNext }: LoginProps) {
         currentUser ? (
           <Redirect href={next} />
         ) : (
-          <div>
-            <WrappedLoginForm
-              onSuccessRedirectTo={next}
-              error={error}
-              setError={setError}
-            />
-            <Divider />
-            <Row>
-              <Col span={12} offset={6}>
-                <div style={{ textAlign: "center" }}>
-                  <p>Alternatively, you can use social login:</p>
-                  <SocialLoginOptions next={next} />
-                </div>
-              </Col>
-            </Row>
-          </div>
-        )
+            <div>
+              <WrappedLoginForm
+                onSuccessRedirectTo={next}
+                error={error}
+                setError={setError}
+              />
+              <Divider />
+              <Row>
+                <Col span={12} offset={6}>
+                  <div style={{ textAlign: "center" }}>
+                    <p>Alternatively, you can use social login:</p>
+                    <SocialLoginOptions next={next} />
+                  </div>
+                </Col>
+              </Row>
+            </div>
+          )
       }
     </SharedLayout>
   );
@@ -151,7 +151,7 @@ function LoginForm({
           <span>
             New user?{" "}
             <Link href="/register">
-              <a>Register Here</a>
+              <a data-cy="loginpage-register-button">Register Here</a>
             </Link>
           </span>
         </Col>

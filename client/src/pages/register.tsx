@@ -18,7 +18,7 @@ import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
 import { formItemLayout, tailFormItemLayout } from "../forms";
 
-interface RegisterProps {}
+interface RegisterProps { }
 
 /**
  * The registration page just renders the standard layout and embeds the
@@ -190,7 +190,7 @@ function RegistrationForm({
     <Form {...formItemLayout} onSubmit={handleSubmit}>
       <Form.Item
         label={
-          <span>
+          <span data-cy="registerpage-name-label">
             Name&nbsp;
             <Tooltip title="What is your name?">
               <Icon type="question-circle-o" />
@@ -206,7 +206,7 @@ function RegistrationForm({
               whitespace: true,
             },
           ],
-        })(<Input ref={focusElement} />)}
+        })(<Input ref={focusElement} data-cy="registerpage-input-name" />)}
       </Form.Item>
       <Form.Item
         label={
@@ -226,7 +226,7 @@ function RegistrationForm({
               whitespace: true,
             },
           ],
-        })(<Input />)}
+        })(<Input data-cy="registerpage-input-username" />)}
       </Form.Item>
       <Form.Item label="E-mail">
         {getFieldDecorator("email", {
@@ -240,7 +240,7 @@ function RegistrationForm({
               message: "Please input your E-mail",
             },
           ],
-        })(<Input />)}
+        })(<Input data-cy="registerpage-input-email" />)}
       </Form.Item>
       <Form.Item label="Password">
         {getFieldDecorator("password", {
@@ -253,7 +253,7 @@ function RegistrationForm({
               validator: validateToNextPassword,
             },
           ],
-        })(<Input type="password" />)}
+        })(<Input type="password" data-cy="registerpage-input-password" />)}
       </Form.Item>
       <Form.Item label="Confirm Password">
         {getFieldDecorator("confirm", {
@@ -266,7 +266,7 @@ function RegistrationForm({
               validator: compareToFirstPassword,
             },
           ],
-        })(<Input type="password" onBlur={handleConfirmBlur} />)}
+        })(<Input type="password" onBlur={handleConfirmBlur} data-cy="registerpage-input-password2" />)}
       </Form.Item>
       {error ? (
         <Form.Item>
@@ -288,7 +288,9 @@ function RegistrationForm({
         </Form.Item>
       ) : null}
       <Form.Item {...tailFormItemLayout}>
-        <Button htmlType="submit">Register</Button>
+        <Button htmlType="submit" data-cy="registerpage-submit-button">
+          Register
+        </Button>
       </Form.Item>
     </Form>
   );
