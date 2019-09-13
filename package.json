@@ -4,7 +4,7 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx,.graphql 'client/src/**/*' 'backend/src/**/*' && tsc --noEmit",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx,.graphql . && tsc --noEmit",
     "setup": "./scripts/setup",
     "server:src:build": "yarn codegen && cd backend && tsc",
     "server:src:watch": "cd backend && tsc --watch",

@@ -5,6 +5,7 @@
   "eslint.enable": true,
   "eslint.autoFixOnSave": true,
   "eslint.lintTask.enable": true,
+  "eslint.lintTask.options": "--ext .js,.jsx,.ts,.tsx,.graphql .",
   "eslint.validate": [
     "javascript",
     "javascriptreact",
