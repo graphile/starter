@@ -7,7 +7,7 @@
       "name": "Attach to Node Server",
       "port": 9678,
       "restart": true,
-      "outFiles": ["${workspaceFolder}/backend/dist/**/*.js"]
+      "outFiles": ["${workspaceFolder}/backend/dist/server/**/*.js"]
     },
     {
       "type": "node",
@@ -15,6 +15,14 @@
       "name": "Attach to Jest tests",
       "port": 9876,
       "restart": true
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Worker",
+      "port": 9757,
+      "restart": true,
+      "outFiles": ["${workspaceFolder}/backend/dist/worker/**/*.js"]
     },
     {
       "type": "chrome",
