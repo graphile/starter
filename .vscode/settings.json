@@ -1,5 +1,6 @@
 {
   "editor.tabSize": 2,
+  "editor.insertSpaces": true,
   "editor.formatOnSave": true,
   "eslint.enable": true,
   "eslint.autoFixOnSave": true,
@@ -18,5 +19,7 @@
     "typescript",
     "typescriptreact",
     "graphql"
-  ]
+  ],
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true
 }
