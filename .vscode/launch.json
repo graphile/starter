@@ -10,6 +10,13 @@
       "outFiles": ["${workspaceFolder}/backend/dist/**/*.js"]
     },
     {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Jest tests",
+      "port": 9876,
+      "restart": true
+    },
+    {
       "type": "chrome",
       "request": "launch",
       "name": "Launch localhost:5678",

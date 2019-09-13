@@ -24,7 +24,7 @@ if [[ "$*" == "--watch" ]] || [[ "$*" == "--watchAll" ]]; then
   concurrently \
     --names 'tests,___db' \
     --kill-others \
-    "jest -i $@" \
+    "node --inspect=9876 node_modules/.bin/jest -i $@" \
     'graphile-migrate watch --shadow'
 else
   # Run once, so just run the tests
