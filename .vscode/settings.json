@@ -1,0 +1,22 @@
+{
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "eslint.enable": true,
+  "eslint.autoFixOnSave": true,
+  "eslint.lintTask.enable": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "graphql",
+    "typescript",
+    "typescriptreact"
+  ],
+  // ESLint calls prettier for these types already, so don't let them squabble
+  "prettier.disableLanguages": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "graphql"
+  ]
+}
