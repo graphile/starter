@@ -15,8 +15,8 @@ export IN_TESTS="1"
 echo "{}" >> migrations/__tests__/.jest.watch.hack.json
 
 # Reset the test database
-graphile-migrate reset --shadow 
-graphile-migrate watch --once --shadow 
+graphile-migrate reset --shadow
+graphile-migrate watch --once --shadow
 
 # If we're in watch mode
 if [[ "$*" == "--watch" ]] || [[ "$*" == "--watchAll" ]]; then
