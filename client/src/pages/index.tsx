@@ -4,7 +4,9 @@ import SharedLayout from "../components/SharedLayout";
 export default function Home() {
   return (
     <SharedLayout title="Home">
-      <h2>Congratulations on spinning up the PostGraphile Starter project!</h2>
+      <h2 data-cy="homepage-header">
+        Congratulations on spinning up the PostGraphile Starter project!
+      </h2>
       <p>
         This project can serve as a basis for your own project. We've added many
         features that most projects require, but you're free to remove them or

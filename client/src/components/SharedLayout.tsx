@@ -119,7 +119,7 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
               </Dropdown>
             ) : (
               <Link href="/login">
-                <a>Login</a>
+                <a data-cy="header-login-button">Login</a>
               </Link>
             )}
           </Col>
