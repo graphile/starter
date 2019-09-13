@@ -17,6 +17,8 @@
     "dev": "yarn && yarn server:src:build && concurrently --kill-others --names 'db,server:src,server:run,worker,codegen,test' 'yarn db:watch' 'yarn server:src:watch' 'sleep 8; yarn server:watch' 'sleep 5; yarn server:worker:watch' 'yarn codegen:watch' 'yarn test:watch'",
     "test": "./scripts/test",
     "test:watch": "./scripts/test --watch",
+    "cypress:open": ". ./scripts/env && cypress open",
+    "cypress:run": ". ./scripts/env && cypress run",
     "codegen": "graphql-codegen --config codegen.yml",
     "codegen:watch": "graphql-codegen --config codegen.yml --watch",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
