@@ -292,22 +292,7 @@ drop role dbname_authenticator;
 drop role dbname;
 ```
 
-## AGPLv3 License
+## MIT License
 
 This is open source software; you may use, modify and distribute it under the
-terms of the GNU Affero General Public License Version 3 (AGPLv3, see below).
-One of the requirements of this license is that if you change the software
-(e.g. to add your own features or make it your own) your modified version must
-prominently offer all users interacting with it (including remotely through a
-computer network) an opportunity to receive the source code of your version —
-read below for full details.
-
-If you do not wish your use of the software to be governed by the AGPLv3, an
-alternative commercial license is available for purchase from Graphile Ltd.
-Buying such a license is mandatory as soon as you modify then project and allow
-someone to use it without also disclosing your source code to them.
-
-This software references other software (including, but not limited to, that
-referenced in `package.json` and `yarn.lock`) which has its own licenses — it
-is your responsibility to review the licenses of the referenced software and
-ensure you are happy with their terms.
+terms of the MIT License, see [GRAPHILE_STARTER_LICENSE.md][]
