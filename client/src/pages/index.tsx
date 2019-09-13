@@ -94,9 +94,20 @@ export default function Home() {
       </p>
       <h3>Making it yours</h3>
       <ol>
+        <li>Download and extract a zip of the latest release from GitHub</li>
         <li>
-          Download a tagged release of this project as a zip file from GitHub
-          and create a new git repository from it.
+          In that folder run:
+          <ul>
+            <li>
+              <code>git init</code>
+            </li>
+            <li>
+              <code>git add .</code>
+            </li>
+            <li>
+              <code>git commit -m"PostGraphile starter base"</code>
+            </li>
+          </ul>
         </li>
         <li>
           Change the project name in <code>package.json</code>
@@ -104,6 +115,7 @@ export default function Home() {
         <li>
           Change the project settings in <code>backend/src/config.ts</code>
         </li>
+        <li>Commit as you usually would</li>
       </ol>
       <h3>What now?</h3>
       <p>
