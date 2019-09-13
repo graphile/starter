@@ -89,6 +89,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
+    "@cypress/webpack-preprocessor": "^4.1.0",
     "@graphql-codegen/cli": "^1.5.0",
     "@graphql-codegen/fragment-matcher": "1.5.0",
     "@graphql-codegen/typescript": "1.5.0",
@@ -99,6 +100,7 @@
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
     "concurrently": "^4.1.1",
+    "cypress": "^3.4.1",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-graphql": "^3.0.3",
@@ -114,6 +116,7 @@
     "nodemon": "^1.19.1",
     "prettier": "^1.18.2",
     "ts-jest": "^24.0.2",
+    "ts-loader": "^6.1.0",
     "typescript": "^3.5.3"
   }
 }
