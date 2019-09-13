@@ -1,5 +1,3 @@
-/*! This file contains code that is copyright 2019 Graphile Ltd, see
- * GRAPHILE_LICENSE.md for license information. */
 import { GraphQLError } from "graphql";
 
 const isDev = process.env.NODE_ENV === "development";

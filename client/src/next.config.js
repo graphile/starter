@@ -1,6 +1,3 @@
-/*! This file contains code that is copyright 2019 Graphile Ltd, see
- * GRAPHILE_LICENSE.md for license information. */
-
 const compose = (...fns) =>
   fns.reduceRight((memo, fn) => input => fn(memo(input)), input => input);
 

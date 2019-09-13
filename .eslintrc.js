@@ -1,5 +1,3 @@
-/*! This file contains code that is copyright 2019 Graphile Ltd, see
- * GRAPHILE_LICENSE.md for license information. */
 const { readFileSync } = require("fs");
 const schemaString = readFileSync("./data/schema.graphql", "utf8");
 

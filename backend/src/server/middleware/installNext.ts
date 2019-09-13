@@ -1,6 +1,3 @@
-/*! This file contains code that is copyright 2019 Graphile Ltd, see
- * GRAPHILE_LICENSE.md for license information. */
-
 // TODO: fix to 'import next' when next fixes the bug
 import * as next from "next";
 import { Application } from "express";
