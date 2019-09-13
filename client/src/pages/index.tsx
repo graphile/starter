@@ -115,6 +115,7 @@ export default function Home() {
         <li>
           Change the project settings in <code>backend/src/config.ts</code>
         </li>
+        <li>Replace the README.md file</li>
         <li>Commit as you usually would</li>
       </ol>
       <h3>What now?</h3>

@@ -10,11 +10,9 @@ import * as middleware from "./middleware";
 // @ts-ignore
 const packageJson = require("../../../package.json");
 
-sanitiseEnv();
-
-const PORT = parseInt(process.env.PORT || "", 10) || 3000;
-
 async function main() {
+  sanitiseEnv();
+
   /*
    * Our Express server
    */
@@ -55,6 +53,7 @@ async function main() {
   await middleware.installErrorHandler(app);
 
   // And finally, we open the listen port
+  const PORT = parseInt(process.env.PORT || "", 10) || 3000;
   httpServer.listen(PORT, () => {
     const address = httpServer.address();
     const actualPort: string =
