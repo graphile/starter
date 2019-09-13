@@ -13,6 +13,7 @@
     "db:watch": ". ./scripts/env && graphile-migrate watch",
     "db:migrate": ". ./scripts/env && graphile-migrate",
     "db:migrate:dump": ". ./scripts/env && graphile-migrate && graphile-migrate reset --shadow && graphile-migrate migrate --shadow --force",
+    "start": "yarn dev",
     "dev": "yarn && yarn server:src:build && concurrently --kill-others --names 'db,server:src,server:run,worker,codegen,test' 'yarn db:watch' 'yarn server:src:watch' 'sleep 8; yarn server:watch' 'sleep 5; yarn server:worker:watch' 'yarn codegen:watch' 'yarn test:watch'",
     "test": "./scripts/test",
     "test:watch": "./scripts/test --watch",
