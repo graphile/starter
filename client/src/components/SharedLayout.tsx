@@ -134,8 +134,14 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
         })}
       </Content>
       <Footer>
-        Copyright &copy; {new Date().getFullYear()} {companyName}. All rights
-        reserved.
+        <p>
+          Copyright &copy; {new Date().getFullYear()} {companyName}. All rights
+          reserved.
+        </p>
+        <p>
+          Powered by{" "}
+          <a href="https://graphile.org/postgraphile">PostGraphile</a>
+        </p>
       </Footer>
     </Layout>
   );

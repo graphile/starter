@@ -92,6 +92,19 @@ export default function Home() {
         you verify your email in another tab (or even another browser) you
         should notice that this dot disappears. Realtime ✨🌈
       </p>
+      <h3>Making it yours</h3>
+      <ol>
+        <li>
+          Download a tagged release of this project as a zip file from GitHub
+          and create a new git repository from it.
+        </li>
+        <li>
+          Change the project name in <code>package.json</code>
+        </li>
+        <li>
+          Change the project settings in <code>backend/src/config.ts</code>
+        </li>
+      </ol>
       <h3>What now?</h3>
       <p>
         If you're happy with our user account system, we recommend that you
@@ -138,6 +151,13 @@ export default function Home() {
         server-side errors into the form validation, for example try registering
         a new account using the email address of an account{" "}
         <strong>that has already been verified</strong>.
+      </p>
+      <h3>One-time clone: no such thing as breaking changes</h3>
+      <p>
+        It's expected that you'll do a one-time clone of this project to base
+        your project off, and that you will not keep your project up to date
+        with this one. As such, we can make any changes we like to this project
+        without breaking your project.
       </p>
     </SharedLayout>
   );
