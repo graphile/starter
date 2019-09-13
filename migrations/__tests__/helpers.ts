@@ -13,7 +13,9 @@ import {
 // We need to inform jest that these files depend on changes to the database, so
 // we write a dummy file after current.sql is imported
 import { ts } from "./.jest.watch.hack.json";
-ts; // We used it... see?
+if (ts) {
+  /* This exists just to appease eslint, and so that the `ts` variable is "used" */
+}
 
 export * from "../../__tests__/helpers";
 
