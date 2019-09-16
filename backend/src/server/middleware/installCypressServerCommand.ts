@@ -22,10 +22,21 @@ export default (app: Application) => {
       if (!query) {
         throw new Error("Query not specified");
       }
-      const result = await runCommand(rootPgPool, query);
+      const { command: rawCommand, payload: rawPayload } = query;
+      if (!rawCommand) {
+        throw new Error("Command not specified");
+      }
+      const command = String(rawCommand);
+      const payload = rawPayload ? JSON.parse(rawPayload) : null;
+      const result = await runCommand(rootPgPool, command, payload);
       res.json(result);
     } catch (e) {
-      next(e);
+      res.status(500).json({
+        error: {
+          message: e.message,
+          stack: e.stack,
+        },
+      });
     }
   };
   app.get(
@@ -37,16 +48,43 @@ export default (app: Application) => {
 
 async function runCommand(
   rootPgPool: Pool,
-  query: { [key: string]: string }
+  command: string,
+  payload?: { [key: string]: any }
 ): Promise<object> {
-  const { command } = query;
-  if (!command) {
-    throw new Error("Command not specified");
-  } else if (command === "clearTestUsers") {
+  if (command === "clearTestUsers") {
     await rootPgPool.query(
       "delete from app_public.users where username like 'testuser%'"
     );
     return { success: true };
+  } else if (command === "createUser") {
+    if (!payload) {
+      throw new Error("Payload required");
+    }
+    const {
+      username = "testuser",
+      email = `${username}@example.com`,
+      verified = false,
+      name = username,
+      avatarUrl = null,
+      password = "TestUserPassword",
+    } = payload;
+    if (!username.startsWith("testuser")) {
+      throw new Error("Test user usernames may only start with 'testuser'");
+    }
+    const {
+      rows: [user],
+    } = await rootPgPool.query(
+      `SELECT * FROM app_private.really_create_user(
+        username := $1,
+        email := $2,
+        email_is_verified := $3,
+        name := $4,
+        avatar_url := $5,
+        password := $6
+      )`,
+      [username, email, verified, name, avatarUrl, password]
+    );
+    return { user };
   } else {
     throw new Error(`Command '${command}' not understood.`);
   }

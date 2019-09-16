@@ -1,11 +1,14 @@
-export { }; // Make this a module
-type ServerCommands = "clearTestUsers";
+export {}; // Make this a module
 
 declare global {
   namespace Cypress {
     interface Chainable {
       getCy: (name: string) => Chainable;
-      serverCommand: (command: ServerCommands) => Chainable;
+      serverCommand(command: "clearTestUsers"): Chainable;
+      serverCommand(
+        command: "createUser",
+        payload: { username?: string }
+      ): Chainable;
     }
   }
 }
