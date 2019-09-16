@@ -628,33 +628,6 @@ begin
     raise exception 'Email is required' using errcode = 'MODAT';
   end if;
 
-  -- Sanitise the username, and make it unique if necessary.
-  if v_username is null then
-    v_username = coalesce(name, 'user');
-  end if;
-  v_username = regexp_replace(v_username, '^[^a-z]+', '', 'i');
-  v_username = regexp_replace(v_username, '[^a-z0-9]+', '_', 'i');
-  if v_username is null or length(v_username) < 3 then
-    v_username = 'user';
-  end if;
-  select (
-    case
-    when i = 0 then v_username
-    else v_username || i::text
-    end
-  ) into v_username from generate_series(0, 1000) i
-  where not exists(
-    select 1
-    from app_public.users
-    where users.username = (
-      case
-      when i = 0 then v_username
-      else v_username || i::text
-      end
-    )
-  )
-  limit 1;
-
   -- Insert the new user
   insert into app_public.users (username, name, avatar_url) values
     (v_username, name, avatar_url)
@@ -703,6 +676,33 @@ begin
   v_name := f_profile ->> 'name';
   v_username := f_profile ->> 'username';
   v_avatar_url := f_profile ->> 'avatar_url';
+
+  -- Sanitise the username, and make it unique if necessary.
+  if v_username is null then
+    v_username = coalesce(name, 'user');
+  end if;
+  v_username = regexp_replace(v_username, '^[^a-z]+', '', 'i');
+  v_username = regexp_replace(v_username, '[^a-z0-9]+', '_', 'i');
+  if v_username is null or length(v_username) < 3 then
+    v_username = 'user';
+  end if;
+  select (
+    case
+    when i = 0 then v_username
+    else v_username || i::text
+    end
+  ) into v_username from generate_series(0, 1000) i
+  where not exists(
+    select 1
+    from app_public.users
+    where users.username = (
+      case
+      when i = 0 then v_username
+      else v_username || i::text
+      end
+    )
+  )
+  limit 1;
 
   -- Create the user account
   v_user = app_private.really_create_user(
