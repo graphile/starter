@@ -1,4 +1,5 @@
 import { makeExtendSchemaPlugin, gql } from "graphile-utils";
+import { ERROR_MESSAGE_OVERRIDES } from "../utils/handleErrors";
 
 const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
   typeDefs: gql`
@@ -105,10 +106,17 @@ const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
           };
         } catch (e) {
           const { code } = e;
-          const safeErrorCodes = ["WEAKP", "LOCKD"];
+          const safeErrorCodes = [
+            "WEAKP",
+            "LOCKD",
+            ...Object.keys(ERROR_MESSAGE_OVERRIDES),
+          ];
           if (safeErrorCodes.includes(code)) {
             throw e;
           } else {
+            console.error(
+              "Unrecognised error in PassportLoginPlugin; replacing with sanitised version"
+            );
             console.error(e);
             const error = new Error("Registration failed");
             error["code"] = e.code;

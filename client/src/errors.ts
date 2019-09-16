@@ -21,9 +21,21 @@ export function extractError(
   );
 }
 
+export function getExceptionFromError(
+  error: null | Error | ApolloError | GraphQLError
+): Error | null {
+  // @ts-ignore
+  const graphqlError: GraphQLError = extractError(error);
+  const exception =
+    graphqlError &&
+    graphqlError.extensions &&
+    graphqlError.extensions.exception;
+  return exception || graphqlError || error;
+}
+
 export function getCodeFromError(
   error: null | Error | ApolloError | GraphQLError
 ): null | string {
-  const err = extractError(error) || error;
-  return (err && (err["errcode"] || err["code"])) || null;
+  const err = getExceptionFromError(error);
+  return (err && err["code"]) || null;
 }

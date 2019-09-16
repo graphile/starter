@@ -31,6 +31,7 @@ Rewritten, the above rules state:
 
 - FFFFF: unknown error
 - DNIED: permission denied
+- NUNIQ: not unique (from PostgreSQL 23505)
 
 ## Registration
 

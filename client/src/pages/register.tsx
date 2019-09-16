@@ -15,10 +15,14 @@ import { SyntheticEvent } from "react";
 import { promisify } from "util";
 import Router from "next/router";
 import { ApolloError } from "apollo-client";
-import { getCodeFromError, extractError } from "../errors";
+import {
+  getCodeFromError,
+  getExceptionFromError,
+  extractError,
+} from "../errors";
 import { formItemLayout, tailFormItemLayout } from "../forms";
 
-interface RegisterProps { }
+interface RegisterProps {}
 
 /**
  * The registration page just renders the standard layout and embeds the
@@ -106,8 +110,8 @@ function RegistrationForm({
         client.resetStore();
         Router.push(onSuccessRedirectTo);
       } catch (e) {
-        const errcode = getCodeFromError(e);
-        if (errcode === "WEAKP") {
+        const code = getCodeFromError(e);
+        if (code === "WEAKP") {
           form.setFields({
             password: {
               value: form.getFieldValue("password"),
@@ -118,7 +122,7 @@ function RegistrationForm({
               ],
             },
           });
-        } else if (errcode === "EMTKN") {
+        } else if (code === "EMTKN") {
           form.setFields({
             email: {
               value: form.getFieldValue("email"),
@@ -266,7 +270,13 @@ function RegistrationForm({
               validator: compareToFirstPassword,
             },
           ],
-        })(<Input type="password" onBlur={handleConfirmBlur} data-cy="registerpage-input-password2" />)}
+        })(
+          <Input
+            type="password"
+            onBlur={handleConfirmBlur}
+            data-cy="registerpage-input-password2"
+          />
+        )}
       </Form.Item>
       {error ? (
         <Form.Item>
