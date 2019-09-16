@@ -111,6 +111,8 @@ function RegistrationForm({
         Router.push(onSuccessRedirectTo);
       } catch (e) {
         const code = getCodeFromError(e);
+        const exception = getExceptionFromError(e);
+        const fields: any = exception && exception["fields"];
         if (code === "WEAKP") {
           form.setFields({
             password: {
@@ -129,6 +131,17 @@ function RegistrationForm({
               errors: [
                 new Error(
                   "An account with this email address has already been registered, consider using the 'Forgot Password' function."
+                ),
+              ],
+            },
+          });
+        } else if (code === "NUNIQ" && fields && fields[0] === "username") {
+          form.setFields({
+            username: {
+              value: form.getFieldValue("username"),
+              errors: [
+                new Error(
+                  "An account with this username has already been registered, please try a different username."
                 ),
               ],
             },
