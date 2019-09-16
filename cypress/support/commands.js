@@ -27,3 +27,11 @@
 Cypress.Commands.add("getCy", cyName => {
   return cy.get(`[data-cy=${cyName}]`);
 });
+
+Cypress.Commands.add("serverCommand", command => {
+  return cy.request(
+    `${Cypress.env(
+      "ROOT_URL"
+    )}/cypressServerCommand?command=${encodeURIComponent(command)}`
+  );
+});

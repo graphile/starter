@@ -11,6 +11,9 @@ const packageJson = require("../../../package.json");
 async function main() {
   sanitiseEnv();
 
+  const isTest = process.env.NODE_ENV === "test";
+  const isDev = process.env.NODE_ENV === "development";
+
   /*
    * Our Express server
    */
@@ -49,6 +52,9 @@ async function main() {
   await middleware.installLogging(app);
   // These are our assets: images/etc; served out of the /client/public folder
   await middleware.installSharedStatic(app);
+  if (isTest || isDev) {
+    await middleware.installCypressServerCommand(app);
+  }
   await middleware.installPostGraphile(app);
   await middleware.installNext(app);
 
