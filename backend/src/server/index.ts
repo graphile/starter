@@ -20,11 +20,15 @@ async function main() {
   const app = express();
 
   /*
-   * When we're using websockets, we may want them to have access to
-   * sessions/etc for authentication.
+   * For a clean nodemon shutdown, we need to close all our sockets otherwise
+   * we might not come up cleanly again (inside nodemon).
    */
   const shutdownActions: (() => any)[] = [];
   app.set("shutdownActions", shutdownActions);
+
+  if (isDev) {
+    shutdownActions.push(() => require("inspector").close());
+  }
 
   /*
    * Getting access to the HTTP server directly means that we can do things
