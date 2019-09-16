@@ -70,12 +70,12 @@ test("cannot register with a weak password", () =>
     await expect(promise).rejects.toHaveProperty("code", "WEAKP");
   }));
 
-test("can register user with just an email", () =>
+test("can register user with just a username and email", () =>
   withRootDb(async client => {
     // Normally PassportLoginPlugin will call this SQL function directly.
     const user = await reallyCreateUser(
       client,
-      null,
+      "testuser",
       "testuser@example.com",
       null,
       null,
@@ -91,7 +91,7 @@ test("can register user with just an email", () =>
         "is_verified": false,
         "name": null,
         "updated_at": "[DATE]",
-        "username": "user",
+        "username": "testuser",
       }
     `);
   }));

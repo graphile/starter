@@ -679,7 +679,7 @@ begin
 
   -- Sanitise the username, and make it unique if necessary.
   if v_username is null then
-    v_username = coalesce(name, 'user');
+    v_username = coalesce(v_name, 'user');
   end if;
   v_username = regexp_replace(v_username, '^[^a-z]+', '', 'i');
   v_username = regexp_replace(v_username, '[^a-z0-9]+', '_', 'i');
