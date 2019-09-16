@@ -93,8 +93,9 @@ export const createUsers = async function createUsers(
   if (userCreationCounter > 25) {
     throw new Error("Too many users created!");
   }
-  const userLetter = "abcdefghijklmnopqrstuvwxyz"[userCreationCounter];
   for (let i = 0; i < count; i++) {
+    const userLetter = "abcdefghijklmnopqrstuvwxyz"[userCreationCounter];
+    userCreationCounter++;
     const password = userLetter.repeat(12);
     const email = `${userLetter}${i || ""}@b.c`;
     const user: User = (await client.query(
@@ -120,7 +121,6 @@ export const createUsers = async function createUsers(
     user._password = password;
     users.push(user);
   }
-  userCreationCounter++;
   return users;
 };
 
