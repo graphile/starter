@@ -13,4 +13,8 @@ export default (app: Application) => {
     connectionString: process.env.AUTH_DATABASE_URL,
   });
   app.set("authPgPool", authPgPool);
+
+  const shutdownActions = app.get("shutdownActions");
+  shutdownActions.push(() => rootPgPool.end());
+  shutdownActions.push(() => authPgPool.end());
 };

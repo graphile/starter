@@ -17,6 +17,13 @@ async function main() {
   const app = express();
 
   /*
+   * When we're using websockets, we may want them to have access to
+   * sessions/etc for authentication.
+   */
+  const shutdownActions: (() => any)[] = [];
+  app.set("shutdownActions", shutdownActions);
+
+  /*
    * Getting access to the HTTP server directly means that we can do things
    * with websockets if we need to (e.g. GraphQL subscriptions).
    */
@@ -78,6 +85,21 @@ async function main() {
       )}`
     );
     console.log();
+  });
+
+  // Nodemon SIGUSR2 handling
+  shutdownActions.push(() => httpServer.close());
+  async function gracefulShutdown(callback: () => void) {
+    try {
+      await Promise.all(shutdownActions.map(fn => fn()));
+    } finally {
+      callback();
+    }
+  }
+  process.once("SIGUSR2", () => {
+    gracefulShutdown(() => {
+      process.kill(process.pid, "SIGUSR2");
+    });
   });
 }
 
