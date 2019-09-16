@@ -22,5 +22,7 @@
     "graphql"
   ],
   "files.insertFinalNewline": true,
-  "files.trimTrailingWhitespace": true
+  "files.trimTrailingWhitespace": true,
+  "javascript.format.enable": false,
+  "typescript.format.enable": false
 }
