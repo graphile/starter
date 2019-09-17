@@ -37,3 +37,12 @@ Cypress.Commands.add("serverCommand", (command, payload) => {
   // GET the url, and return the response body (JSON is parsed automatically)
   return cy.request(url).its("body");
 });
+
+Cypress.Commands.add("login", payload => {
+  cy.visit(
+    Cypress.env("ROOT_URL") +
+      `/cypressServerCommand?command=login&payload=${encodeURIComponent(
+        JSON.stringify(payload)
+      )}`
+  );
+});

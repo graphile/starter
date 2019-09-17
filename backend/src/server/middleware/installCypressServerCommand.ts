@@ -1,4 +1,4 @@
-import { Application, RequestHandler } from "express";
+import { Application, RequestHandler, Request, Response } from "express";
 import { urlencoded } from "body-parser";
 import { Pool } from "pg";
 
@@ -27,9 +27,11 @@ export default (app: Application) => {
         throw new Error("Command not specified");
       }
       const command = String(rawCommand);
-      const payload = rawPayload ? JSON.parse(rawPayload) : null;
-      const result = await runCommand(rootPgPool, command, payload);
-      res.json(result);
+      const payload = rawPayload ? JSON.parse(rawPayload) : {};
+      const result = await runCommand(req, res, rootPgPool, command, payload);
+      if (result !== null) {
+        res.json(result);
+      }
     } catch (e) {
       res.status(500).json({
         error: {
@@ -47,10 +49,12 @@ export default (app: Application) => {
 };
 
 async function runCommand(
+  req: Request,
+  res: Response,
   rootPgPool: Pool,
   command: string,
-  payload?: { [key: string]: any }
-): Promise<object> {
+  payload: { [key: string]: any }
+): Promise<object | null> {
   if (command === "clearTestUsers") {
     await rootPgPool.query(
       "delete from app_public.users where username like 'testuser%'"
@@ -71,19 +75,14 @@ async function runCommand(
     if (!username.startsWith("testuser")) {
       throw new Error("Test user usernames may only start with 'testuser'");
     }
-    const {
-      rows: [user],
-    } = await rootPgPool.query(
-      `SELECT * FROM app_private.really_create_user(
-        username := $1,
-        email := $2,
-        email_is_verified := $3,
-        name := $4,
-        avatar_url := $5,
-        password := $6
-      )`,
-      [username, email, verified, name, avatarUrl, password]
-    );
+    const user = await reallyCreateUser(rootPgPool, {
+      username,
+      email,
+      verified,
+      name,
+      avatarUrl,
+      password,
+    });
 
     let verificationToken: string | null = null;
     let userEmailId: number;
@@ -109,7 +108,78 @@ async function runCommand(
     }
 
     return { user, userEmailId, verificationToken };
+  } else if (command === "login") {
+    const {
+      username = "testuser",
+      email = `${username}@example.com`,
+      verified = false,
+      name = username,
+      avatarUrl = null,
+      password = "TestUserPassword",
+      next = "/",
+    } = payload;
+    const user = await reallyCreateUser(rootPgPool, {
+      username,
+      email,
+      verified,
+      name,
+      avatarUrl,
+      password,
+    });
+    const session = await createSession(rootPgPool, user.id);
+    req.login({ session_id: session.uuid }, () => {
+      res.redirect(next || "/");
+    });
+    return null;
   } else {
     throw new Error(`Command '${command}' not understood.`);
   }
+}
+
+async function reallyCreateUser(
+  rootPgPool: Pool,
+  {
+    username,
+    email,
+    verified,
+    name,
+    avatarUrl,
+    password,
+  }: {
+    username?: string;
+    email?: string;
+    verified?: boolean;
+    name?: string;
+    avatarUrl?: string;
+    password?: string;
+  }
+) {
+  const {
+    rows: [user],
+  } = await rootPgPool.query(
+    `SELECT * FROM app_private.really_create_user(
+        username := $1,
+        email := $2,
+        email_is_verified := $3,
+        name := $4,
+        avatar_url := $5,
+        password := $6
+      )`,
+    [username, email, verified, name, avatarUrl, password]
+  );
+  return user;
+}
+
+async function createSession(rootPgPool: Pool, userId: number) {
+  const {
+    rows: [session],
+  } = await rootPgPool.query(
+    `
+      insert into app_private.sessions (user_id)
+      values ($1)
+      returning *
+    `,
+    [userId]
+  );
+  return session;
 }

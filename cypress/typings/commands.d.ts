@@ -14,6 +14,13 @@ declare global {
           password?: string;
         }
       ): Chainable;
+      login(payload?: {
+        next?: string;
+        username?: string;
+        name?: string;
+        verified?: boolean;
+        password?: string;
+      }): Chainable;
     }
   }
 }
