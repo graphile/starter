@@ -103,7 +103,9 @@ async function main() {
     try {
       await Promise.all(shutdownActions.map(fn => fn()));
     } finally {
-      callback();
+      // 250ms of sleep before finally shutting down, give things a moment to
+      // clear up.
+      setTimeout(callback, 250);
     }
   }
   process.once("SIGUSR2", () => {
