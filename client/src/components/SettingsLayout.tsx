@@ -12,16 +12,20 @@ const { Sider, Content } = Layout;
 const pages = {
   "/settings": {
     title: "Profile",
+    cy: "settingslayout-link-profile",
   },
   "/settings/security": {
     title: "Password",
+    cy: "settingslayout-link-password",
   },
   "/settings/accounts": {
     title: "Linked Accounts",
+    cy: "settingslayout-link-accounts",
   },
   "/settings/emails": {
     title: "Emails",
     warnIfUnverified: true,
+    cy: "settingslayout-link-emails",
   },
 };
 
@@ -45,7 +49,7 @@ export default function SettingsLayout({
               {Object.keys(pages).map(href => (
                 <Menu.Item key={href}>
                   <Link href={href}>
-                    <a>
+                    <a data-cy={pages[href].cy}>
                       <Warn
                         okay={
                           !currentUser ||

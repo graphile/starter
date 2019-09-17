@@ -97,7 +97,7 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
                   <Menu>
                     <Menu.Item>
                       <Link href="/settings">
-                        <a>
+                        <a data-cy="layout-link-settings">
                           <Warn okay={data.currentUser.isVerified}>
                             Settings
                           </Warn>
