@@ -14,6 +14,10 @@ declare global {
           password?: string;
         }
       ): Chainable;
+      serverCommand(
+        command: "getEmailSecrets",
+        payload?: { email?: string }
+      ): Chainable;
       login(payload?: {
         next?: string;
         username?: string;
