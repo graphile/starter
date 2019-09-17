@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Layout, Row, Col, Dropdown, Icon, Menu } from "antd";
+import { Layout, Row, Col, Dropdown, Icon, Menu, Typography } from "antd";
 import Link from "next/link";
 import { companyName } from "../../../backend/src/config";
 import {
@@ -16,6 +16,7 @@ import Head from "next/head";
 import Warn from "./Warn";
 
 const { Header, Content, Footer } = Layout;
+const { Text } = Typography;
 
 /*
  * For some reason, possibly related to the interaction between
@@ -125,21 +126,29 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
           </Col>
         </Row>
       </Header>
-      <Content style={{ minHeight: "calc(100vh - 64px - 64px)" }}>
+      <Content style={{ minHeight: "calc(100vh - 64px - 120px)" }}>
         {renderChildren({
           loading,
           currentUser: data && data.currentUser,
         })}
       </Content>
       <Footer>
-        <p>
-          Copyright &copy; {new Date().getFullYear()} {companyName}. All rights
-          reserved.
-        </p>
-        <p>
-          Powered by{" "}
-          <a href="https://graphile.org/postgraphile">PostGraphile</a>
-        </p>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text>
+            Copyright &copy; {new Date().getFullYear()} {companyName}. All
+            rights reserved.
+          </Text>
+          <Text>
+            Powered by{" "}
+            <a href="https://graphile.org/postgraphile">PostGraphile</a>
+          </Text>
+        </div>
       </Footer>
     </Layout>
   );
