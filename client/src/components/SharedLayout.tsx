@@ -110,7 +110,7 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
                   </Menu>
                 }
               >
-                <span>
+                <span data-cy="layout-dropdown-user">
                   <Warn okay={data.currentUser.isVerified}>
                     {data.currentUser.name}
                   </Warn>{" "}

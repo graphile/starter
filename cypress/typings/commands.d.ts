@@ -7,7 +7,12 @@ declare global {
       serverCommand(command: "clearTestUsers"): Chainable;
       serverCommand(
         command: "createUser",
-        payload: { username?: string }
+        payload: {
+          username?: string;
+          name?: string;
+          verified?: boolean;
+          password?: string;
+        }
       ): Chainable;
     }
   }

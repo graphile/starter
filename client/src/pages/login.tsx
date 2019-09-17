@@ -48,23 +48,23 @@ export default function Login({ next: rawNext }: LoginProps) {
         currentUser ? (
           <Redirect href={next} />
         ) : (
-            <div>
-              <WrappedLoginForm
-                onSuccessRedirectTo={next}
-                error={error}
-                setError={setError}
-              />
-              <Divider />
-              <Row>
-                <Col span={12} offset={6}>
-                  <div style={{ textAlign: "center" }}>
-                    <p>Alternatively, you can use social login:</p>
-                    <SocialLoginOptions next={next} />
-                  </div>
-                </Col>
-              </Row>
-            </div>
-          )
+          <div>
+            <WrappedLoginForm
+              onSuccessRedirectTo={next}
+              error={error}
+              setError={setError}
+            />
+            <Divider />
+            <Row>
+              <Col span={12} offset={6}>
+                <div style={{ textAlign: "center" }}>
+                  <p>Alternatively, you can use social login:</p>
+                  <SocialLoginOptions next={next} />
+                </div>
+              </Col>
+            </Row>
+          </div>
+        )
       }
     </SharedLayout>
   );
@@ -167,6 +167,7 @@ function LoginForm({
             prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
             placeholder="Username"
             ref={focusElement}
+            data-cy="loginpage-input-username"
           />
         )}
       </Form.Item>
@@ -181,6 +182,7 @@ function LoginForm({
             prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
             type="password"
             placeholder="Password"
+            data-cy="loginpage-input-password"
           />
         )}
       </Form.Item>
@@ -209,6 +211,7 @@ function LoginForm({
           type="primary"
           htmlType="submit"
           disabled={hasErrors(getFieldsError())}
+          data-cy="loginpage-button-submit"
         >
           Log in
         </Button>
