@@ -140,7 +140,11 @@ export default function Settings_Emails() {
           />
           {!showAddEmailForm ? (
             <div>
-              <Button type="primary" onClick={() => setShowAddEmailForm(true)}>
+              <Button
+                type="primary"
+                onClick={() => setShowAddEmailForm(true)}
+                data-cy="settingsemails-button-addemail"
+              >
                 Add email
               </Button>
             </div>
@@ -206,10 +210,10 @@ function AddEmailForm({
           rules: [
             {
               required: true,
-              message: "Please choose a username",
+              message: "Please enter an email address",
             },
           ],
-        })(<Input />)}
+        })(<Input data-cy="settingsemails-input-email" />)}
       </Form.Item>
       {error ? (
         <Form.Item>
@@ -231,7 +235,9 @@ function AddEmailForm({
         </Form.Item>
       ) : null}
       <Form.Item>
-        <Button htmlType="submit">Add email</Button>
+        <Button htmlType="submit" data-cy="settingsemails-button-submit">
+          Add email
+        </Button>
       </Form.Item>
     </Form>
   );
