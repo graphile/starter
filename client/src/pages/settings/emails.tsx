@@ -40,7 +40,10 @@ function Email({
           <span data-cy="settingsemails-indicator-primary">Primary</span>
         ),
         canDelete && (
-          <a onClick={() => deleteEmail({ variables: { emailId: email.id } })}>
+          <a
+            onClick={() => deleteEmail({ variables: { emailId: email.id } })}
+            data-cy="settingsemails-button-delete"
+          >
             Delete
           </a>
         ),

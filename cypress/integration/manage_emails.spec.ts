@@ -24,7 +24,7 @@ context("Manage emails", () => {
     cy.contains("testuser@example.com").should("exist");
     cy.contains("(unverified)").should("not.exist");
 
-    // Action
+    // Action: add email
     cy.getCy("settingsemails-button-addemail").click();
     cy.getCy("settingsemails-input-email").type(email);
     cy.getCy("settingsemails-button-submit").click();
@@ -36,8 +36,7 @@ context("Manage emails", () => {
       cy.contains("(unverified)").should("exist");
     });
 
-    // Action
-    // Verify the email
+    // Action: verify the email
     cy.serverCommand("getEmailSecrets", { email }).then((secrets: any) => {
       const { user_email_id, verification_token } = secrets;
       const url = `${Cypress.env("ROOT_URL")}/verify?id=${encodeURIComponent(
@@ -61,7 +60,7 @@ context("Manage emails", () => {
       cy.getCy("settingsemails-button-makeprimary").should("exist");
     });
 
-    // Action
+    // Action: make new email primary
     cy.getCy("settingsemails-button-makeprimary").click();
 
     // Assertions
@@ -75,5 +74,15 @@ context("Manage emails", () => {
       cy.getCy("settingsemails-indicator-primary").should("exist");
       cy.getCy("settingsemails-button-makeprimary").should("not.exist");
     });
+
+    // Action: delete old email
+    cy.getCy("settingsemails-emailitem-testuser-example-com").within(() => {
+      cy.getCy("settingsemails-button-delete").click();
+    });
+
+    // Assertions
+    cy.getCy("settingsemails-emailitem-testuser-example-com").should(
+      "not.exist"
+    );
   });
 });
