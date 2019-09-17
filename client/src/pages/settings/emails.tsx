@@ -30,9 +30,15 @@ function Email({
   const [makeEmailPrimary] = useMakeEmailPrimaryMutation();
   return (
     <List.Item
+      data-cy={`settingsemails-emailitem-${email.email.replace(
+        /[^a-zA-Z0-9]/g,
+        "-"
+      )}`}
       key={email.id}
       actions={[
-        email.isPrimary && <span>Primary</span>,
+        email.isPrimary && (
+          <span data-cy="settingsemails-indicator-primary">Primary</span>
+        ),
         canDelete && (
           <a onClick={() => deleteEmail({ variables: { emailId: email.id } })}>
             Delete
@@ -52,6 +58,7 @@ function Email({
             onClick={() =>
               makeEmailPrimary({ variables: { emailId: email.id } })
             }
+            data-cy="settingsemails-button-makeprimary"
           >
             Make primary
           </a>

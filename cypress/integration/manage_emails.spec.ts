@@ -18,6 +18,7 @@ context("Manage emails", () => {
   });
 
   it("can add an email, verify it, make it primary, and delete original email", () => {
+    const email = "newemail@example.com";
     // Setup
     cy.login({ next: "/settings/emails", verified: true });
     cy.contains("testuser@example.com").should("exist");
@@ -25,11 +26,54 @@ context("Manage emails", () => {
 
     // Action
     cy.getCy("settingsemails-button-addemail").click();
-    cy.getCy("settingsemails-input-email").type("newemail@example.com");
+    cy.getCy("settingsemails-input-email").type(email);
     cy.getCy("settingsemails-button-submit").click();
 
     // Assertion
-    cy.contains("newemail@example.com").should("exist");
-    cy.contains("(unverified)").should("exist");
+    cy.getCy("settingsemails-emailitem-newemail-example-com").within(() => {
+      cy.root().should("exist");
+      cy.contains("newemail@example.com").should("exist");
+      cy.contains("(unverified)").should("exist");
+    });
+
+    // Action
+    // Verify the email
+    cy.serverCommand("getEmailSecrets", { email }).then((secrets: any) => {
+      const { user_email_id, verification_token } = secrets;
+      const url = `${Cypress.env("ROOT_URL")}/verify?id=${encodeURIComponent(
+        user_email_id
+      )}&token=${encodeURIComponent(verification_token)}`;
+      cy.visit(url);
+      cy.contains("Email Verified").should("exist");
+      cy.visit(Cypress.env("ROOT_URL") + "/settings/emails");
+    });
+
+    // Assertion
+    cy.getCy("settingsemails-emailitem-testuser-example-com").within(() => {
+      cy.root().should("exist");
+      cy.getCy("settingsemails-indicator-primary").should("exist");
+      cy.getCy("settingsemails-button-makeprimary").should("not.exist");
+    });
+    cy.getCy("settingsemails-emailitem-newemail-example-com").within(() => {
+      cy.root().should("exist");
+      cy.contains("newemail@example.com").should("exist");
+      cy.contains("(unverified)").should("not.exist");
+      cy.getCy("settingsemails-button-makeprimary").should("exist");
+    });
+
+    // Action
+    cy.getCy("settingsemails-button-makeprimary").click();
+
+    // Assertions
+    cy.getCy("settingsemails-emailitem-testuser-example-com").within(() => {
+      cy.root().should("exist");
+      cy.getCy("settingsemails-indicator-primary").should("not.exist");
+      cy.getCy("settingsemails-button-makeprimary").should("exist");
+    });
+    cy.getCy("settingsemails-emailitem-newemail-example-com").within(() => {
+      cy.root().should("exist");
+      cy.getCy("settingsemails-indicator-primary").should("exist");
+      cy.getCy("settingsemails-button-makeprimary").should("not.exist");
+    });
   });
 });
