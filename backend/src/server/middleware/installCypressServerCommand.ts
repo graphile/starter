@@ -84,7 +84,31 @@ async function runCommand(
       )`,
       [username, email, verified, name, avatarUrl, password]
     );
-    return { user };
+
+    let verificationToken: string | null = null;
+    let userEmailId: number;
+    const {
+      rows: [userEmailSecrets],
+    } = await rootPgPool.query(
+      `
+        select *
+        from app_private.user_email_secrets
+        where user_email_id = (
+          select id
+          from app_public.user_emails
+          where email = $1
+          order by id desc
+          limit 1
+        )
+      `,
+      [email]
+    );
+    userEmailId = userEmailSecrets.user_email_id;
+    if (!verified) {
+      verificationToken = userEmailSecrets.verification_token;
+    }
+
+    return { user, userEmailId, verificationToken };
   } else {
     throw new Error(`Command '${command}' not understood.`);
   }

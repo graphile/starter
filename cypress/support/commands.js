@@ -29,11 +29,11 @@ Cypress.Commands.add("getCy", cyName => {
 });
 
 Cypress.Commands.add("serverCommand", (command, payload) => {
-  return cy.request(
-    `${Cypress.env(
-      "ROOT_URL"
-    )}/cypressServerCommand?command=${encodeURIComponent(command)}${
-      payload ? `&payload=${encodeURIComponent(JSON.stringify(payload))}` : ""
-    }`
-  );
+  const url = `${Cypress.env(
+    "ROOT_URL"
+  )}/cypressServerCommand?command=${encodeURIComponent(command)}${
+    payload ? `&payload=${encodeURIComponent(JSON.stringify(payload))}` : ""
+  }`;
+  // GET the url, and return the response body (JSON is parsed automatically)
+  return cy.request(url).its("body");
 });
