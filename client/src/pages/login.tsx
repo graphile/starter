@@ -119,10 +119,20 @@ function LoginForm({
         client.resetStore();
         Router.push(onSuccessRedirectTo);
       } catch (e) {
-        setError(e);
+        const code = getCodeFromError(e);
+        if (code === "CREDS") {
+          form.setFields({
+            password: {
+              value: form.getFieldValue("password"),
+              errors: [new Error("Incorrect username or password")],
+            },
+          });
+        } else {
+          setError(e);
+        }
       }
     },
-    [client, login, onSuccessRedirectTo, setError, validateFields]
+    [client, form, login, onSuccessRedirectTo, setError, validateFields]
   );
 
   const focusElement = useRef<Input>(null);
@@ -131,16 +141,11 @@ function LoginForm({
     [focusElement]
   );
 
-  const {
-    getFieldDecorator,
-    getFieldsError,
-    getFieldError,
-    isFieldTouched,
-  } = form;
+  const { getFieldDecorator, getFieldsError, getFieldError } = form;
 
   // Only show error after a field is touched.
-  const userNameError = isFieldTouched("username") && getFieldError("username");
-  const passwordError = isFieldTouched("password") && getFieldError("password");
+  const userNameError = getFieldError("username");
+  const passwordError = getFieldError("password");
 
   const code = getCodeFromError(error);
 
