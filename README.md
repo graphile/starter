@@ -2,9 +2,10 @@
 
 ## Purpose
 
-The intention of this software is that you will take the ideas and concepts
-in it and incorporate them into their own project, or use a copy of this
-software as a starting point for your project.
+Take this software and use it as the starting point to build your project. Go
+make some money, and [give something
+back](https://github.com/users/benjie/sponsorship) to support us building
+more tools and kits for the Node, GraphQL and PostgreSQL ecosystems.
 
 Please note that this software is not "complete," free of software defects,
 or free of security issues — it is not a "finished" solution, but rather the
@@ -15,10 +16,72 @@ It is intended that you use a "point in time" version of this software ─ it
 is not intended that you can merge updates to this software into your own
 derivative in an automated fashion.
 
+<!-- SPONSORS_BEGIN -->
+
+## Crowd-funded open-source software
+
+We license our software under the MIT license to give you a huge amount of
+freedom in how you use it. However, it takes a lot of time to produce and
+maintain software, and it wouldn't be possible without the help of [our
+wonderful sponsors](https://www.graphile.org/sponsor/).
+
+We'd love to spend more time on open source, building tools that will save
+you and others even more time and money ─ but to make this kind of
+development sustainable we need your help. Please sponsor our open source
+efforts:
+
+### [Click here to find out more about sponsors and sponsorship.](https://www.graphile.org/sponsor/)
+
+And please give some love to our featured sponsors 🤩:
+
+<table><tr>
+<td align="center"><a href="http://chads.website/"><img src="https://www.graphile.org/images/sponsors/chadf.png" width="90" height="90" alt="Chad Furman" /><br />Chad Furman</a></td>
+<td align="center"><a href="https://timescale.com/"><img src="https://www.graphile.org/images/sponsors/timescale.svg" width="90" height="90" alt="Timescale" /><br />Timescale</a></td>
+<td align="center"><a href="http://p72.vc/"><img src="https://www.graphile.org/images/sponsors/p72.png" width="90" height="90" alt="Point72 Ventures" /><br />Point72 Ventures</a></td>
+</tr></table>
+
+<!-- SPONSORS_END -->
+
+## Goals
+
+- Easy to start
+- Batteries included
+  - User registration, login, forgot password, email management, settings, etc
+  - AntD design framework
+  - Preconfigured everything
+- Development speed
+  - Hot reloading where possible, auto-restart where not
+  - Code formatting, linting, type-checking all pre-configured
+  - Re-run relevant tests (even database tests) on changes
+  - Idempotent migration system
+  - Strongly typed throughout
+  - Servers and clients set up for easy debugging (e.g. via `chrome://inspect`)
+  - Sensibly laid out source-code, including middleware system
+- VSCode integration (optional)
+  - Plugin recommendations
+  - Preconfigured settings
+  - ESLint and Prettier integration (without conflicts)
+  - Debugging profiles for node server, worker and frontend
+- Best practices
+  - GraphQL best practices
+  - PostGraphile best practices
+  - Testing best practices
+  - Node best practices
+- Well tested
+- Simple (just node server and database, no additional services required)
+- Security
+  - Using [RLS](https://learn.graphile.org/docs/PostgreSQL_Row_Level_Security_Infosheet.pdf)
+- Scalable
+  - extremely high performance
+  - optionally separate out job queue
+  - optionally separate out SSR
+  - optional redis session store
+
 ## Prerequisites
 
 - Node.js v10+ must be installed
 - Either a PostgreSQL v10+ server must be available, or Docker and docker-compose must be available
+- VSCode is recommended, but any editor will do
 
 This software has been developed under Mac and Linux, and should work in a
 `bash` environment. I'm not sure if it works under Windows; PRs to fix
@@ -92,6 +155,7 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **Deployment instructions: Heroku** — how to deploy to Heroku
 - [x] **Database tests** — Jest configured to test the database, plus initial tests for various database functions and tables
 - [x] **GraphQL tests** — Jest configured to test the GraphQL schema, plus some initial tests
+- [x] **Acceptance tests** — implemented with Cypress
 - [x] **Docker development flow** — enables work on this project using Docker (rather than running the Postgres/etc directly on your machine)
 - [x] **Documented error codes** — specification of existing error codes, examples of them being used, and space to add more
 - [x] **Prebuilt user system** — supporting both username/password registration and OAuth / social authentication (Twitter, GitHub, Facebook, ...)
@@ -118,7 +182,6 @@ Checked features have been implemented, unchecked features are goals for the fut
 
 Here's some more things we'd like to demonstrate that we've not got around to yet. (If you're interested in helping, reach out on Discord: http://discord.gg/graphile)
 
-- [ ] **Acceptance testing** — one of Selenium, Cypress, TestCafe, etc
 - [ ] **File uploads** — user can change their avatar, but this approach can be extended to other areas
 - [ ] **Deployment instructions: Docker** — how to deploy with Docker
 
@@ -178,6 +241,7 @@ information, see the [passport.js documentation](http://www.passportjs.org/docs/
 1. Change the project settings in `backend/src/config.ts`
 1. Replace the `README.md` file
 1. Commit as you usually would
+1. [Show your appreciation with sponsorship](https://www.graphile.org/sponsor/)
 
 ## Deploying to Heroku
 
@@ -280,7 +344,7 @@ heroku config:set GITHUB_KEY="..." GITHUB_SECRET="..." -a $APP_NAME
 To delete the Heroku app:
 
 ```
-heroku apps:delete \$APP_NAME
+heroku apps:destroy -a $APP_NAME
 ```
 
 To delete the database/roles (replace `dbname` with your database name):
