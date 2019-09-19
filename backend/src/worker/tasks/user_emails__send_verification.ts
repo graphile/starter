@@ -31,7 +31,6 @@ const task: Task = async (inPayload, { addJob, withPgClient }) => {
   if (!userEmail) {
     console.dir(userEmail);
     console.log(userEmailId);
-    throw new Error("Really?");
     // No longer relevant
     return;
   }
