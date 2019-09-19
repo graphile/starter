@@ -11,6 +11,10 @@ import { pick } from "lodash";
 
 export default withApollo(
   ({ headers, initialState }) => {
+    const ROOT_URL = process.env.ROOT_URL;
+    if (!ROOT_URL) {
+      throw new Error("ROOT_URL envvar is not set");
+    }
     const isServer = typeof window === "undefined";
     const onErrorLink = onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors)
@@ -25,7 +29,7 @@ export default withApollo(
     });
 
     const httpLink = new HttpLink({
-      uri: `${process.env.ROOT_URL}/graphql`,
+      uri: `${ROOT_URL}/graphql`,
       credentials: "same-origin",
       ...(isServer
         ? { headers: pick(headers, "user-agent", "dnt", "cookie") }
@@ -33,7 +37,7 @@ export default withApollo(
     });
 
     const wsLink = new WebSocketLink({
-      uri: `${process.env.ROOT_URL!.replace(/^http/, "ws")}/graphql`,
+      uri: `${ROOT_URL.replace(/^http/, "ws")}/graphql`,
       options: {
         reconnect: true,
       },

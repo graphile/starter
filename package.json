@@ -10,6 +10,8 @@
     "server:src:watch": "cd backend && tsc --watch",
     "server:watch": ". ./scripts/env && nodemon --watch 'backend/dist/server/**/*.js' -x 'node --inspect=9678 -r source-map-support/register' backend/dist/server/index.js",
     "server:worker:watch": ". ./scripts/env && cd backend/dist/worker && node --inspect=9757 ../../../node_modules/.bin/graphile-worker --watch",
+    "backend:server:run": "node backend/dist/server/index.js",
+    "backend:worker:run": "cd backend/dist/worker && graphile-worker",
     "db:watch": ". ./scripts/env && graphile-migrate watch",
     "db:migrate": ". ./scripts/env && graphile-migrate",
     "db:migrate:dump": ". ./scripts/env && graphile-migrate && graphile-migrate reset --shadow && graphile-migrate migrate --shadow --force",
