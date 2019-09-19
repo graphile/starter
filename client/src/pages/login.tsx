@@ -13,7 +13,7 @@ import SharedLayout, {
 } from "../components/SharedLayout";
 import { NextPageContext } from "next";
 import Link from "next/link";
-import { Divider, Form, Icon, Input, Button, Alert } from "antd";
+import { Form, Icon, Input, Button, Alert } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { promisify } from "util";
 import { useApolloClient } from "@apollo/react-hooks";
@@ -41,29 +41,56 @@ function isSafe(nextUrl: string | void | null) {
  */
 export default function Login({ next: rawNext }: LoginProps) {
   const [error, setError] = useState<Error | ApolloError | null>(null);
+  const [showLogin, setShowLogin] = useState<boolean>(false);
   const next: string = isSafe(rawNext) ? rawNext! : "/";
   return (
-    <SharedLayout title="Login">
+    <SharedLayout title="Sign in">
       {({ currentUser }: SharedLayoutChildProps) =>
         currentUser ? (
           <Redirect href={next} />
         ) : (
-          <div>
-            <WrappedLoginForm
-              onSuccessRedirectTo={next}
-              error={error}
-              setError={setError}
-            />
-            <Divider />
-            <Row>
-              <Col span={12} offset={6}>
-                <div style={{ textAlign: "center" }}>
-                  <p>Alternatively, you can use social login:</p>
-                  <SocialLoginOptions next={next} />
-                </div>
+          <Row type="flex" justify="center" style={{ marginTop: 32 }}>
+            {showLogin ? (
+              <Col xs={24} sm={12}>
+                <Row>
+                  <WrappedLoginForm
+                    onSuccessRedirectTo={next}
+                    onCancel={() => setShowLogin(false)}
+                    error={error}
+                    setError={setError}
+                  />
+                </Row>
               </Col>
-            </Row>
-          </div>
+            ) : (
+              <Col xs={24} sm={12}>
+                <Row style={{ marginBottom: 8 }}>
+                  <Col span={28}>
+                    <Button
+                      icon="mail"
+                      size="large"
+                      block
+                      onClick={() => setShowLogin(true)}
+                    >
+                      Sign in with E-mail or Username
+                    </Button>
+                  </Col>
+                </Row>
+                <Row style={{ marginBottom: 8 }}>
+                  <Col span={28}>
+                    <SocialLoginOptions next={next} />
+                  </Col>
+                </Row>
+                <Row type="flex" justify="center">
+                  <Col>
+                    No Account?{" "}
+                    <Link href="/register">
+                      <a data-cy="loginpage-register-button">Create One</a>
+                    </Link>
+                  </Col>
+                </Row>
+              </Col>
+            )}
+          </Row>
         )
       }
     </SharedLayout>
@@ -85,11 +112,13 @@ interface LoginFormProps extends FormComponentProps<FormValues> {
   onSuccessRedirectTo: string;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
+  onCancel: () => void;
 }
 
 function LoginForm({
   form,
   onSuccessRedirectTo,
+  onCancel,
   error,
   setError,
 }: LoginFormProps) {
@@ -151,16 +180,6 @@ function LoginForm({
 
   return (
     <Form layout="vertical" onSubmit={handleSubmit}>
-      <Row>
-        <Col>
-          <span>
-            New user?{" "}
-            <Link href="/register">
-              <a data-cy="loginpage-register-button">Register Here</a>
-            </Link>
-          </span>
-        </Col>
-      </Row>
       <Form.Item
         validateStatus={userNameError ? "error" : ""}
         help={userNameError || ""}
@@ -169,8 +188,9 @@ function LoginForm({
           rules: [{ required: true, message: "Please input your username" }],
         })(
           <Input
+            size="large"
             prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
-            placeholder="Username"
+            placeholder="E-mail or Username"
             ref={focusElement}
             data-cy="loginpage-input-username"
           />
@@ -185,18 +205,23 @@ function LoginForm({
         })(
           <Input
             prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
+            size="large"
             type="password"
             placeholder="Password"
             data-cy="loginpage-input-password"
           />
         )}
+
+        <Link href="/forgot">
+          <a>Forgotten password?</a>
+        </Link>
       </Form.Item>
 
       {error ? (
         <Form.Item>
           <Alert
             type="error"
-            message={`Login failed`}
+            message={`Sign in failed`}
             description={
               <span>
                 {extractError(error).message}
@@ -218,15 +243,11 @@ function LoginForm({
           disabled={hasErrors(getFieldsError())}
           data-cy="loginpage-button-submit"
         >
-          Log in
+          Sign in
         </Button>
-      </Form.Item>
-      <Form.Item>
-        <p>
-          <Link href="/forgot">
-            <a>Forgot password?</a>
-          </Link>
-        </p>
+        <a style={{ marginLeft: 16 }} onClick={onCancel}>
+          Use a different sign in method
+        </a>
       </Form.Item>
     </Form>
   );

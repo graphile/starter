@@ -1,5 +1,14 @@
 import * as React from "react";
-import { Layout, Row, Col, Dropdown, Icon, Menu, Typography } from "antd";
+import {
+  Layout,
+  Avatar,
+  Row,
+  Col,
+  Dropdown,
+  Icon,
+  Menu,
+  Typography,
+} from "antd";
 import Link from "next/link";
 import { companyName } from "../../../backend/src/config";
 import {
@@ -76,7 +85,7 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
   return (
     <Layout>
       {data && data.currentUser ? <CurrentUserUpdatedSubscription /> : null}
-      <Header>
+      <Header style={{ boxShadow: "0 2px 8px #f0f1f2", zIndex: 1 }}>
         <Head>
           <title>
             {title} — {companyName}
@@ -85,7 +94,7 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
         <Row type="flex" justify="space-between">
           <Col span={6}>
             <Link href="/">
-              <span>Home</span>
+              <a>Home</a>
             </Link>
           </Col>
           <Col>
@@ -111,16 +120,24 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
                   </Menu>
                 }
               >
-                <span data-cy="layout-dropdown-user">
+                <span
+                  data-cy="layout-dropdown-user"
+                  style={{ whiteSpace: "nowrap" }}
+                >
+                  <Avatar>
+                    {(data.currentUser.name && data.currentUser.name[0]) || "?"}
+                  </Avatar>
                   <Warn okay={data.currentUser.isVerified}>
-                    {data.currentUser.name}
-                  </Warn>{" "}
-                  <Icon type="down" />
+                    <span style={{ marginLeft: 8, marginRight: 8 }}>
+                      {data.currentUser.name}
+                    </span>
+                    <Icon type="down" />
+                  </Warn>
                 </span>
               </Dropdown>
             ) : (
               <Link href="/login">
-                <a data-cy="header-login-button">Login</a>
+                <a data-cy="header-login-button">Sign in</a>
               </Link>
             )}
           </Col>
@@ -140,13 +157,18 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
             justifyContent: "space-between",
           }}
         >
-          <Text>
+          <Text style={{ color: "#fff" }}>
             Copyright &copy; {new Date().getFullYear()} {companyName}. All
             rights reserved.
           </Text>
-          <Text>
+          <Text style={{ color: "#fff" }}>
             Powered by{" "}
-            <a href="https://graphile.org/postgraphile">PostGraphile</a>
+            <a
+              style={{ color: "#fff", textDecoration: "underline" }}
+              href="https://graphile.org/postgraphile"
+            >
+              PostGraphile
+            </a>
           </Text>
         </div>
       </Footer>

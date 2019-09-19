@@ -1,5 +1,4 @@
-const compose = (...fns) =>
-  fns.reduceRight((memo, fn) => input => fn(memo(input)), input => input);
+const compose = require("lodash/flowRight");
 
 const { ROOT_DOMAIN, ROOT_URL } = process.env;
 if (!ROOT_DOMAIN) {
