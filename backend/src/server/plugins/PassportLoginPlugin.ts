@@ -109,6 +109,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
           const safeErrorCodes = [
             "WEAKP",
             "LOCKD",
+            "EMTKN",
             ...Object.keys(ERROR_MESSAGE_OVERRIDES),
           ];
           if (safeErrorCodes.includes(code)) {
@@ -119,7 +120,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
             );
             console.error(e);
             const error = new Error("Registration failed");
-            error["code"] = e.code;
+            error["code"] = code;
             throw error;
           }
         }
