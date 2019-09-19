@@ -23,6 +23,8 @@ FROM node:12-alpine as clean
 COPY --from=builder /app/package.json /app/yarn.lock /app/
 COPY --from=builder /app/backend/dist/ /app/backend/dist/
 COPY --from=builder /app/.next /app/.next
+COPY --from=builder /app/client/src/next.config.js /app/client/src/next.config.js
+COPY --from=builder /app/client/assets /app/client/assets
 
 ########################################
 
