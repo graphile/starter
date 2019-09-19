@@ -10,3 +10,4 @@
 /heroku-setup
 /.docker
 migrations/__tests__/.jest.watch.hack.json
+cypress/videos/
