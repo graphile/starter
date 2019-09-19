@@ -119,21 +119,6 @@ http://localhost:5678
 **Be careful not to mix and match Docker-mode vs local-mode.** You should
 stick with the answer you gave during setup.
 
-## Docker notes
-
-Docker creates the files in `.docker` as root. As these files are owned by
-root you have to `sudo` to deal with them. 🙄
-
-PostgreSQL logs from Docker on stdout were overwhelming so we now write them
-to the Postgres data directory `.docker/postgres_data/logs/`. We've enabled
-`log_truncate_on_rotation` but you may need to prune these periodically. See
-[log file
-maintenance](https://www.postgresql.org/docs/current/logfile-maintenance.html).
-
-Our Docker setup seems to trigger more watch events than the native one, so
-it seems to do more redundant work/produce more output. A PR to fix this
-would be welcome!
-
 ## Features
 
 Checked features have been implemented, unchecked features are goals for the future.
@@ -152,6 +137,7 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **Productive roll-forward migrations** — we use <a href="https://github.com/graphile/migrate">graphile-migrate</a> for development speed, but you're welcome to switch to whatever migration library you like
 - [x] **Realtime** — PostGraphile is configured with `@graphile/pg-pubsub` to enable realtime events from the DB; and Apollo is configured to consume them
 - [x] **Production build** — command to generate a production build of the project using `npm run build`
+- [x] **Production Docker build** — how to build a Docker image you could use in production
 - [x] **Deployment instructions: Heroku** — how to deploy to Heroku
 - [x] **Database tests** — Jest configured to test the database, plus initial tests for various database functions and tables
 - [x] **GraphQL tests** — Jest configured to test the GraphQL schema, plus some initial tests
@@ -183,7 +169,6 @@ Checked features have been implemented, unchecked features are goals for the fut
 Here's some more things we'd like to demonstrate that we've not got around to yet. (If you're interested in helping, reach out on Discord: http://discord.gg/graphile)
 
 - [ ] **File uploads** — user can change their avatar, but this approach can be extended to other areas
-- [ ] **Deployment instructions: Docker** — how to deploy with Docker
 
 ## Documentation links
 
@@ -242,6 +227,57 @@ information, see the [passport.js documentation](http://www.passportjs.org/docs/
 1. Replace the `README.md` file
 1. Commit as you usually would
 1. [Show your appreciation with sponsorship](https://www.graphile.org/sponsor/)
+
+## Docker development notes
+
+Docker creates the files in `.docker` as root. As these files are owned by
+root you have to `sudo` to deal with them. 🙄
+
+PostgreSQL logs from Docker on stdout were overwhelming so we now write them
+to the Postgres data directory `.docker/postgres_data/logs/`. We've enabled
+`log_truncate_on_rotation` but you may need to prune these periodically. See
+[log file
+maintenance](https://www.postgresql.org/docs/current/logfile-maintenance.html).
+
+Our Docker setup seems to trigger more watch events than the native one, so
+it seems to do more redundant work/produce more output. A PR to fix this
+would be welcome!
+
+## Building the production docker image
+
+To build the production image, use `docker build`. You should supply the
+`ROOT_DOMAIN` and `ROOT_URL` build variables (which will be baked into the
+client code, so cannot be changed as envvars); if you don't then the defaults
+will apply (which likely will not be suitable).
+
+To build the worker, pass `TARGET="worker"` instead of the default
+`TARGET="server"`.
+
+```sh
+docker build \
+  --build-arg ROOT_DOMAIN="localhost:5678" \
+  --build-arg ROOT_URL="http://localhost:5678" \
+  --build-arg TARGET="server" \
+  .
+```
+
+When you run the image you must pass it the relevant environmental variables, for example:
+
+```sh
+docker run --rm -it --init -p 5678:5678 \
+  -e GRAPHILE_LICENSE="$GRAPHILE_LICENSE" \
+  -e SECRET="$SECRET" \
+  -e JWT_SECRET="$JWT_SECRET" \
+  -e DATABASE_VISITOR="$DATABASE_VISITOR" \
+  -e DATABASE_URL="$DATABASE_URL" \
+  -e AUTH_DATABASE_URL="$AUTH_DATABASE_URL" \
+  -e GITHUB_KEY="$GITHUB_KEY" \
+  -e GITHUB_SECRET="$GITHUB_SECRET" \
+  docker-image-id-here
+```
+
+Currently if you miss required envvars weird things will happen; we don't
+currently have environment validation (PRs welcome!).
 
 ## Deploying to Heroku
 
