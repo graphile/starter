@@ -22,5 +22,6 @@
     "preserveWatchOutput": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
-  }
+  },
+  "exclude": ["cypress"]
 }
