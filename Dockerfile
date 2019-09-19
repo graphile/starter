@@ -27,15 +27,17 @@ COPY --from=builder /app/.next /app/.next
 ########################################
 
 FROM node:12-alpine
-LABEL description="My PostGraphile-powered ${TARGET}"
-ARG TARGET=server
 
 EXPOSE 5000
 ENV GRAPHILE_TURBO=1
 WORKDIR /app/
-ENTRYPOINT ["./backend/dist/${TARGET}/index.js"]
+COPY --from=clean /app/ /app/
+
+RUN yarn install --frozen-lockfile --production=true --no-progress
+
+ARG TARGET=server
+LABEL description="My PostGraphile-powered $TARGET"
+ENV server_or_worker=$TARGET
 
 # TODO: deal with the init (process 1) issue for signal handling
-
-COPY --from=clean /app/ /app/
-RUN yarn install --frozen-lockfile --production=true --no-progress
+ENTRYPOINT ./backend/dist/${server_or_worker}/index.js

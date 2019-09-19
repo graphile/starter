@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /* eslint-disable no-console */
 import * as express from "express";
 import chalk from "chalk";
