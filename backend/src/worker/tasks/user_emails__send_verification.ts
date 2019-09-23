@@ -29,8 +29,9 @@ const task: Task = async (inPayload, { addJob, withPgClient }) => {
     )
   );
   if (!userEmail) {
-    console.dir(userEmail);
-    console.log(userEmailId);
+    console.warn(
+      `user_emails__send_verification task for non-existent userEmail ignored (userEmailId = ${userEmailId})`
+    );
     // No longer relevant
     return;
   }
