@@ -40,7 +40,7 @@ if (!ROOT_URL) {
         javascriptEnabled: true,
         modifyVars: themeVariables, // make your antd custom effective
       },
-      webpack(config, { webpack, dev, dir }) {
+      webpack(config, { webpack, dev, dir, isServer }) {
         if (dev) config.devtool = "cheap-module-source-map";
 
         const graphqlRule = {
@@ -66,6 +66,10 @@ if (!ROOT_URL) {
               "process.env.ROOT_URL": JSON.stringify(ROOT_URL),
             }),
           ],
+          externals: [
+            ...(config.externals || []),
+            isServer ? { "pg-native": "pg/lib/client" } : null,
+          ].filter(_ => _),
         };
       },
     });
