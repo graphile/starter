@@ -83,7 +83,7 @@
     "passport": "^0.4.0",
     "passport-github": "^1.1.0",
     "pg": "^7.12.1",
-    "postgraphile": "^4.4.3",
+    "postgraphile": "^4.4.4",
     "react": "^16.9.0",
     "react-apollo": "^3.0.0",
     "react-dom": "^16.9.0",
