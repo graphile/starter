@@ -7,7 +7,7 @@ context("RegisterAccount", () => {
 
     // Action
     cy.getCy("header-login-button").click();
-    cy.getCy("loginpage-register-button").click();
+    cy.getCy("loginpage-button-register").click();
 
     // Assertions
     cy.url().should("equal", Cypress.env("ROOT_URL") + "/register");

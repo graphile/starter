@@ -1,17 +1,19 @@
 import React from "react";
 import { Badge } from "antd";
 
-interface WarnProps {
+interface WarnProps extends React.ComponentProps<typeof Badge> {
   children: React.ReactNode;
   okay?: boolean;
 }
 
-export default function Warn({ children, okay }: WarnProps) {
+export default function Warn({ children, okay, ...props }: WarnProps) {
   return okay ? (
     <span>{children}</span>
   ) : (
     <span>
-      <Badge dot>{children}</Badge>
+      <Badge dot {...props}>
+        {children}
+      </Badge>
     </span>
   );
 }

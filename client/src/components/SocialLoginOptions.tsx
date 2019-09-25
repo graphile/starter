@@ -7,7 +7,7 @@ interface SocialLoginOptionsProps {
 }
 
 function defaultButtonTextFromService(service: string) {
-  return `Login with ${service}`;
+  return `Sign in with ${service}`;
 }
 
 export default function SocialLoginOptions({
@@ -15,13 +15,7 @@ export default function SocialLoginOptions({
   buttonTextFromService = defaultButtonTextFromService,
 }: SocialLoginOptionsProps) {
   return (
-    <Button
-      block
-      type="primary"
-      size="large"
-      icon="github"
-      href={`/auth/github?next=${next}`}
-    >
+    <Button block size="large" icon="github" href={`/auth/github?next=${next}`}>
       {buttonTextFromService("GitHub")}
     </Button>
   );

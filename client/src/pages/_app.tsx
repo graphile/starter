@@ -1,5 +1,6 @@
 import "antd/dist/antd.less";
 import "nprogress/nprogress.css";
+import "../styles.less";
 import * as React from "react";
 import App, { Container } from "next/app";
 import { ApolloProvider } from "@apollo/react-hooks";
