@@ -13,7 +13,7 @@ import SharedLayout, {
 } from "../components/SharedLayout";
 import { NextPageContext } from "next";
 import Link from "next/link";
-import { Form, Icon, Input, Button, Alert } from "antd";
+import { Form, Icon, Input, Button, Alert, Typography } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { promisify } from "util";
 import { useApolloClient } from "@apollo/react-hooks";
@@ -23,6 +23,8 @@ import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
 import Redirect from "../components/Redirect";
 import SocialLoginOptions from "../components/SocialLoginOptions";
+
+const { Paragraph } = Typography;
 
 function hasErrors(fieldsError: Object) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -66,6 +68,7 @@ export default function Login({ next: rawNext }: LoginProps) {
                 <Row style={{ marginBottom: 8 }}>
                   <Col span={28}>
                     <Button
+                      data-cy="loginpage-button-withusername"
                       icon="mail"
                       size="large"
                       block
@@ -82,10 +85,12 @@ export default function Login({ next: rawNext }: LoginProps) {
                 </Row>
                 <Row type="flex" justify="center">
                   <Col>
-                    No Account?{" "}
-                    <Link href="/register">
-                      <a data-cy="loginpage-register-button">Create One</a>
-                    </Link>
+                    <Paragraph>
+                      No Account?{" "}
+                      <Link href="/register">
+                        <a data-cy="loginpage-button-register">Create One</a>
+                      </Link>
+                    </Paragraph>
                   </Col>
                 </Row>
               </Col>

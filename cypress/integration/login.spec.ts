@@ -14,6 +14,7 @@ context("Login", () => {
       password: PASSWORD,
     });
     cy.visit(Cypress.env("ROOT_URL") + "/login");
+    cy.getCy("loginpage-button-withusername").click();
 
     // Action
     cy.getCy("loginpage-input-username").type("testuser");
@@ -35,6 +36,7 @@ context("Login", () => {
       password: PASSWORD,
     });
     cy.visit(Cypress.env("ROOT_URL") + "/login");
+    cy.getCy("loginpage-button-withusername").click();
 
     // Action
     cy.getCy("loginpage-input-username").type("testuser");
