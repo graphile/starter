@@ -12,7 +12,7 @@ export SHADOW_DATABASE_URL="$TEST_DATABASE_URL"
 # Signal to graphile-migrate scripts that we're in the tests
 export IN_TESTS="1"
 
-echo "{}" >> migrations/__tests__/.jest.watch.hack.json
+echo '{"ts": 0}' > migrations/__tests__/.jest.watch.hack.json
 
 # Reset the test database
 graphile-migrate reset --shadow

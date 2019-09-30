@@ -10,12 +10,21 @@ import {
   createSession,
 } from "../../__tests__/helpers";
 
-// We need to inform jest that these files depend on changes to the database, so
-// we write a dummy file after current.sql is imported
+/*
+ * We need to inform jest that these files depend on changes to the database,
+ * so we write a dummy file after current.sql is imported. This file has to be
+ * tracked by git, otherwise `jest --watch` won't pick up changes to it...
+ */
 import { ts } from "./.jest.watch.hack.json";
 if (ts) {
-  // Delete the timestamp to eradicate the diff so git is clean again.
-  require("fs").writeFileSync(`${__dirname}/.jest.watch.hack.json`, "{}\n");
+  /*
+   * ... but we don't want the changes showing up under git, so we throw
+   * them away again once the tests have been triggered.
+   */
+  require("fs").writeFileSync(
+    `${__dirname}/.jest.watch.hack.json`,
+    '{"ts": 0}\n'
+  );
 }
 
 export * from "../../__tests__/helpers";
