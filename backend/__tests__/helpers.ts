@@ -12,6 +12,7 @@ import {
   poolFromUrl,
   createSession,
 } from "../../__tests__/helpers";
+import handleErrors from "../src/server/utils/handleErrors";
 
 export * from "../../__tests__/helpers";
 
@@ -177,27 +178,30 @@ export const runGraphQLQuery = async function runGraphQLQuery(
         );
         // Expand errors
         if (result.errors) {
-          // This does a similar transform that PostGraphile does to errors.
-          // It's not the same. Sorry.
-          // TODO: use `handleErrors` instead, if present
-          result.errors = result.errors.map(rawErr => {
-            const e = Object.create(rawErr);
-            Object.defineProperty(e, "originalError", {
-              value: rawErr.originalError,
-              enumerable: false,
-            });
-
-            if (e.originalError) {
-              Object.keys(e.originalError).forEach(k => {
-                try {
-                  e[k] = e.originalError[k];
-                } catch (err) {
-                  // Meh.
-                }
+          if (options.handleErrors) {
+            result.errors = handleErrors(result.errors);
+          } else {
+            // This does a similar transform that PostGraphile does to errors.
+            // It's not the same. Sorry.
+            result.errors = result.errors.map(rawErr => {
+              const e = Object.create(rawErr);
+              Object.defineProperty(e, "originalError", {
+                value: rawErr.originalError,
+                enumerable: false,
               });
-            }
-            return e;
-          });
+
+              if (e.originalError) {
+                Object.keys(e.originalError).forEach(k => {
+                  try {
+                    e[k] = e.originalError[k];
+                  } catch (err) {
+                    // Meh.
+                  }
+                });
+              }
+              return e;
+            });
+          }
         }
 
         // This is were we call the `checker` so you can do your assertions.
