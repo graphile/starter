@@ -9,5 +9,4 @@
 /client/src/graphql/graphql.d.ts
 /heroku-setup
 /.docker
-migrations/__tests__/.jest.watch.hack.json
 cypress/videos/
