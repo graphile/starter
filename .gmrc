@@ -17,7 +17,7 @@
     {
       "_": "command",
       "shadow": true,
-      "command": "if [ \"$IN_TESTS\" <> \"1\" ]; then ./scripts/dumpdb; fi"
+      "command": "if [ \"$IN_TESTS\" != \"1\" ]; then ./scripts/dumpdb; fi"
     }
   ],
   "afterCurrent": [
