@@ -52,6 +52,7 @@ async function main() {
    * operate very rapidly to enable quick as possible server startup.
    */
   await middleware.installDatabasePools(app);
+  await middleware.installHelmet(app);
   await middleware.installSession(app);
   await middleware.installPassport(app);
   await middleware.installLogging(app);

@@ -7,6 +7,7 @@ import installPostGraphile from "./installPostGraphile";
 import installNext from "./installNext";
 import installErrorHandler from "./installErrorHandler";
 import installCypressServerCommand from "./installCypressServerCommand";
+import installHelmet from "./installHelmet";
 
 export {
   installDatabasePools,
@@ -18,4 +19,5 @@ export {
   installNext,
   installErrorHandler,
   installCypressServerCommand,
+  installHelmet,
 };
