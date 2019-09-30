@@ -423,4 +423,4 @@ drop role dbname;
 ## MIT License
 
 This is open source software; you may use, modify and distribute it under the
-terms of the MIT License, see [GRAPHILE_STARTER_LICENSE.md][]
+terms of the MIT License, see [GRAPHILE_STARTER_LICENSE.md](./GRAPHILE_STARTER_LICENSE.md).
