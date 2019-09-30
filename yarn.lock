@@ -5334,10 +5334,10 @@ graphile-build@4.4.5:
     pluralize "^7.0.0"
     semver "^6.0.0"
 
-graphile-migrate@^0.0.13:
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/graphile-migrate/-/graphile-migrate-0.0.13.tgz#e6c434fc45e726642f37626fb82ac5a2b12aaefb"
-  integrity sha512-XQdB/2LCzDRvBstN3Dt9uthP+bczqemUrB3oseR0NMFMe5OevQusk2dntoc+WuRV2khkQlqo3/Ucx1HpzvWEwA==
+graphile-migrate@^0.0.15:
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/graphile-migrate/-/graphile-migrate-0.0.15.tgz#a8f79681b0ab6bbf2b57b8ceebaeda0b5cc2506c"
+  integrity sha512-iJg5TPCkeYcENECPLTvUXKKOJxUKJpO6o9MRDvtgqpROyaEHR6YpZUxznpy7aVCdRw6F6ocxP5mneU7cQUEV2A==
   dependencies:
     "@types/chalk" "^2.2.0"
     "@types/chokidar" "^2.1.3"
