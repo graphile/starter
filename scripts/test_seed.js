@@ -11,7 +11,7 @@ async function main() {
   const pgPool = new pg.Pool({ connectionString });
   try {
     await pgPool.query(
-      "drop trigger _200_make_first_user_admin on app_public.users;"
+      "drop trigger if exists _200_make_first_user_admin on app_public.users;"
     );
     await pgPool.query("delete from graphile_worker.jobs;");
     await writeFile(
