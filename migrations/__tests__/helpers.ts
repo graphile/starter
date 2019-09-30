@@ -14,7 +14,8 @@ import {
 // we write a dummy file after current.sql is imported
 import { ts } from "./.jest.watch.hack.json";
 if (ts) {
-  /* This exists just to appease eslint, and so that the `ts` variable is "used" */
+  // Delete the timestamp to eradicate the diff so git is clean again.
+  require("fs").writeFileSync(`${__dirname}/.jest.watch.hack.json`, "{}\n");
 }
 
 export * from "../../__tests__/helpers";
