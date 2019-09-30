@@ -17,7 +17,7 @@
     {
       "_": "command",
       "shadow": true,
-      "command": "if [ \"$IN_TESTS\" <> \"1\" ]; then pg_dump --no-sync --schema-only --no-owner --exclude-schema=graphile_migrate --exclude-schema=graphile_worker --file=data/schema.sql \"$GM_DBURL\"; fi"
+      "command": "if [ \"$IN_TESTS\" <> \"1\" ]; then ./scripts/dumpdb; fi"
     }
   ],
   "afterCurrent": [
