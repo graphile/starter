@@ -78,23 +78,21 @@ export default function Home() {
             of middlewares, including PostGraphile.
           </Paragraph>
 
-          <Title level={4}>
-            Database resets on <code>current.sql</code> change
-          </Title>
+          <Title level={4}>Initial migration</Title>
           <Paragraph>
             We use <code>graphile-migrate</code> in this project to manage
             database migrations; this allows you to change the database very
             rapidly by just editing the current migration file:{" "}
-            <code>migrations/current.sql</code>.
+            <code>migrations/current.sql</code>. This file should be written in
+            an idempotent manner so that it can be ran repeatedly without
+            causing issues.
           </Paragraph>
           <Paragraph>
-            When you make a significant edit to that file, its contents are
-            re-ran, which currently includes dropping almost everything in the
-            database and recreating it. If you're happy with the user account
-            system specified in current.sql you should{" "}
-            <code>yarn db:migrate commit</code> it, which will clear{" "}
-            <code>current.sql</code> and allow further changes to be applied on
-            top of this committed state. Please see{" "}
+            We've committed the first migration for you (which builds the user
+            system), but should you wish to customise this user system the
+            easiest way is to run <code>yarn db:migrate uncommit</code> which
+            will undo this initial migration and move its content back to
+            current.sql for you to modify. Please see{" "}
             <a href="https://github.com/graphile/migrate/blob/master/README.md">
               the graphile-migrate documentation
             </a>
@@ -109,13 +107,10 @@ export default function Home() {
 
           <Title level={4}>What now?</Title>
           <Paragraph>
-            If you're happy with our user account system, we recommend that you
-            commit this first migration with <code>yarn db:migrate commit</code>
-            , and then set about making this application your own.
-          </Paragraph>
-          <Paragraph>
             To get started, click "login" at the top right, then choose "Create
-            One".
+            One" to create a new account. When you're happy, you can add
+            database changes to <code>current.sql</code> and see them reflected
+            in the GraphiQL interface a <a href="/graphiql">/graphiql</a>.
           </Paragraph>
 
           <Divider />
