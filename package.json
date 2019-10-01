@@ -67,7 +67,7 @@
     "connect-redis": "^3.4.2",
     "express": "^4.17.1",
     "express-session": "^1.16.2",
-    "graphile-migrate": "^0.0.16",
+    "graphile-migrate": "^0.0.17",
     "graphile-utils": "^4.4.4",
     "graphile-worker": "^0.1.0-alpha.0",
     "graphql-tag": "^2.10.1",
