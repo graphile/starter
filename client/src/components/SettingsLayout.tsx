@@ -28,6 +28,11 @@ const pages = {
     warnIfUnverified: true,
     cy: "settingslayout-link-emails",
   },
+  "/settings/delete": {
+    title: "Delete Account",
+    warnIfUnverified: true,
+    cy: "settingslayout-link-delete",
+  },
 };
 
 interface SettingsLayoutProps {
