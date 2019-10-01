@@ -3,6 +3,13 @@ import { Button, Row, Col, Typography, Divider } from "antd";
 const { Text, Title, Paragraph } = Typography;
 import SharedLayout from "../components/SharedLayout";
 
+// Convenience helper
+const Li = ({ children, ...props }: any) => (
+  <li {...props}>
+    <Typography>{children}</Typography>
+  </li>
+);
+
 export default function Home() {
   return (
     <SharedLayout title="Home">
@@ -124,33 +131,45 @@ export default function Home() {
           </Paragraph>
 
           <Title level={4}>Making it yours</Title>
+          <Paragraph>
+            This project isn't intended to be <code>git clone</code>'d; instead
+            you should start a new git repository with the code from the latest
+            release:
+          </Paragraph>
           <ol>
-            <li>
-              Download and extract a zip of the latest release from GitHub
-            </li>
-            <li>
+            <Li>
+              Download and extract a zip of the{" "}
+              <a href="https://github.com/graphile/starter/releases">
+                latest release from GitHub
+              </a>
+            </Li>
+            <Li>
               In that folder run:
               <ul>
-                <li>
+                <Li>
                   <code>git init</code>
-                </li>
-                <li>
+                </Li>
+                <Li>
                   <code>git add .</code>
-                </li>
-                <li>
+                </Li>
+                <Li>
                   <code>git commit -m"PostGraphile starter base"</code>
-                </li>
+                </Li>
               </ul>
-            </li>
-            <li>
+            </Li>
+            <Li>
               Change the project name in <code>package.json</code>
-            </li>
-            <li>
+            </Li>
+            <Li>
               Change the project settings in <code>backend/src/config.ts</code>
-            </li>
-            <li>Replace the README.md file</li>
-            <li>Commit as you usually would</li>
+            </Li>
+            <Li>Replace the README.md file</Li>
+            <Li>Commit as you usually would</Li>
           </ol>
+          <Paragraph>
+            We also advise addressing the <code>TODO</code> items in the
+            codebase, particularly the one in <code>scripts/wipe_db</code>
+          </Paragraph>
 
           <Title level={4}>Realtime</Title>
           <Paragraph>
