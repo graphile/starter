@@ -15,10 +15,8 @@ async function main() {
     );
     await pgPool.query("delete from graphile_worker.jobs;");
     await writeFile(
-      "migrations/__tests__/.jest.watch.hack.json",
-      JSON.stringify({
-        ts: Date.now(),
-      })
+      `${__dirname}/../migrations/__tests__/jest.watch.hack.ts`,
+      `export const ts = ${Date.now()};\n`
     );
   } finally {
     await pgPool.end();

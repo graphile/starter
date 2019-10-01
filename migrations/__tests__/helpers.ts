@@ -15,16 +15,23 @@ import {
  * so we write a dummy file after current.sql is imported. This file has to be
  * tracked by git, otherwise `jest --watch` won't pick up changes to it...
  */
-import { ts } from "./.jest.watch.hack.json";
+import { ts } from "./jest.watch.hack";
 if (ts) {
   /*
    * ... but we don't want the changes showing up under git, so we throw
    * them away again once the tests have been triggered.
    */
   require("fs").writeFileSync(
-    `${__dirname}/.jest.watch.hack.json`,
-    '{"ts": 0}\n'
+    `${__dirname}/jest.watch.hack.ts`,
+    "export const ts = null;\n"
   );
+  /*
+   * This will trigger Jest's file watching again, but the second time
+   * `ts` will be null (as above), so:
+   *
+   *   a) it won't happen a third time, and
+   *   b) there will be no git diff, so the tests won't need to re-run
+   */
 }
 
 export * from "../../__tests__/helpers";
