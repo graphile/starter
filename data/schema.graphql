@@ -529,6 +529,7 @@ type User {
   """Optional avatar URL."""
   avatarUrl: String
   createdAt: Datetime!
+  hasPassword: Boolean
 
   """Unique identifier for the user."""
   id: Int!
@@ -667,6 +668,9 @@ input UserEmailCondition {
   """Checks for equality with the object’s `id` field."""
   id: Int
 
+  """Checks for equality with the object’s `isPrimary` field."""
+  isPrimary: Boolean
+
   """Checks for equality with the object’s `userId` field."""
   userId: Int
 }
@@ -707,6 +711,8 @@ type UserEmailsEdge {
 enum UserEmailsOrderBy {
   ID_ASC
   ID_DESC
+  IS_PRIMARY_ASC
+  IS_PRIMARY_DESC
   NATURAL
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC

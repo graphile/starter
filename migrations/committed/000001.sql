@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:2d0e51fa7661f49c65bb165eb370e4581f497a3c
+--! Hash: sha1:df44c957dbdd7a20d80247d24837640115e2dc60
 
 drop schema if exists app_public cascade;
 create schema app_public;
@@ -198,6 +198,10 @@ create trigger _500_insert_secrets
 comment on function app_private.tg_user_secrets__insert_with_user() is
   E'Ensures that every user record has an associated user_secret record.';
 
+create function app_public.users_has_password(u app_public.users) returns boolean as $$
+  select (password_hash is not null) from app_private.user_secrets where user_secrets.user_id = u.id and u.id = app_public.current_user_id();
+$$ language sql stable security definer;
+
 /**********/
 
 create table app_public.user_emails (
@@ -221,6 +225,7 @@ comment on constraint user_emails_user_id_email_key on app_public.user_emails is
 create unique index uniq_user_emails_verified_email on app_public.user_emails(email) where (is_verified is true);
 -- Only one primary email per user
 create unique index uniq_user_emails_primary_email on app_public.user_emails (user_id) where (is_primary is true);
+create index idx_user_emails_primary on app_public.user_emails (is_primary, user_id);
 
 create trigger _100_timestamps
   before insert or update on app_public.user_emails

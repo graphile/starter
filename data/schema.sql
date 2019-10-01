@@ -1047,6 +1047,17 @@ $$;
 
 
 --
+-- Name: users_has_password(app_public.users); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.users_has_password(u app_public.users) RETURNS boolean
+    LANGUAGE sql STABLE SECURITY DEFINER
+    AS $$
+  select (password_hash is not null) from app_private.user_secrets where user_secrets.user_id = u.id and u.id = app_public.current_user_id();
+$$;
+
+
+--
 -- Name: verify_email(integer, text); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
@@ -1389,6 +1400,13 @@ ALTER TABLE ONLY app_public.users
 
 ALTER TABLE ONLY app_public.users
     ADD CONSTRAINT users_username_key UNIQUE (username);
+
+
+--
+-- Name: idx_user_emails_primary; Type: INDEX; Schema: app_public; Owner: -
+--
+
+CREATE INDEX idx_user_emails_primary ON app_public.user_emails USING btree (is_primary, user_id);
 
 
 --
