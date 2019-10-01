@@ -70,7 +70,24 @@ export default function Home() {
           </Paragraph>
 
           <Title level={4}>
-            This page: <code>client/src/pages/index.tsx</code>
+            <a href="/graphiql">
+              Graph<em>i</em>QL
+            </a>
+          </Title>
+          <Paragraph>
+            You can browse the GraphQL API and even issue GraphQL queries using
+            the built in Graph<em>i</em>QL interface located at{" "}
+            <a href="/graphiql">
+              <code>/graphiql</code>
+            </a>
+            .
+          </Paragraph>
+
+          <Title level={4}>
+            This page:{" "}
+            <a href="https://github.com/graphile/starter/blob/master/client/src/pages/index.tsx">
+              <code>client/src/pages/index.tsx</code>
+            </a>
           </Title>
           <Paragraph>
             If you edit this file and save, the page in the browser should
@@ -78,7 +95,10 @@ export default function Home() {
           </Paragraph>
 
           <Title level={4}>
-            The server: <code>backend/src/server/index.ts</code>
+            The server:{" "}
+            <a href="https://github.com/graphile/starter/blob/master/backend/src/server/index.ts">
+              <code>backend/src/server/index.ts</code>
+            </a>
           </Title>
           <Paragraph>
             This entry point creates an Express.js server and installs a number
@@ -169,6 +189,22 @@ export default function Home() {
           <Paragraph>
             We also advise addressing the <code>TODO</code> items in the
             codebase, particularly the one in <code>scripts/wipe_db</code>
+          </Paragraph>
+
+          <Title level={4}>Production readiness</Title>
+          <Paragraph>
+            Remember that disabling GraphiQL does not prevent people from
+            issuing arbitrary GraphQL queries against your API. Before you ship,
+            be sure to{" "}
+            <a href="https://www.graphile.org/postgraphile/production/">
+              read the Production Considerations
+            </a>{" "}
+            in the PostGraphile docs. You may consider{" "}
+            <a href="https://www.graphile.org/postgraphile/pricing/">
+              going Pro
+            </a>{" "}
+            as one option for protecting your PostGraphile API; another is to
+            use "stored operations" (a.k.a. "persisted queries").
           </Paragraph>
 
           <Title level={4}>Realtime</Title>
