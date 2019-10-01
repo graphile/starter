@@ -5,11 +5,10 @@ import {
   useUnlinkUserAuthenticationMutation,
   UserAuthentication,
 } from "../../graphql";
-import { Spin, List, Avatar, Typography, Modal } from "antd";
+import { Spin, List, Avatar, Modal } from "antd";
 import SocialLoginOptions from "../../components/SocialLoginOptions";
 import Error from "../../components/ErrorAlert";
-
-const { Text } = Typography;
+import { H2, H3, Strong } from "../../components/Text";
 
 const AUTH_NAME_LOOKUP = {
   github: "GitHub",
@@ -78,7 +77,7 @@ function renderAuth(
       actions={[<UnlinkAccountButton key="unlink" id={auth.id} />]}
     >
       <List.Item.Meta
-        title={<Text strong>{authName(auth.service)}</Text>}
+        title={<Strong>{authName(auth.service)}</Strong>}
         description={`Added ${new Date(
           Date.parse(auth.createdAt)
         ).toLocaleString()}`}
@@ -103,9 +102,9 @@ export default function Settings_Accounts() {
 
   return (
     <SettingsLayout href="/settings/accounts">
-      <h2>Linked Accounts</h2>
+      <H2>Linked Accounts</H2>
       {error && !loading ? <Error error={error} /> : linkedAccounts}
-      <h3>Link another account</h3>
+      <H3>Link another account</H3>
       <SocialLoginOptions
         next="/settings/accounts"
         buttonTextFromService={service => `Link ${service} account`}

@@ -3,20 +3,21 @@ import { NextPageContext } from "next";
 import { Alert, Row, Col } from "antd";
 import Link from "next/link";
 import SharedLayout from "../components/SharedLayout";
+import { H2, P } from "../components/Text";
 
 const isDev = process.env.NODE_ENV !== "production";
 
 function FourOhFour() {
   return (
     <div>
-      <h2>Page Not Found</h2>
-      <p>
+      <H2>Page Not Found</H2>
+      <P>
         The page you attempted to load was not found. Please check the URL and
         try again, or visit{" "}
         <Link href="/">
           <a>the homepage</a>
         </Link>
-      </p>
+      </P>
     </div>
   );
 }
@@ -24,16 +25,16 @@ function FourOhFour() {
 function ErrorOccurred() {
   return (
     <div>
-      <h2>Something Went Wrong</h2>
-      <p>
+      <H2>Something Went Wrong</H2>
+      <P>
         We're not sure what happened there; how embarassing! Please try again
         later, or if this keeps happening then let us know.
-      </p>
-      <p>
+      </P>
+      <P>
         <Link href="/">
           <a>Go to the homepage</a>
         </Link>
-      </p>
+      </P>
     </div>
   );
 }
@@ -41,14 +42,14 @@ function ErrorOccurred() {
 function SocialAuthError({ provider }: { provider: string }) {
   return (
     <div>
-      <h2>This application is not configured for that auth provider</h2>
-      <p>
+      <H2>This application is not configured for that auth provider</H2>
+      <P>
         Please try and{" "}
         <Link href="/login">
           <a>login with another method</a>
         </Link>
         .
-      </p>
+      </P>
       {isDev && (
         <Alert
           type="info"

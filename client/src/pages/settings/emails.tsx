@@ -9,14 +9,13 @@ import {
   useMakeEmailPrimaryMutation,
   useDeleteEmailMutation,
 } from "../../graphql";
-import { Alert, List, Avatar, Form, Input, Button, Typography } from "antd";
+import { Alert, List, Avatar, Form, Input, Button } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { ApolloError } from "apollo-client";
 import Redirect from "../../components/Redirect";
 import { getCodeFromError, extractError } from "../../errors";
 import Error from "../../components/ErrorAlert";
-
-const { Text } = Typography;
+import { H2, P, Strong } from "../../components/Text";
 
 function Email({
   email,
@@ -112,7 +111,11 @@ export default function Settings_Emails() {
     if (error && !loading) {
       return <Error error={error} />;
     } else if (!user && !loading) {
-      return <Redirect href={`/login?next=${"/settings/emails"}`} />;
+      return (
+        <Redirect
+          href={`/login?next=${encodeURIComponent("/settings/emails")}`}
+        />
+      );
     } else if (!user) {
       return "Loading";
     } else {
@@ -133,15 +136,15 @@ export default function Settings_Emails() {
               />
             </div>
           )}
-          <h2>Email addresses</h2>
-          <p>
-            <Text strong>
+          <H2>Email addresses</H2>
+          <P>
+            <Strong>
               Account notices will be sent your your primary email address.
-            </Text>{" "}
+            </Strong>{" "}
             Additional email addresses may be added to help with account
             recovery (or to change your primary email), but they cannot be used
             until verified.
-          </p>
+          </P>
           <List
             dataSource={user.userEmails.nodes}
             renderItem={email => (
