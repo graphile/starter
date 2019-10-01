@@ -12,20 +12,23 @@ import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { getCodeFromError, extractError } from "../../errors";
 import { formItemLayout, tailFormItemLayout } from "../../forms";
 import Redirect from "../../components/Redirect";
+import ErrorAlert from "../../components/ErrorAlert";
 
 export default function Settings_Profile() {
-  const [error, setError] = useState<Error | ApolloError | null>(null);
-  const { data, loading } = useSettingsProfileQuery();
+  const [formError, setFormError] = useState<Error | ApolloError | null>(null);
+  const { data, loading, error } = useSettingsProfileQuery();
   return (
     <SettingsLayout href="/settings">
       {data && data.currentUser ? (
         <WrappedProfileSettingsForm
-          error={error}
-          setError={setError}
+          error={formError}
+          setError={setFormError}
           user={data.currentUser}
         />
       ) : loading ? (
         "Loading..."
+      ) : error ? (
+        <ErrorAlert error={error} />
       ) : (
         <Redirect href={`/login?next=${encodeURIComponent("/settings")}`} />
       )}

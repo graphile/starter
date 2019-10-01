@@ -23,6 +23,8 @@ import { useCallback } from "react";
 import StandardWidth from "./StandardWidth";
 import Head from "next/head";
 import Warn from "./Warn";
+import Error from "./ErrorAlert";
+import { ApolloError } from "apollo-client";
 
 const { Header, Content, Footer } = Layout;
 const { Text } = Typography;
@@ -40,6 +42,7 @@ const _babelHackCol = Col;
 export { _babelHackRow as Row, _babelHackCol as Col, Link };
 
 export interface SharedLayoutChildProps {
+  error?: ApolloError | Error;
   loading: boolean;
   currentUser?: SharedLayout_UserFragment | null;
 }
@@ -77,10 +80,17 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
     Router.push("/");
   }, [client, logout]);
   const renderChildren = (props: SharedLayoutChildProps) => {
-    const inner = typeof children === "function" ? children(props) : children;
+    const inner =
+      props.error && !props.loading ? (
+        <Error error={props.error} />
+      ) : typeof children === "function" ? (
+        children(props)
+      ) : (
+        children
+      );
     return noPad ? inner : <StandardWidth>{inner}</StandardWidth>;
   };
-  const { data, loading } = useSharedLayoutQuery();
+  const { data, loading, error } = useSharedLayoutQuery();
 
   return (
     <Layout>
@@ -145,6 +155,7 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
       </Header>
       <Content style={{ minHeight: "calc(100vh - 64px - 120px)" }}>
         {renderChildren({
+          error,
           loading,
           currentUser: data && data.currentUser,
         })}

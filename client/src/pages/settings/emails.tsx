@@ -14,6 +14,7 @@ import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { ApolloError } from "apollo-client";
 import Redirect from "../../components/Redirect";
 import { getCodeFromError, extractError } from "../../errors";
+import Error from "../../components/ErrorAlert";
 
 const { Text } = Typography;
 
@@ -104,11 +105,13 @@ function Email({
 
 export default function Settings_Emails() {
   const [showAddEmailForm, setShowAddEmailForm] = useState(false);
-  const [error, setError] = useState<Error | ApolloError | null>(null);
-  const { data, loading } = useSettingsEmailsQuery();
+  const [formError, setFormError] = useState<Error | ApolloError | null>(null);
+  const { data, loading, error } = useSettingsEmailsQuery();
   const user = data && data.currentUser;
   const pageContent = (() => {
-    if (!user && !loading) {
+    if (error && !loading) {
+      return <Error error={error} />;
+    } else if (!user && !loading) {
       return <Redirect href={`/login?next=${"/settings/emails"}`} />;
     } else if (!user) {
       return "Loading";
@@ -161,8 +164,8 @@ export default function Settings_Emails() {
           ) : (
             <WrappedAddEmailForm
               onComplete={() => setShowAddEmailForm(false)}
-              error={error}
-              setError={setError}
+              error={formError}
+              setError={setFormError}
             />
           )}
         </div>

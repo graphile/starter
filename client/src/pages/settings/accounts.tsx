@@ -7,6 +7,7 @@ import {
 } from "../../graphql";
 import { Spin, List, Avatar, Typography, Modal } from "antd";
 import SocialLoginOptions from "../../components/SocialLoginOptions";
+import Error from "../../components/ErrorAlert";
 
 const { Text } = Typography;
 
@@ -88,10 +89,10 @@ function renderAuth(
 }
 
 export default function Settings_Accounts() {
-  const { data } = useCurrentUserAuthenticationsQuery();
+  const { data, loading, error } = useCurrentUserAuthenticationsQuery();
 
   const linkedAccounts =
-    !data || !data.currentUser ? (
+    loading || !data || !data.currentUser ? (
       <Spin />
     ) : (
       <List
@@ -103,7 +104,7 @@ export default function Settings_Accounts() {
   return (
     <SettingsLayout href="/settings/accounts">
       <h2>Linked Accounts</h2>
-      {linkedAccounts}
+      {error && !loading ? <Error error={error} /> : linkedAccounts}
       <h3>Link another account</h3>
       <SocialLoginOptions
         next="/settings/accounts"
