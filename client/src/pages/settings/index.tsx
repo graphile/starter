@@ -13,6 +13,7 @@ import { getCodeFromError, extractError } from "../../errors";
 import { formItemLayout, tailFormItemLayout } from "../../forms";
 import Redirect from "../../components/Redirect";
 import ErrorAlert from "../../components/ErrorAlert";
+import { H3 } from "../../components/Text";
 
 export default function Settings_Profile() {
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
@@ -109,56 +110,59 @@ function ProfileSettingsForm({
 
   const code = getCodeFromError(error);
   return (
-    <Form {...formItemLayout} onSubmit={handleSubmit}>
-      <Form.Item label="Name">
-        {getFieldDecorator("name", {
-          initialValue: user.name,
-          rules: [
-            {
-              required: true,
-              message: "Please enter your name",
-            },
-          ],
-        })(<Input />)}
-      </Form.Item>
-      <Form.Item label="Username">
-        {getFieldDecorator("username", {
-          initialValue: user.username,
-          rules: [
-            {
-              required: true,
-              message: "Please choose a username",
-            },
-          ],
-        })(<Input />)}
-      </Form.Item>
-      {error ? (
-        <Form.Item>
-          <Alert
-            type="error"
-            message={`Updating username`}
-            description={
-              <span>
-                {extractError(error).message}
-                {code ? (
-                  <span>
-                    {" "}
-                    (Error code: <code>ERR_{code}</code>)
-                  </span>
-                ) : null}
-              </span>
-            }
-          />
+    <div>
+      <H3>Edit Profile</H3>
+      <Form {...formItemLayout} onSubmit={handleSubmit}>
+        <Form.Item label="Name">
+          {getFieldDecorator("name", {
+            initialValue: user.name,
+            rules: [
+              {
+                required: true,
+                message: "Please enter your name",
+              },
+            ],
+          })(<Input />)}
         </Form.Item>
-      ) : success ? (
-        <Form.Item>
-          <Alert type="success" message={`Profile updated`} />
+        <Form.Item label="Username">
+          {getFieldDecorator("username", {
+            initialValue: user.username,
+            rules: [
+              {
+                required: true,
+                message: "Please choose a username",
+              },
+            ],
+          })(<Input />)}
         </Form.Item>
-      ) : null}
-      <Form.Item {...tailFormItemLayout}>
-        <Button htmlType="submit">Update Profile</Button>
-      </Form.Item>
-    </Form>
+        {error ? (
+          <Form.Item>
+            <Alert
+              type="error"
+              message={`Updating username`}
+              description={
+                <span>
+                  {extractError(error).message}
+                  {code ? (
+                    <span>
+                      {" "}
+                      (Error code: <code>ERR_{code}</code>)
+                    </span>
+                  ) : null}
+                </span>
+              }
+            />
+          </Form.Item>
+        ) : success ? (
+          <Form.Item>
+            <Alert type="success" message={`Profile updated`} />
+          </Form.Item>
+        ) : null}
+        <Form.Item {...tailFormItemLayout}>
+          <Button htmlType="submit">Update Profile</Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
 }
 

@@ -8,7 +8,7 @@ import {
 import { Spin, List, Avatar, Modal } from "antd";
 import SocialLoginOptions from "../../components/SocialLoginOptions";
 import Error from "../../components/ErrorAlert";
-import { H2, H3, Strong } from "../../components/Text";
+import { H3, H4, Strong } from "../../components/Text";
 
 const AUTH_NAME_LOOKUP = {
   github: "GitHub",
@@ -102,9 +102,9 @@ export default function Settings_Accounts() {
 
   return (
     <SettingsLayout href="/settings/accounts">
-      <H2>Linked Accounts</H2>
+      <H3>Linked Accounts</H3>
       {error && !loading ? <Error error={error} /> : linkedAccounts}
-      <H3>Link another account</H3>
+      <H4>Link another account</H4>
       <SocialLoginOptions
         next="/settings/accounts"
         buttonTextFromService={service => `Link ${service} account`}

@@ -15,7 +15,7 @@ import { ApolloError } from "apollo-client";
 import Redirect from "../../components/Redirect";
 import { getCodeFromError, extractError } from "../../errors";
 import Error from "../../components/ErrorAlert";
-import { H2, P, Strong } from "../../components/Text";
+import { H3, P, Strong } from "../../components/Text";
 
 function Email({
   email,
@@ -136,7 +136,7 @@ export default function Settings_Emails() {
               />
             </div>
           )}
-          <H2>Email addresses</H2>
+          <H3>Email addresses</H3>
           <P>
             <Strong>
               Account notices will be sent your your primary email address.
