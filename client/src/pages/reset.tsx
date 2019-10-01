@@ -1,8 +1,9 @@
-import * as React from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import get from "lodash/get";
-import { Alert } from "antd";
+import { Alert, Form, Button, Input } from "antd";
 import SharedLayout, { Row, Col } from "../components/SharedLayout";
 import { useResetPasswordMutation } from "../graphql";
+import { P } from "../components/Text";
 
 interface IProps {
   userId: string;
@@ -10,20 +11,23 @@ interface IProps {
 }
 
 function Page({ userId: rawUserId, token: rawToken }: IProps) {
-  const [[userId, token], setIdAndToken] = React.useState<[number, string]>([
+  const [[userId, token], setIdAndToken] = useState<[number, string]>([
     parseInt(rawUserId, 10) || 0,
     rawToken || "",
   ]);
 
   const [resetPassword] = useResetPasswordMutation();
 
-  const [state, setState] = React.useState<
-    "PENDING" | "SUBMITTING" | "SUCCESS"
-  >("PENDING");
-  const [error, setError] = React.useState<Error | null>(null);
-  const [password, setPassword] = React.useState<string>("");
+  const [state, setState] = useState<"PENDING" | "SUBMITTING" | "SUCCESS">(
+    "PENDING"
+  );
+  const [error, setError] = useState<Error | null>(null);
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+  const [password, setPassword] = useState<string>("");
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (state === "SUBMITTING") {
       setError(null);
       (async () => {
@@ -50,24 +54,36 @@ function Page({ userId: rawUserId, token: rawToken }: IProps) {
   }, [userId, token, state, resetPassword, password]);
   function form() {
     return (
-      <form onSubmit={() => setState("SUBMITTING")}>
-        <p>Please enter your reset token</p>
-        <input
-          type="text"
-          value={token}
-          onChange={e => setIdAndToken([userId, e.target.value])}
-        />
-        <p>And choose a new password</p>
-        <input
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-        {error ? <p>{error.message || error}</p> : null}
+      <Form onSubmit={() => setState("SUBMITTING")}>
+        <Form.Item label="Enter your reset token:">
+          <Input
+            type="text"
+            value={token}
+            onChange={e => setIdAndToken([userId, e.target.value])}
+          />
+        </Form.Item>
+        <Form.Item label="Choose a new password:">
+          <Input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+        </Form.Item>
+        {error ? (
+          <P>
+            {" "}
+            <Alert
+              type="error"
+              closable
+              onClose={clearError}
+              message={error.message || error}
+            />
+          </P>
+        ) : null}
         <div>
-          <button>Submit</button>
+          <Button htmlType="submit">Reset password</Button>
         </div>
-      </form>
+      </Form>
     );
   }
   return (

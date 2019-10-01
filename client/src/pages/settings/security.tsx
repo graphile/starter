@@ -137,9 +137,9 @@ function ChangePasswordForm({
           choose a different email by making it primary in{" "}
           <Link href="/settings/emails">email settings</Link>).
         </P>
-        <button onClick={handleResetPassword} disabled={resetInProgress}>
+        <Button onClick={handleResetPassword} disabled={resetInProgress}>
           Reset password
-        </button>
+        </Button>
       </div>
     );
   }
