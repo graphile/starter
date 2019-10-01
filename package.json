@@ -35,6 +35,7 @@
     "@apollo/react-hooks": "^3.0.0",
     "@graphile-contrib/pg-simplify-inflector": "^5.0.0-beta.1",
     "@graphile/pg-pubsub": "^4.4.3",
+    "@graphile/pro": "^0.9.0",
     "@graphile/subscriptions-lds": "^4.4.4",
     "@graphql-codegen/add": "^1.5.0",
     "@types/chalk": "^2.2.0",

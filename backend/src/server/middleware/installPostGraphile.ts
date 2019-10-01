@@ -9,6 +9,7 @@ import { Pool } from "pg";
 import { Application, Request, Response } from "express";
 import PgPubsub from "@graphile/pg-pubsub";
 import PgSimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
+import GraphilePro from "@graphile/pro"; // Requires license key
 import PassportLoginPlugin from "../plugins/PassportLoginPlugin";
 import PrimaryKeyMutationsOnlyPlugin from "../plugins/PrimaryKeyMutationsOnlyPlugin";
 import SubscriptionsPlugin from "../plugins/SubscriptionsPlugin";
@@ -32,7 +33,14 @@ function uuidOrNull(input: string | number | null): UUID | null {
 
 const isDev = process.env.NODE_ENV === "development";
 //const isTest = process.env.NODE_ENV === "test";
-const pluginHook = makePluginHook([PgPubsub]);
+
+const pluginHook = makePluginHook([
+  // Add the pub/sub realtime provider
+  PgPubsub,
+
+  // If we have a Graphile Pro license, then enable the plugin
+  ...(process.env.GRAPHILE_LICENSE ? [GraphilePro] : []),
+]);
 
 interface IPostGraphileOptionsOptions {
   websocketMiddlewares?: Middleware[];
@@ -206,20 +214,16 @@ export function getPostGraphileOptions({
       };
     },
 
-    /*
-      // Pro plugin options (requires GRAPHILE_LICENSE)
-
-      defaultPaginationCap:
-        parseInt(process.env.GRAPHQL_PAGINATION_CAP || "", 10) || 50,
-      graphqlDepthLimit:
-        parseInt(process.env.GRAPHQL_DEPTH_LIMIT || "", 10) || 12,
-      graphqlCostLimit:
-        parseInt(process.env.GRAPHQL_COST_LIMIT || "", 10) || 30000,
-      exposeGraphQLCost:
-        (parseInt(process.env.HIDE_QUERY_COST || "", 10) || 0) < 1,
-      // readReplicaPgPool ...,
-
-    */
+    // Pro plugin options (requires process.env.GRAPHILE_LICENSE)
+    defaultPaginationCap:
+      parseInt(process.env.GRAPHQL_PAGINATION_CAP || "", 10) || 50,
+    graphqlDepthLimit:
+      parseInt(process.env.GRAPHQL_DEPTH_LIMIT || "", 10) || 12,
+    graphqlCostLimit:
+      parseInt(process.env.GRAPHQL_COST_LIMIT || "", 10) || 30000,
+    exposeGraphQLCost:
+      (parseInt(process.env.HIDE_QUERY_COST || "", 10) || 0) < 1,
+    // readReplicaPgPool ...,
   };
   return options;
 }
