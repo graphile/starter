@@ -1,7 +1,7 @@
 query CurrentUserAuthentications {
   currentUser {
     id
-    authentications: userAuthenticationsList {
+    authentications: userAuthenticationsList(first: 50) {
       id
       service
       identifier

@@ -4,7 +4,7 @@ mutation AddEmail($email: String!) {
   createUserEmail(input: { userEmail: { email: $email } }) {
     user {
       id
-      userEmails {
+      userEmails(first: 50) {
         nodes {
           id
           ...EmailsForm_UserEmail

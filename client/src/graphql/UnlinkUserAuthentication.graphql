@@ -2,7 +2,7 @@ mutation UnlinkUserAuthentication($id: Int!) {
   deleteUserAuthentication(input: { id: $id }) {
     user {
       id
-      userAuthenticationsList {
+      userAuthenticationsList(first: 50) {
         id
         identifier
         service

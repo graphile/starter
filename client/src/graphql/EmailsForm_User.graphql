@@ -2,7 +2,7 @@
 
 fragment EmailsForm_User on User {
   id
-  userEmails {
+  userEmails(first: 50) {
     nodes {
       ...EmailsForm_UserEmail
       id

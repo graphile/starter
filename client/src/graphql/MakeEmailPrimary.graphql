@@ -2,7 +2,7 @@ mutation MakeEmailPrimary($emailId: Int!) {
   makeEmailPrimary(input: { emailId: $emailId }) {
     user {
       id
-      userEmails {
+      userEmails(first: 50) {
         nodes {
           id
           isPrimary
