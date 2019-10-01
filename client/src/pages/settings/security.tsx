@@ -1,12 +1,19 @@
 import React, { useState, useCallback, useMemo, SyntheticEvent } from "react";
 import SettingsLayout from "../../components/SettingsLayout";
-import { useChangePasswordMutation } from "../../graphql";
+import {
+  useChangePasswordMutation,
+  useSettingsPasswordQuery,
+  useForgotPasswordMutation,
+} from "../../graphql";
 import { promisify } from "util";
 import { Form, Input, Alert, Button } from "antd";
 import { ApolloError } from "apollo-client";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { getCodeFromError, extractError } from "../../errors";
 import { formItemLayout, tailFormItemLayout } from "../../forms";
+import ErrorAlert from "../../components/ErrorAlert";
+import { H3, P } from "../../components/Text";
+import Link from "next/link";
 
 export default function Settings_Security() {
   const [error, setError] = useState<Error | ApolloError | null>(null);
@@ -88,7 +95,54 @@ function ChangePasswordForm({
     [changePassword, form, setError, validateFields]
   );
 
+  const {
+    data,
+    error: graphqlQueryError,
+    loading,
+  } = useSettingsPasswordQuery();
+  const [forgotPassword] = useForgotPasswordMutation();
+  const u = data && data.currentUser;
+  const userEmail = u && u.userEmails.nodes[0];
+  const email = userEmail ? userEmail.email : null;
+  const [resetInProgress, setResetInProgress] = useState(false);
+  const [resetError, setResetError] = useState(null);
+  const handleResetPassword = useCallback(() => {
+    if (!email) return;
+    if (resetInProgress) return;
+    (async () => {
+      setResetInProgress(true);
+
+      try {
+        await forgotPassword({ variables: { email } });
+      } catch (e) {
+        setResetError(resetError);
+      }
+      setResetInProgress(false);
+    })();
+  }, [email, forgotPassword, resetError, resetInProgress]);
+
   const { getFieldDecorator } = form;
+  if (loading) {
+    /* noop */
+  } else if (graphqlQueryError) {
+    return <ErrorAlert error={graphqlQueryError} />;
+  } else if (data && data.currentUser && !data.currentUser.hasPassword) {
+    return (
+      <div>
+        <H3>Change password</H3>
+        <P>
+          You registered your account through social login, so you do not
+          currently have a password. If you would like a password, press the
+          button below to request a password reset email to '{email}' (you can
+          choose a different email by making it primary in{" "}
+          <Link href="/settings/emails">email settings</Link>).
+        </P>
+        <button onClick={handleResetPassword} disabled={resetInProgress}>
+          Reset password
+        </button>
+      </div>
+    );
+  }
 
   const code = getCodeFromError(error);
   return (
