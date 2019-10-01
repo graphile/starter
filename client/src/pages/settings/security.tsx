@@ -146,54 +146,57 @@ function ChangePasswordForm({
 
   const code = getCodeFromError(error);
   return (
-    <Form {...formItemLayout} onSubmit={handleSubmit}>
-      <Form.Item label="Old Password">
-        {getFieldDecorator("oldPassword", {
-          rules: [
-            {
-              required: true,
-              message: "Please input your password",
-            },
-          ],
-        })(<Input type="password" />)}
-      </Form.Item>
-      <Form.Item label="New Password">
-        {getFieldDecorator("newPassword", {
-          rules: [
-            {
-              required: true,
-              message: "Please confirm your password",
-            },
-          ],
-        })(<Input type="password" />)}
-      </Form.Item>
-      {error ? (
-        <Form.Item>
-          <Alert
-            type="error"
-            message={`Changing password failed`}
-            description={
-              <span>
-                {extractError(error).message}
-                {code ? (
-                  <span>
-                    {" "}
-                    (Error code: <code>ERR_{code}</code>)
-                  </span>
-                ) : null}
-              </span>
-            }
-          />
+    <div>
+      <H3>Change password</H3>
+      <Form {...formItemLayout} onSubmit={handleSubmit}>
+        <Form.Item label="Old Password">
+          {getFieldDecorator("oldPassword", {
+            rules: [
+              {
+                required: true,
+                message: "Please input your password",
+              },
+            ],
+          })(<Input type="password" />)}
         </Form.Item>
-      ) : success ? (
-        <Form.Item>
-          <Alert type="success" message={`Password changed!`} />
+        <Form.Item label="New Password">
+          {getFieldDecorator("newPassword", {
+            rules: [
+              {
+                required: true,
+                message: "Please confirm your password",
+              },
+            ],
+          })(<Input type="password" />)}
         </Form.Item>
-      ) : null}
-      <Form.Item {...tailFormItemLayout}>
-        <Button htmlType="submit">Change Password</Button>
-      </Form.Item>
-    </Form>
+        {error ? (
+          <Form.Item>
+            <Alert
+              type="error"
+              message={`Changing password failed`}
+              description={
+                <span>
+                  {extractError(error).message}
+                  {code ? (
+                    <span>
+                      {" "}
+                      (Error code: <code>ERR_{code}</code>)
+                    </span>
+                  ) : null}
+                </span>
+              }
+            />
+          </Form.Item>
+        ) : success ? (
+          <Form.Item>
+            <Alert type="success" message={`Password changed!`} />
+          </Form.Item>
+        ) : null}
+        <Form.Item {...tailFormItemLayout}>
+          <Button htmlType="submit">Change Password</Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
 }
 
