@@ -174,7 +174,12 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
             {process.env.T_AND_C_URL ? (
               <span>
                 {" "}
-                <a href={process.env.T_AND_C_URL}>Terms and conditions</a>
+                <a
+                  style={{ color: "#fff", textDecoration: "underline" }}
+                  href={process.env.T_AND_C_URL}
+                >
+                  Terms and conditions
+                </a>
               </span>
             ) : null}
           </Text>
