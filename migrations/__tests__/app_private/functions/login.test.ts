@@ -127,6 +127,8 @@ it("too many login attempts resets after 5 minutes", () =>
     );
     expect(snapshotSafe(secrets)).toMatchInlineSnapshot(`
       Object {
+        "delete_account_token": null,
+        "delete_account_token_generated": null,
         "failed_password_attempts": 3,
         "failed_reset_password_attempts": 0,
         "first_failed_password_attempt": "[DATE]",

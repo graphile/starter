@@ -1148,7 +1148,9 @@ CREATE TABLE app_private.user_secrets (
     reset_password_token text,
     reset_password_token_generated timestamp with time zone,
     failed_reset_password_attempts integer DEFAULT 0 NOT NULL,
-    first_failed_reset_password_attempt timestamp with time zone
+    first_failed_reset_password_attempt timestamp with time zone,
+    delete_account_token text,
+    delete_account_token_generated timestamp with time zone
 );
 
 

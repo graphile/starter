@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:df44c957dbdd7a20d80247d24837640115e2dc60
+--! Hash: sha1:9af983b753493e355128cf3874dbc4d07a7fb745
 
 drop schema if exists app_public cascade;
 create schema app_public;
@@ -179,7 +179,9 @@ create table app_private.user_secrets (
   reset_password_token text,
   reset_password_token_generated timestamptz,
   failed_reset_password_attempts int not null default 0,
-  first_failed_reset_password_attempt timestamptz
+  first_failed_reset_password_attempt timestamptz,
+  delete_account_token text,
+  delete_account_token_generated timestamptz
 );
 alter table app_private.user_secrets enable row level security;
 comment on table app_private.user_secrets is
@@ -367,70 +369,6 @@ alter table app_private.user_authentication_secrets enable row level security;
 
 /**********/
 
-create function app_public.forgot_password(email citext) returns boolean as $$
-declare
-  v_user_email app_public.user_emails;
-  v_reset_token text;
-  v_reset_min_duration_between_emails interval = interval '3 minutes';
-  v_reset_max_duration interval = interval '3 days';
-begin
-  -- Find the matching user_email
-  select user_emails.* into v_user_email
-  from app_public.user_emails
-  where user_emails.email = forgot_password.email
-  order by is_verified desc, id desc;
-
-  if not (v_user_email is null) then
-    -- See if we've triggered a reset recently
-    if exists(
-      select 1
-      from app_private.user_email_secrets
-      where user_email_id = v_user_email.id
-      and password_reset_email_sent_at is not null
-      and password_reset_email_sent_at > now() - v_reset_min_duration_between_emails
-    ) then
-      return true;
-    end if;
-
-    -- Fetch or generate reset token
-    update app_private.user_secrets
-    set
-      reset_password_token = (
-        case
-        when reset_password_token is null or reset_password_token_generated < NOW() - v_reset_max_duration
-        then encode(gen_random_bytes(6), 'hex')
-        else reset_password_token
-        end
-      ),
-      reset_password_token_generated = (
-        case
-        when reset_password_token is null or reset_password_token_generated < NOW() - v_reset_max_duration
-        then now()
-        else reset_password_token_generated
-        end
-      )
-    where user_id = v_user_email.user_id
-    returning reset_password_token into v_reset_token;
-
-    -- Don't allow spamming an email
-    update app_private.user_email_secrets
-    set password_reset_email_sent_at = now()
-    where user_email_id = v_user_email.id;
-
-    -- Trigger email send
-    perform graphile_worker.add_job('user__forgot_password', json_build_object('id', v_user_email.user_id, 'email', v_user_email.email::text, 'token', v_reset_token));
-    return true;
-
-  end if;
-  return false;
-end;
-$$ language plpgsql strict security definer volatile set search_path from current;
-
-comment on function app_public.forgot_password(email citext) is
-  E'@resultFieldName success\nIf you''ve forgotten your password, give us one of your email addresses and we'' send you a reset token. Note this only works if you have added an email address!';
-
-/**********/
-
 create function app_private.login(username citext, password text) returns app_private.sessions as $$
 declare
   v_user app_public.users;
@@ -513,6 +451,70 @@ begin
 end;
 $$ language plpgsql security definer volatile set search_path from current;
 comment on function app_public.logout() is E'@omit';
+
+/**********/
+
+create function app_public.forgot_password(email citext) returns boolean as $$
+declare
+  v_user_email app_public.user_emails;
+  v_reset_token text;
+  v_reset_min_duration_between_emails interval = interval '3 minutes';
+  v_reset_max_duration interval = interval '3 days';
+begin
+  -- Find the matching user_email
+  select user_emails.* into v_user_email
+  from app_public.user_emails
+  where user_emails.email = forgot_password.email
+  order by is_verified desc, id desc;
+
+  if not (v_user_email is null) then
+    -- See if we've triggered a reset recently
+    if exists(
+      select 1
+      from app_private.user_email_secrets
+      where user_email_id = v_user_email.id
+      and password_reset_email_sent_at is not null
+      and password_reset_email_sent_at > now() - v_reset_min_duration_between_emails
+    ) then
+      return true;
+    end if;
+
+    -- Fetch or generate reset token
+    update app_private.user_secrets
+    set
+      reset_password_token = (
+        case
+        when reset_password_token is null or reset_password_token_generated < NOW() - v_reset_max_duration
+        then encode(gen_random_bytes(6), 'hex')
+        else reset_password_token
+        end
+      ),
+      reset_password_token_generated = (
+        case
+        when reset_password_token is null or reset_password_token_generated < NOW() - v_reset_max_duration
+        then now()
+        else reset_password_token_generated
+        end
+      )
+    where user_id = v_user_email.user_id
+    returning reset_password_token into v_reset_token;
+
+    -- Don't allow spamming an email
+    update app_private.user_email_secrets
+    set password_reset_email_sent_at = now()
+    where user_email_id = v_user_email.id;
+
+    -- Trigger email send
+    perform graphile_worker.add_job('user__forgot_password', json_build_object('id', v_user_email.user_id, 'email', v_user_email.email::text, 'token', v_reset_token));
+    return true;
+
+  end if;
+  return false;
+end;
+$$ language plpgsql strict security definer volatile set search_path from current;
+
+comment on function app_public.forgot_password(email citext) is
+  E'@resultFieldName success\nIf you''ve forgotten your password, give us one of your email addresses and we'' send you a reset token. Note this only works if you have added an email address!';
 
 /**********/
 
