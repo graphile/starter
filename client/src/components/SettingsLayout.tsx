@@ -8,6 +8,8 @@ import StandardWidth from "./StandardWidth";
 import Warn from "./Warn";
 import Redirect from "./Redirect";
 import { TextProps } from "antd/lib/typography/Text";
+import { useRouter } from "next/router";
+import * as qs from "querystring";
 
 const { Text } = Typography;
 const { Sider, Content } = Layout;
@@ -62,11 +64,14 @@ export default function SettingsLayout({
 }: SettingsLayoutProps) {
   const href = pages[inHref] ? inHref : Object.keys(pages)[0];
   const page = pages[href];
+  const router = useRouter();
+  const fullHref =
+    href + (router.query ? `?${qs.stringify(router.query)}` : "");
   return (
     <SharedLayout title={`Settings: ${page.title}`} noPad>
       {({ currentUser, error, loading }: SharedLayoutChildProps) =>
         !currentUser && !error && !loading ? (
-          <Redirect href={`/login?next=${encodeURIComponent(inHref)}`} />
+          <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />
         ) : (
           <Layout style={{ minHeight: "calc(100vh - 64px - 64px)" }} hasSider>
             <Sider>
