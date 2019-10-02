@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:de2e9a27fd264a4a4f462cb2ffeebb1195df5ca7
+--! Hash: sha1:9c7c43419e4d694ce2973f27f9564d90b3b19ea9
 
 drop schema if exists app_public cascade;
 create schema app_public;
@@ -585,6 +585,7 @@ create function app_public.request_account_deletion() returns boolean as $$
 declare
   v_user_email app_public.user_emails;
   v_token text;
+  v_token_max_duration interval = interval '3 days';
 begin
   if app_public.current_user_id() is null then
     raise exception 'You must log in to delete your account' using errcode = 'LOGIN';
@@ -651,9 +652,8 @@ begin
     delete from app_public.users where id = app_public.current_user_id();
     return true;
   end if;
-  if app_public.current_user_id() is null then
-    raise exception 'Incorrect token' using errcode = 'DNIED';
-  end if;
+
+  raise exception 'The supplied token was incorrect - perhaps you''re logged in to the wrong account, or the token has expired?' using errcode = 'DNIED';
 end;
 $$ language plpgsql strict volatile security definer set search_path from current;
 

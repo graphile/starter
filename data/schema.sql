@@ -656,9 +656,8 @@ begin
     delete from app_public.users where id = app_public.current_user_id();
     return true;
   end if;
-  if app_public.current_user_id() is null then
-    raise exception 'Incorrect token' using errcode = 'DNIED';
-  end if;
+
+  raise exception 'The supplied token was incorrect - perhaps you''re logged in to the wrong account, or the token has expired?' using errcode = 'DNIED';
 end;
 $$;
 
@@ -909,6 +908,7 @@ CREATE FUNCTION app_public.request_account_deletion() RETURNS boolean
 declare
   v_user_email app_public.user_emails;
   v_token text;
+  v_token_max_duration interval = interval '3 days';
 begin
   if app_public.current_user_id() is null then
     raise exception 'You must log in to delete your account' using errcode = 'LOGIN';
