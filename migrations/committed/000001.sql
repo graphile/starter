@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:9af983b753493e355128cf3874dbc4d07a7fb745
+--! Hash: sha1:de2e9a27fd264a4a4f462cb2ffeebb1195df5ca7
 
 drop schema if exists app_public cascade;
 create schema app_public;
@@ -286,7 +286,7 @@ declare
   v_verification_token text;
 begin
   if NEW.is_verified is false then
-    v_verification_token = encode(gen_random_bytes(4), 'hex');
+    v_verification_token = encode(gen_random_bytes(7), 'hex');
   end if;
   insert into app_private.user_email_secrets(user_email_id, verification_token) values(NEW.id, v_verification_token);
   return NEW;
@@ -457,9 +457,9 @@ comment on function app_public.logout() is E'@omit';
 create function app_public.forgot_password(email citext) returns boolean as $$
 declare
   v_user_email app_public.user_emails;
-  v_reset_token text;
-  v_reset_min_duration_between_emails interval = interval '3 minutes';
-  v_reset_max_duration interval = interval '3 days';
+  v_token text;
+  v_token_min_duration_between_emails interval = interval '3 minutes';
+  v_token_max_duration interval = interval '3 days';
 begin
   -- Find the matching user_email
   select user_emails.* into v_user_email
@@ -474,7 +474,7 @@ begin
       from app_private.user_email_secrets
       where user_email_id = v_user_email.id
       and password_reset_email_sent_at is not null
-      and password_reset_email_sent_at > now() - v_reset_min_duration_between_emails
+      and password_reset_email_sent_at > now() - v_token_min_duration_between_emails
     ) then
       return true;
     end if;
@@ -484,20 +484,20 @@ begin
     set
       reset_password_token = (
         case
-        when reset_password_token is null or reset_password_token_generated < NOW() - v_reset_max_duration
-        then encode(gen_random_bytes(6), 'hex')
+        when reset_password_token is null or reset_password_token_generated < NOW() - v_token_max_duration
+        then encode(gen_random_bytes(7), 'hex')
         else reset_password_token
         end
       ),
       reset_password_token_generated = (
         case
-        when reset_password_token is null or reset_password_token_generated < NOW() - v_reset_max_duration
+        when reset_password_token is null or reset_password_token_generated < NOW() - v_token_max_duration
         then now()
         else reset_password_token_generated
         end
       )
     where user_id = v_user_email.user_id
-    returning reset_password_token into v_reset_token;
+    returning reset_password_token into v_token;
 
     -- Don't allow spamming an email
     update app_private.user_email_secrets
@@ -505,7 +505,7 @@ begin
     where user_email_id = v_user_email.id;
 
     -- Trigger email send
-    perform graphile_worker.add_job('user__forgot_password', json_build_object('id', v_user_email.user_id, 'email', v_user_email.email::text, 'token', v_reset_token));
+    perform graphile_worker.add_job('user__forgot_password', json_build_object('id', v_user_email.user_id, 'email', v_user_email.email::text, 'token', v_token));
     return true;
 
   end if;
@@ -522,7 +522,7 @@ create function app_public.reset_password(user_id int, reset_token text, new_pas
 declare
   v_user app_public.users;
   v_user_secret app_private.user_secrets;
-  v_reset_max_duration interval = interval '3 days';
+  v_token_max_duration interval = interval '3 days';
 begin
   select users.* into v_user
   from app_public.users
@@ -537,7 +537,7 @@ begin
     if (
       v_user_secret.first_failed_reset_password_attempt is not null
     and
-      v_user_secret.first_failed_reset_password_attempt > NOW() - v_reset_max_duration
+      v_user_secret.first_failed_reset_password_attempt > NOW() - v_token_max_duration
     and
       v_user_secret.failed_reset_password_attempts >= 20
     ) then
@@ -564,8 +564,8 @@ begin
       -- Wrong token, bump all the attempt tracking figures
       update app_private.user_secrets
       set
-        failed_reset_password_attempts = (case when first_failed_reset_password_attempt is null or first_failed_reset_password_attempt < now() - v_reset_max_duration then 1 else failed_reset_password_attempts + 1 end),
-        first_failed_reset_password_attempt = (case when first_failed_reset_password_attempt is null or first_failed_reset_password_attempt < now() - v_reset_max_duration then now() else first_failed_reset_password_attempt end)
+        failed_reset_password_attempts = (case when first_failed_reset_password_attempt is null or first_failed_reset_password_attempt < now() - v_token_max_duration then 1 else failed_reset_password_attempts + 1 end),
+        first_failed_reset_password_attempt = (case when first_failed_reset_password_attempt is null or first_failed_reset_password_attempt < now() - v_token_max_duration then now() else first_failed_reset_password_attempt end)
       where user_secrets.user_id = v_user.id;
       return null;
     end if;
@@ -578,6 +578,87 @@ $$ language plpgsql strict volatile security definer set search_path from curren
 
 comment on function app_public.reset_password(user_id int, reset_token text, new_password text) is
   E'@resultFieldName success\nAfter triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
+
+/**********/
+
+create function app_public.request_account_deletion() returns boolean as $$
+declare
+  v_user_email app_public.user_emails;
+  v_token text;
+begin
+  if app_public.current_user_id() is null then
+    raise exception 'You must log in to delete your account' using errcode = 'LOGIN';
+  end if;
+
+  -- Get the email to send account deletion token to
+  select * into v_user_email
+    from app_public.user_emails
+    where user_id = app_public.current_user_id()
+    and is_primary is true;
+
+  -- Fetch or generate token
+  update app_private.user_secrets
+  set
+    delete_account_token = (
+      case
+      when delete_account_token is null or delete_account_token_generated < NOW() - v_token_max_duration
+      then encode(gen_random_bytes(7), 'hex')
+      else delete_account_token
+      end
+    ),
+    delete_account_token_generated = (
+      case
+      when delete_account_token is null or delete_account_token_generated < NOW() - v_token_max_duration
+      then now()
+      else delete_account_token_generated
+      end
+    )
+  where user_id = app_public.current_user_id()
+  returning delete_account_token into v_token;
+
+  -- Trigger email send
+  perform graphile_worker.add_job('user__send_delete_account_email', json_build_object('email', v_user_email.email::text, 'token', v_token));
+  return true;
+end;
+$$ language plpgsql strict security definer volatile set search_path from current;
+
+comment on function app_public.request_account_deletion() is
+  E'@resultFieldName success\nBegin the account deletion flow by requesting the confirmation email';
+
+/**********/
+
+create function app_public.confirm_account_deletion(token text) returns boolean as $$
+declare
+  v_user_secret app_private.user_secrets;
+  v_token_max_duration interval = interval '3 days';
+begin
+  if app_public.current_user_id() is null then
+    raise exception 'You must log in to delete your account' using errcode = 'LOGIN';
+  end if;
+
+  select * into v_user_secret
+    from app_private.user_secrets
+    where user_secrets.user_id = app_public.current_user_id();
+
+  if v_user_secret is null then
+    -- Success: they're already deleted
+    return true;
+  end if;
+
+  -- Check the token
+  if v_user_secret.delete_account_token = token then
+    -- Token passes; delete their account :(
+    delete from app_public.users where id = app_public.current_user_id();
+    return true;
+  end if;
+  if app_public.current_user_id() is null then
+    raise exception 'Incorrect token' using errcode = 'DNIED';
+  end if;
+end;
+$$ language plpgsql strict volatile security definer set search_path from current;
+
+comment on function app_public.confirm_account_deletion(token text) is
+  E'@resultFieldName success\nIf you''re certain you want to delete your account, use `requestAccountDeletion` to request an account deletion token, and then supply the token through this mutation to complete account deletion.';
 
 /**********/
 

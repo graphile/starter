@@ -24,6 +24,31 @@ type ChangePasswordPayload {
   success: Boolean
 }
 
+"""All input for the `confirmAccountDeletion` mutation."""
+input ConfirmAccountDeletionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  token: String!
+}
+
+"""The output of our `confirmAccountDeletion` mutation."""
+type ConfirmAccountDeletionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+  success: Boolean
+}
+
 """All input for the create `UserEmail` mutation."""
 input CreateUserEmailInput {
   """
@@ -259,6 +284,18 @@ type Mutation {
     input: ChangePasswordInput!
   ): ChangePasswordPayload
 
+  """
+  If you're certain you want to delete your account, use
+  `requestAccountDeletion` to request an account deletion token, and then supply
+  the token through this mutation to complete account deletion.
+  """
+  confirmAccountDeletion(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: ConfirmAccountDeletionInput!
+  ): ConfirmAccountDeletionPayload
+
   """Creates a single `UserEmail`."""
   createUserEmail(
     """
@@ -337,6 +374,14 @@ type Mutation {
     """
     input: RegisterInput!
   ): RegisterPayload
+
+  """Begin the account deletion flow by requesting the confirmation email"""
+  requestAccountDeletion(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: RequestAccountDeletionInput!
+  ): RequestAccountDeletionPayload
 
   """
   If you didn't receive the verification code for this email, we can resend it.
@@ -422,6 +467,30 @@ input RegisterInput {
 
 type RegisterPayload {
   user: User!
+}
+
+"""All input for the `requestAccountDeletion` mutation."""
+input RequestAccountDeletionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+}
+
+"""The output of our `requestAccountDeletion` mutation."""
+type RequestAccountDeletionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+  success: Boolean
 }
 
 """All input for the `resendEmailVerificationCode` mutation."""
