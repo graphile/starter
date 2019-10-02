@@ -26,7 +26,7 @@ export default function Settings_Accounts() {
     })();
   }, []);
   return (
-    <SettingsLayout href="/settings/accounts">
+    <SettingsLayout href="/settings/delete">
       <H3>Delete Account</H3>
       <P>
         Deleting your user account will delete all data (except that which we
@@ -42,11 +42,12 @@ export default function Settings_Accounts() {
       {itIsDone ? (
         <Alert
           type="warning"
-          message="Deletion initiated, please confirm via email"
+          message="Confirm deletion via email link"
           description={
             <P>
               You've been sent an email with a confirmation link in it, you must
-              click it to continue deleting your account.
+              click it to confirm that you are the account holder so that you
+              may continue deleting your account.
             </P>
           }
         />
@@ -56,9 +57,12 @@ export default function Settings_Accounts() {
           message="Delete user account?!"
           description={
             <>
-              <P>This action (once complete) cannot be undone!</P>
+              <P>
+                Deleting your account cannot be undone, you will lose all your
+                data.
+              </P>
               <Button onClick={openModal} type="danger">
-                INITIATE ACCOUNT DELETION PROCEDURE
+                I want to delete my account
               </Button>
             </>
           }
@@ -74,7 +78,15 @@ export default function Settings_Accounts() {
         title="Send delete account confirmation email?"
         confirmLoading={doingIt}
       >
-        <P>All your account data will be lost... are you sure?</P>
+        <P>
+          Before we can delete your account, we need to confirm it's definitely
+          you. We'll send you an email with a link in it, which when clicked
+          will give you the option to delete your account.
+        </P>
+        <P>
+          You should not trigger this unless you're sure you want to delete your
+          account.
+        </P>
       </Modal>
     </SettingsLayout>
   );

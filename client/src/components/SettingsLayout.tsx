@@ -3,40 +3,56 @@ import SharedLayout, {
   SharedLayoutChildProps,
 } from "../components/SharedLayout";
 import Link from "next/link";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Typography } from "antd";
 import StandardWidth from "./StandardWidth";
 import Warn from "./Warn";
 import Redirect from "./Redirect";
+import { TextProps } from "antd/lib/typography/Text";
 
+const { Text } = Typography;
 const { Sider, Content } = Layout;
 
+interface PageSpec {
+  title: string;
+  cy: string;
+  warnIfUnverified?: boolean;
+  titleProps?: TextProps;
+}
+
+// TypeScript shenanigans (so we can still use `keyof typeof pages` later)
+function page(spec: PageSpec): PageSpec {
+  return spec;
+}
+
 const pages = {
-  "/settings": {
+  "/settings": page({
     title: "Profile",
     cy: "settingslayout-link-profile",
-  },
-  "/settings/security": {
+  }),
+  "/settings/security": page({
     title: "Password",
     cy: "settingslayout-link-password",
-  },
-  "/settings/accounts": {
+  }),
+  "/settings/accounts": page({
     title: "Linked Accounts",
     cy: "settingslayout-link-accounts",
-  },
-  "/settings/emails": {
+  }),
+  "/settings/emails": page({
     title: "Emails",
     warnIfUnverified: true,
     cy: "settingslayout-link-emails",
-  },
-  "/settings/delete": {
+  }),
+  "/settings/delete": page({
     title: "Delete Account",
-    warnIfUnverified: true,
+    titleProps: {
+      type: "danger",
+    },
     cy: "settingslayout-link-delete",
-  },
+  }),
 };
 
 interface SettingsLayoutProps {
-  href: keyof typeof pages;
+  href: keyof (typeof pages);
   children: React.ReactNode;
 }
 
@@ -55,18 +71,20 @@ export default function SettingsLayout({
           <Layout style={{ minHeight: "calc(100vh - 64px - 64px)" }} hasSider>
             <Sider>
               <Menu selectedKeys={[href]}>
-                {Object.keys(pages).map(href => (
-                  <Menu.Item key={href}>
-                    <Link href={href}>
-                      <a data-cy={pages[href].cy}>
+                {Object.keys(pages).map(pageHref => (
+                  <Menu.Item key={pageHref}>
+                    <Link href={pageHref}>
+                      <a data-cy={pages[pageHref].cy}>
                         <Warn
                           okay={
                             !currentUser ||
                             currentUser.isVerified ||
-                            !pages[href].warnIfUnverified
+                            !pages[pageHref].warnIfUnverified
                           }
                         >
-                          {pages[href].title}
+                          <Text {...pages[pageHref].titleProps}>
+                            {pages[pageHref].title}
+                          </Text>
                         </Warn>
                       </a>
                     </Link>
