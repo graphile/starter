@@ -5,4 +5,6 @@ export const fromEmail =
   '"PostGraphile Starter" <no-reply@examples.graphile.org>';
 export const awsRegion = "us-east-1";
 export const companyName = packageJson.name;
-export const legalText = "<Insert legal email footer text here >";
+export const emailLegalText =
+  // Envvar here so we can override on the demo website
+  process.env.LEGAL_TEXT || "<Insert legal email footer text here >";

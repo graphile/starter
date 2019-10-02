@@ -5,7 +5,11 @@ import mjml2html = require("mjml");
 import * as html2text from "html-to-text";
 import getTransport from "../transport";
 import { readFile } from "../../fs";
-import { companyName, legalText, fromEmail } from "../../config";
+import {
+  companyName,
+  emailLegalText as legalText,
+  fromEmail,
+} from "../../config";
 import * as nodemailer from "nodemailer";
 import chalk from "chalk";
 

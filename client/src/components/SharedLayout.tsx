@@ -171,6 +171,12 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
           <Text style={{ color: "#fff" }}>
             Copyright &copy; {new Date().getFullYear()} {companyName}. All
             rights reserved.
+            {process.env.T_AND_C_URL ? (
+              <span>
+                {" "}
+                <a href={process.env.T_AND_C_URL}>Terms and conditions</a>
+              </span>
+            ) : null}
           </Text>
           <Text style={{ color: "#fff" }}>
             Powered by{" "}
