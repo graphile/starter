@@ -9,6 +9,8 @@ services:
       - .docker/node_modules:/app/node_modules
     working_dir: /app
     command: yarn dev
+    networks:
+      - default
     ports:
       # The main server
       - 5678:5678
@@ -22,4 +24,11 @@ services:
       - .docker/postgres_data:/var/lib/postgresql/data
     ports:
       - 5433:5432
+    networks:
+      - default
     command: postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
+
+networks:
+  default:
+    name: graphile-starter
+
