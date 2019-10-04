@@ -5,7 +5,7 @@
   "description": "Description of project here",
   "scripts": {
     "lint": "eslint --ext .js,.jsx,.ts,.tsx,.graphql . && tsc --noEmit",
-    "setup": "./scripts/setup",
+    "setup": "bash ./scripts/setup",
     "server:src:build": "yarn codegen && cd backend && tsc && chmod +x dist/server/index.js",
     "server:src:watch": "cd backend && tsc --watch",
     "server:watch": ". ./scripts/env && nodemon --watch 'backend/dist/server/**/*.js' -x 'node --inspect=9678 -r source-map-support/register' backend/dist/server/index.js",

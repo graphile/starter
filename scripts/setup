@@ -9,7 +9,7 @@ if [ ! -f package.json ]; then
 fi
 
 if [ -x .env ]; then
-  . .env
+  source .env
 
   fail () {
     echo ".env already exists, but it doesn't define $1 - aborting!"
@@ -155,7 +155,7 @@ CONFIG
   # To source our .env file from the shell it has to be executable.
   chmod +x .env
 
-  . .env
+  source .env
 fi
 
 echo
