@@ -2,6 +2,8 @@ version: "3.7"
 services:
   dev:
     image: node:10
+    env_file:
+      - ./.env
     environment:
       - FORCE_COLOR=2
     volumes:
@@ -20,6 +22,8 @@ services:
       - 9757:9757
   pg:
     image: postgres:11
+    env_file:
+      - ./.env
     volumes:
       - db-volume:/var/lib/postgresql/data
     ports:
