@@ -91,19 +91,10 @@ services:
       - db-volume:/var/lib/postgresql/data
       - ./data:/data
     ports:
-      - 5432
+      - 5433:5432
     networks:
       - default
-    restart: unless-stopped
     command: postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
-
-  # This is just used for running quick pg tools like psql, pg_dump, etc; connecting to the 'pg' database (that should already be running)
-  pgtools:
-    image: postgres:11
-    volumes:
-      - /work/data:/data
-    networks:
-      - default
 
 networks:
   default:
