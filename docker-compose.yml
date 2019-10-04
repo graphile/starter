@@ -21,7 +21,7 @@ services:
   pg:
     image: postgres:11
     volumes:
-      - .docker/postgres_data:/var/lib/postgresql/data
+      - db-volume:/var/lib/postgresql/data
     ports:
       - 5433:5432
     networks:
@@ -32,3 +32,5 @@ networks:
   default:
     name: graphile-starter
 
+volumes:
+  db-volume:
