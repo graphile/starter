@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+echo "Setup graphile-starter:"
 set -e
 export NODE_ENV=development
 
@@ -9,6 +10,7 @@ if [ ! -f package.json ]; then
 fi
 
 if [ -x .env ]; then
+  echo "Using existing .env"
   source .env
 
   fail () {
