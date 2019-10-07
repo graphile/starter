@@ -163,7 +163,7 @@ CONFIG
   # To source our .env file from the shell it has to be executable.
   chmod +x .env
 
-  source .env
+  . .env
 fi
 fi
 
