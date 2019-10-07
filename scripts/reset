@@ -10,6 +10,8 @@ if [ -f ./.envvar ]; then
   if [ "$DOCKER_MODE" = "y" ]; then
     echo "Cleaning up docker db volume and node_module"
     ROOT_DIRECTORY=${PWD##*/}
+    docker volume rm ${ROOT_DIRECTORY}_db-volume
+    docker volume rm ${ROOT_DIRECTORY}-node_modules-volume
   fi
 
 

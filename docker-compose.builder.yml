@@ -4,7 +4,7 @@ services:
     image: node:10
     volumes:
       - .:/app
-      - .docker/node_modules:/app/node_modules
+      - node_modules-volume:/app/node_modules
     working_dir: /app
     env_file:
       - ./.env
@@ -27,3 +27,7 @@ services:
     extends:
       service: base
     command: yarn db:migrate migrate
+
+
+volumes:
+  node_modules-volume:
