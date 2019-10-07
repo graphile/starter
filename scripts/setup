@@ -11,7 +11,12 @@ fi
 
 if [ -f ./.env ]; then
   echo "Using existing .env"
-  source .env
+  . ./.env
+  if [ -f ./.envvar ]; then
+    . ./.envvar
+  else
+    DOCKER_MODE="n"
+  fi
 
   fail () {
     echo ".env already exists, but it doesn't define $1 - aborting!"
@@ -95,9 +100,6 @@ else
 # use the Pro plugin - thanks so much!
 ${EXPORT_UNLESS_DOCKER}GRAPHILE_LICENSE='enterme'
 
-# Are we using the Docker mode?
-${EXPORT_UNLESS_DOCKER}DOCKER_MODE='${DOCKER_MODE}'
-
 # This is a development environment (production wouldn't write envvars to a file)
 ${EXPORT_UNLESS_DOCKER}NODE_ENV='development'
 
@@ -156,11 +158,25 @@ ${EXPORT_UNLESS_DOCKER}GITHUB_SECRET=''
 CONFIG
   echo "Passwords generated and configuration written to .env"
 
+  if [ "$DOCKER_MODE" = "n" ]; then
+
   # To source our .env file from the shell it has to be executable.
   chmod +x .env
 
   source .env
 fi
+fi
+
+  # This is our '.envvar' config file. It's for exporting/sourcing envvars that are not in use by docker-compose
+  # Currently it's only used to handle DOCKER_MODE
+  rm -f .envvar && cat >> .envvar <<ALWAYS_SOURCED
+
+# Enable docker
+DOCKER_MODE='${DOCKER_MODE}'
+
+ALWAYS_SOURCED
+  echo "Setting docker mode enabled as default for future use"
+  . .envvar
 
 echo
 echo

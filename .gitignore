@@ -1,4 +1,5 @@
 .env
+.envvar
 .next
 /dist
 /backend/dist

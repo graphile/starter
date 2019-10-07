@@ -17,7 +17,7 @@
     "db:migrate": ". ./scripts/env && graphile-migrate",
     "db:migrate:dump": ". ./scripts/env && graphile-migrate && graphile-migrate reset --shadow && graphile-migrate migrate --shadow --force",
     "db:wipe_if_demo": ". ./scripts/env && if [ \"$DEMO\" = \"WIPE_DATABASE\" ]; then ./scripts/wipe_db; fi",
-    "start": "yarn dev",
+    "start": "bash ./scripts/dev",
     "dev": "yarn && yarn server:src:build && concurrently --kill-others --names 'db,server:src,server:run,worker,codegen,test' 'yarn db:watch' 'yarn server:src:watch' 'sleep 8; yarn server:watch' 'sleep 5; yarn server:worker:watch' 'yarn codegen:watch' 'sleep 15; yarn test:watch'",
     "test": "./scripts/test",
     "test:watch": "./scripts/test --watch",
