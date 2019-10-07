@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+echo "Resetting .env"
+if [ -f ./.env ]; then
+  rm ./.env
+fi;
+
+if [ -f ./.envvar ]; then
+  . ./.envvar
+  if [ "$DOCKER_MODE" = "y" ]; then
+    echo "Cleaning up docker db volume and node_module"
+    ROOT_DIRECTORY=${PWD##*/}
+  fi
+
+
+  rm ./.envvar
+fi;
