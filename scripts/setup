@@ -4,7 +4,7 @@ echo "Setup graphile-starter:"
 set -e
 export NODE_ENV=development
 
-if [ ! -f package.json ]; then
+if [ ! -f ./package.json ]; then
   echo "Please run via 'yarn setup'; do not call this script directly" >&2
   exit 1
 fi
