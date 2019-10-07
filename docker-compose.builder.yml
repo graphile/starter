@@ -28,6 +28,9 @@ services:
       service: base
     command: yarn db:migrate migrate
 
+networks:
+  default:
+    name: graphile-starter
 
 volumes:
   node_modules-volume:
