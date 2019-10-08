@@ -5,11 +5,11 @@
   "description": "Description of project here",
   "scripts": {
     "setup": "cd .devcontainer && yarn devcontainer:setup",
-    "dev": "bash -c \". ./graphile-starter-project/.env && cd .devcontainer && yarn devcontainer:up && yarn devcontainer:dev \"",
+    "dev": "bash -c \". ./graphile-starter-app/.env && cd .devcontainer && yarn devcontainer:up && yarn devcontainer:dev \"",
     "/* WIP/PLACEHOLDER/TOOLS */":"//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
     "docker-run-once": "docker-compose -f ./.devcontainer/docker-compose.builder.yml run --rm base",
     "docker-exec-dev": "docker-compose -f ./.devcontainer/docker-compose.yml down && docker-compose -f ./.devcontainer/docker-compose.yml up -d dev && docker-compose -f ./.devcontainer/docker-compose.yml exec dev ",
-    "vscode": "bash -c \". ./graphile-starter-project/.env && code .\""
+    "vscode": "bash -c \". ./graphile-starter-app/.env && code .\""
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",

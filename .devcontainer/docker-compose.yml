@@ -18,7 +18,7 @@ services:
       - DATABASE_AUTHENTICATOR
 
     volumes:
-      - ../graphile-starter-project:/app
+      - ../graphile-starter-app:/app
       - node_modules-volume:/app/node_modules
     working_dir: /app
     # Overrides default command so things don't shut down after the process ends.

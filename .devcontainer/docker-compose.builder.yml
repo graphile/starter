@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ../graphile-starter-project:/app
+      - ../graphile-starter-app:/app
       - node_modules-volume:/app/node_modules
     working_dir: /app
     environment:
