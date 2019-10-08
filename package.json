@@ -1,0 +1,16 @@
+{
+  "name": "My_Project_Here",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Description of project here",
+  "scripts": {
+    "setup": "cd graphile-starter-project && yarn setup",
+    "setup:docker": "bash -c \". ./graphile-starter-project/.env && yarn docker\"",
+    "docker1": "docker-compose -f ./.devcontainer/docker-compose.builder.yml run --rm install printenv",
+    "docker": "docker-compose -f ./.devcontainer/docker-compose.yml up -d dev && docker-compose -f ./.devcontainer/docker-compose.yml exec dev bash"
+  },
+  "author": "Benjie Gillam <code@benjiegillam.com>",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "dependencies": {},
+  "devDependencies": {}
+}

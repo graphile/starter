@@ -3,11 +3,13 @@ services:
   base:
     image: node:10
     volumes:
-      - .:/app
+      - ../graphile-starter-project:/app
       - node_modules-volume:/app/node_modules
     working_dir: /app
-    env_file:
-      - ./.env
+    environment:
+      - DOCKER_MODE
+      - DATABASE_HOST
+      - DATABASE_OWNER
 
   install:
     extends:
