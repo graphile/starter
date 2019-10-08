@@ -4,11 +4,9 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "setup": "cd graphile-starter-project && yarn setup",
-    "setup:docker": "cd .devcontainer && yarn devcontainer:setup",
-    "dev": "cd graphile-starter-project && yarn dev",
-    "dev:docker": "bash -c \". ./graphile-starter-project/.env && cd .devcontainer && yarn devcontainer:up && yarn devcontainer:dev \"",
-    "PLACEHOLDER-WIP":"==================================",
+    "setup": "cd .devcontainer && yarn devcontainer:setup",
+    "dev": "bash -c \". ./graphile-starter-project/.env && cd .devcontainer && yarn devcontainer:up && yarn devcontainer:dev \"",
+    "/* WIP/PLACEHOLDER/TOOLS */":"//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
     "docker-run-once": "docker-compose -f ./.devcontainer/docker-compose.builder.yml run --rm base",
     "docker-exec-dev": "docker-compose -f ./.devcontainer/docker-compose.yml down && docker-compose -f ./.devcontainer/docker-compose.yml up -d dev && docker-compose -f ./.devcontainer/docker-compose.yml exec dev ",
     "vscode": "bash -c \". ./graphile-starter-project/.env && code .\""
