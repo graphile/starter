@@ -82,50 +82,50 @@ else
 # If you're supporting PostGraphile's development via Patreon or Graphile
 # Store, add your license key from https://store.graphile.com here so you can
 # use the Pro plugin - thanks so much!
-GRAPHILE_LICENSE='enterme'
+export GRAPHILE_LICENSE=''
 
 # This is a development environment (production wouldn't write envvars to a file)
-NODE_ENV='development'
+export NODE_ENV='development'
 
 # Superuser connection string (to a _different_ database), so databases can be dropped/created (may not be necessary in production)
-ROOT_DATABASE_URL='${ROOT_DATABASE_URL//\'/$q_mid}'
+export ROOT_DATABASE_URL='${ROOT_DATABASE_URL//\'/$q_mid}'
 
 # Where's the DB, and who owns it?
-DATABASE_HOST='${DATABASE_HOST//\'/$q_mid}'
-DATABASE_NAME='${DATABASE_NAME//\'/$q_mid}'
-DATABASE_OWNER='${DATABASE_OWNER//\'/$q_mid}'
-DATABASE_OWNER_PASSWORD='${DATABASE_OWNER_PASSWORD//\'/$q_mid}'
+export DATABASE_HOST='${DATABASE_HOST//\'/$q_mid}'
+export DATABASE_NAME='${DATABASE_NAME//\'/$q_mid}'
+export DATABASE_OWNER='${DATABASE_OWNER//\'/$q_mid}'
+export DATABASE_OWNER_PASSWORD='${DATABASE_OWNER_PASSWORD//\'/$q_mid}'
 
 
 # Password for the '${DATABASE_AUTHENTICATOR}' user, which has very limited
 # privileges, but can switch into '${DATABASE_VISITOR}'
-DATABASE_AUTHENTICATOR='${DATABASE_AUTHENTICATOR//\'/$q_mid}'
-DATABASE_AUTHENTICATOR_PASSWORD='${DATABASE_AUTHENTICATOR_PASSWORD//\'/$q_mid}'
+export DATABASE_AUTHENTICATOR='${DATABASE_AUTHENTICATOR//\'/$q_mid}'
+export DATABASE_AUTHENTICATOR_PASSWORD='${DATABASE_AUTHENTICATOR_PASSWORD//\'/$q_mid}'
 
 # Visitor role, cannot be logged into directly
-DATABASE_VISITOR='${DATABASE_VISITOR//\'/$q_mid}'
+export DATABASE_VISITOR='${DATABASE_VISITOR//\'/$q_mid}'
 
 # This secret is used for signing cookies
-SECRET='$(openssl rand -base64 48)'
+export SECRET='$(openssl rand -base64 48)'
 
 # This secret is used for signing JWT tokens (we don't use this by default)
-JWT_SECRET='$(openssl rand -base64 48)'
+export JWT_SECRET='$(openssl rand -base64 48)'
 
 # These are the connection strings for the DB and the test DB.
 # NOTE: in production you probably want to add ?ssl=1 to force SSL usage.
 # NOTE: 'psql' does not like ?ssl=1, use ?sslmode=require for psql.
-DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}"
-AUTH_DATABASE_URL="postgres://\${DATABASE_AUTHENTICATOR}:\$DATABASE_AUTHENTICATOR_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}"
-SHADOW_DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_shadow"
-SHADOW_AUTH_DATABASE_URL="postgres://\${DATABASE_AUTHENTICATOR}:\$DATABASE_AUTHENTICATOR_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_shadow"
-TEST_DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_test"
+export DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}"
+export AUTH_DATABASE_URL="postgres://\${DATABASE_AUTHENTICATOR}:\$DATABASE_AUTHENTICATOR_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}"
+export SHADOW_DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_shadow"
+export SHADOW_AUTH_DATABASE_URL="postgres://\${DATABASE_AUTHENTICATOR}:\$DATABASE_AUTHENTICATOR_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_shadow"
+export TEST_DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_test"
 
 # This port is the one you'll connect to
-PORT=5678
+export PORT=5678
 
 # This is needed any time we use absolute URLs, e.g. for OAuth callback URLs
-ROOT_DOMAIN="localhost:\$PORT"
-ROOT_URL="http://\$ROOT_DOMAIN"
+export ROOT_DOMAIN="localhost:\$PORT"
+export ROOT_URL="http://\$ROOT_DOMAIN"
 
 # To enable login with GitHub, create a GitHub application by visiting
 # https://github.com/settings/applications/new and then enter the Client
@@ -136,9 +136,9 @@ ROOT_URL="http://\$ROOT_DOMAIN"
 #   Authorization callback URL: http://localhost:5678/auth/github/callback
 #
 # Client ID:
-GITHUB_KEY=''
+export GITHUB_KEY=''
 # Client Secret:
-GITHUB_SECRET=''
+export GITHUB_SECRET=''
 CONFIG
   echo "Passwords generated and configuration written to .env"
   . .env
