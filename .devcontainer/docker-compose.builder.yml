@@ -1,7 +1,9 @@
 version: "2.4"
 services:
   base:
-    image: node:10
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - ../graphile-starter-project:/app
       - node_modules-volume:/app/node_modules
@@ -11,7 +13,7 @@ services:
       - DATABASE_HOST
       - DATABASE_OWNER
 
-  install:
+  node-install:
     extends:
       service: base
     command: yarn

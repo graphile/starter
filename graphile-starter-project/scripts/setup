@@ -32,23 +32,7 @@ if [ -f ./.env ]; then
   echo "Configuration already exists, using existing secrets."
 else
 
-  echo
-  echo
-  echo "Do you want to use the Docker mode? [Answer 'y' or 'n', press enter for 'n']"
-  read DOCKER_MODE
   if [ "$DOCKER_MODE" = "" ]; then DOCKER_MODE="n"; fi
-  if [[ "$DOCKER_MODE" =~ ^[yn]$ ]]; then
-    if [ "$DOCKER_MODE" = "y" ]; then
-      EXPORT_UNLESS_DOCKER=""
-      echo "Docker mode active"
-    else
-      EXPORT_UNLESS_DOCKER="export "
-      echo "Traditional mode active"
-    fi
-  else
-    echo "You must enter the single character 'y' or 'n', you entered '$DOCKER_MODE', so we're exiting"
-  fi
-
 
   echo
   echo
@@ -98,50 +82,50 @@ else
 # If you're supporting PostGraphile's development via Patreon or Graphile
 # Store, add your license key from https://store.graphile.com here so you can
 # use the Pro plugin - thanks so much!
-${EXPORT_UNLESS_DOCKER}GRAPHILE_LICENSE='enterme'
+GRAPHILE_LICENSE='enterme'
 
 # This is a development environment (production wouldn't write envvars to a file)
-${EXPORT_UNLESS_DOCKER}NODE_ENV='development'
+NODE_ENV='development'
 
 # Superuser connection string (to a _different_ database), so databases can be dropped/created (may not be necessary in production)
-${EXPORT_UNLESS_DOCKER}ROOT_DATABASE_URL='${ROOT_DATABASE_URL//\'/$q_mid}'
+ROOT_DATABASE_URL='${ROOT_DATABASE_URL//\'/$q_mid}'
 
 # Where's the DB, and who owns it?
-${EXPORT_UNLESS_DOCKER}DATABASE_HOST='${DATABASE_HOST//\'/$q_mid}'
-${EXPORT_UNLESS_DOCKER}DATABASE_NAME='${DATABASE_NAME//\'/$q_mid}'
-${EXPORT_UNLESS_DOCKER}DATABASE_OWNER='${DATABASE_OWNER//\'/$q_mid}'
-${EXPORT_UNLESS_DOCKER}DATABASE_OWNER_PASSWORD='${DATABASE_OWNER_PASSWORD//\'/$q_mid}'
+DATABASE_HOST='${DATABASE_HOST//\'/$q_mid}'
+DATABASE_NAME='${DATABASE_NAME//\'/$q_mid}'
+DATABASE_OWNER='${DATABASE_OWNER//\'/$q_mid}'
+DATABASE_OWNER_PASSWORD='${DATABASE_OWNER_PASSWORD//\'/$q_mid}'
 
 
 # Password for the '${DATABASE_AUTHENTICATOR}' user, which has very limited
 # privileges, but can switch into '${DATABASE_VISITOR}'
-${EXPORT_UNLESS_DOCKER}DATABASE_AUTHENTICATOR='${DATABASE_AUTHENTICATOR//\'/$q_mid}'
-${EXPORT_UNLESS_DOCKER}DATABASE_AUTHENTICATOR_PASSWORD='${DATABASE_AUTHENTICATOR_PASSWORD//\'/$q_mid}'
+DATABASE_AUTHENTICATOR='${DATABASE_AUTHENTICATOR//\'/$q_mid}'
+DATABASE_AUTHENTICATOR_PASSWORD='${DATABASE_AUTHENTICATOR_PASSWORD//\'/$q_mid}'
 
 # Visitor role, cannot be logged into directly
-${EXPORT_UNLESS_DOCKER}DATABASE_VISITOR='${DATABASE_VISITOR//\'/$q_mid}'
+DATABASE_VISITOR='${DATABASE_VISITOR//\'/$q_mid}'
 
 # This secret is used for signing cookies
-${EXPORT_UNLESS_DOCKER}SECRET='$(openssl rand -base64 48)'
+SECRET='$(openssl rand -base64 48)'
 
 # This secret is used for signing JWT tokens (we don't use this by default)
-${EXPORT_UNLESS_DOCKER}JWT_SECRET='$(openssl rand -base64 48)'
+JWT_SECRET='$(openssl rand -base64 48)'
 
 # These are the connection strings for the DB and the test DB.
 # NOTE: in production you probably want to add ?ssl=1 to force SSL usage.
 # NOTE: 'psql' does not like ?ssl=1, use ?sslmode=require for psql.
-${EXPORT_UNLESS_DOCKER}DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}"
-${EXPORT_UNLESS_DOCKER}AUTH_DATABASE_URL="postgres://\${DATABASE_AUTHENTICATOR}:\$DATABASE_AUTHENTICATOR_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}"
-${EXPORT_UNLESS_DOCKER}SHADOW_DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_shadow"
-${EXPORT_UNLESS_DOCKER}SHADOW_AUTH_DATABASE_URL="postgres://\${DATABASE_AUTHENTICATOR}:\$DATABASE_AUTHENTICATOR_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_shadow"
-${EXPORT_UNLESS_DOCKER}TEST_DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_test"
+DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}"
+AUTH_DATABASE_URL="postgres://\${DATABASE_AUTHENTICATOR}:\$DATABASE_AUTHENTICATOR_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}"
+SHADOW_DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_shadow"
+SHADOW_AUTH_DATABASE_URL="postgres://\${DATABASE_AUTHENTICATOR}:\$DATABASE_AUTHENTICATOR_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_shadow"
+TEST_DATABASE_URL="postgres://\$DATABASE_OWNER:\$DATABASE_OWNER_PASSWORD@\$DATABASE_HOST/\${DATABASE_NAME}_test"
 
 # This port is the one you'll connect to
-${EXPORT_UNLESS_DOCKER}PORT=5678
+PORT=5678
 
 # This is needed any time we use absolute URLs, e.g. for OAuth callback URLs
-${EXPORT_UNLESS_DOCKER}ROOT_DOMAIN="localhost:\$PORT"
-${EXPORT_UNLESS_DOCKER}ROOT_URL="http://\$ROOT_DOMAIN"
+ROOT_DOMAIN="localhost:\$PORT"
+ROOT_URL="http://\$ROOT_DOMAIN"
 
 # To enable login with GitHub, create a GitHub application by visiting
 # https://github.com/settings/applications/new and then enter the Client
@@ -152,42 +136,24 @@ ${EXPORT_UNLESS_DOCKER}ROOT_URL="http://\$ROOT_DOMAIN"
 #   Authorization callback URL: http://localhost:5678/auth/github/callback
 #
 # Client ID:
-${EXPORT_UNLESS_DOCKER}GITHUB_KEY=''
+GITHUB_KEY=''
 # Client Secret:
-${EXPORT_UNLESS_DOCKER}GITHUB_SECRET=''
+GITHUB_SECRET=''
 CONFIG
   echo "Passwords generated and configuration written to .env"
-
-  if [ "$DOCKER_MODE" = "n" ]; then
-
-  # To source our .env file from the shell it has to be executable.
-  chmod +x .env
-
   . .env
 fi
-fi
-
-  # This is our '.envvar' config file. It's for exporting/sourcing envvars that are not in use by docker-compose
-  # Currently it's only used to handle DOCKER_MODE
-  rm -f .envvar && cat >> .envvar <<ALWAYS_SOURCED
-
-# Enable docker
-DOCKER_MODE='${DOCKER_MODE}'
-
-ALWAYS_SOURCED
-  echo "Setting docker mode enabled as default for future use"
-  . .envvar
 
 echo
 echo
 echo "Installing dependencies and performing initial build"
-if [ "$DOCKER_MODE" = "y" ]; then
-  docker-compose -f docker-compose.builder.yml run --rm install
-  docker-compose -f docker-compose.builder.yml run --rm server-src-build
-else
+# if [ "$DOCKER_MODE" = "y" ]; then
+#   docker-compose -f docker-compose.builder.yml run --rm node-install
+#   docker-compose -f docker-compose.builder.yml run --rm server-src-build
+# else
   yarn
   yarn server:src:build
-fi
+# fi
 
 cat <<MSG
 
@@ -213,16 +179,14 @@ fi
 echo "Installing or reinstalling the roles and database..."
 PSQL="psql"
 if [ "$DOCKER_MODE" = "y" ]; then
-  PSQL="docker-compose run --rm pg psql"
-fi
-if [ "$DOCKER_MODE" = "y" ]; then
   docker-compose down
   docker-compose up -d pg
   trap 'docker-compose down' EXIT
-  while ! $PSQL "${ROOT_DATABASE_URL}" -c 'select true as "Connection test";'; do
-    sleep 1
-  done
 fi
+
+while ! $PSQL "${ROOT_DATABASE_URL}" -c 'select true as "Connection test";'; do
+  sleep 1
+done
 
 # Now we can reset the database
 $PSQL -X -v ON_ERROR_STOP=1 "${ROOT_DATABASE_URL}" <<SQL
@@ -251,15 +215,11 @@ CREATE ROLE ${DATABASE_VISITOR};
 GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
 SQL
 
-if [ "$DOCKER_MODE" = "y" ]; then
-  docker-compose -f docker-compose.builder.yml run --rm db-migrate-reset
-else
+# if [ "$DOCKER_MODE" = "y" ]; then
+#   docker-compose -f docker-compose.builder.yml run --rm db-migrate-reset
+# else
   graphile-migrate reset
   graphile-migrate reset --shadow
-fi
-
-if [ "$DOCKER_MODE" = "y" ]; then
-  docker-compose down
-fi
+# fi
 
 echo "✅ Setup success"
