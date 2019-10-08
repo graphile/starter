@@ -178,11 +178,11 @@ fi
 
 echo "Installing or reinstalling the roles and database..."
 PSQL="psql"
-if [ "$DOCKER_MODE" = "y" ]; then
-  docker-compose down
-  docker-compose up -d pg
-  trap 'docker-compose down' EXIT
-fi
+# if [ "$DOCKER_MODE" = "y" ]; then
+#   docker-compose down
+#   docker-compose up -d pg
+#   trap 'docker-compose down' EXIT
+# fi
 
 while ! $PSQL "${ROOT_DATABASE_URL}" -c 'select true as "Connection test";'; do
   sleep 1
@@ -215,6 +215,15 @@ CREATE ROLE ${DATABASE_VISITOR};
 GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
 SQL
 
+cat <<MSG
+
+We're going to reset migration
+
+- database url ${DATABASE_URL}
+- database role ${DATABASE_AUTHENTICATOR}
+
+Type 'CONFIRM' to continue
+MSG
 # if [ "$DOCKER_MODE" = "y" ]; then
 #   docker-compose -f docker-compose.builder.yml run --rm db-migrate-reset
 # else
