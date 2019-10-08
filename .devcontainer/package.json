@@ -4,14 +4,15 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "devcontainer:setup": "cross-env DOCKER-MODE=y bash -c \". ../graphile-starter-project/.env && yarn docker-reset && yarn docker-run-setup\"",
-    "devcontainer:up": "cross-env DOCKER-MODE=y bash -c \". ../graphile-starter-project/.env && yarn docker-reset && yarn docker-up -d\"",
-    "devcontainer:dev": "cross-env DOCKER-MODE=y bash -c \". ../graphile-starter-project/.env && yarn docker-attach-dev\"",
+    "devcontainer:setup": "yarn docker-reset && yarn docker-run-setup",
+    "devcontainer:up": "bash -c \". ../graphile-starter-project/.env && yarn docker-reset && yarn docker-up -d\"",
+    "devcontainer:dev": "bash -c \". ../graphile-starter-project/.env && yarn docker-attach-dev\"",
+    "/* TOOLS */":"//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
     "docker-up":"docker-compose --project-name graphile-starter_devcontainer up",
     "docker-attach-dev": "docker-compose --project-name graphile-starter_devcontainer exec dev bash -c \"yarn dev\"",
     "docker-reset":"docker-compose --project-name graphile-starter_devcontainer down",
-    "docker-run-setup": "yarn docker-build-once && docker-compose --project-name graphile-starter_devcontainer -f docker-compose.yml exec dev bash -c \"yarn setup\"",
-    "docker-build-once":"docker-compose --project-name graphile-starter_devcontainer -f docker-compose.yml up -d --build"
+    "docker-run-setup": "yarn docker-rebuild && docker-compose --project-name graphile-starter_devcontainer -f docker-compose.yml run dev yarn setup",
+    "docker-rebuild":"docker-compose --project-name graphile-starter_devcontainer -f docker-compose.yml up -d --build"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",

@@ -11,9 +11,11 @@ services:
       dockerfile: Dockerfile
     environment:
       - FORCE_COLOR=2
-      - DOCKER_MODE
+      - DOCKER_MODE=y
       - DATABASE_HOST
       - DATABASE_OWNER
+      - DATABASE_URL
+      - DATABASE_AUTHENTICATOR
 
     volumes:
       - ../graphile-starter-project:/app
