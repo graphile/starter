@@ -6,10 +6,10 @@
   "scripts": {
     "devcontainer:setup": "yarn docker-reset && yarn docker-run-setup",
     "devcontainer:up": "bash -c \". ../graphile-starter-app/.env && yarn docker-reset && yarn docker-up -d\"",
-    "devcontainer:dev": "bash -c \". ../graphile-starter-app/.env && yarn docker-attach-dev\"",
+    "devcontainer:dev": "bash -c \". ../graphile-starter-app/.env && yarn docker-attach-dev yarn dev",
     "/* TOOLS */":"//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
     "docker-up":"docker-compose --project-name graphile-starter_devcontainer up",
-    "docker-attach-dev": "docker-compose --project-name graphile-starter_devcontainer exec dev bash -c \"yarn dev\"",
+    "docker-attach-dev": "docker-compose --project-name graphile-starter_devcontainer exec dev ",
     "docker-reset":"docker-compose --project-name graphile-starter_devcontainer down",
     "docker-run-setup": "yarn docker-rebuild && docker-compose --project-name graphile-starter_devcontainer -f docker-compose.yml run dev yarn setup",
     "docker-rebuild":"docker-compose --project-name graphile-starter_devcontainer -f docker-compose.yml up -d --build"
