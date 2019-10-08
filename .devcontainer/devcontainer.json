@@ -2,12 +2,12 @@
 {
 	"name": "Node.js & Postgres",
 	"dockerComposeFile": "docker-compose.yml",
-	"service": "web",
-	"workspaceFolder": "/workspace",
+	"service": "dev",
+	"workspaceFolder": "/app",
 
-	// Use 'settings' to set *default* container specific settings.json values on container create. 
+	// Use 'settings' to set *default* container specific settings.json values on container create.
 	// You can edit these settings after create using File > Preferences > Settings > Remote.
-	"settings": { 
+	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash"
 	},
 
@@ -22,6 +22,10 @@
 
 	// Add the IDs of extensions you want installed when the container is created in the array below.
 	"extensions": [
-		"dbaeumer.vscode-eslint"
+		"dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "msjsdiag.debugger-for-chrome",
+    "apollographql.vscode-apollo",
+		"mikestead.dotenv",
 	]
 }
