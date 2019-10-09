@@ -6,7 +6,8 @@
   "scripts": {
     "setup": "cd .devcontainer && yarn devcontainer:setup",
     "start": "yarn dev",
-    "dev": "bash -c \". ./graphile-starter-app/.envvar && cd .devcontainer && yarn devcontainer:up && yarn devcontainer:dev \"",
+    "dev": "bash -c \". ./graphile-starter-app/.envvar && cd .devcontainer && yarn devcontainer:dev \"",
+    "reset": "cd .devcontainer && yarn reset",
     "/* WIP/PLACEHOLDER/TOOLS */":"//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
     "work-in-devcontainer": "bash -c \". ./graphile-starter-app/.envvar && cd .devcontainer && yarn devcontainer:up && cd .. && yarn attach-to-devcontainer\"",
     "attach-to-devcontainer": "bash -c \". ./graphile-starter-app/.envvar && cd .devcontainer && yarn docker-attach-dev bash \"",
