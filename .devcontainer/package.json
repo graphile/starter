@@ -5,8 +5,8 @@
   "description": "Description of project here",
   "scripts": {
     "devcontainer:setup": "yarn docker-reset && yarn docker-run-setup",
-    "devcontainer:up": "bash -c \". ../graphile-starter-app/.env && yarn docker-reset && yarn docker-up -d\"",
-    "devcontainer:dev": "bash -c \". ../graphile-starter-app/.env && yarn docker-attach-dev yarn dev",
+    "devcontainer:up": "bash -c \". ../graphile-starter-app/.envvar && yarn docker-reset && yarn docker-up -d\"",
+    "devcontainer:dev": "bash -c \". ../graphile-starter-app/.envvar && yarn docker-attach-dev yarn dev",
     "/* TOOLS */":"//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
     "docker-up":"docker-compose --project-name graphile-starter_devcontainer up",
     "docker-attach-dev": "docker-compose --project-name graphile-starter_devcontainer exec dev ",

@@ -9,9 +9,9 @@ if [ ! -f ./package.json ]; then
   exit 1
 fi
 
-if [ -f ./.env ]; then
-  echo "Using existing .env"
-  . ./.env
+if [ -f ./.envvar ]; then
+  echo "Using existing .envvar"
+  . ./.envvar
   if [ -f ./.envvar ]; then
     . ./.envvar
   else
@@ -19,7 +19,7 @@ if [ -f ./.env ]; then
   fi
 
   fail () {
-    echo ".env already exists, but it doesn't define $1 - aborting!"
+    echo ".envvar already exists, but it doesn't define $1 - aborting!"
     exit 1;
   }
 
@@ -77,8 +77,8 @@ else
 
   q_mid=\'\\\'\'
 
-  # This is our '.env' config file, we're writing it now so that if something goes wrong we won't lose the passwords.
-  cat >> .env <<CONFIG
+  # This is our '.envvar' config file, we're writing it now so that if something goes wrong we won't lose the passwords.
+  cat >> .envvar <<CONFIG
 # If you're supporting PostGraphile's development via Patreon or Graphile
 # Store, add your license key from https://store.graphile.com here so you can
 # use the Pro plugin - thanks so much!
@@ -141,8 +141,8 @@ export GITHUB_KEY=''
 export GITHUB_SECRET=''
 CONFIG
 
-  echo "Passwords generated and configuration written to .env"
-  . .env
+  echo "Passwords generated and configuration written to .envvar"
+  . .envvar
 fi
 
 echo
@@ -214,7 +214,6 @@ We're going to reset migration
 
 Type 'CONFIRM' to continue
 MSG
-
   graphile-migrate reset
   graphile-migrate reset --shadow
 

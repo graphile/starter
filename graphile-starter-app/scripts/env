@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-if [ -x ./.env ]; then
-  . ./.env
+if [ -x ./.envvar ]; then
+  . ./.envvar
 fi;
 
 # For Cypress:

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-echo "Resetting .env"
-if [ -f ./.env ]; then
-  rm ./.env
+echo "Resetting .envvar"
+if [ -f ./.envvar ]; then
+  rm ./.envvar
 fi;
 
 if [ -f ./.envvar ]; then

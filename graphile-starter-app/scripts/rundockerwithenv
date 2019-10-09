@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-. ../.env
+. ../.envvar
 
 DATABASE_HOST='172.17.0.1'
 export DATABASE_URL="postgres://$DATABASE_OWNER:$DATABASE_OWNER_PASSWORD@$DATABASE_HOST/${DATABASE_NAME}"

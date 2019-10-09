@@ -6,12 +6,13 @@
   "scripts": {
     "setup": "cd .devcontainer && yarn devcontainer:setup",
     "start": "yarn dev",
-    "dev": "bash -c \". ./graphile-starter-app/.env && cd .devcontainer && yarn devcontainer:up && yarn devcontainer:dev \"",
+    "dev": "bash -c \". ./graphile-starter-app/.envvar && cd .devcontainer && yarn devcontainer:up && yarn devcontainer:dev \"",
     "/* WIP/PLACEHOLDER/TOOLS */":"//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
-    "devcontainer": "bash -c \". ./graphile-starter-app/.env && cd .devcontainer && yarn devcontainer:up && yarn docker-attach-dev bash \"",
+    "work-in-devcontainer": "bash -c \". ./graphile-starter-app/.envvar && cd .devcontainer && yarn devcontainer:up && cd .. && yarn attach-to-devcontainer\"",
+    "attach-to-devcontainer": "bash -c \". ./graphile-starter-app/.envvar && cd .devcontainer && yarn docker-attach-dev bash \"",
     "docker-run-once": "docker-compose -f ./.devcontainer/docker-compose.builder.yml run --rm base",
     "docker-exec-dev": "docker-compose -f ./.devcontainer/docker-compose.yml down && docker-compose -f ./.devcontainer/docker-compose.yml up -d dev && docker-compose -f ./.devcontainer/docker-compose.yml exec dev ",
-    "vscode": "bash -c \". ./graphile-starter-app/.env && code .\""
+    "vscode": "bash -c \". ./graphile-starter-app/.envvar && code .\""
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",

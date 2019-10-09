@@ -103,7 +103,7 @@ through the necessary steps:
 yarn setup
 ```
 
-The above command will create a `.env` file for you containing your secrets.
+The above command will create a `.envvar` file for you containing your secrets.
 Do not commit it to version control!
 
 ## Running
@@ -237,7 +237,7 @@ for an alternative.
 
 ### Login with GitHub
 
-If you set `GITHUB_KEY` and `GITHUB_SECRET` in your `.env` file then you can
+If you set `GITHUB_KEY` and `GITHUB_SECRET` in your `.envvar` file then you can
 also use GitHub's OAuth social authentication; you can add similar logic to the
 GitHub logic (in `backend/src/server/middleware/installPassport.ts`) to enable
 other social login providers such as Twitter, Facebook, Google, etc. For more

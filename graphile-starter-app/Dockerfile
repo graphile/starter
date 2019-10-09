@@ -54,8 +54,8 @@ COPY --from=builder /app/scripts/env /app/scripts/env
 # the built JS).
 #
 # Further, they aren't available in ENTRYPOINT (because it's at runtime), so
-# push them to a .env file that we can source from ENTRYPOINT.
-RUN echo "export PORT=\"$PORT\" NODE_ENV=\"$NODE_ENV\" ROOT_DOMAIN=\"$ROOT_DOMAIN\" ROOT_URL=\"$ROOT_URL\" TARGET=\"TARGET\"" >> /app/.env && chmod +x /app/.env
+# push them to a .envvar file that we can source from ENTRYPOINT.
+RUN echo "export PORT=\"$PORT\" NODE_ENV=\"$NODE_ENV\" ROOT_DOMAIN=\"$ROOT_DOMAIN\" ROOT_URL=\"$ROOT_URL\" TARGET=\"TARGET\"" >> /app/.envvar && chmod +x /app/.envvar
 
 ################################################################################
 # Build stage FINAL - COPY everything, once, and then do a clean `yarn install`
