@@ -140,6 +140,7 @@ export GITHUB_KEY=''
 # Client Secret:
 export GITHUB_SECRET=''
 CONFIG
+
   echo "Passwords generated and configuration written to .env"
   . .env
 fi
@@ -147,17 +148,11 @@ fi
 echo
 echo
 echo "Installing dependencies and performing initial build"
-# if [ "$DOCKER_MODE" = "y" ]; then
-#   docker-compose -f docker-compose.builder.yml run --rm node-install
-#   docker-compose -f docker-compose.builder.yml run --rm server-src-build
-# else
+
   yarn
   yarn server:src:build
-# fi
 
 cat <<MSG
-
-
 We're going to drop (if necessary):
 
 - database ${DATABASE_NAME}
@@ -178,11 +173,6 @@ fi
 
 echo "Installing or reinstalling the roles and database..."
 PSQL="psql"
-# if [ "$DOCKER_MODE" = "y" ]; then
-#   docker-compose down
-#   docker-compose up -d pg
-#   trap 'docker-compose down' EXIT
-# fi
 
 while ! $PSQL "${ROOT_DATABASE_URL}" -c 'select true as "Connection test";'; do
   sleep 1
@@ -216,7 +206,6 @@ GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
 SQL
 
 cat <<MSG
-
 We're going to reset migration
 
 - database url ${DATABASE_URL}
@@ -224,11 +213,8 @@ We're going to reset migration
 
 Type 'CONFIRM' to continue
 MSG
-# if [ "$DOCKER_MODE" = "y" ]; then
-#   docker-compose -f docker-compose.builder.yml run --rm db-migrate-reset
-# else
+
   graphile-migrate reset
   graphile-migrate reset --shadow
-# fi
 
 echo "✅ Setup success"
