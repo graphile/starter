@@ -131,6 +131,7 @@ export ROOT_URL="http://\$ROOT_DOMAIN"
 export GITHUB_KEY=''
 # Client Secret:
 export GITHUB_SECRET=''
+
 CONFIG
 
   echo "Passwords generated and configuration written to .envvar"
@@ -165,15 +166,21 @@ if [ "$CONFIRM_DROP" != "CONFIRM" ]; then
 fi
 
 echo "Installing or reinstalling the roles and database..."
-# Set default, can be set in docker-compose.yml otherwise
-if [ "$PSQL" = "" ]; then PSQL="psql"; fi
 
-while ! $PSQL "${ROOT_DATABASE_URL}" -c 'select true as "Connection test";'; do
+while ! ${PSQL:-psql} "${ROOT_DATABASE_URL}" -c 'select true as "Connection test";'; do
+  echo <<MSG
+
+There was an error connecting to the database at '${ROOT_DATABASE_URL}' (or
+we couldn't run the 'psql' command?); we'll try again in a second but if this
+keeps happening you may want to check your database is running and that we
+have the right address.
+
+MSG
   sleep 1
 done
 
 # Now we can reset the database
-$PSQL -X -v ON_ERROR_STOP=1 "${ROOT_DATABASE_URL}" <<SQL
+${PSQL:-psql} -X -v ON_ERROR_STOP=1 "${ROOT_DATABASE_URL}" <<SQL
 -- RESET database
 DROP DATABASE IF EXISTS ${DATABASE_NAME};
 DROP DATABASE IF EXISTS ${DATABASE_NAME}_shadow;

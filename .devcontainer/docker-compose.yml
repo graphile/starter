@@ -11,11 +11,11 @@ services:
       dockerfile: Dockerfile
     environment:
       - FORCE_COLOR=2
-      - DOCKER_MODE=y
-      - PSQL=docker-compose -f /tmp/.devcontainer/docker-compose.yml run --service-ports --rm pg psql
+      - PSQL=docker-compose -f /tmp/.devcontainer/docker-compose.yml run pgtools psql
+      - PG_DUMP=docker-compose -f /tmp/.devcontainer/docker-compose.yml run pgtools pg_dump
       # sets database to be our pg service
       - DATABASE_HOST=pg
-      - ROOT_DATABASE_URL="postgres://postgres@pg/template1"
+      - ROOT_DATABASE_URL=postgres://postgres@pg/template1
       # drops tables without asking in `yarn setup`
       - CONFIRM_DROP=CONFIRM
       # pass through from current environment
@@ -42,6 +42,7 @@ services:
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
+  # This runs the database that everything else connects to
   pg:
     image: postgres:11
     volumes:
@@ -52,6 +53,14 @@ services:
       - default
     restart: unless-stopped
     command: postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
+
+  # This is just used for running quick pg tools like psql, pg_dump, etc; connecting to the 'pg' database (that should already be running)
+  pgtools:
+    image: postgres:11
+    volumes:
+      - ../graphile-starter-app/data:/data
+    networks:
+      - default
 
 networks:
   default:
