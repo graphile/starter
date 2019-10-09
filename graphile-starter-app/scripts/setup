@@ -12,11 +12,6 @@ fi
 if [ -f ./.envvar ]; then
   echo "Using existing .envvar"
   . ./.envvar
-  if [ -f ./.envvar ]; then
-    . ./.envvar
-  else
-    DOCKER_MODE="n"
-  fi
 
   fail () {
     echo ".envvar already exists, but it doesn't define $1 - aborting!"
@@ -32,8 +27,6 @@ if [ -f ./.envvar ]; then
   echo "Configuration already exists, using existing secrets."
 else
 
-  if [ "$DOCKER_MODE" = "" ]; then DOCKER_MODE="n"; fi
-
   echo
   echo
   echo "What would you like to call your database? [Enter for 'graphile_starter']"
@@ -46,16 +39,15 @@ else
     exit 3
   fi
 
-  if [ "$DOCKER_MODE" = "y" ]; then
-    DATABASE_HOST="pg"
-    ROOT_DATABASE_URL="postgres://postgres@pg/template1"
-  else
+  if [ "$DATABASE_HOST" = "" ]; then
     echo
     echo
     echo "What's the hostname of your database server (include :port if it's not the default :5432)? [Enter for 'localhost']"
     read DATABASE_HOST
     if [ "$DATABASE_HOST" = "" ]; then DATABASE_HOST="localhost"; fi
+  fi
 
+  if [ "$ROOT_DATABASE_URL" = "" ]; then
     echo
     echo
     DEFAULT_HOST="$DATABASE_HOST"
@@ -160,11 +152,12 @@ We're going to drop (if necessary):
 - database role ${DATABASE_VISITOR} (cascade)
 - database role ${DATABASE_AUTHENTICATOR} (cascade)
 - database role ${DATABASE_OWNER}
-
-Type 'CONFIRM' to continue
 MSG
 
-read CONFIRM_DROP
+if [ "$CONFIRM_DROP" = "" ]; then
+  echo "Type 'CONFIRM' to continue"
+  read CONFIRM_DROP
+fi
 
 if [ "$CONFIRM_DROP" != "CONFIRM" ]; then
   echo "You didn't type 'CONFIRM' so we're aborting." >&2
@@ -211,8 +204,6 @@ We're going to reset migration
 
 - database url ${DATABASE_URL}
 - database role ${DATABASE_AUTHENTICATOR}
-
-Type 'CONFIRM' to continue
 MSG
   graphile-migrate reset
   graphile-migrate reset --shadow

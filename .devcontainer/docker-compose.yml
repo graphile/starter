@@ -12,8 +12,13 @@ services:
     environment:
       - FORCE_COLOR=2
       - DOCKER_MODE=y
-      - PSQL=docker-compose -f /tmp/.devcontainer/docker-compose.yml run --rm pg psql
-      - DATABASE_HOST
+      - PSQL=docker-compose -f /tmp/.devcontainer/docker-compose.yml run --service-ports --rm pg psql
+      # sets database to be our pg service
+      - DATABASE_HOST=pg
+      - ROOT_DATABASE_URL="postgres://postgres@pg/template1"
+      # drops tables without asking in `yarn setup`
+      - CONFIRM_DROP=CONFIRM
+      # pass through from current environment
       - DATABASE_OWNER
       - DATABASE_URL
       - DATABASE_AUTHENTICATOR
@@ -34,8 +39,6 @@ services:
       - 9678:9678
       - 9876:9876
       - 9757:9757
-    links:
-      - pg
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
@@ -44,7 +47,7 @@ services:
     volumes:
       - db-volume:/var/lib/postgresql/data
     ports:
-      - 5433:5432
+      - 5432:5432
     networks:
       - default
     restart: unless-stopped

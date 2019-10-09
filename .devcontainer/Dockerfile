@@ -20,13 +20,9 @@ ARG USER_GID=$USER_UID
 
 # Configure apt and install packages
 RUN \
-  ## adds postgres signing key
-  wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add - \
-  && apt-get update \
+  apt-get update \
   # install apt-utils
   && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
-  # Install psql (only needed for setup so far)
-  && apt-get -y install postgresql-client \
   # Install docker and docker-compose (for setup)
   && apt-get update && apt-get install -y  curl  \
   && curl https://get.docker.com/builds/Linux/x86_64/docker-latest.tgz | tar xvz -C /tmp/ && mv /tmp/docker/docker /usr/bin/docker \
