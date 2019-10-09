@@ -12,6 +12,7 @@ services:
     environment:
       - FORCE_COLOR=2
       - DOCKER_MODE=y
+      - PSQL=docker-compose -f /tmp/.devcontainer/docker-compose.yml run --rm pg psql
       - DATABASE_HOST
       - DATABASE_OWNER
       - DATABASE_URL
@@ -20,9 +21,10 @@ services:
     volumes:
       - ../graphile-starter-app:/app
       - node_modules-volume:/app/node_modules
+      # let's us run docker & docker-compose from inside container (used for yarn setup)
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/tmp/.devcontainer/
     working_dir: /app
-    # Overrides default command so things don't shut down after the process ends.
-    command: sleep infinity
     networks:
       - default
     ports:
@@ -34,6 +36,8 @@ services:
       - 9757:9757
     links:
       - pg
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
 
   pg:
     image: postgres:11

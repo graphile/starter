@@ -20,13 +20,18 @@ ARG USER_GID=$USER_UID
 
 # Configure apt and install packages
 RUN \
-  # Install psql client (only needed for setup so far)
   ## adds postgres signing key
   wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add - \
   && apt-get update \
-  && apt-get -y install postgresql-client \
-  #
+  # install apt-utils
   && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
+  # Install psql (only needed for setup so far)
+  && apt-get -y install postgresql-client \
+  # Install docker and docker-compose (for setup)
+  && apt-get update && apt-get install -y  curl  \
+  && curl https://get.docker.com/builds/Linux/x86_64/docker-latest.tgz | tar xvz -C /tmp/ && mv /tmp/docker/docker /usr/bin/docker \
+  && curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+  &&  chmod 755 /usr/local/bin/docker-compose \
   # Verify git and needed tools are installed
   && apt-get -y install git iproute2 procps \
   #

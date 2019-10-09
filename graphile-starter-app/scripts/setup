@@ -172,7 +172,8 @@ if [ "$CONFIRM_DROP" != "CONFIRM" ]; then
 fi
 
 echo "Installing or reinstalling the roles and database..."
-PSQL="psql"
+# Set default, can be set in docker-compose.yml otherwise
+if [ "$PSQL" = "" ]; then PSQL="psql"; fi
 
 while ! $PSQL "${ROOT_DATABASE_URL}" -c 'select true as "Connection test";'; do
   sleep 1
