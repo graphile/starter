@@ -4,15 +4,16 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "devcontainer:setup": "yarn docker-reset && yarn docker-run-setup",
-    "devcontainer:up": "bash -c \". ../graphile-starter-app/.envvar && yarn docker-reset && yarn docker-up -d\"",
+    "devcontainer:setup": "yarn reset && yarn docker-run-setup",
+    "devcontainer:up": "bash -c \". ../graphile-starter-app/.envvar && yarn reset && yarn docker-up -d\"",
     "devcontainer:dev": "bash -c \". ../graphile-starter-app/.envvar && yarn docker-attach-dev yarn dev",
+    "reset": "bash -c \"yarn docker-reset || true\"",
     "/* TOOLS */":"//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
     "docker-up":"docker-compose --project-name graphile-starter_devcontainer up",
     "docker-attach-dev": "docker-compose --project-name graphile-starter_devcontainer exec dev ",
-    "docker-reset":"docker-compose --project-name graphile-starter_devcontainer down",
+    "docker-reset":"docker-compose --project-name graphile-starter_devcontainer down && docker volume rm devcontainer_db-volume devcontainer_node_modules-volume",
     "docker-run-setup": "yarn docker-rebuild && docker-compose --project-name graphile-starter_devcontainer -f docker-compose.yml run dev yarn setup",
-    "docker-rebuild":"docker-compose --project-name graphile-starter_devcontainer -f docker-compose.yml up -d --build"
+    "docker-rebuild":"docker-compose --project-name graphile-starter_devcontainer -f docker-compose.yml build "
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",
