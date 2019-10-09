@@ -20,6 +20,5 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "dependencies": {},
   "devDependencies": {
-    "cross-env": "^6.0.3"
   }
 }
