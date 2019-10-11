@@ -24,7 +24,7 @@ services:
       - DATABASE_AUTHENTICATOR
 
     volumes:
-      - ../graphile-starter-app:/app
+      - ..:/app
       - node_modules-volume:/app/node_modules
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
@@ -58,7 +58,7 @@ services:
   pgtools:
     image: postgres:11
     volumes:
-      - ../graphile-starter-app/data:/data
+      - ../data:/data
     networks:
       - default
 

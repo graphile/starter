@@ -1,1 +1,11 @@
-/node_modules
+.envvar
+.next
+/dist
+/backend/dist
+/client/dist
+node_modules/
+/yarn-error.log
+/client/src/graphql/index.tsx
+/client/src/graphql/graphql.d.ts
+/heroku-setup
+cypress/videos/

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+echo "Resetting .envvar"
+if [ -f ./.envvar ]; then
+  rm ./.envvar
+fi;
