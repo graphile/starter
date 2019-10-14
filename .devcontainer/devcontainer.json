@@ -27,6 +27,9 @@
     "esbenp.prettier-vscode",
     "msjsdiag.debugger-for-chrome",
     "apollographql.vscode-apollo",
-    "mikestead.dotenv"
+    "mikestead.dotenv",
+    "ms-azuretools.vscode-docker",
+    "p1c2u.docker-compose",
+    "eamodio.gitlens"
   ]
 }
