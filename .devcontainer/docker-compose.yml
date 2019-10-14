@@ -33,6 +33,40 @@ services:
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
+  # extends web, is made for live developing
+  dev:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    env_file:
+      - .env
+    volumes:
+      # copies your ssh credentials, to be able to use them from within the container
+      # (see: https://code.visualstudio.com/docs/remote/containers#_sharing-git-credentials-with-your-container)
+      - ~/.ssh:/root/.ssh-localhost:ro
+      # same as serice: webapp
+      - ..:/app
+      - node_modules-volume:/app/node_modules
+      # let's us run docker & docker-compose from inside container (used for yarn setup)
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/tmp/.devcontainer/
+
+    # just extends service: webapp
+    working_dir: /app
+    networks:
+      - default
+    ports:
+      # The main server
+      - 5678:5678
+      # Node `--inspect=...` port numbers for debugging
+      - 9678:9678
+      - 9876:9876
+      - 9757:9757
+    depends_on:
+      - db
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
   # This runs the database that everything else connects to
   db:
     image: postgres:11
