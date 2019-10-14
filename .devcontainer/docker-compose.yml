@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  dev:
+  webapp:
     # Uncomment the next line to use a non-root user. On Linux, this will prevent
     # new files getting created as root, but you may need to update the USER_UID
     # and USER_GID in .devcontainer/Dockerfile to match your user if not 1000.
@@ -28,11 +28,13 @@ services:
       - 9678:9678
       - 9876:9876
       - 9757:9757
+    depends_on:
+      - db
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
   # This runs the database that everything else connects to
-  pg:
+  db:
     image: postgres:11
     volumes:
       - db-volume:/var/lib/postgresql/data
