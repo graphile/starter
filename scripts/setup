@@ -209,9 +209,6 @@ SQL
 
 cat <<MSG
 We're going to reset migration
-
-- database url ${DATABASE_URL}
-- database role ${DATABASE_AUTHENTICATOR}
 MSG
   graphile-migrate reset
   graphile-migrate reset --shadow
