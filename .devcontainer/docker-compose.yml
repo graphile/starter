@@ -9,19 +9,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - FORCE_COLOR=2
-      - PSQL=docker-compose -f /tmp/.devcontainer/docker-compose.yml run pgtools psql
-      - PG_DUMP=docker-compose -f /tmp/.devcontainer/docker-compose.yml run pgtools pg_dump
-      # sets database to be our pg service
-      - DATABASE_HOST=pg
-      - ROOT_DATABASE_URL=postgres://postgres@pg/template1
-      # drops tables without asking in `yarn setup`
-      - CONFIRM_DROP=CONFIRM
-      # pass through from current environment
-      - DATABASE_OWNER
-      - DATABASE_URL
-      - DATABASE_AUTHENTICATOR
+    env_file:
+      - .env
 
     volumes:
       - ..:/app
