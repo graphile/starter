@@ -249,7 +249,7 @@ information, see the [passport.js documentation](http://www.passportjs.org/docs/
 1. In that folder run:
    - `git init`
    - `git add .`
-   - `git commit -m"PostGraphile starter base"`
+   - `git commit -m "PostGraphile starter base"`
 1. Change the project name in `package.json`
 1. Change the project settings in `backend/src/config.ts`
 1. Replace the `README.md` file
