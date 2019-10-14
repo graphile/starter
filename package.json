@@ -6,7 +6,7 @@
   "scripts": {
     "setup": "./scripts/setup",
     "start": "./scripts/dev",
-    "dev": "yarn && yarn server:src:build && concurrently --kill-others --names 'db,server:src,server:run,worker,codegen,test' 'yarn db:watch' 'yarn server:src:watch' 'sleep 28; yarn server:watch' 'sleep 5; yarn server:worker:watch' 'yarn codegen:watch' 'sleep 150; yarn test:watch'",
+    "dev": "yarn && yarn server:src:build && yarn server:watch && concurrently --kill-others --names 'db,server:src,worker,codegen,test' 'yarn db:watch' 'yarn server:src:watch' 'sleep 5; yarn server:worker:watch' 'yarn codegen:watch' 'sleep 150; yarn test:watch'",
     "reset": "./scripts/reset && yarn setup",
     "docker:setup": "yarn docker:web:up && yarn docker:exec:web yarn setup",
     "docker:start": "yarn docker:web:up && yarn docker:exec:web yarn start",
@@ -37,7 +37,7 @@
     "------------------------------------------------------------------------------------------------------------------------------------------------": "-",
     "docker:compose": "docker-compose --project-name graphile-starter_devcontainer -f ./.devcontainer/docker-compose.yml",
     "docker:web:up": "yarn docker:compose up -d webapp",
-    "docker:exec": "yarn docker:compose exec ",
+    "docker:exec": "yarn docker:compose exec",
     "docker:exec:web": "yarn docker:exec webapp ",
     "docker:exec:dev": "yarn docker:compose up -d dev && yarn docker:exec dev ",
     "docker:rebuild": "yarn docker:compose build",
