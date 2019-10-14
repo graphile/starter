@@ -17,8 +17,9 @@
   // Uncomment the line below if you want to keep your containers running after VS Code shuts down.
   // "shutdownAction": "none",
 
-  // Uncomment the next line to run commands after the container is created.
-  // "postCreateCommand": "yarn setup",
+  // Runs setup
+  // Also prepares ssh creds for easier use
+  "postCreateCommand": "mkdir -p /root/.ssh && cp -r /root/.ssh-localhost/* /root/.ssh && chmod 700 /root/.ssh && chmod 600 /root/.ssh/* || true ; yarn setup",
 
   // Add the IDs of extensions you want installed when the container is created in the array below.
   "extensions": [
@@ -26,6 +27,9 @@
     "esbenp.prettier-vscode",
     "msjsdiag.debugger-for-chrome",
     "apollographql.vscode-apollo",
-    "mikestead.dotenv"
+    "mikestead.dotenv",
+    "ms-azuretools.vscode-docker",
+    "p1c2u.docker-compose",
+    "eamodio.gitlens"
   ]
 }

@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  dev:
+  webapp:
     # Uncomment the next line to use a non-root user. On Linux, this will prevent
     # new files getting created as root, but you may need to update the USER_UID
     # and USER_GID in .devcontainer/Dockerfile to match your user if not 1000.
@@ -9,19 +9,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - FORCE_COLOR=2
-      - PSQL=docker-compose -f /tmp/.devcontainer/docker-compose.yml run pgtools psql
-      - PG_DUMP=docker-compose -f /tmp/.devcontainer/docker-compose.yml run pgtools pg_dump
-      # sets database to be our pg service
-      - DATABASE_HOST=pg
-      - ROOT_DATABASE_URL=postgres://postgres@pg/template1
-      # drops tables without asking in `yarn setup`
-      - CONFIRM_DROP=CONFIRM
-      # pass through from current environment
-      - DATABASE_OWNER
-      - DATABASE_URL
-      - DATABASE_AUTHENTICATOR
+    env_file:
+      - .env
 
     volumes:
       - ..:/app
@@ -39,11 +28,47 @@ services:
       - 9678:9678
       - 9876:9876
       - 9757:9757
+    depends_on:
+      - db
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+  # extends web, is made for live developing
+  dev:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    env_file:
+      - .env
+    volumes:
+      # copies your ssh credentials, to be able to use them from within the container
+      # (see: https://code.visualstudio.com/docs/remote/containers#_sharing-git-credentials-with-your-container)
+      - ~/.ssh:/root/.ssh-localhost:ro
+      # same as serice: webapp
+      - ..:/app
+      - node_modules-volume:/app/node_modules
+      # let's us run docker & docker-compose from inside container (used for yarn setup)
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/tmp/.devcontainer/
+
+    # just extends service: webapp
+    working_dir: /app
+    networks:
+      - default
+    ports:
+      # The main server
+      - 5678:5678
+      # Node `--inspect=...` port numbers for debugging
+      - 9678:9678
+      - 9876:9876
+      - 9757:9757
+    depends_on:
+      - db
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
   # This runs the database that everything else connects to
-  pg:
+  db:
     image: postgres:11
     volumes:
       - db-volume:/var/lib/postgresql/data
