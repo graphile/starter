@@ -6,7 +6,7 @@
   "scripts": {
     "setup": "./scripts/setup",
     "start": "./scripts/dev",
-    "dev": "yarn && yarn server:src:build && concurrently --kill-others --names 'db,server:src,server:run,worker,codegen,test' 'yarn db:watch' 'yarn server:src:watch' 'sleep 8; yarn server:watch' 'sleep 5; yarn server:worker:watch' 'yarn codegen:watch' 'sleep 15; yarn test:watch'",
+    "dev": "yarn && yarn server:src:build && concurrently --kill-others --names 'db,server:src,server:run,worker,codegen,test' 'yarn db:watch' 'yarn server:src:watch' 'sleep 28; yarn server:watch' 'sleep 5; yarn server:worker:watch' 'yarn codegen:watch' 'sleep 150; yarn test:watch'",
     "reset": "./scripts/reset && yarn setup",
     "docker:setup": "yarn docker:exec:dev yarn setup",
     "docker:start": "yarn docker:exec:dev yarn start",
