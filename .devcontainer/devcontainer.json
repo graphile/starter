@@ -30,6 +30,11 @@
     "mikestead.dotenv",
     "ms-azuretools.vscode-docker",
     "p1c2u.docker-compose",
-    "eamodio.gitlens"
+    "dzannotti.vscode-babel-coloring",
+    "aaron-bond.better-comments",
+    "pranaygp.vscode-css-peek",
+    "codemooseus.vscode-devtools-for-chrome",
+    "kumar-harsh.graphql-for-vscode",
+    "wix.vscode-import-cost"
   ]
 }
