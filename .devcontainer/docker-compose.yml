@@ -41,15 +41,26 @@ services:
     env_file:
       - .env
     volumes:
-      # copies your ssh credentials, to be able to use them from within the container
-      # (see: https://code.visualstudio.com/docs/remote/containers#_sharing-git-credentials-with-your-container)
-      - ~/.ssh:/root/.ssh-localhost:ro
-      # same as serice: webapp
+      #* same as service: webapp
       - ..:/app
       - node_modules-volume:/app/node_modules
+
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
       - .:/tmp/.devcontainer/
+
+      #* You may want to enable following lines
+      #* These are dev specifig so it's more comfortable to work inside the container
+      ## copies your ssh credentials, to be able to use them from within the container
+      ## (see: https://code.visualstudio.com/docs/remote/containers#_sharing-git-credentials-with-your-container)
+      # - $HOME/.ssh:/root/.home-localhost/.ssh:ro
+      ## copies your .bashrc
+      # - $HOME/.bashrc:/root/.home-localhost/.bashrc:ro
+      ## copies your .gitconfig
+      # - $HOME/.gitconfig:/root/.home-localhost/.gitconfig:ro
+      ##! Fix for windows (can't mount single files)
+      ##comment all the other `.home-localhost` lines above this
+      # - $HOME:/root/.home-localhost:ro
 
     # just extends service: webapp
     working_dir: /app
