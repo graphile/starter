@@ -41,6 +41,7 @@
     "docker:exec:web": "yarn docker:exec webapp ",
     "docker:exec:dev": "yarn docker:compose up -d dev && yarn docker:exec dev ",
     "docker:rebuild": "yarn docker:compose build",
+    "docker:reset:volumes": "bash -c \"docker volume rm ${PWD##*/}_devcontainer_db-volume  ${PWD##*/}_devcontainer_node_modules-volume ${PWD##*/}_devcontainer_vscode-extensions || true\"",
     "docker:down": "yarn docker:compose down --remove-orphans"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",

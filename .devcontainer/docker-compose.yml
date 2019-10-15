@@ -50,7 +50,10 @@ services:
       - .:/tmp/.devcontainer/
 
       #* You may want to enable following lines
-      #* These are dev specifig so it's more comfortable to work inside the container
+      ## avoids vscode reinstalls
+      ## https://code.visualstudio.com/docs/remote/containers-advanced#_avoiding-extension-reinstalls-on-container-rebuild
+      # - vscode-extensions:/root/.vscode-server
+      #* These are dev specific so it's more comfortable to work inside the container
       ## copies your ssh credentials, to be able to use them from within the container
       ## (see: https://code.visualstudio.com/docs/remote/containers#_sharing-git-credentials-with-your-container)
       # - $HOME/.ssh:/root/.home-localhost/.ssh:ro
@@ -105,3 +108,5 @@ networks:
 volumes:
   db-volume:
   node_modules-volume:
+  # used for keeeping vscode-extensions while rebuilding
+  # vscode-extensions:
