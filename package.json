@@ -41,11 +41,7 @@
     "docker:exec:web": "yarn docker:exec webapp ",
     "docker:exec:dev": "yarn docker:compose up -d dev && yarn docker:exec dev ",
     "docker:rebuild": "yarn docker:compose build",
-    "docker:reset:volumes": "bash -c \"docker volume rm graphile-starter_devcontainer_db-volume  graphile-starter_devcontainer_node_modules-volume || true\"",
-    "docker:down": "yarn docker:compose down",
-    "/* WIP/PLACEHOLDER/TOOLS */": "//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
-    "docker:source-vscode": "bash -c \". ./graphile-starter-app/.envvar && code .\"",
-    "docker:win:enable-watch": "start cmd /k docker-volume-watcher -v graphile-starter*"
+    "docker:down": "yarn docker:compose down --remove-orphans"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",
