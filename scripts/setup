@@ -142,8 +142,8 @@ echo
 echo
 echo "Installing dependencies and performing initial build"
 
-  yarn
-  yarn server:src:build
+yarn
+yarn server:src:build
 
 cat <<MSG
 We're going to drop (if necessary):
