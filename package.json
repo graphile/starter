@@ -11,7 +11,7 @@
     "docker:setup": "yarn docker:web:up && yarn docker:exec:web yarn setup",
     "docker:start": "yarn docker:web:up && yarn docker:exec:web yarn start",
     "docker:dev:run": "yarn docker:exec:dev yarn start",
-    "docker:dev:attach": "bash -c \". .envvar || true && yarn docker:exec:dev bash",
+    "docker:dev:attach": "bash -c \". ./.envvar || true && yarn docker:exec:dev bash",
     "docker:reset": "yarn docker:compose down --remove-orphans && yarn docker:reset:volumes && yarn docker:rebuild && yarn docker:web:up && yarn docker:exec:web yarn reset",
     "test": "./scripts/test",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx,.graphql . && tsc --noEmit",
