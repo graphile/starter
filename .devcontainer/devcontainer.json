@@ -33,7 +33,8 @@
     "aaron-bond.better-comments",
     "pranaygp.vscode-css-peek",
     "codemooseus.vscode-devtools-for-chrome",
-    "kumar-harsh.graphql-for-vscode",
-    "wix.vscode-import-cost"
+    "wix.vscode-import-cost",
+    "cancerberosgx.vscode-typescript-refactors",
+    "steoates.autoimport"
   ]
 }
