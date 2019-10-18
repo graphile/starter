@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.5 (Ubuntu 11.5-1.pgdg18.04+1)
--- Dumped by pg_dump version 11.5 (Ubuntu 11.5-1.pgdg18.04+1)
+-- Dumped from database version 11.5
+-- Dumped by pg_dump version 11.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -778,11 +778,6 @@ begin
       )
     where user_id = v_user_email.user_id
     returning reset_password_token into v_token;
-
-    -- Don't allow spamming an email
-    update app_private.user_email_secrets
-    set password_reset_email_sent_at = now()
-    where user_email_id = v_user_email.id;
 
     -- Trigger email send
     perform graphile_worker.add_job('user__forgot_password', json_build_object('id', v_user_email.user_id, 'email', v_user_email.email::text, 'token', v_token));
