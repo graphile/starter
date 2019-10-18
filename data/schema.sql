@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.5 (Ubuntu 11.5-1.pgdg18.04+1)
--- Dumped by pg_dump version 11.5 (Ubuntu 11.5-1.pgdg18.04+1)
+-- Dumped from database version 11.5
+-- Dumped by pg_dump version 11.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -731,7 +731,7 @@ Handy method to get the current user ID for use in RLS policies, etc; in GraphQL
 -- Name: forgot_password(public.citext); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.forgot_password(email public.citext) RETURNS boolean
+CREATE FUNCTION app_public.forgot_password(email public.citext) RETURNS void
     LANGUAGE plpgsql STRICT SECURITY DEFINER
     SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
     AS $$
@@ -747,49 +747,65 @@ begin
   where user_emails.email = forgot_password.email
   order by is_verified desc, id desc;
 
-  if not (v_user_email is null) then
-    -- See if we've triggered a reset recently
+  if (v_user_email is null) then
+    -- reference the unregistered_email_password_resets table
+
+    -- see if this has been attempted recently
     if exists(
       select 1
-      from app_private.user_email_secrets
-      where user_email_id = v_user_email.id
-      and password_reset_email_sent_at is not null
+      from app_private.unregistered_email_password_resets
+      where unregistered_email_password_resets.email = forgot_password.email
       and password_reset_email_sent_at > now() - v_token_min_duration_between_emails
     ) then
-      return true;
+      return;
     end if;
 
-    -- Fetch or generate reset token
-    update app_private.user_secrets
-    set
-      reset_password_token = (
-        case
-        when reset_password_token is null or reset_password_token_generated < NOW() - v_token_max_duration
-        then encode(gen_random_bytes(7), 'hex')
-        else reset_password_token
-        end
-      ),
-      reset_password_token_generated = (
-        case
-        when reset_password_token is null or reset_password_token_generated < NOW() - v_token_max_duration
-        then now()
-        else reset_password_token_generated
-        end
-      )
-    where user_id = v_user_email.user_id
-    returning reset_password_token into v_token;
-
-    -- Don't allow spamming an email
-    update app_private.user_email_secrets
-    set password_reset_email_sent_at = now()
-    where user_email_id = v_user_email.id;
-
-    -- Trigger email send
-    perform graphile_worker.add_job('user__forgot_password', json_build_object('id', v_user_email.user_id, 'email', v_user_email.email::text, 'token', v_token));
-    return true;
-
+    -- trigger email send
+    perform graphile_worker.add_job('user__forgot_password_unregistered_email', json_build_object('email', forgot_password.email::text));
+    -- return early
+    return;
   end if;
-  return false;
+
+  -- from here onwards, we know we have a registered user
+
+  -- See if we've triggered a reset recently
+  if exists(
+    select 1
+    from app_private.user_email_secrets
+    where user_email_id = v_user_email.id
+    and password_reset_email_sent_at is not null
+    and password_reset_email_sent_at > now() - v_token_min_duration_between_emails
+  ) then
+    return;
+  end if;
+
+  -- Fetch or generate reset token
+  update app_private.user_secrets
+  set
+    reset_password_token = (
+      case
+      when reset_password_token is null or reset_password_token_generated < NOW() - v_token_max_duration
+      then encode(gen_random_bytes(7), 'hex')
+      else reset_password_token
+      end
+    ),
+    reset_password_token_generated = (
+      case
+      when reset_password_token is null or reset_password_token_generated < NOW() - v_token_max_duration
+      then now()
+      else reset_password_token_generated
+      end
+    )
+  where user_id = v_user_email.user_id
+  returning reset_password_token into v_token;
+
+  -- Don't allow spamming an email
+  update app_private.user_email_secrets
+  set password_reset_email_sent_at = now()
+  where user_email_id = v_user_email.id;
+
+  -- Trigger email send
+  perform graphile_worker.add_job('user__forgot_password', json_build_object('id', v_user_email.user_id, 'email', v_user_email.email::text, 'token', v_token));
 end;
 $$;
 
@@ -798,8 +814,7 @@ $$;
 -- Name: FUNCTION forgot_password(email public.citext); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.forgot_password(email public.citext) IS '@resultFieldName success
-If you''ve forgotten your password, give us one of your email addresses and we'' send you a reset token. Note this only works if you have added an email address!';
+COMMENT ON FUNCTION app_public.forgot_password(email public.citext) IS 'If you''ve forgotten your password, give us one of your email addresses and we'' send you a reset token. Note this only works if you have added an email address!';
 
 
 --
@@ -1203,6 +1218,30 @@ CREATE TABLE app_private.connect_pg_simple_sessions (
 
 
 --
+-- Name: unregistered_email_password_resets; Type: TABLE; Schema: app_private; Owner: -
+--
+
+CREATE TABLE app_private.unregistered_email_password_resets (
+    email public.citext NOT NULL,
+    password_reset_email_sent_at timestamp with time zone
+);
+
+
+--
+-- Name: TABLE unregistered_email_password_resets; Type: COMMENT; Schema: app_private; Owner: -
+--
+
+COMMENT ON TABLE app_private.unregistered_email_password_resets IS 'The contents of this table should never be visible to the user. If someone tries to recover the password for an email that is not registered in our system, this table helps us avoid spamming that email.';
+
+
+--
+-- Name: COLUMN unregistered_email_password_resets.password_reset_email_sent_at; Type: COMMENT; Schema: app_private; Owner: -
+--
+
+COMMENT ON COLUMN app_private.unregistered_email_password_resets.password_reset_email_sent_at IS 'We store the time the last password reset was sent to this email to prevent the email getting flooded.';
+
+
+--
 -- Name: user_authentication_secrets; Type: TABLE; Schema: app_private; Owner: -
 --
 
@@ -1405,6 +1444,14 @@ ALTER TABLE ONLY app_private.connect_pg_simple_sessions
 
 ALTER TABLE ONLY app_private.sessions
     ADD CONSTRAINT sessions_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: unregistered_email_password_resets unregistered_email_pkey; Type: CONSTRAINT; Schema: app_private; Owner: -
+--
+
+ALTER TABLE ONLY app_private.unregistered_email_password_resets
+    ADD CONSTRAINT unregistered_email_pkey PRIMARY KEY (email);
 
 
 --
