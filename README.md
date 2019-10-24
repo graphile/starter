@@ -142,7 +142,7 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **SSR with hot reloading** — if you turn JS off and reload the page you should be greeted with the same content anyway; provided by Next.js
 - [x] **Productive roll-forward migrations** — we use <a href="https://github.com/graphile/migrate">graphile-migrate</a> for development speed, but you're welcome to switch to whatever migration library you like
 - [x] **Realtime** — PostGraphile is configured with `@graphile/pg-pubsub` to enable realtime events from the DB; and Apollo is configured to consume them
-- [x] **Production build** — command to generate a production build of the project using `npm run build`
+- [x] **Production build** — command to generate a production build of the project using `yarn run build`
 - [x] **Production Docker build** — how to build a Docker image you could use in production
 - [x] **Deployment instructions: Heroku** — how to deploy to Heroku
 - [x] **Database tests** — Jest configured to test the database, plus initial tests for various database functions and tables
