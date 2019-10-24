@@ -6,13 +6,13 @@ import {
 } from "postgraphile";
 import { Request, Response } from "express";
 import { graphql, GraphQLSchema, ExecutionResult } from "graphql";
-import { getPostGraphileOptions } from "../src/server/middleware/installPostGraphile";
+import { getPostGraphileOptions } from "../src/middleware/installPostGraphile";
 import {
   createUsers,
   poolFromUrl,
   createSession,
 } from "../../__tests__/helpers";
-import handleErrors from "../src/server/utils/handleErrors";
+import handleErrors from "../src/utils/handleErrors";
 
 export * from "../../__tests__/helpers";
 
