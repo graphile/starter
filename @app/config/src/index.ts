@@ -1,6 +1,6 @@
-require("dotenv").config({ path: `${__dirname}/../../.env` });
+require("dotenv").config({ path: `${__dirname}/../../../.env` });
 // @ts-ignore
-const packageJson = require("../../package.json");
+const packageJson = require("../../../package.json");
 
 // TODO: customise this with your own settings!
 

@@ -1,3 +1,4 @@
+require("@app/config");
 const compose = require("lodash/flowRight");
 
 const { ROOT_URL, T_AND_C_URL } = process.env;
