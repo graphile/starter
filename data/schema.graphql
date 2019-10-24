@@ -222,7 +222,6 @@ type ForgotPasswordPayload {
   Our root query field type. Allows us to run any query from our mutation payload.
   """
   query: Query
-  success: Boolean
 }
 
 input LoginInput {
@@ -329,8 +328,8 @@ type Mutation {
   ): DeleteUserEmailPayload
 
   """
-  If you've forgotten your password, give us one of your email addresses and we'
-  send you a reset token. Note this only works if you have added an email address!
+  If you've forgotten your password, give us one of your email addresses and
+  we'll send you a reset token. Note this only works if you have added an email address!
   """
   forgotPassword(
     """
