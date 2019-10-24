@@ -10,7 +10,7 @@ import {
   Typography,
 } from "antd";
 import Link from "next/link";
-import { projectName } from "../../../backend/src/config";
+import { projectName, companyName } from "@app/config";
 import {
   useSharedLayoutQuery,
   useLogoutMutation,
