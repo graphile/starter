@@ -16,8 +16,8 @@
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
     "--packages--": "",
     "client": "cd @app/client && yarn run",
-    "cypress": "cd @app/cypress && yarn run",
     "db": "cd @app/db && yarn run",
+    "e2e": "cd @app/e2e && yarn run",
     "server": "cd @app/server && yarn run",
     "worker": "cd @app/worker && yarn run"
   },

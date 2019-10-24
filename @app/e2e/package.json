@@ -1,10 +1,11 @@
 {
-  "name": "@app/cypress",
+  "name": "@app/e2e",
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cy": "node -r @app/config/env node_modules/.bin/cypress",
+    "open": "yarn cy open",
+    "run": "yarn cy run"
   },
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^4.1.0",
