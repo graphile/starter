@@ -135,9 +135,12 @@ export default function Home() {
           <Title level={4}>What now?</Title>
           <Paragraph>
             To get started, click "login" at the top right, then choose "Create
-            One" to create a new account. When you're happy, you can add
-            database changes to <code>current.sql</code> and see them reflected
-            in the GraphiQL interface a <a href="/graphiql">/graphiql</a>.
+            One" to create a new account.
+          </Paragraph>
+          <Paragraph>
+            When you're happy, you can add database changes to{" "}
+            <code>current.sql</code> and see them reflected in the GraphiQL
+            interface a <a href="/graphiql">/graphiql</a>.
           </Paragraph>
 
           <Divider />
@@ -173,7 +176,7 @@ export default function Home() {
                   <code>git add .</code>
                 </Li>
                 <Li>
-                  <code>git commit -m"PostGraphile starter base"</code>
+                  <code>git commit -m "PostGraphile starter base"</code>
                 </Li>
               </ul>
             </Li>
