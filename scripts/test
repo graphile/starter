@@ -1,29 +1,38 @@
-#!/bin/bash
+#!/usr/bin/env node
+require("@app/config/env");
+const { execSync, spawnSync } = require("child_process");
 
-# Exit on error
-set -e
+// Dear graphile-migrate, please treat the test DB as if it were the shadow DB
+process.env.SHADOW_DATABASE_URL = process.env.TEST_DATABASE_URL;
 
-# Source our configuration variables
+// Signal to graphile-migrate scripts that we're in the tests
+process.env.IN_TESTS = "1";
 
-# Dear graphile-migrate, please treat the test DB as if it were the shadow DB
-export SHADOW_DATABASE_URL="$TEST_DATABASE_URL"
+const opts = {
+  stdio: "inherit",
+  cwd: process.cwd(),
+};
 
-# Signal to graphile-migrate scripts that we're in the tests
-export IN_TESTS="1"
+// Reset the test database
+execSync("yarn db gm reset --shadow", opts);
+execSync("yarn db watch --once --shadow", opts);
 
-# Reset the test database
-yarn db gm reset --shadow
-yarn db watch --once --shadow
-
-# If we're in watch mode
-if [[ "$*" == "--watch" ]] || [[ "$*" == "--watchAll" ]]; then
-  # We're in watch mode, so keep watching the `current.yml` file
-  concurrently \
+// If we're in watch mode
+const arg = process.argv[2];
+if (process.argv.length > 3) {
+  throw new Error(
+    `Extra arguments not understood '${process.argv.join("' '")}'`
+  );
+} else if (arg === "--watch" || arg === "--watchAll") {
+  // We're in watch mode, so keep watching the `current.yml` file
+  execSync(`concurrently \
     --names 'tests,___db' \
     --kill-others \
     "node --inspect=9876 node_modules/.bin/jest -i $@" \
-    'yarn db watch --shadow'
-else
-  # Run once, so just run the tests
-  jest -i "$@"
-fi;
+    'yarn db watch --shadow'`);
+} else if (arg) {
+  throw new Error(`Argument '${arg}' not understood`);
+} else {
+  // Run once, so just run the tests
+  spawnSync("jest", ["-i", ...process.argv.slice(2)], opts);
+}
