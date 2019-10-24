@@ -45,7 +45,6 @@ COPY --from=builder /app/backend/dist/ /app/backend/dist/
 COPY --from=builder /app/.next /app/.next
 COPY --from=builder /app/client/src/next.config.js /app/client/src/next.config.js
 COPY --from=builder /app/client/assets /app/client/assets
-COPY --from=builder /app/scripts/env /app/scripts/env
 
 # Shared args shouldn't be overridable at runtime (because they're baked into
 # the built JS).

@@ -4,7 +4,6 @@
 set -e
 
 # Source our configuration variables
-. ./scripts/env
 
 # Dear graphile-migrate, please treat the test DB as if it were the shadow DB
 export SHADOW_DATABASE_URL="$TEST_DATABASE_URL"
