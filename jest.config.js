@@ -1,5 +1,5 @@
 module.exports = {
-  roots: ["<rootDir>/@app/*"],
+  roots: ["<rootDir>/@app"],
   transform: {
     "^.+\\.tsx?$": "ts-jest",
   },

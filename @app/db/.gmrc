@@ -10,7 +10,7 @@
     "afterReset.sql",
     {
       "_": "command",
-      "command": "cd backend/dist/worker && npx --no-install graphile-worker --once"
+      "command": "cd ../worker && yarn install-db-schema"
     }
   ],
   "afterAllMigrations": [

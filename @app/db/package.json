@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "gm": "node -r @app/config/env node_modules/.bin/graphile-migrate",
+    "migrate": "yarn gm migrate",
     "watch": "yarn gm watch",
     "commit": "yarn gm commit",
     "uncommit": "yarn gm uncommit",

@@ -13,8 +13,8 @@ export SHADOW_DATABASE_URL="$TEST_DATABASE_URL"
 export IN_TESTS="1"
 
 # Reset the test database
-graphile-migrate reset --shadow
-graphile-migrate watch --once --shadow
+yarn db gm reset --shadow
+yarn db watch --once --shadow
 
 # If we're in watch mode
 if [[ "$*" == "--watch" ]] || [[ "$*" == "--watchAll" ]]; then
@@ -23,7 +23,7 @@ if [[ "$*" == "--watch" ]] || [[ "$*" == "--watchAll" ]]; then
     --names 'tests,___db' \
     --kill-others \
     "node --inspect=9876 node_modules/.bin/jest -i $@" \
-    'graphile-migrate watch --shadow'
+    'yarn db watch --shadow'
 else
   # Run once, so just run the tests
   jest -i "$@"
