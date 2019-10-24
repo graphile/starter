@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:965d7cafebed9602a84a02622e4498142b7e580c
+--! Hash: sha1:7179e8fb8a993cfadb4c95544c734647875cf998
 
 drop schema if exists app_public cascade;
 create schema app_public;
@@ -26,7 +26,8 @@ begin
   return NEW;
 end;
 $$ language plpgsql volatile security definer set search_path from current;
-comment on function app_private.tg__add_job() is E'Useful shortcut to create a job on insert/update. Pass the task name as the first trigger argument, and optionally the queue name as the second argument. The record id will automatically be available on the JSON payload.';
+comment on function app_private.tg__add_job() is
+  E'Useful shortcut to create a job on insert/update. Pass the task name as the first trigger argument, and optionally the queue name as the second argument. The record id will automatically be available on the JSON payload.';
 
 /**********/
 
@@ -37,7 +38,8 @@ begin
   return NEW;
 end;
 $$ language plpgsql volatile set search_path from current;
-comment on function app_private.tg__timestamps() is E'This trigger should be called on all tables with created_at, updated_at - it ensures that they cannot be manipulated and that updated_at will always be larger than the previous updated_at.';
+comment on function app_private.tg__timestamps() is
+  E'This trigger should be called on all tables with created_at, updated_at - it ensures that they cannot be manipulated and that updated_at will always be larger than the previous updated_at.';
 
 /**********/
 
@@ -166,7 +168,8 @@ create trigger _200_make_first_user_admin
 create function app_public.current_user() returns app_public.users as $$
   select users.* from app_public.users where id = app_public.current_user_id();
 $$ language sql stable;
-comment on function app_public.current_user() is E'The currently logged in user (or null if not logged in).';
+comment on function app_public.current_user() is
+  E'The currently logged in user (or null if not logged in).';
 
 /**********/
 
@@ -219,9 +222,11 @@ create table app_public.user_emails (
 );
 alter table app_public.user_emails enable row level security;
 
-comment on constraint user_emails_pkey on app_public.user_emails is E'@omit all';
+comment on constraint user_emails_pkey on app_public.user_emails is
+  E'@omit all';
 -- We don't need custom finders/relations for this
-comment on constraint user_emails_user_id_email_key on app_public.user_emails is E'@omit';
+comment on constraint user_emails_user_id_email_key on app_public.user_emails is
+  E'@omit';
 
 -- Once an email is verified, it may only be used by one user
 create unique index uniq_user_emails_verified_email on app_public.user_emails(email) where (is_verified is true);
@@ -316,7 +321,8 @@ begin
   return found;
 end;
 $$ language plpgsql volatile strict security definer;
-comment on function app_public.verify_email(user_email_id int, token text) is E'@resultFieldName success\nOnce you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
+comment on function app_public.verify_email(user_email_id int, token text) is
+  E'@resultFieldName success\nOnce you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
 
 
 /**********/
@@ -332,8 +338,10 @@ create table app_public.user_authentications (
   constraint uniq_user_authentications unique(service, identifier)
 );
 
-comment on constraint uniq_user_authentications on app_public.user_authentications is E'@omit';
-comment on constraint user_authentications_pkey on app_public.user_authentications is E'@omit all';
+comment on constraint uniq_user_authentications on app_public.user_authentications is
+  E'@omit';
+comment on constraint user_authentications_pkey on app_public.user_authentications is
+  E'@omit all';
 alter table app_public.user_authentications enable row level security;
 create index on app_public.user_authentications(user_id);
 create trigger _100_timestamps
@@ -450,7 +458,8 @@ begin
   perform set_config('jwt.claims.session_id', '', true);
 end;
 $$ language plpgsql security definer volatile set search_path from current;
-comment on function app_public.logout() is E'@omit';
+comment on function app_public.logout() is
+  E'@omit';
 
 /**********/
 
@@ -461,11 +470,11 @@ create table app_private.unregistered_email_password_resets (
   latest_attempt timestamptz not null
 );
 comment on table app_private.unregistered_email_password_resets is
-  'If someone tries to recover the password for an email that is not registered in our system, this table enables us to rate-limit outgoing emails to avoid spamming.';
+  E'If someone tries to recover the password for an email that is not registered in our system, this table enables us to rate-limit outgoing emails to avoid spamming.';
 comment on column app_private.unregistered_email_password_resets.attempts is
-  'We store the number of attempts to help us detect accounts being attacked.';
+  E'We store the number of attempts to help us detect accounts being attacked.';
 comment on column app_private.unregistered_email_password_resets.latest_attempt is
-  'We store the time the last password reset was sent to this email to prevent the email getting flooded.';
+  E'We store the time the last password reset was sent to this email to prevent the email getting flooded.';
 
 /**********/
 
@@ -558,7 +567,7 @@ end;
 $$ language plpgsql strict security definer volatile set search_path from current;
 
 comment on function app_public.forgot_password(email public.citext) is
-  'If you''ve forgotten your password, give us one of your email addresses and we''ll send you a reset token. Note this only works if you have added an email address!';
+  E'If you''ve forgotten your password, give us one of your email addresses and we''ll send you a reset token. Note this only works if you have added an email address!';
 
 /**********/
 
@@ -967,7 +976,8 @@ begin
   return v_user_email;
 end;
 $$ language plpgsql volatile security definer;
-comment on function app_public.make_email_primary(email_id int) is E'Your primary email is where we''ll notify of account events; other emails may be used for discovery or login. Use this when you''re changing your email address.';
+comment on function app_public.make_email_primary(email_id int) is
+  E'Your primary email is where we''ll notify of account events; other emails may be used for discovery or login. Use this when you''re changing your email address.';
 
 /**********/
 
@@ -986,7 +996,8 @@ begin
   return false;
 end;
 $$ language plpgsql volatile security definer;
-comment on function app_public.resend_email_verification_code(email_id int) is E'@resultFieldName success\nIf you didn''t receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.';
+comment on function app_public.resend_email_verification_code(email_id int) is
+  E'@resultFieldName success\nIf you didn''t receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.';
 
 /**********/
 
@@ -1048,7 +1059,8 @@ begin
   return v_record;
 end;
 $$ language plpgsql volatile;
-comment on function app_public.tg__graphql_subscription() is 'This function enables the creation of simple focussed GraphQL subscriptions using database triggers. Read more here: https://www.graphile.org/postgraphile/subscriptions/#custom-subscriptions';
+comment on function app_public.tg__graphql_subscription() is
+  E'This function enables the creation of simple focussed GraphQL subscriptions using database triggers. Read more here: https://www.graphile.org/postgraphile/subscriptions/#custom-subscriptions';
 
 create trigger _500_gql_update
   after update on app_public.users
