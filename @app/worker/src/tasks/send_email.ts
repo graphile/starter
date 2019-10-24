@@ -65,7 +65,7 @@ function loadTemplate(template: string) {
         throw new Error(`Disallowed template name '${template}'`);
       }
       const templateString = await readFile(
-        `${process.cwd()}/../../templates/${template}`,
+        `${process.cwd()}/../templates/${template}`,
         "utf8"
       );
       const templateFn = lodashTemplate(templateString, {
