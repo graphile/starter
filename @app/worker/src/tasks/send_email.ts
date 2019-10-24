@@ -4,12 +4,12 @@ import { template as lodashTemplate } from "lodash";
 import mjml2html = require("mjml");
 import * as html2text from "html-to-text";
 import getTransport from "../transport";
-import { readFile } from "../../fs";
+import { readFile } from "../fs";
 import {
   projectName,
   emailLegalText as legalText,
   fromEmail,
-} from "../../config";
+} from "@app/config";
 import * as nodemailer from "nodemailer";
 import chalk from "chalk";
 

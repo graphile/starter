@@ -1,7 +1,7 @@
 import * as nodemailer from "nodemailer";
 import * as aws from "aws-sdk";
-import { awsRegion } from "../config";
-import { readFile, writeFile } from "../fs";
+import { awsRegion } from "@app/config";
+import { readFile, writeFile } from "./fs";
 import chalk from "chalk";
 
 const isDev = process.env.NODE_ENV !== "production";
