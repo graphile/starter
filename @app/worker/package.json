@@ -1,0 +1,16 @@
+{
+  "name": "@app/worker",
+  "private": true,
+  "version": "0.0.0",
+  "dependencies": {
+    "@types/html-to-text": "^1.4.31",
+    "@types/mjml": "^4.0.2",
+    "@types/nodemailer": "^6.2.1",
+    "aws-sdk": "^2.508.0",
+    "graphile-worker": "^0.1.0-alpha.0",
+    "html-to-text": "^5.0.0",
+    "lodash": "^4.17.15",
+    "mjml": "^4.4.1",
+    "nodemailer": "^6.3.0"
+  }
+}

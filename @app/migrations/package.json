@@ -1,0 +1,11 @@
+{
+  "name": "@app/migrations",
+  "private": true,
+  "version": "0.0.0",
+  "dependencies": {
+    "graphile-migrate": "^0.0.17"
+  },
+  "devDependencies": {
+    "lodash": "^4.17.15"
+  }
+}

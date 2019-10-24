@@ -1,0 +1,41 @@
+{
+  "name": "@app/server",
+  "private": true,
+  "version": "0.0.0",
+  "dependencies": {
+    "@graphile-contrib/pg-simplify-inflector": "^5.0.0-beta.1",
+    "@graphile/pg-pubsub": "^4.4.3",
+    "@graphile/pro": "^0.9.0",
+    "@graphile/subscriptions-lds": "^4.4.4",
+    "@types/chalk": "^2.2.0",
+    "@types/connect-pg-simple": "^4.2.0",
+    "@types/connect-redis": "^0.0.10",
+    "@types/express-session": "^1.15.13",
+    "@types/graphql": "*",
+    "@types/helmet": "^0.0.44",
+    "@types/morgan": "^1.7.36",
+    "@types/passport": "^1.0.0",
+    "@types/passport-github": "^1.1.5",
+    "@types/pg": "^7.4.14",
+    "chalk": "^2.4.2",
+    "connect-pg-simple": "^6.0.0",
+    "connect-redis": "^3.4.2",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
+    "graphile-utils": "^4.4.4",
+    "helmet": "^3.21.1",
+    "lodash": "^4.17.15",
+    "morgan": "^1.9.1",
+    "next": "^9.0.3",
+    "passport": "^0.4.0",
+    "passport-github": "^1.1.0",
+    "pg": "^7.12.1",
+    "postgraphile": "^4.4.4",
+    "source-map-support": "^0.5.13",
+    "subscriptions-transport-ws": "^0.9.16",
+    "ws": "^7.1.2"
+  },
+  "devDependencies": {
+    "graphql": "^14.4.2"
+  }
+}

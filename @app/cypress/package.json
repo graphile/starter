@@ -1,0 +1,9 @@
+{
+  "name": "@app/cypress",
+  "private": true,
+  "version": "0.0.0",
+  "devDependencies": {
+    "@cypress/webpack-preprocessor": "^4.1.0",
+    "cypress": "^3.4.1"
+  }
+}
