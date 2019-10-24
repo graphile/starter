@@ -328,8 +328,8 @@ type Mutation {
   ): DeleteUserEmailPayload
 
   """
-  If you've forgotten your password, give us one of your email addresses and we'
-  send you a reset token. Note this only works if you have added an email address!
+  If you've forgotten your password, give us one of your email addresses and
+  we'll send you a reset token. Note this only works if you have added an email address!
   """
   forgotPassword(
     """
