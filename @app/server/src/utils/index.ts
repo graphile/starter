@@ -1,5 +1,10 @@
 export function sanitiseEnv() {
-  const requiredEnvvars = ["AUTH_DATABASE_URL", "DATABASE_URL", "SECRET"];
+  const requiredEnvvars = [
+    "AUTH_DATABASE_URL",
+    "DATABASE_URL",
+    "SECRET",
+    "NODE_ENV",
+  ];
   requiredEnvvars.forEach(envvar => {
     if (!process.env[envvar]) {
       throw new Error(
@@ -7,6 +12,4 @@ export function sanitiseEnv() {
       );
     }
   });
-
-  process.env.NODE_ENV = process.env.NODE_ENV || "development";
 }
