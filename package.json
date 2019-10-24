@@ -55,5 +55,8 @@
     "nohoist": [
       "**/cypress"
     ]
+  },
+  "prettier": {
+    "trailingComma": "es5"
   }
 }
