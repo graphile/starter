@@ -1113,15 +1113,10 @@
     pg ">=6.5 <8"
     ws "^7.0.0"
 
-"@graphile/lru@4.4.5":
+"@graphile/lru@4.4.5", "@graphile/lru@^4.4.1-alpha.2":
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/@graphile/lru/-/lru-4.4.5.tgz#a0fb6da9fe2002116bc61708f8d49a2a8ac2f206"
   integrity sha512-nEjt0BVHXabsUuvkx7DIcY7ZibTJSJnxYM4WxO8WdMGPQHXDavkCprhPdStQ8JM1AQls+1ibCrXXkF49zY72PA==
-
-"@graphile/lru@^4.4.1-alpha.2":
-  version "4.4.1-alpha.2"
-  resolved "https://registry.yarnpkg.com/@graphile/lru/-/lru-4.4.1-alpha.2.tgz#4b5fc0c1203bb45da45fc65e62d2210c30643c2b"
-  integrity sha512-FOWiyZWV4NiKRqfYCXJMc/CFP5SsX1BsZkPDrWtqrNTVZePkXKgrTsJQbvkhwftoPcT8basC7x7YjvOkXInHgg==
 
 "@graphile/pg-pubsub@^4.4.3":
   version "4.4.5"
