@@ -9,5 +9,5 @@ pg_dump \
   --no-owner \
   --exclude-schema=graphile_migrate \
   --exclude-schema=graphile_worker \
-  --file=data/schema.sql \
+  --file=../../data/schema.sql \
   "$GM_DBURL"
