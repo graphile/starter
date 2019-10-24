@@ -23,6 +23,26 @@ details read the README above). The `yarn start` command will automatically
 watch this file and re-run it whenever it changes, updating your database in
 realtime.
 
+**IMPORTANT**: because we use `ignoreRBAC: false` in PostGraphile's
+configuration, new tables _will not show up_ until you `GRANT` permissions on
+them.
+
+```sql
+create table app_public.my_new_table (
+  id serial primary key,
+  my_column text
+);
+
+-- Doesn't appear until we add:
+
+grant
+  select,
+  insert (my_column),
+  update (my_column),
+  delete
+on app_public.my_new_table to :DATABASE_VISITOR;
+```
+
 ## committed
 
 When you're happy with the changes you have made, you can commit your migration with
