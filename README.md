@@ -20,14 +20,20 @@ derivative in an automated fashion.
 
 ## Crowd-funded open-source software
 
-We license our software under the MIT license to give you a huge amount of
-freedom in how you use it. However, it takes a lot of time to produce and
-maintain software, and it wouldn't be possible without the help of [our
-wonderful sponsors](https://www.graphile.org/sponsor/).
+**PLEASE DONATE.**
 
+We've put an absolute tonne of work into this project to help you to turn
+your application idea into a reality as fast as possible. Instead of putting
+this code under a complex proprietary license we've made it available to you
+under the simple MIT license. This gives you a huge amount of freedom in how
+you use it, but it also makes it very hard for us to earn a living from our
+hard work.
+
+Work like this wouldn't be possible without the help of [our wonderful
+sponsors](https://www.graphile.org/sponsor/); but we need more people to join
+their ranks so we can continue to bring about awesome projects like this.
 We'd love to spend more time on open source, building tools that will save
-you and others even more time and money ─ but to make this kind of
-development sustainable we need your help. Please sponsor our open source
+you and others even more time and money ─ please sponsor our open source
 efforts:
 
 ### [Click here to find out more about sponsors and sponsorship.](https://www.graphile.org/sponsor/)
