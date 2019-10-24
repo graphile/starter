@@ -8,6 +8,14 @@ interface DbSession {
   session_id: string;
 }
 
+declare global {
+  namespace Express {
+    interface User {
+      session_id: string;
+    }
+  }
+}
+
 export default async (app: Application) => {
   passport.serializeUser((sessionObject: DbSession, done) => {
     done(null, sessionObject.session_id);

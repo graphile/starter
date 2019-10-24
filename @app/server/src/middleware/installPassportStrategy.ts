@@ -1,6 +1,13 @@
 import * as passport from "passport";
 import { RequestHandler, Application, Request } from "express";
 
+interface DbSession {
+  uuid: string;
+  user_id: number;
+  created_at: Date;
+  last_active: Date;
+}
+
 export interface UserSpec {
   id: number;
   displayName: string;
@@ -87,20 +94,21 @@ export default (
               `getUserInformation must return a unique id for each user`
             );
           }
+          let session: DbSession | null = null;
+          if (req.user && req.user.session_id) {
+            ({
+              rows: [session],
+            } = await rootPgPool.query(
+              "select * from app_private.sessions where uuid = $1",
+              [req.user.session_id]
+            ));
+          }
           const {
-            rows: [details],
+            rows: [user],
           } = await rootPgPool.query(
-            `with new_user as (
-              select * from app_private.link_or_register_user($1, $2, $3, $4, $5)
-            ), new_session as (
-              insert into app_private.sessions (user_id)
-              select id from new_user
-              returning *
-            )
-            select new_user.id as user_id, new_session.uuid as session_id
-            from new_user, new_session`,
+            `select * from app_private.link_or_register_user($1, $2, $3, $4, $5)`,
             [
-              (req.user && req.user.id) || null,
+              session ? session.user_id : null,
               service,
               userInformation.id,
               JSON.stringify({
@@ -117,12 +125,25 @@ export default (
               }),
             ]
           );
-          if (!details || !details.user_id) {
+          if (!user || !user.id) {
             const e = new Error("Registration failed");
             e["code"] = "FFFFF";
             throw e;
           }
-          done(null, { session_id: details.session_id });
+          if (!session) {
+            ({
+              rows: [session],
+            } = await rootPgPool.query(
+              `insert into app_private.sessions (user_id) values ($1) returning *`,
+              [user.id]
+            ));
+          }
+          if (!session) {
+            const e = new Error("Failed to create session");
+            e["code"] = "FFFFF";
+            throw e;
+          }
+          done(null, { session_id: session.uuid });
         } catch (e) {
           done(e);
         }
