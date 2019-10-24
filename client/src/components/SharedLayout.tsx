@@ -10,7 +10,7 @@ import {
   Typography,
 } from "antd";
 import Link from "next/link";
-import { companyName } from "../../../backend/src/config";
+import { projectName } from "../../../backend/src/config";
 import {
   useSharedLayoutQuery,
   useLogoutMutation,
@@ -98,7 +98,7 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
       <Header style={{ boxShadow: "0 2px 8px #f0f1f2", zIndex: 1 }}>
         <Head>
           <title>
-            {title} — {companyName}
+            {title} — {projectName}
           </title>
         </Head>
         <Row type="flex" justify="space-between">

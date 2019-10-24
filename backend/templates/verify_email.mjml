@@ -39,7 +39,7 @@
       <mj-column width="100%">
         <mj-text mj-class="text" color="#FFF" padding-left="25px" padding-right="25px" padding-bottom="20px" padding-top="20px">
           Best,<br/>
-          The [[companyName]] Team
+          The [[projectName]] Team
         </mj-text>
       </mj-column>
     </mj-section>

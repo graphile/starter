@@ -6,7 +6,7 @@ import * as html2text from "html-to-text";
 import getTransport from "../transport";
 import { readFile } from "../../fs";
 import {
-  companyName,
+  projectName,
   emailLegalText as legalText,
   fromEmail,
 } from "../../config";
@@ -73,7 +73,7 @@ function loadTemplate(template: string) {
       });
       return (variables: { [varName: string]: any }) => {
         const mjml = templateFn({
-          companyName,
+          projectName,
           legalText,
           ...variables,
         });
