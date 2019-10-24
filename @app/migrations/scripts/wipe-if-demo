@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # TODO: delete this script, the entry in `package.json`, and the subcommand in
 # `Procfile` - it's only used for the Graphile Starter demo.
 
@@ -18,5 +20,5 @@ psql "${DATABASE_URL/?ssl=1/}" <<HERE
 HERE
 
 # Reinstall the worker schema
-cd backend/dist/worker
-graphile-worker --once
+cd ../worker
+yarn install-db-schema

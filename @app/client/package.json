@@ -2,6 +2,11 @@
   "name": "@app/client",
   "private": true,
   "version": "0.0.0",
+  "scripts": {
+    "build": "next build",
+    "codegen": "graphql-codegen --config codegen.yml",
+    "codegen:watch": "yarn run codegen --watch"
+  },
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
     "@graphql-codegen/add": "^1.5.0",

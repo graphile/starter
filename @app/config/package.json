@@ -1,5 +1,13 @@
 {
   "name": "@app/config",
   "private": true,
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
 }
