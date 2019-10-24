@@ -17,7 +17,7 @@
     "--packages--": "",
     "client": "cd @app/client && yarn run",
     "cypress": "cd @app/cypress && yarn run",
-    "migrations": "cd @app/migrations && yarn run",
+    "db": "cd @app/db && yarn run",
     "server": "cd @app/server && yarn run",
     "worker": "cd @app/worker && yarn run"
   },
