@@ -1,8 +1,7 @@
 # Global args, set before the first FROM, shared by all stages
 ARG PORT=5678
 ARG NODE_ENV="production"
-ARG ROOT_DOMAIN="localhost:$PORT"
-ARG ROOT_URL="http://${ROOT_DOMAIN}"
+ARG ROOT_URL="http://localhost:${PORT}"
 ARG TARGET="server"
 
 ################################################################################
@@ -12,7 +11,6 @@ FROM node:12-alpine as builder
 # Import our shared args
 ARG PORT
 ARG NODE_ENV
-ARG ROOT_DOMAIN
 ARG ROOT_URL
 ARG TARGET
 
@@ -38,7 +36,6 @@ FROM node:12-alpine as clean
 # Import our shared args
 ARG PORT
 ARG NODE_ENV
-ARG ROOT_DOMAIN
 ARG ROOT_URL
 ARG TARGET
 
@@ -55,7 +52,7 @@ COPY --from=builder /app/scripts/env /app/scripts/env
 #
 # Further, they aren't available in ENTRYPOINT (because it's at runtime), so
 # push them to a .env file that we can source from ENTRYPOINT.
-RUN echo "export PORT=\"$PORT\" NODE_ENV=\"$NODE_ENV\" ROOT_DOMAIN=\"$ROOT_DOMAIN\" ROOT_URL=\"$ROOT_URL\" TARGET=\"TARGET\"" >> /app/.env && chmod +x /app/.env
+RUN echo "export PORT=\"$PORT\" NODE_ENV=\"$NODE_ENV\" ROOT_URL=\"$ROOT_URL\" TARGET=\"TARGET\"" >> /app/.env && chmod +x /app/.env
 
 ################################################################################
 # Build stage FINAL - COPY everything, once, and then do a clean `yarn install`
@@ -64,7 +61,6 @@ FROM node:12-alpine
 # Import our shared args
 ARG PORT
 ARG NODE_ENV
-ARG ROOT_DOMAIN
 ARG ROOT_URL
 ARG TARGET
 

@@ -103,7 +103,6 @@ heroku config:set \
   DATABASE_VISITOR="${DATABASE_VISITOR}" \
   SECRET="$(openssl rand -base64 48)" \
   JWT_SECRET="$(openssl rand -base64 48)" \
-  ROOT_DOMAIN="${APP_NAME}.herokuapp.com" \
   ROOT_URL="https://${APP_NAME}.herokuapp.com" \
   -a "$APP_NAME"
 

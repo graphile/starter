@@ -1,9 +1,6 @@
 const compose = require("lodash/flowRight");
 
-const { ROOT_DOMAIN, ROOT_URL, T_AND_C_URL } = process.env;
-if (!ROOT_DOMAIN) {
-  throw new Error("ROOT_DOMAIN is a required envvar");
-}
+const { ROOT_URL, T_AND_C_URL } = process.env;
 if (!ROOT_URL) {
   throw new Error("ROOT_URL is a required envvar");
 }
@@ -61,7 +58,6 @@ if (!ROOT_URL) {
           plugins: [
             ...config.plugins,
             new webpack.DefinePlugin({
-              "process.env.ROOT_DOMAIN": JSON.stringify(ROOT_DOMAIN),
               "process.env.ROOT_URL": JSON.stringify(ROOT_URL),
               "process.env.T_AND_C_URL": JSON.stringify(T_AND_C_URL || null),
             }),

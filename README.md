@@ -280,7 +280,7 @@ would be welcome!
 ## Building the production docker image
 
 To build the production image, use `docker build`. You should supply the
-`ROOT_DOMAIN` and `ROOT_URL` build variables (which will be baked into the
+`ROOT_URL` build variable (which will be baked into the
 client code, so cannot be changed as envvars); if you don't then the defaults
 will apply (which likely will not be suitable).
 
@@ -289,7 +289,6 @@ To build the worker, pass `TARGET="worker"` instead of the default
 
 ```sh
 docker build \
-  --build-arg ROOT_DOMAIN="localhost:5678" \
   --build-arg ROOT_URL="http://localhost:5678" \
   --build-arg TARGET="server" \
   .
