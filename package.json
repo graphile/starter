@@ -4,7 +4,7 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "clean": "rm -Rf app/*/dist app/client/.next",
+    "reset": "yarn clean && node ./scripts/reset.js",
     "setup": "./scripts/setup",
     "start": "./scripts/check-setup && yarn dev",
     "test": "node scripts/test.js",
@@ -13,6 +13,7 @@
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx,.graphql .",
     "build": "yarn client codegen && lerna run build",
     "codegen": "yarn client codegen",
+    "clean": "node ./scripts/clean.js",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
     "--run commands in workspaces--": "",
     "client": "yarn workspace @app/client run",
