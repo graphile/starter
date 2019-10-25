@@ -15,7 +15,7 @@ if [ "x$DATABASE_URL" = "x" ]; then
   exit 2;
 fi;
 
-psql "${DATABASE_URL/?ssl=1/}" <<HERE
+${PSQL:psql} "${DATABASE_URL/?ssl=1/}" <<HERE
   DROP SCHEMA IF EXISTS graphile_migrate, graphile_worker, app_public, app_hidden, app_private CASCADE;
 HERE
 

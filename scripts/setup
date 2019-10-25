@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
 
+echo "Setup graphile-starter:"
 set -e
 export NODE_ENV=development
 
-if [ ! -f package.json ]; then
+if [ ! -f ./package.json ]; then
   echo "Please run via 'yarn setup'; do not call this script directly" >&2
   exit 1
 fi
 
-if [ -x .env ]; then
-  . .env
+if [ -f ./.envvar ]; then
+  echo "Using existing .envvar"
+  . ./.envvar
 
   fail () {
-    echo ".env already exists, but it doesn't define $1 - aborting!"
+    echo ".envvar already exists, but it doesn't define $1 - aborting!"
     exit 1;
   }
 
@@ -27,22 +29,6 @@ else
 
   echo
   echo
-  echo "Do you want to use the Docker mode? [Answer 'y' or 'n', press enter for 'n']"
-  read DOCKER_MODE
-  if [ "$DOCKER_MODE" = "" ]; then DOCKER_MODE="n"; fi
-  if [[ "$DOCKER_MODE" =~ ^[yn]$ ]]; then
-    if [ "$DOCKER_MODE" = "y" ]; then
-      echo "Docker mode active"
-    else
-      echo "Traditional mode active"
-    fi
-  else
-    echo "You must enter the single character 'y' or 'n', you entered '$DOCKER_MODE', so we're exiting"
-  fi
-
-
-  echo
-  echo
   echo "What would you like to call your database? [Enter for 'graphile_starter']"
   read DATABASE_NAME
   if [ "$DATABASE_NAME" = "" ]; then DATABASE_NAME="graphile_starter"; fi
@@ -53,16 +39,15 @@ else
     exit 3
   fi
 
-  if [ "$DOCKER_MODE" = "y" ]; then
-    DATABASE_HOST="pg"
-    ROOT_DATABASE_URL="postgres://postgres@pg/template1"
-  else
+  if [ "$DATABASE_HOST" = "" ]; then
     echo
     echo
     echo "What's the hostname of your database server (include :port if it's not the default :5432)? [Enter for 'localhost']"
     read DATABASE_HOST
     if [ "$DATABASE_HOST" = "" ]; then DATABASE_HOST="localhost"; fi
+  fi
 
+  if [ "$ROOT_DATABASE_URL" = "" ]; then
     echo
     echo
     DEFAULT_HOST="$DATABASE_HOST"
@@ -84,15 +69,12 @@ else
 
   q_mid=\'\\\'\'
 
-  # This is our '.env' config file, we're writing it now so that if something goes wrong we won't lose the passwords.
-  cat >> .env <<CONFIG
+  # This is our '.envvar' config file, we're writing it now so that if something goes wrong we won't lose the passwords.
+  cat >> .envvar <<CONFIG
 # If you're supporting PostGraphile's development via Patreon or Graphile
 # Store, add your license key from https://store.graphile.com here so you can
 # use the Pro plugin - thanks so much!
 GRAPHILE_LICENSE=
-
-# Are we using the Docker mode?
-DOCKER_MODE=${DOCKER_MODE}
 
 # This is a development environment (production wouldn't write envvars to a file)
 NODE_ENV=development
@@ -138,30 +120,20 @@ ROOT_URL=http://localhost:5678
 # Client ID:
 GITHUB_KEY=
 # Client Secret:
-GITHUB_SECRET=
+export GITHUB_SECRET=''
+
 CONFIG
   echo "Passwords generated and configuration written to .env"
-
-  # To source our .env file from the shell it has to be executable.
-  chmod +x .env
-
-  . .env
 fi
 
 echo
 echo
 echo "Installing dependencies and performing initial build"
-if [ "$DOCKER_MODE" = "y" ]; then
-  docker-compose -f docker-compose.builder.yml run --rm install
-  docker-compose -f docker-compose.builder.yml run --rm server-src-build
-else
-  yarn
-  yarn server build
-fi
+
+yarn
+yarn server build
 
 cat <<MSG
-
-
 We're going to drop (if necessary):
 
 - database ${DATABASE_NAME}
@@ -169,11 +141,12 @@ We're going to drop (if necessary):
 - database role ${DATABASE_VISITOR} (cascade)
 - database role ${DATABASE_AUTHENTICATOR} (cascade)
 - database role ${DATABASE_OWNER}
-
-Type 'CONFIRM' to continue
 MSG
 
-read CONFIRM_DROP
+if [ "$CONFIRM_DROP" = "" ]; then
+  echo "Type 'CONFIRM' to continue"
+  read CONFIRM_DROP
+fi
 
 if [ "$CONFIRM_DROP" != "CONFIRM" ]; then
   echo "You didn't type 'CONFIRM' so we're aborting." >&2
@@ -181,24 +154,25 @@ if [ "$CONFIRM_DROP" != "CONFIRM" ]; then
 fi
 
 echo "Installing or reinstalling the roles and database..."
-PSQL="psql"
-if [ "$DOCKER_MODE" = "y" ]; then
-  PSQL="docker-compose run --rm pg psql"
-fi
-if [ "$DOCKER_MODE" = "y" ]; then
-  docker-compose down
-  docker-compose up -d pg
-  trap 'docker-compose down' EXIT
-  while ! $PSQL "${ROOT_DATABASE_URL}" -c 'select true as "Connection test";'; do
-    sleep 1
-  done
-fi
+
+while ! ${PSQL:-psql} "${ROOT_DATABASE_URL}" -c 'select true as "Connection test";'; do
+  echo <<MSG
+
+There was an error connecting to the database at '${ROOT_DATABASE_URL}' (or
+we couldn't run the 'psql' command?); we'll try again in a second but if this
+keeps happening you may want to check your database is running and that we
+have the right address.
+
+MSG
+  sleep 1
+done
 
 # Now we can reset the database
-$PSQL -X -v ON_ERROR_STOP=1 "${ROOT_DATABASE_URL}" <<SQL
+${PSQL:-psql} -X -v ON_ERROR_STOP=1 "${ROOT_DATABASE_URL}" <<SQL
 -- RESET database
 DROP DATABASE IF EXISTS ${DATABASE_NAME};
 DROP DATABASE IF EXISTS ${DATABASE_NAME}_shadow;
+DROP DATABASE IF EXISTS ${DATABASE_NAME}_test;
 DROP ROLE IF EXISTS ${DATABASE_VISITOR};
 DROP ROLE IF EXISTS ${DATABASE_AUTHENTICATOR};
 DROP ROLE IF EXISTS ${DATABASE_OWNER};
@@ -221,15 +195,10 @@ CREATE ROLE ${DATABASE_VISITOR};
 GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
 SQL
 
-if [ "$DOCKER_MODE" = "y" ]; then
-  docker-compose -f docker-compose.builder.yml run --rm db-migrate-reset
-else
+cat <<MSG
+We're going to reset migration
+MSG
   yarn db reset
   yarn db reset --shadow
-fi
-
-if [ "$DOCKER_MODE" = "y" ]; then
-  docker-compose down
-fi
 
 echo "✅ Setup success"

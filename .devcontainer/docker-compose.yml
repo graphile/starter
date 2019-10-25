@@ -1,0 +1,112 @@
+version: "3.7"
+services:
+  webapp:
+    # Uncomment the next line to use a non-root user. On Linux, this will prevent
+    # new files getting created as root, but you may need to update the USER_UID
+    # and USER_GID in .devcontainer/Dockerfile to match your user if not 1000.
+    # user: node
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+
+    volumes:
+      - ..:/app
+      - node_modules-volume:/app/node_modules
+      # let's us run docker & docker-compose from inside container (used for yarn setup)
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/tmp/.devcontainer/
+    working_dir: /app
+    networks:
+      - default
+    ports:
+      # The main server
+      - 5678:5678
+      # Node `--inspect=...` port numbers for debugging
+      - 9678:9678
+      - 9876:9876
+      - 9757:9757
+    depends_on:
+      - db
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+  # extends web, is made for live developing
+  dev:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    env_file:
+      - .env
+    volumes:
+      #* same as service: webapp
+      - ..:/app
+      - node_modules-volume:/app/node_modules
+
+      # let's us run docker & docker-compose from inside container (used for yarn setup)
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/tmp/.devcontainer/
+
+      #* You may want to enable following lines
+      ## avoids vscode reinstalls
+      ## https://code.visualstudio.com/docs/remote/containers-advanced#_avoiding-extension-reinstalls-on-container-rebuild
+      # - vscode-extensions:/root/.vscode-server
+      #* These are dev specific so it's more comfortable to work inside the container
+      ## copies your ssh credentials, to be able to use them from within the container
+      ## (see: https://code.visualstudio.com/docs/remote/containers#_sharing-git-credentials-with-your-container)
+      # - $HOME/.ssh:/root/.home-localhost/.ssh:ro
+      ## copies your .bashrc
+      # - $HOME/.bashrc:/root/.home-localhost/.bashrc:ro
+      ## copies your .gitconfig
+      # - $HOME/.gitconfig:/root/.home-localhost/.gitconfig:ro
+      ##! Fix for windows (can't mount single files)
+      ##comment all the other `.home-localhost` lines above this
+      # - $HOME:/root/.home-localhost:ro
+
+    # just extends service: webapp
+    working_dir: /app
+    networks:
+      - default
+    ports:
+      # The main server
+      - 5678:5678
+      # Node `--inspect=...` port numbers for debugging
+      - 9678:9678
+      - 9876:9876
+      - 9757:9757
+    depends_on:
+      - db
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+  # This runs the database that everything else connects to
+  db:
+    image: postgres:11
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - default
+    restart: unless-stopped
+    command: postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
+
+  # This is just used for running quick pg tools like psql, pg_dump, etc; connecting to the 'pg' database (that should already be running)
+  pgtools:
+    image: postgres:11
+    volumes:
+      - ../data:/data
+    networks:
+      - default
+
+networks:
+  default:
+    name: graphile-starter
+
+volumes:
+  db-volume:
+  node_modules-volume:
+  # used for keeeping vscode-extensions while rebuilding
+  # vscode-extensions:

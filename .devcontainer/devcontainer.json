@@ -1,0 +1,40 @@
+// If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
+{
+  "name": "Node.js & Postgres",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/app",
+
+  // Use 'settings' to set *default* container specific settings.json values on container create.
+  // You can edit these settings after create using File > Preferences > Settings > Remote.
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+
+  // Uncomment the next line if you want start specific services in your Docker Compose config.
+  "runServices": ["dev"],
+
+  // Uncomment the line below if you want to keep your containers running after VS Code shuts down.
+  // "shutdownAction": "none",
+
+  // Uncomment next line if you want to copy your .ssh creds and other config files for easier use inside container
+  // "postCreateCommand": "mkdir -p /root/.ssh && cp -r /root/.home-localhost/.ssh/* /root/.ssh && chmod 700 /root/.ssh && chmod 600 /root/.ssh/* && cp /root/.home-localhost/.gitconfig /root/.gitconfig && cp /root/.home-localhost/.bashrc /root/.bashrc && mkdir -p /root/.config/nvim && echo \"/root/.vimrc /root/.config/nvim/init.vim \" | xargs -n 1 cp -v /root/.home-localhost/.vimrc && mkdir -p ~/.vim/autoload && mkdir -p /root/.local/share/nvim/site/autoload  && echo \"/root/.vim/autoload/ /root/.local/share/nvim/site/autoload/ \" | xargs -n 1 cp -r -v /root/.home-localhost/.vim/autoload/* && echo \"/root/.bashrc /root/.gitconfig /root/.ssh/config /root/.vimrc /root/.config/nvim/init.vim\" | xargs -n 1 dos2unix && nvim +'PlugInstall --sync' +qa || true",
+
+  // Add the IDs of extensions you want installed when the container is created in the array below.
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "msjsdiag.debugger-for-chrome",
+    "apollographql.vscode-apollo",
+    "mikestead.dotenv",
+    "ms-azuretools.vscode-docker",
+    "p1c2u.docker-compose",
+    "dzannotti.vscode-babel-coloring",
+    "aaron-bond.better-comments",
+    "pranaygp.vscode-css-peek",
+    "codemooseus.vscode-devtools-for-chrome",
+    "wix.vscode-import-cost",
+    "cancerberosgx.vscode-typescript-refactors",
+    "steoates.autoimport"
+  ]
+}
