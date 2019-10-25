@@ -1,0 +1,23 @@
+{
+  "name": "@app/docker",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "setup": "yarn web:up && yarn exec:web yarn setup",
+    "start": "yarn web:up && yarn exec:web yarn start",
+    "dev:run": "yarn exec:dev yarn start",
+    "dev:attach": "yarn exec:dev bash",
+    "--DOCKER HELPERS--": "",
+    "reset": "yarn compose down --remove-orphans && yarn reset:volumes && yarn rebuild && yarn web:up && yarn exec:web yarn reset",
+    "compose": "docker-compose ../docker-compose.yml",
+    "web:up": "yarn compose up -d webapp",
+    "exec": "yarn compose exec",
+    "exec:web": "yarn exec webapp ",
+    "exec:dev": "yarn compose up -d dev && yarn exec dev ",
+    "rebuild": "yarn compose build",
+    "reset:volumes": "node ./scripts/clean-volumes.js",
+    "down": "yarn docker:compose down --remove-orphans"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

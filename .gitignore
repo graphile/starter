@@ -2,7 +2,6 @@
 .next
 node_modules
 dist
-/.docker
 /heroku-setup
 /yarn-error.log
 /app/e2e/cypress/videos

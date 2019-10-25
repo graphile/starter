@@ -10,14 +10,13 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - .env
+      - docker/.env.docker
 
     volumes:
-      - ..:/app
+      - .:/app
       - node_modules-volume:/app/node_modules
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
-      - .:/tmp/.devcontainer/
     working_dir: /app
     networks:
       - default
@@ -31,23 +30,24 @@ services:
     depends_on:
       - db
     # Overrides default command so things don't shut down after the process ends.
-    command: sleep infinity
+    # command: sleep infinity
+    # command: bash -c "yarn start; $SHELL"
+    command: yarn setup && yarn start
 
   # extends web, is made for live developing
   dev:
     build:
       context: .
-      dockerfile: dev.Dockerfile
+      dockerfile: docker/dev.Dockerfile
     env_file:
-      - .env
+      - docker/.env.docker
     volumes:
       #* same as service: webapp
-      - ..:/app
+      - .:/app
       - node_modules-volume:/app/node_modules
 
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
-      - .:/tmp/.devcontainer/
 
       #* You may want to enable following lines
       ## avoids vscode reinstalls

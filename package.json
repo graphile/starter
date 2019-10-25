@@ -5,9 +5,8 @@
   "description": "Description of project here",
   "scripts": {
     "setup": "./scripts/setup",
-    "docker:setup": "yarn docker:web:up && yarn docker:exec:web yarn setup",
+    "docker:setup": "yarn docker setup",
     "start": "./scripts/check-setup && yarn dev",
-    "docker:start": "yarn docker:web:up && yarn docker:exec:web yarn start",
     "test": "node scripts/test.js",
     "test:watch": "node scripts/test.js --watch",
     "dev": "yarn && yarn codegen && concurrently --kill-others --names 'src,dev,gen,test' 'lerna run --parallel watch' 'sleep 10; lerna run --parallel dev' 'sleep 10; yarn client codegen:watch' 'sleep 15; yarn test:watch'",
@@ -23,18 +22,7 @@
     "e2e": "yarn workspace @app/e2e run",
     "server": "yarn workspace @app/server run",
     "worker": "yarn workspace @app/worker run",
-    "--DOCKER HELPERS--": "",
-    "docker:dev:run": "yarn docker:exec:dev yarn start",
-    "docker:dev:attach": "yarn docker:exec:dev bash",
-    "docker:reset": "yarn docker:compose down --remove-orphans && yarn docker:reset:volumes && yarn docker:rebuild && yarn docker:web:up && yarn docker:exec:web yarn reset",
-    "docker:compose": "docker-compose --project-name graphile-starter_devcontainer -f ./.devcontainer/docker-compose.yml",
-    "docker:web:up": "yarn docker:compose up -d webapp",
-    "docker:exec": "yarn docker:compose exec",
-    "docker:exec:web": "yarn docker:exec webapp ",
-    "docker:exec:dev": "yarn docker:compose up -d dev && yarn docker:exec dev ",
-    "docker:rebuild": "yarn docker:compose build",
-    "docker:reset:volumes": "bash -c \"docker volume rm ${PWD##*/}_devcontainer_db-volume  ${PWD##*/}_devcontainer_node_modules-volume ${PWD##*/}_devcontainer_vscode-extensions || true\"",
-    "docker:down": "yarn docker:compose down --remove-orphans"
+    "docker": "yarn workspace @app/docker run"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -65,7 +53,8 @@
   },
   "workspaces": {
     "packages": [
-      "app/*"
+      "app/*",
+      "docker/package.json"
     ],
     "nohoist": [
       "**/cypress"
