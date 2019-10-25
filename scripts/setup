@@ -156,7 +156,7 @@ if [ "$DOCKER_MODE" = "y" ]; then
   docker-compose -f docker-compose.builder.yml run --rm server-src-build
 else
   yarn
-  yarn server:src:build
+  yarn server build
 fi
 
 cat <<MSG
