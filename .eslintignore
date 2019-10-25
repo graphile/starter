@@ -1,5 +1,5 @@
 node_modules
 **/dist
 /data
-/@app/client/src/graphql/index.tsx
-/@app/client/src/graphql/graphql.d.ts
+/app/client/src/graphql/index.tsx
+/app/client/src/graphql/graphql.d.ts

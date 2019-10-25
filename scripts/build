@@ -1,2 +1,2 @@
-(cd @app/client && yarn codegen)
-(cd @app/server && yarn build)
+(yarn client codegen)
+(yarn server build)

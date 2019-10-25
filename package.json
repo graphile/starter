@@ -4,22 +4,22 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "clean": "rm -Rf @app/*/dist @app/client/.next",
+    "clean": "rm -Rf app/*/dist app/client/.next",
     "setup": "./scripts/setup",
     "start": "./scripts/check-setup && yarn dev",
     "test": "node scripts/test.js",
     "test:watch": "node scripts/test.js --watch",
     "dev": "yarn && yarn codegen && concurrently --kill-others --names 'src,dev,gen,test' 'lerna run --parallel watch' 'sleep 10; lerna run --parallel dev' 'sleep 10; yarn client codegen:watch' 'sleep 15; yarn test:watch'",
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx,.graphql .",
-    "build": "yarn codegen && lerna run build",
+    "build": "yarn client codegen && lerna run build",
     "codegen": "yarn client codegen",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
-    "--packages--": "",
-    "client": "cd @app/client && yarn run",
-    "db": "cd @app/db && yarn run",
-    "e2e": "cd @app/e2e && yarn run",
-    "server": "cd @app/server && yarn run",
-    "worker": "cd @app/worker && yarn run"
+    "--run commands in workspaces--": "",
+    "client": "yarn workspace @app/client run",
+    "db": "yarn workspace @app/db run",
+    "e2e": "yarn workspace @app/e2e run",
+    "server": "yarn workspace @app/server run",
+    "worker": "yarn workspace @app/worker run"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -50,7 +50,7 @@
   },
   "workspaces": {
     "packages": [
-      "@app/*"
+      "app/*"
     ],
     "nohoist": [
       "**/cypress"
@@ -61,7 +61,7 @@
   },
   "jest": {
     "roots": [
-      "<rootDir>/@app"
+      "<rootDir>/app"
     ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"

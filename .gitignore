@@ -5,7 +5,7 @@ dist
 /.docker
 /heroku-setup
 /yarn-error.log
-/@app/e2e/cypress/videos
-/@app/client/src/graphql/index.tsx
-/@app/client/src/graphql/graphql.d.ts
+/app/e2e/cypress/videos
+/app/client/src/graphql/index.tsx
+/app/client/src/graphql/graphql.d.ts
 .agignore

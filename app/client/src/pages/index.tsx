@@ -85,8 +85,8 @@ export default function Home() {
 
           <Title level={4}>
             This page:{" "}
-            <a href="https://github.com/graphile/starter/blob/master/@app/client/src/pages/index.tsx">
-              <code>@app/client/src/pages/index.tsx</code>
+            <a href="https://github.com/graphile/starter/blob/master/app/client/src/pages/index.tsx">
+              <code>app/client/src/pages/index.tsx</code>
             </a>
           </Title>
           <Paragraph>
@@ -96,8 +96,8 @@ export default function Home() {
 
           <Title level={4}>
             The server:{" "}
-            <a href="https://github.com/graphile/starter/blob/master/@app/server/src/index.ts">
-              <code>@app/server/src/index.ts</code>
+            <a href="https://github.com/graphile/starter/blob/master/app/server/src/index.ts">
+              <code>app/server/src/index.ts</code>
             </a>
           </Title>
           <Paragraph>
@@ -185,7 +185,7 @@ export default function Home() {
             </Li>
             <Li>
               Change the project settings in{" "}
-              <code>@app/config/src/index.ts</code>
+              <code>app/config/src/index.ts</code>
             </Li>
             <Li>Replace the README.md file</Li>
             <Li>Commit as you usually would</Li>

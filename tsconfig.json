@@ -27,8 +27,8 @@
     "declaration": true,
     "baseUrl": ".",
     "paths": {
-      "@app/*": ["@app/*"]
+      "@app/*": ["app/*"]
     }
   },
-  "exclude": ["@app/e2e"]
+  "exclude": ["app/e2e"]
 }

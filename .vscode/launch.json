@@ -7,7 +7,7 @@
       "name": "Attach to Node Server",
       "port": 9678,
       "restart": true,
-      "outFiles": ["${workspaceFolder}/@app/server/dist/**/*.js"]
+      "outFiles": ["${workspaceFolder}/app/server/dist/**/*.js"]
     },
     {
       "type": "node",
@@ -22,16 +22,16 @@
       "name": "Attach to Worker",
       "port": 9757,
       "restart": true,
-      "outFiles": ["${workspaceFolder}/@app/worker/dist/**/*.js"]
+      "outFiles": ["${workspaceFolder}/app/worker/dist/**/*.js"]
     },
     {
       "type": "chrome",
       "request": "launch",
       "name": "Launch localhost:5678",
       "url": "http://localhost:5678/",
-      "webRoot": "${workspaceFolder}/@app/client/src",
+      "webRoot": "${workspaceFolder}/app/client/src",
       "pathMapping": {
-        "/_next": "${workspaceFolder}/@app/client/.next"
+        "/_next": "${workspaceFolder}/app/client/.next"
       }
     }
   ]
