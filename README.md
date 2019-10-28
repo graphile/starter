@@ -279,10 +279,10 @@ would be welcome!
 
 ## Building the production docker image
 
-To build the production image, use `docker build`. You should supply the
-`ROOT_URL` build variable (which will be baked into the
-client code, so cannot be changed as envvars); if you don't then the defaults
-will apply (which likely will not be suitable).
+To build the production image, use `docker build` as shown below. You should
+supply the `ROOT_URL` build variable (which will be baked into the client
+code, so cannot be changed as envvars); if you don't then the defaults will
+apply (which likely will not be suitable).
 
 To build the worker, pass `TARGET="worker"` instead of the default
 `TARGET="server"`.
