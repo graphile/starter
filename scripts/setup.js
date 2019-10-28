@@ -9,7 +9,10 @@ const isNpx = pathParts[0].includes("/_npx/");
 const oldNodePath = process.env.NODE_PATH;
 if (isNpx) {
   // We're running in npx; add npx to our NODE_PATH
-  process.env.NODE_PATH = require('path').resolve(process.cwd(), `${pathParts[0]}/../lib/node_modules`);
+  process.env.NODE_PATH = require("path").resolve(
+    process.cwd(),
+    `${pathParts[0]}/../lib/node_modules`
+  );
   // Ref: https://github.com/nodejs/node/issues/18229
   require("module").Module._initPaths();
 }
@@ -291,7 +294,7 @@ async function main() {
       message:
         "What's the hostname of your database server (include :port if it's not the default :5432)?",
       default: mergeAnswers(answers =>
-        answers.DOCKER_MODE ? "pg" : config.DATABASE_HOST
+        answers.DOCKER_MODE ? "pg" : config.DATABASE_HOST || "localhost"
       ),
       when: mergeAnswers(
         answers => !answers.DOCKER_MODE && !("DATABASE_HOST" in config)
@@ -458,6 +461,7 @@ async function main() {
 -- RESET database
 DROP DATABASE IF EXISTS ${DATABASE_NAME};
 DROP DATABASE IF EXISTS ${DATABASE_NAME}_shadow;
+DROP DATABASE IF EXISTS ${DATABASE_NAME}_test;
 DROP ROLE IF EXISTS ${DATABASE_VISITOR};
 DROP ROLE IF EXISTS ${DATABASE_AUTHENTICATOR};
 DROP ROLE IF EXISTS ${DATABASE_OWNER};
@@ -511,17 +515,16 @@ GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
   console.log();
   if (dockerMode) {
     console.log("  export UID; docker-compose up");
-
   } else {
     console.log("  yarn start");
-
   }
   console.log();
-  console.log("🙏 Please support our Open Source work: https://graphile.org/sponsor");
+  console.log(
+    "🙏 Please support our Open Source work: https://graphile.org/sponsor"
+  );
   console.log();
   console.log("____________________________________________________________");
   console.log();
-
 }
 
 main().catch(e => {
