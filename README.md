@@ -117,7 +117,7 @@ Do not commit it to version control!
 Depending on how you answered the setup questions, you can bring up the stack:
 
 - natively: `yarn dev`
-- with Docker: `export UID && docker-compose up`
+- with Docker: `export UID; docker-compose up`
   - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar
 
 After a short period you should then be able to load the application at
