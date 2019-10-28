@@ -14,9 +14,9 @@ process.env.SHADOW_DATABASE_URL =
 process.env.SHADOW_AUTH_DATABASE_URL =
   process.env.SHADOW_AUTH_DATABASE_URL ||
   `postgres://${process.env.DATABASE_AUTHENTICATOR}:${process.env.DATABASE_AUTHENTICATOR_PASSWORD}@${process.env.DATABASE_HOST}/${process.env.DATABASE_NAME}_shadow`;
-process.env.TEST_DATABASE_URL =
-  process.env.TEST_DATABASE_URL ||
-  `postgres://${process.env.DATABASE_OWNER}:${process.env.DATABASE_OWNER_PASSWORD}@${process.env.DATABASE_HOST}/${process.env.DATABASE_NAME}_test`;
+
+// Always overwrite test database URL
+process.env.TEST_DATABASE_URL = `postgres://${process.env.DATABASE_OWNER}:${process.env.DATABASE_OWNER_PASSWORD}@${process.env.DATABASE_HOST}/${process.env.DATABASE_NAME}_test`;
 
 // https://docs.cypress.io/guides/guides/environment-variables.html#Option-3-CYPRESS
 process.env.CYPRESS_ROOT_URL = process.env.ROOT_URL;
