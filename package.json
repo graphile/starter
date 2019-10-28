@@ -5,7 +5,7 @@
   "description": "Description of project here",
   "scripts": {
     "clean": "rm -Rf @app/*/dist @app/client/.next",
-    "setup": "export UID=`id -u`; npx -p dotenv -p inquirer ./scripts/setup.js",
+    "setup": "npx -p dotenv -p inquirer ./scripts/setup.js",
     "start": "node ./scripts/start.js",
     "test": "node scripts/test.js",
     "test:watch": "node scripts/test.js --watch",
