@@ -2,6 +2,7 @@ version: "3"
 services:
   dev:
     image: node:10
+    user: $UID
     environment:
       - FORCE_COLOR=2
     volumes:
@@ -18,6 +19,7 @@ services:
       - 9757:9757
   pg:
     image: postgres:11
+    user: $UID
     volumes:
       - .docker/postgres_data:/var/lib/postgresql/data
     ports:

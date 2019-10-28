@@ -7,6 +7,14 @@ const { spawnSync: rawSpawnSync } = require("child_process");
 const dotenv = require("dotenv");
 const inquirer = require("inquirer");
 
+async function tryMkdir(path) {
+  try {
+    await fsp.mkdir(path);
+  } catch (e) {
+    /* noop */
+  }
+}
+
 const spawnSync = (cmd, args, options) => {
   const result = rawSpawnSync(cmd, args, {
     stdio: ["ignore", "inherit", "inherit"],
@@ -310,6 +318,10 @@ async function main() {
 
   const dockerMode = DOCKER_MODE === "y";
   if (dockerMode) {
+    // Need to create these folders as owned by us before Docker starts
+    await tryMkdir(`${__dirname}/../.docker`);
+    await tryMkdir(`${__dirname}/../.docker/postgres_data`);
+    await tryMkdir(`${__dirname}/../.docker/node_modules`);
     spawnSync("docker-compose", [
       "-f",
       "docker-compose.builder.yml",
