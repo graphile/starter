@@ -311,7 +311,7 @@ async function main() {
       "server-src-build",
     ]);
   } else {
-    spawnSync("yarn");
+    //spawnSync("yarn");
     spawnSync("yarn", ["server", "build"]);
   }
 

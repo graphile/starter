@@ -5,7 +5,7 @@
   "description": "Description of project here",
   "scripts": {
     "clean": "rm -Rf @app/*/dist @app/client/.next",
-    "setup": "node scripts/setup.js",
+    "setup": "yarn && node scripts/setup.js",
     "start": "./scripts/check-setup && yarn dev",
     "test": "node scripts/test.js",
     "test:watch": "node scripts/test.js --watch",
