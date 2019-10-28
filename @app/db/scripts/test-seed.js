@@ -1,7 +1,5 @@
-const fs = require("fs");
+const { writeFile } = require("fs").promises;
 const pg = require("pg");
-const { promisify } = require("util");
-const writeFile = promisify(fs.writeFile);
 
 async function main() {
   const connectionString = process.env.GM_DBURL;

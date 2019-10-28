@@ -1,17 +1,13 @@
-import { promisify } from "util";
-import * as fs from "fs";
+import { promises as fsp } from "fs";
 
-export const readFile = promisify(fs.readFile);
-export const writeFile = promisify(fs.writeFile);
-export const utimes = promisify(fs.utimes);
-export const close = promisify(fs.close);
-export const open = promisify(fs.open);
+const { utimes, open } = fsp;
 
 export const touch = async (filepath: string): Promise<void> => {
   try {
     const time = new Date();
     await utimes(filepath, time, time);
   } catch (err) {
-    await close(await open(filepath, "w"));
+    const filehandle = await open(filepath, "w");
+    await filehandle.close();
   }
 };
