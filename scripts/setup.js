@@ -288,11 +288,20 @@ async function main() {
   ];
   const rawAnswers = await inquirer.prompt(questions);
 
+  const dockerMode = config.DOCKER_MODE
+    ? config.DOCKER_MODE === "y"
+    : rawAnswers.DOCKER_MODE;
   const answers = {
+    ...(dockerMode
+      ? {
+          DATABASE_HOST: "pg",
+          ROOT_DATABASE_URL: "postgres://postgres@pg/template1",
+        }
+      : null),
     ...rawAnswers,
 
     // Convert boolean to string
-    DOCKER_MODE: config.DOCKER_MODE || (rawAnswers.DOCKER_MODE ? "y" : "n"),
+    DOCKER_MODE: dockerMode ? "y" : "n",
   };
 
   await updateDotenv({
@@ -316,7 +325,6 @@ async function main() {
 
   // And perform setup
 
-  const dockerMode = DOCKER_MODE === "y";
   console.log(process.env.UID);
   if (dockerMode) {
     // Need to create these folders as owned by us before Docker starts
@@ -406,7 +414,7 @@ async function main() {
       } catch (e) {
         attempts++;
         if (attempts <= 30) {
-          console.log(`Database is not ready yet (attempt ${attempt})`);
+          console.log(`Database is not ready yet (attempt ${attempts})`);
         } else {
           console.log(`Database never came up, aborting :(`);
           process.exit(1);
