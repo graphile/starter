@@ -17,15 +17,27 @@ async function tryMkdir(path) {
 
 const spawnSync = (cmd, args, options) => {
   const result = rawSpawnSync(cmd, args, {
-    stdio: ["ignore", "inherit", "inherit"],
+    stdio: ["pipe", "inherit", "inherit"],
     ...options,
   });
 
-  const { status } = result;
+  const { error, status, signal } = result;
+
+  if (error) {
+    throw error;
+  }
 
   if (status) {
     throw new Error(
       `Process exited with status '${status}' (running '${cmd} ${args.join(
+        " "
+      )}')`
+    );
+  }
+
+  if (signal) {
+    throw new Error(
+      `Process exited due to signal '${signal}' (running '${cmd} ${args.join(
         " "
       )}')`
     );
@@ -324,7 +336,6 @@ async function main() {
 
   // And perform setup
 
-  console.log(process.env.UID);
   if (dockerMode) {
     // Need to create these folders as owned by us before Docker starts
     await tryMkdir(`${__dirname}/../.docker`);
