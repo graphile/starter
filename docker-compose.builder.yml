@@ -3,6 +3,9 @@ services:
   base:
     image: node:10
     user: $UID
+    environment:
+      # pg_dump doesn't work in docker-compose mode currently
+      - PG_DUMP=echo pg_dump
     volumes:
       - .:/app
       - .docker/node_modules:/app/node_modules
