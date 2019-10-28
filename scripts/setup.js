@@ -354,11 +354,21 @@ async function main() {
     });
 
     // Wait for PostgreSQL to come up
-    for (let attempts = 0; attempts < 30; attempts++) {
+    let attempts = 0;
+    while (true) {
       try {
-        psql([ROOT_DATABASE_URL, "-c", 'select true as "Connection test";']);
+        psql([ROOT_DATABASE_URL, "-c", 'select true as "Connection test";'], {
+          stdio: "ignore",
+        });
         break;
       } catch (e) {
+        attempts++;
+        if (attempts <= 30) {
+          console.log(`Database is not ready yet (attempt ${attempt})`);
+        } else {
+          console.log(`Database never came up, aborting :(`);
+          process.exit(1);
+        }
         await sleep(1000);
       }
     }
