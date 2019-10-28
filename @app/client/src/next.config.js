@@ -31,7 +31,7 @@ if (!ROOT_URL) {
       withCss,
       withLess
     )({
-      distDir: `${__dirname}/../.next`,
+      distDir: `../.next`,
       exportTrailingSlash: true,
       lessLoaderOptions: {
         javascriptEnabled: true,
