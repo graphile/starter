@@ -25,6 +25,7 @@
     "@types/passport": "^1.0.0",
     "@types/passport-github": "^1.1.5",
     "@types/pg": "^7.4.14",
+    "@types/redis": "^2.8.14",
     "chalk": "^2.4.2",
     "connect-pg-simple": "^6.0.0",
     "connect-redis": "^4.0.3",
@@ -39,6 +40,7 @@
     "passport-github": "^1.1.0",
     "pg": "^7.12.1",
     "postgraphile": "^4.4.4",
+    "redis": "^2.8.0",
     "source-map-support": "^0.5.13",
     "subscriptions-transport-ws": "^0.9.16",
     "ws": "^7.1.2"
