@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 if (parseInt(process.version.split(".")[0], 10) < 10) {
   throw new Error("This project requires Node.js >= 10.0.0");
 }
@@ -363,7 +364,7 @@ async function main() {
       "server-src-build",
     ]);
   } else {
-    //spawnSync("yarn");
+    spawnSync("yarn");
     spawnSync("yarn", ["server", "build"]);
   }
 
