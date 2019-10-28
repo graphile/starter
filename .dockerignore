@@ -1,13 +1,16 @@
-.DS_Store
+.docker
 .env
 .git
 .github
-.next
 .vscode
-node_modules
+
+@app/e2e
 
 *Dockerfile*
 *docker-compose*
 
+**/.DS_Store
+**/.next
+**/node_modules
 **/dist
 **/__tests__

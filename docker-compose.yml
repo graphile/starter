@@ -2,11 +2,17 @@ version: "3"
 services:
   dev:
     image: node:10
+    user: $UID
     environment:
       - FORCE_COLOR=2
     volumes:
       - .:/app
       - .docker/node_modules:/app/node_modules
+      - .docker/node_modules_client:/app/@app/client/node_modules
+      - .docker/node_modules_db:/app/@app/db/node_modules
+      - .docker/node_modules_e2e:/app/@app/e2e/node_modules
+      - .docker/node_modules_server:/app/@app/server/node_modules
+      - .docker/node_modules_worker:/app/@app/worker/node_modules
     working_dir: /app
     command: yarn dev
     ports:
@@ -18,6 +24,7 @@ services:
       - 9757:9757
   pg:
     image: postgres:11
+    user: $UID
     volumes:
       - .docker/postgres_data:/var/lib/postgresql/data
     ports:

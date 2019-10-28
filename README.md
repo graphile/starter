@@ -4,7 +4,7 @@
 
 Take this software and use it as the starting point to build your project. Go
 make some money, and [give something
-back](https://github.com/users/benjie/sponsorship) to support us building
+back](https://github.com/sponsors/benjie) to support us building
 more tools and kits for the Node, GraphQL and PostgreSQL ecosystems.
 
 Please note that this software is not "complete," free of software defects,
@@ -116,8 +116,9 @@ Do not commit it to version control!
 
 Depending on how you answered the setup questions, you can bring up the stack:
 
-- natively: `yarn dev`
-- with Docker: `docker-compose up`
+- natively: `yarn start`
+- with Docker: `export UID; docker-compose up`
+  - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar
 
 After a short period you should then be able to load the application at
 http://localhost:5678
@@ -136,13 +137,13 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **PostGraphile configured for lean schema** — very tidy GraphQL schema, adhering to PostGraphile best practices
 - [x] **Autoformatting** ─ Thanks to `prettier` and `eslint`, code can be auto-formatted (and auto-fixed) on save
 - [x] **Job queue** — we've added and configured <a href="https://github.com/graphile/worker">graphile-worker</a> to perform background tasks for you, such as sending emails, and included some example tasks
-- [x] **Express server** — with Benjie's [easy to customise and understand middleware system](backend/src/server/index.ts)
+- [x] **Express server** — with Benjie's [easy to customise and understand middleware system](@app/server/src/index.ts)
 - [x] **Debugability** ─ The server, worker, tests and client are all ready to be debugged using [VSCode's built in breakpoints](https://code.visualstudio.com/docs/editor/debugging)
 - [x] **Hot reloading** — edit a component and it's re-rendered immediately (warning: state is _not_ restored, because this typically leads to instability); provided by Next.js
 - [x] **SSR with hot reloading** — if you turn JS off and reload the page you should be greeted with the same content anyway; provided by Next.js
 - [x] **Productive roll-forward migrations** — we use <a href="https://github.com/graphile/migrate">graphile-migrate</a> for development speed, but you're welcome to switch to whatever migration library you like
 - [x] **Realtime** — PostGraphile is configured with `@graphile/pg-pubsub` to enable realtime events from the DB; and Apollo is configured to consume them
-- [x] **Production build** — command to generate a production build of the project using `npm run build`
+- [x] **Production build** — command to generate a production build of the project using `yarn run build`
 - [x] **Production Docker build** — how to build a Docker image you could use in production
 - [x] **Deployment instructions: Heroku** — how to deploy to Heroku
 - [x] **Database tests** — Jest configured to test the database, plus initial tests for various database functions and tables
@@ -178,16 +179,19 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 
 ## Documentation links
 
-### yarn dev
+### `yarn start` (or `docker-compose up`)
 
-The `yarn dev` command runs a number of tasks:
+This main command runs a number of tasks:
 
-- `db:watch`: uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch the `migrations/current.sql` file for changes, and automatically runs it against your database when it changes
-- `server:src:watch`: watches the TypeScript source code of the server, and compiles it from `backend/src` to `backend/dist` so node and `graphile-worker` can run the compiled code directly
-- `server:watch`: runs the node server (includes PostGraphile and Next.js middlewares)
-- `server:worker:watch`: runs `graphile-worker` to execute your tasks (e.g. sending emails)
-- `codegen:watch`: watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript React hooks for you automatically, leading to strongly typed code with minimal effort
-- `test:watch`: runs the `jest` tests in watch mode, automatically re-running as the database or test files change
+- uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch the`migrations/current.sql` file for changes, and automatically runs it against your database when it changes
+- watches the TypeScript source code of the server, and compiles it from `@app/*/src` to `@app/*/dist` so node/`graphile-worker`/etc can run the compiled code directly
+- runs the node server (includes PostGraphile and Next.js middlewares)
+- runs `graphile-worker` to execute your tasks (e.g. sending emails)
+- watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript React hooks for you automatically, leading to strongly typed code with minimal effort
+- runs the `jest` tests in watch mode, automatically re-running as the database or test files change
+
+For `docker-compose up` it also runs the PostgreSQL server that the system
+connects to.
 
 ### Cypress e2e tests
 
@@ -200,10 +204,10 @@ tests to ensure that your project remains rock-solid at all times.
 
 We use Next.js ([docs](https://nextjs.org/)) to handle the various common
 concerns of a React application for us (server-side rendering, routing,
-bundling, bundle-splitting, etc). The `client/src/pages/_app.tsx` file is a
+bundling, bundle-splitting, etc). The `@app/client/src/pages/_app.tsx` file is a
 [custom &lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to
 add any providers you need to. We've already set it up with `withApollo` from
-`client/src/lib/withApollo` which includes all the Apollo configuration,
+`@app/client/src/lib/withApollo` which includes all the Apollo configuration,
 including the client URL.
 
 ### AntD
@@ -217,7 +221,7 @@ pages so you can see how to handle errors from the server.
 The database is a jumping-off point; we've already committed the initial user
 system for you (but you can `uncommit` this if you need to). You can add
 idempotent SQL commands to `migrations/current.sql` and they will run when
-you save. When you're happy with your changes, run `yarn db:migrate commit`
+you save. When you're happy with your changes, run `yarn db commit`
 to commit these commands and reset `migrations/current.sql` to a blank state
 ready for the next batch of changes. We deliberately do not include
 functionality that we don't think most users will find useful.
@@ -230,13 +234,13 @@ To read more about migrations with graphile-migrate, see the
 ### graphile-worker
 
 We've added a few example workers for you, including the `send_email` worker
-which performs email templating for you. See `backend/src/worker/tasks` for the
+which performs email templating for you. See `@app/worker/src/tasks` for the
 tasks we've created (and to add your own), and see the [graphile-worker
 docs](https://github.com/graphile/worker) for more information.
 
 ### Server
 
-The server entry point is `backend/src/server/index.ts`; you'll see that it
+The server entry point is `@app/server/src/index.ts`; you'll see that it
 contains documentation and has split the middleware up into a manageable
 fashion. We use traditional cookie sessions, but you can switch this out
 for an alternative.
@@ -245,7 +249,7 @@ for an alternative.
 
 If you set `GITHUB_KEY` and `GITHUB_SECRET` in your `.env` file then you can
 also use GitHub's OAuth social authentication; you can add similar logic to the
-GitHub logic (in `backend/src/server/middleware/installPassport.ts`) to enable
+GitHub logic (in `@app/server/src/middleware/installPassport.ts`) to enable
 other social login providers such as Twitter, Facebook, Google, etc. For more
 information, see the [passport.js documentation](http://www.passportjs.org/docs/).
 
@@ -257,7 +261,7 @@ information, see the [passport.js documentation](http://www.passportjs.org/docs/
    - `git add .`
    - `git commit -m "PostGraphile starter base"`
 1. Change the project name in `package.json`
-1. Change the project settings in `backend/src/config.ts`
+1. Change the project settings in `@app/config/src/index.ts`
 1. Replace the `README.md` file
 1. Commit as you usually would
 1. [Show your appreciation with sponsorship](https://www.graphile.org/sponsor/)
@@ -279,17 +283,16 @@ would be welcome!
 
 ## Building the production docker image
 
-To build the production image, use `docker build`. You should supply the
-`ROOT_DOMAIN` and `ROOT_URL` build variables (which will be baked into the
-client code, so cannot be changed as envvars); if you don't then the defaults
-will apply (which likely will not be suitable).
+To build the production image, use `docker build` as shown below. You should
+supply the `ROOT_URL` build variable (which will be baked into the client
+code, so cannot be changed as envvars); if you don't then the defaults will
+apply (which likely will not be suitable).
 
 To build the worker, pass `TARGET="worker"` instead of the default
 `TARGET="server"`.
 
 ```sh
 docker build \
-  --build-arg ROOT_DOMAIN="localhost:5678" \
   --build-arg ROOT_URL="http://localhost:5678" \
   --build-arg TARGET="server" \
   .
@@ -319,7 +322,7 @@ If you are using `graphile-migrate` make sure that you have executed
 `graphile-migrate commit` to commit all your database changes, since we only
 run committed migrations in production.
 
-Make sure you have customised `backend/src/config.ts`.
+Make sure you have customised `@app/config/src/index.ts`.
 
 Make sure everything is committed and pushed in git.
 
@@ -361,7 +364,7 @@ capable of sending emails. To achieve this, you must configure an email
 transport. We have preconfigured support for Amazon SES. Once SES is set up,
 your domain is verified, and you've verified any emails you wish to send email
 to (or have had your sending limits removed), make sure that the `fromEmail` in
-`backend/src/config.ts` is correct, and then create an IAM role for your
+`@app/config/src/index.ts` is correct, and then create an IAM role for your
 PostGraphile server. Here's an IAM template for sending emails - this is the
 only permission required for our IAM role currently, but you may wish to add
 others later.

@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-if [ -x ./.env ]; then
-  . ./.env
-fi;
-
-# For Cypress:
-export CYPRESS_ROOT_URL="${ROOT_URL}"

@@ -1,0 +1,30 @@
+{
+  "pgSettings": {
+    "search_path": "app_public,app_private,app_hidden,public"
+  },
+  "placeholders": {
+    ":DATABASE_AUTHENTICATOR": "!ENV",
+    ":DATABASE_VISITOR": "!ENV"
+  },
+  "afterReset": [
+    "afterReset.sql",
+    {
+      "_": "command",
+      "command": "yarn workspace @app/worker install-db-schema"
+    }
+  ],
+  "afterAllMigrations": [
+    {
+      "_": "command",
+      "shadow": true,
+      "command": "if [ \"$IN_TESTS\" != \"1\" ]; then ./scripts/dump-db; fi"
+    }
+  ],
+  "afterCurrent": [
+    {
+      "_": "command",
+      "shadow": true,
+      "command": "if [ \"$IN_TESTS\" = \"1\" ]; then node scripts/test-seed.js; fi"
+    }
+  ]
+}
