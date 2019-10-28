@@ -284,7 +284,7 @@ async function main() {
     ...rawAnswers,
 
     // Convert boolean to string
-    DOCKER_MODE: rawAnswers.DOCKER_MODE ? "y" : "n",
+    DOCKER_MODE: config.DOCKER_MODE || (rawAnswers.DOCKER_MODE ? "y" : "n"),
   };
 
   await updateDotenv({
