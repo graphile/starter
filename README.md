@@ -116,7 +116,7 @@ Do not commit it to version control!
 
 Depending on how you answered the setup questions, you can bring up the stack:
 
-- natively: `yarn dev`
+- natively: `yarn start`
 - with Docker: `export UID; docker-compose up`
   - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar
 
@@ -179,9 +179,9 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 
 ## Documentation links
 
-### yarn dev
+### `yarn start` (or `docker-compose up`)
 
-The `yarn dev` command runs a number of tasks:
+This main command runs a number of tasks:
 
 - uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch the`migrations/current.sql` file for changes, and automatically runs it against your database when it changes
 - watches the TypeScript source code of the server, and compiles it from `@app/*/src` to `@app/*/dist` so node/`graphile-worker`/etc can run the compiled code directly
@@ -189,6 +189,9 @@ The `yarn dev` command runs a number of tasks:
 - runs `graphile-worker` to execute your tasks (e.g. sending emails)
 - watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript React hooks for you automatically, leading to strongly typed code with minimal effort
 - runs the `jest` tests in watch mode, automatically re-running as the database or test files change
+
+For `docker-compose up` it also runs the PostgreSQL server that the system
+connects to.
 
 ### Cypress e2e tests
 
