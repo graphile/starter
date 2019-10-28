@@ -23,11 +23,19 @@ services:
       service: base
     command: yarn workspace @app/server build
 
-  db-migrate-reset:
+  db-reset:
     extends:
       service: base
     command: yarn db reset
-  db-migrate-migrate:
+  db-migrate:
     extends:
       service: base
     command: yarn db migrate
+  db-commit:
+    extends:
+      service: base
+    command: yarn db commit
+  db-uncommit:
+    extends:
+      service: base
+    command: yarn db uncommit

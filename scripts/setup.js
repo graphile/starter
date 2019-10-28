@@ -495,7 +495,7 @@ GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
       "run",
       `--user=${process.env.UID}`,
       "--rm",
-      "db-migrate-reset",
+      "db-reset",
     ]);
   } else {
     spawnSync("yarn", ["db", "reset"]);
