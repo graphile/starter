@@ -14,12 +14,12 @@
     "build": "yarn codegen && lerna run build",
     "codegen": "yarn client codegen",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
-    "--packages--": "",
-    "client": "cd @app/client && yarn run",
-    "db": "cd @app/db && yarn run",
-    "e2e": "cd @app/e2e && yarn run",
-    "server": "cd @app/server && yarn run",
-    "worker": "cd @app/worker && yarn run"
+    "--shortcuts to run commands in workspaces--": "",
+    "client": "yarn workspace @app/client run",
+    "db": "yarn workspace @app/db run",
+    "e2e": "yarn workspace @app/e2e run",
+    "server": "yarn workspace @app/server run",
+    "worker": "yarn workspace @app/worker run"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",

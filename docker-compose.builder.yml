@@ -15,7 +15,7 @@ services:
   server-src-build:
     extends:
       service: base
-    command: cd @app/server && yarn build
+    command: yarn workspace @app/server build
 
   db-migrate-reset:
     extends:
