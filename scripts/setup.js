@@ -219,6 +219,11 @@ async function updateDotenv(answers) {
 
 async function main() {
   const config = (await readDotenv()) || {};
+  const defaultAnswers = {
+    ...config,
+    DOCKER_MODE: config.DOCKER_MODE === "y",
+  };
+  const mergeAnswers = cb => answers => cb({ ...defaultAnswers, ...answers });
   const questions = [
     {
       type: "confirm",
@@ -246,22 +251,31 @@ async function main() {
       name: "DATABASE_HOST",
       message:
         "What's the hostname of your database server (include :port if it's not the default :5432)?",
-      default: answers => (answers.DOCKER_MODE ? "pg" : config.DATABASE_HOST),
-      when: answers => !answers.DOCKER_MODE && !("DATABASE_HOST" in config),
+      default: mergeAnswers(answers =>
+        answers.DOCKER_MODE ? "pg" : config.DATABASE_HOST
+      ),
+      when: mergeAnswers(
+        answers => !answers.DOCKER_MODE && !("DATABASE_HOST" in config)
+      ),
       filter: value => (value === "localhost" ? "" : value),
     },
 
     {
       type: "input",
       name: "ROOT_DATABASE_URL",
-      message: answers =>
-        `Please enter a superuser connection string to the database server (so we can drop/create the '${answers.DATABASE_NAME}' and '${answers.DATABASE_NAME}_shadow' databases) - IMPORTANT: it must not be a connection to the '${answers.DATABASE_NAME}' database itself, instead try 'template1'.`,
-      default: answers =>
+      message: mergeAnswers(
+        answers =>
+          `Please enter a superuser connection string to the database server (so we can drop/create the '${answers.DATABASE_NAME}' and '${answers.DATABASE_NAME}_shadow' databases) - IMPORTANT: it must not be a connection to the '${answers.DATABASE_NAME}' database itself, instead try 'template1'.`
+      ),
+      default: mergeAnswers(answers =>
         answers.DOCKER_MODE
           ? "postgres://postgres@pg/template1"
           : config.ROOT_DATABASE_URL ||
-            `postgres://${answers.DATABASE_HOST}/template1`,
-      when: answers => !answers.DOCKER_MODE && !config.ROOT_DATABASE_URL,
+            `postgres://${answers.DATABASE_HOST}/template1`
+      ),
+      when: mergeAnswers(
+        answers => !answers.DOCKER_MODE && !config.ROOT_DATABASE_URL
+      ),
     },
   ];
   const rawAnswers = await inquirer.prompt(questions);
