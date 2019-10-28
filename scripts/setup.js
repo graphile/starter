@@ -322,6 +322,11 @@ async function main() {
     await tryMkdir(`${__dirname}/../.docker`);
     await tryMkdir(`${__dirname}/../.docker/postgres_data`);
     await tryMkdir(`${__dirname}/../.docker/node_modules`);
+    await tryMkdir(`${__dirname}/../.docker/@app/client/node_modules`);
+    await tryMkdir(`${__dirname}/../.docker/@app/db/node_modules`);
+    await tryMkdir(`${__dirname}/../.docker/@app/e2e/node_modules`);
+    await tryMkdir(`${__dirname}/../.docker/@app/server/node_modules`);
+    await tryMkdir(`${__dirname}/../.docker/@app/worker/node_modules`);
     spawnSync("docker-compose", [
       "-f",
       "docker-compose.builder.yml",

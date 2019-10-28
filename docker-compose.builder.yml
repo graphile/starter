@@ -6,6 +6,11 @@ services:
     volumes:
       - .:/app
       - .docker/node_modules:/app/node_modules
+      - .docker/@app/client/node_modules:/app/@app/client/node_modules
+      - .docker/@app/db/node_modules:/app/@app/db/node_modules
+      - .docker/@app/e2e/node_modules:/app/@app/e2e/node_modules
+      - .docker/@app/server/node_modules:/app/@app/server/node_modules
+      - .docker/@app/worker/node_modules:/app/@app/worker/node_modules
     working_dir: /app
 
   install:
