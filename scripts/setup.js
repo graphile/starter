@@ -44,7 +44,7 @@ async function readDotenv() {
   } catch (e) {
     /* noop */
   }
-  return dotenv.parse(buffer);
+  return buffer ? dotenv.parse(buffer) : null;
 }
 
 function encodeDotenvValue(str) {
