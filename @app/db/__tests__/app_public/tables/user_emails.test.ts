@@ -42,8 +42,8 @@ it("cannot manually create a verified email", () =>
       `insert into app_public.user_emails (email, is_verified) values ($1, true) returning *`,
       ["newemail@example.com"]
     );
-    await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"permission denied for table user_emails"`
+    await expect(promise).rejects.toThrow(
+      /permission denied for (table|relation) user_emails/
     );
   }));
 
@@ -54,8 +54,8 @@ it("cannot manually mark an email as verified", () =>
       "update app_public.user_emails set is_verified = true where id = $1",
       [email.id]
     );
-    await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"permission denied for table user_emails"`
+    await expect(promise).rejects.toThrow(
+      /permission denied for (table|relation) user_emails/
     );
   }));
 
