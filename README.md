@@ -218,7 +218,7 @@ pages so you can see how to handle errors from the server.
 The database is a jumping-off point; we've already committed the initial user
 system for you (but you can `uncommit` this if you need to). You can add
 idempotent SQL commands to `migrations/current.sql` and they will run when
-you save. When you're happy with your changes, run `yarn db:migrate commit`
+you save. When you're happy with your changes, run `yarn db commit`
 to commit these commands and reset `migrations/current.sql` to a blank state
 ready for the next batch of changes. We deliberately do not include
 functionality that we don't think most users will find useful.

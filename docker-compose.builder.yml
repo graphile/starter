@@ -26,8 +26,8 @@ services:
   db-migrate-reset:
     extends:
       service: base
-    command: yarn db:migrate reset
+    command: yarn db reset
   db-migrate-migrate:
     extends:
       service: base
-    command: yarn db:migrate migrate
+    command: yarn db migrate

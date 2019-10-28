@@ -11,13 +11,13 @@ backwards compatibility, prefering simplicity for new users.
 If you wish to change the database, run
 
 ```
-yarn db:migrate uncommit
+yarn db uncommit
 ```
 
 to move the migration back to `current.sql`; then make your changes, and when you're happy run:
 
 ```
-yarn db:migrate commit
+yarn db commit
 ```
 
 and commit your changes.

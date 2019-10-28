@@ -117,9 +117,9 @@ export default function Home() {
           <Paragraph>
             We've committed the first migration for you (which builds the user
             system), but should you wish to customise this user system the
-            easiest way is to run <code>yarn db:migrate uncommit</code> which
-            will undo this initial migration and move its content back to
-            current.sql for you to modify. Please see{" "}
+            easiest way is to run <code>yarn db uncommit</code> which will undo
+            this initial migration and move its content back to current.sql for
+            you to modify. Please see{" "}
             <a href="https://github.com/graphile/migrate/blob/master/README.md">
               the graphile-migrate documentation
             </a>
