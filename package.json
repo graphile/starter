@@ -5,7 +5,7 @@
   "description": "Description of project here",
   "scripts": {
     "clean": "rm -Rf @app/*/dist @app/client/.next",
-    "setup": "./scripts/setup",
+    "setup": "node scripts/setup.js",
     "start": "./scripts/check-setup && yarn dev",
     "test": "node scripts/test.js",
     "test:watch": "node scripts/test.js --watch",
@@ -31,6 +31,7 @@
     "@typescript-eslint/eslint-plugin": "^2.5.0",
     "@typescript-eslint/parser": "^2.5.0",
     "concurrently": "^5.0.0",
+    "dotenv": "^8.2.0",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-graphql": "^3.0.3",
@@ -39,6 +40,7 @@
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^2.2.0",
     "eslint_d": "^8.0.0",
+    "inquirer": "^7.0.0",
     "jest": "^24.9.0",
     "mock-req": "^0.2.0",
     "mock-res": "^0.5.0",
@@ -46,7 +48,8 @@
     "prettier": "^1.18.2",
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.1.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "update-dotenv": "^1.1.1"
   },
   "resolutions": {
     "graphql": "14.x"

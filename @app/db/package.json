@@ -8,6 +8,7 @@
     "watch": "yarn gm watch",
     "commit": "yarn gm commit",
     "uncommit": "yarn gm uncommit",
+    "reset": "yarn gm reset",
     "dump": "yarn gm migrate && yarn gm reset --shadow && yarn gm migrate --shadow --force",
     "wipe-if-demo": "./scripts/wipe-if-demo"
   },
