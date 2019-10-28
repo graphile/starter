@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc && chmod +x dist/index.js",
     "watch": "tsc --watch",
-    "start": "cd dist && node -r @app/config/env dist/index.js",
+    "start": "node -r @app/config/env dist/index.js",
     "dev": "nodemon --watch 'dist/**/*.js' -x 'node --inspect=9678 -r @app/config/env -r source-map-support/register' dist/index.js"
   },
   "dependencies": {
