@@ -2,6 +2,13 @@
 if (parseInt(process.version.split(".")[0], 10) < 10) {
   throw new Error("This project requires Node.js >= 10.0.0");
 }
+const pathParts = (process.env.PATH || "").split(":");
+if (pathParts[0].includes("/_npx/")) {
+  // We're running in npx; add npx to our NODE_PATH
+  process.env.NODE_PATH = require('path').resolve(process.cwd(), `${pathParts[0]}/../lib/node_modules`);
+  // Ref: https://github.com/nodejs/node/issues/18229
+  require("module").Module._initPaths();
+}
 const fsp = require("fs").promises;
 const { randomBytes } = require("crypto");
 const { spawnSync: rawSpawnSync } = require("child_process");
