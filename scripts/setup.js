@@ -299,7 +299,6 @@ async function main() {
       when: mergeAnswers(
         answers => !answers.DOCKER_MODE && !("DATABASE_HOST" in config)
       ),
-      filter: value => (value === "localhost" ? "" : value),
     },
 
     {
@@ -313,7 +312,9 @@ async function main() {
         answers.DOCKER_MODE
           ? "postgres://postgres@pg/template1"
           : config.ROOT_DATABASE_URL ||
-            `postgres://${answers.DATABASE_HOST}/template1`
+            `postgres://${
+              answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
+            }/template1`
       ),
       when: mergeAnswers(
         answers => !answers.DOCKER_MODE && !config.ROOT_DATABASE_URL
@@ -342,19 +343,6 @@ async function main() {
     ...config,
     ...answers,
   });
-
-  // FINALLY we can source it
-  dotenv.config({ path: DOTENV_PATH });
-
-  const {
-    DATABASE_AUTHENTICATOR,
-    DATABASE_AUTHENTICATOR_PASSWORD,
-    DATABASE_NAME,
-    DATABASE_OWNER,
-    DATABASE_OWNER_PASSWORD,
-    DATABASE_VISITOR,
-    ROOT_DATABASE_URL,
-  } = process.env;
 
   // And perform setup
 
@@ -388,6 +376,20 @@ async function main() {
     spawnSync("yarn");
     spawnSync("yarn", ["server", "build"]);
   }
+
+  // FINALLY we can source our environment
+  require("@app/config/env");
+  const {
+    DATABASE_AUTHENTICATOR,
+    DATABASE_AUTHENTICATOR_PASSWORD,
+    DATABASE_NAME,
+    DATABASE_OWNER,
+    DATABASE_OWNER_PASSWORD,
+    DATABASE_VISITOR,
+    ROOT_DATABASE_URL,
+  } = process.env;
+
+  console.log(process.env.DATABASE_URL);
 
   const confirm = await inquirer.prompt([
     {
