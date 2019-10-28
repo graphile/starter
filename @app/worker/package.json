@@ -11,6 +11,7 @@
     "install-db-schema": "yarn gw --schema-only"
   },
   "dependencies": {
+    "@app/config": "0.0.0",
     "@types/html-to-text": "^1.4.31",
     "@types/mjml": "^4.0.2",
     "@types/nodemailer": "^6.2.1",
