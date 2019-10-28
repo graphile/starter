@@ -378,8 +378,8 @@ async function main() {
   }
 
   // FINALLY we can source our environment
-  dotenv.config({path: `${__dirname}/../.env`}); // Be sure to use dotenv from npx
-  require(`${__dirname}/../@app/config/extra`)
+  dotenv.config({ path: `${__dirname}/../.env` }); // Be sure to use dotenv from npx
+  require(`${__dirname}/../@app/config/extra`);
   const {
     DATABASE_AUTHENTICATOR,
     DATABASE_AUTHENTICATOR_PASSWORD,
