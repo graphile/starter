@@ -2,18 +2,29 @@
 if (parseInt(process.version.split(".")[0], 10) < 10) {
   throw new Error("This project requires Node.js >= 10.0.0");
 }
+
+// Deal with running inside npx
 const pathParts = (process.env.PATH || "").split(":");
-if (pathParts[0].includes("/_npx/")) {
+const isNpx = pathParts[0].includes("/_npx/");
+const oldNodePath = process.env.NODE_PATH;
+if (isNpx) {
   // We're running in npx; add npx to our NODE_PATH
   process.env.NODE_PATH = require('path').resolve(process.cwd(), `${pathParts[0]}/../lib/node_modules`);
   // Ref: https://github.com/nodejs/node/issues/18229
   require("module").Module._initPaths();
 }
+
 const fsp = require("fs").promises;
 const { randomBytes } = require("crypto");
 const { spawnSync: rawSpawnSync } = require("child_process");
 const dotenv = require("dotenv");
 const inquirer = require("inquirer");
+
+if (isNpx) {
+  // Reset the NODE_PATH dance above
+  process.env.NODE_PATH = oldNodePath;
+  require("module").Module._initPaths();
+}
 
 async function tryMkdir(path) {
   try {
@@ -488,7 +499,29 @@ GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
     spawnSync("docker-compose", ["down"]);
   }
 
+  console.log();
+  console.log();
+  console.log("____________________________________________________________");
+  console.log();
+  console.log();
   console.log("✅ Setup success");
+  console.log();
+
+  console.log("🚀 To get started, run:");
+  console.log();
+  if (dockerMode) {
+    console.log("  export UID; docker-compose up");
+
+  } else {
+    console.log("  yarn start");
+
+  }
+  console.log();
+  console.log("🙏 Please support our Open Source work: https://graphile.org/sponsor");
+  console.log();
+  console.log("____________________________________________________________");
+  console.log();
+
 }
 
 main().catch(e => {
