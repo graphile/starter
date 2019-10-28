@@ -319,7 +319,6 @@ async function main() {
     DATABASE_OWNER,
     DATABASE_OWNER_PASSWORD,
     DATABASE_VISITOR,
-    DOCKER_MODE,
     ROOT_DATABASE_URL,
   } = process.env;
 
