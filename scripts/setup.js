@@ -317,16 +317,17 @@ async function main() {
   // And perform setup
 
   const dockerMode = DOCKER_MODE === "y";
+  console.log(process.env.UID);
   if (dockerMode) {
     // Need to create these folders as owned by us before Docker starts
     await tryMkdir(`${__dirname}/../.docker`);
     await tryMkdir(`${__dirname}/../.docker/postgres_data`);
     await tryMkdir(`${__dirname}/../.docker/node_modules`);
-    await tryMkdir(`${__dirname}/../.docker/@app/client/node_modules`);
-    await tryMkdir(`${__dirname}/../.docker/@app/db/node_modules`);
-    await tryMkdir(`${__dirname}/../.docker/@app/e2e/node_modules`);
-    await tryMkdir(`${__dirname}/../.docker/@app/server/node_modules`);
-    await tryMkdir(`${__dirname}/../.docker/@app/worker/node_modules`);
+    await tryMkdir(`${__dirname}/../.docker/node_modules_client`);
+    await tryMkdir(`${__dirname}/../.docker/node_modules_db`);
+    await tryMkdir(`${__dirname}/../.docker/node_modules_e2e`);
+    await tryMkdir(`${__dirname}/../.docker/node_modules_server`);
+    await tryMkdir(`${__dirname}/../.docker/node_modules_worker`);
     spawnSync("docker-compose", [
       "-f",
       "docker-compose.builder.yml",
