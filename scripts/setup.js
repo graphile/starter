@@ -326,6 +326,7 @@ async function main() {
       "-f",
       "docker-compose.builder.yml",
       "run",
+      `--user=${process.env.UID}`,
       "--rm",
       "install",
     ]);
@@ -333,6 +334,7 @@ async function main() {
       "-f",
       "docker-compose.builder.yml",
       "run",
+      `--user=${process.env.UID}`,
       "--rm",
       "server-src-build",
     ]);
@@ -367,7 +369,15 @@ async function main() {
     ? (args, options) =>
         spawnSync(
           "docker-compose",
-          ["run", "--rm", "pg", "psql", ...psqlStandardArgs, ...args],
+          [
+            "run",
+            `--user=${process.env.UID}`,
+            "--rm",
+            "pg",
+            "psql",
+            ...psqlStandardArgs,
+            ...args,
+          ],
           options
         )
     : (args, options) =>
@@ -433,6 +443,7 @@ GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
       "-f",
       "docker-compose.builder.yml",
       "run",
+      `--user=${process.env.UID}`,
       "--rm",
       "db-migrate-reset",
     ]);
