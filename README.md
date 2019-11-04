@@ -106,7 +106,7 @@ To get started, please run the `yarn setup` command which should lead you
 through the necessary steps:
 
 ```
-yarn setup
+yarn && yarn setup
 ```
 
 The above command will create a `.env` file for you containing your secrets.
