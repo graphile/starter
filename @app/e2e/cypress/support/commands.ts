@@ -22,27 +22,69 @@
 
 /// <reference types="Cypress" />
 
-type Chainable = Cypress.Chainable;
+type Chainable<Subject = any> = Cypress.Chainable<Subject>;
 
-function getCy(cyName: string): Chainable {
+type User = {
+  id: number;
+  username: string;
+  name: string;
+  is_admin: boolean;
+  is_verified: boolean;
+};
+
+function getCy(cyName: string): Chainable<JQuery<HTMLElement>> {
   return cy.get(`[data-cy=${cyName}]`);
 }
 
-function serverCommand(command: "clearTestUsers"): Chainable;
+/**
+ * Deletes all users with username starting 'test'.
+ */
+function serverCommand(
+  command: "clearTestUsers"
+): Chainable<{
+  success: true;
+}>;
+
+/**
+ * Creates a verified or unverified user, bypassing all safety checks. Redirects to `next`.
+ *
+ * Default values:
+ *
+ * - username: `testuser`
+ * - email: `${username}@example.com`
+ * - verified: false
+ * - name: `${username}`
+ * - password: `TestUserPassword`
+ * - next: `/`
+ */
 function serverCommand(
   command: "createUser",
   payload: {
     username?: string;
-    name?: string;
+    email?: string;
     verified?: boolean;
+    name?: string;
     password?: string;
+    next?: string;
   }
-): Chainable;
+): Chainable<{
+  user: User;
+  userEmailId: number;
+  verificationToken: string | null;
+}>;
+
+/**
+ * Gets the secrets for the specified email, allowing Cypress to perform email validation. If unspecified, email defaults to `testuser@example.com`
+ */
 function serverCommand(
   command: "getEmailSecrets",
   payload?: { email?: string }
-): Chainable;
-function serverCommand(command: string, payload?: any): Chainable {
+): Chainable<{
+  user_email_id: number;
+  verification_token: string | null;
+}>;
+
+function serverCommand(command: string, payload?: any): any {
   const url = `${Cypress.env(
     "ROOT_URL"
   )}/cypressServerCommand?command=${encodeURIComponent(command)}${
@@ -58,7 +100,7 @@ function login(payload?: {
   name?: string;
   verified?: boolean;
   password?: string;
-}): Chainable {
+}): Chainable<Window> {
   return cy.visit(
     Cypress.env("ROOT_URL") +
       `/cypressServerCommand?command=login&payload=${encodeURIComponent(
