@@ -1,8 +1,4 @@
 // ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
 // For more comprehensive examples of custom
 // commands please read more here:
 // https://on.cypress.io/custom-commands
@@ -24,11 +20,29 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-Cypress.Commands.add("getCy", cyName => {
-  return cy.get(`[data-cy=${cyName}]`);
-});
+/// <reference types="Cypress" />
 
-Cypress.Commands.add("serverCommand", (command, payload) => {
+type Chainable = Cypress.Chainable;
+
+function getCy(cyName: string): Chainable {
+  return cy.get(`[data-cy=${cyName}]`);
+}
+
+function serverCommand(command: "clearTestUsers"): Chainable;
+function serverCommand(
+  command: "createUser",
+  payload: {
+    username?: string;
+    name?: string;
+    verified?: boolean;
+    password?: string;
+  }
+): Chainable;
+function serverCommand(
+  command: "getEmailSecrets",
+  payload?: { email?: string }
+): Chainable;
+function serverCommand(command: string, payload?: any): Chainable {
   const url = `${Cypress.env(
     "ROOT_URL"
   )}/cypressServerCommand?command=${encodeURIComponent(command)}${
@@ -36,13 +50,35 @@ Cypress.Commands.add("serverCommand", (command, payload) => {
   }`;
   // GET the url, and return the response body (JSON is parsed automatically)
   return cy.request(url).its("body");
-});
+}
 
-Cypress.Commands.add("login", payload => {
-  cy.visit(
+function login(payload?: {
+  next?: string;
+  username?: string;
+  name?: string;
+  verified?: boolean;
+  password?: string;
+}): Chainable {
+  return cy.visit(
     Cypress.env("ROOT_URL") +
       `/cypressServerCommand?command=login&payload=${encodeURIComponent(
         JSON.stringify(payload)
       )}`
   );
-});
+}
+
+Cypress.Commands.add("getCy", getCy);
+Cypress.Commands.add("serverCommand", serverCommand);
+Cypress.Commands.add("login", login);
+
+export {}; // Make this a module so we can `declare global`
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      getCy: typeof getCy;
+      serverCommand: typeof serverCommand;
+      login: typeof login;
+    }
+  }
+}
