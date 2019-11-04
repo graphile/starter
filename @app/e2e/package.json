@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "cy": "node -r app/config/env node_modules/.bin/cypress",
+    "cy": "node -r @app/config/env node_modules/.bin/cypress",
     "open": "yarn cy open",
     "run": "yarn cy run"
   },

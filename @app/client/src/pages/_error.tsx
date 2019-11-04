@@ -62,7 +62,7 @@ function SocialAuthError({ provider }: { provider: string }) {
               required variables are set in your environment (e.g.{" "}
               <code>.env</code> file). If they are, check the provider is
               configured in{" "}
-              <code>app/server/src/middleware/installPassport.ts</code>
+              <code>@app/server/src/middleware/installPassport.ts</code>
             </div>
           }
         />

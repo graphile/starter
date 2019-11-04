@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "cd src && node -r app/config/env ../node_modules/.bin/next build",
+    "build": "cd src && node -r @app/config/env ../node_modules/.bin/next build",
     "codegen": "graphql-codegen --config codegen.yml",
     "codegen:watch": "yarn run codegen --watch"
   },

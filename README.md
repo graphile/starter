@@ -136,7 +136,7 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **PostGraphile configured for lean schema** — very tidy GraphQL schema, adhering to PostGraphile best practices
 - [x] **Autoformatting** ─ Thanks to `prettier` and `eslint`, code can be auto-formatted (and auto-fixed) on save
 - [x] **Job queue** — we've added and configured <a href="https://github.com/graphile/worker">graphile-worker</a> to perform background tasks for you, such as sending emails, and included some example tasks
-- [x] **Express server** — with Benjie's [easy to customise and understand middleware system](app/server/src/index.ts)
+- [x] **Express server** — with Benjie's [easy to customise and understand middleware system](@app/server/src/index.ts)
 - [x] **Debugability** ─ The server, worker, tests and client are all ready to be debugged using [VSCode's built in breakpoints](https://code.visualstudio.com/docs/editor/debugging)
 - [x] **Hot reloading** — edit a component and it's re-rendered immediately (warning: state is _not_ restored, because this typically leads to instability); provided by Next.js
 - [x] **SSR with hot reloading** — if you turn JS off and reload the page you should be greeted with the same content anyway; provided by Next.js
@@ -183,7 +183,7 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 The `yarn dev` command runs a number of tasks:
 
 - uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch the`migrations/current.sql` file for changes, and automatically runs it against your database when it changes
-- watches the TypeScript source code of the server, and compiles it from `app/*/src` to `app/*/dist` so node/`graphile-worker`/etc can run the compiled code directly
+- watches the TypeScript source code of the server, and compiles it from `@app/*/src` to `@app/*/dist` so node/`graphile-worker`/etc can run the compiled code directly
 - runs the node server (includes PostGraphile and Next.js middlewares)
 - runs `graphile-worker` to execute your tasks (e.g. sending emails)
 - watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript React hooks for you automatically, leading to strongly typed code with minimal effort
@@ -200,10 +200,10 @@ tests to ensure that your project remains rock-solid at all times.
 
 We use Next.js ([docs](https://nextjs.org/)) to handle the various common
 concerns of a React application for us (server-side rendering, routing,
-bundling, bundle-splitting, etc). The `app/client/src/pages/_app.tsx` file is a
+bundling, bundle-splitting, etc). The `@app/client/src/pages/_app.tsx` file is a
 [custom &lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to
 add any providers you need to. We've already set it up with `withApollo` from
-`app/client/src/lib/withApollo` which includes all the Apollo configuration,
+`@app/client/src/lib/withApollo` which includes all the Apollo configuration,
 including the client URL.
 
 ### AntD
@@ -230,13 +230,13 @@ To read more about migrations with graphile-migrate, see the
 ### graphile-worker
 
 We've added a few example workers for you, including the `send_email` worker
-which performs email templating for you. See `app/worker/src/tasks` for the
+which performs email templating for you. See `@app/worker/src/tasks` for the
 tasks we've created (and to add your own), and see the [graphile-worker
 docs](https://github.com/graphile/worker) for more information.
 
 ### Server
 
-The server entry point is `app/server/src/index.ts`; you'll see that it
+The server entry point is `@app/server/src/index.ts`; you'll see that it
 contains documentation and has split the middleware up into a manageable
 fashion. We use traditional cookie sessions, but you can switch this out
 for an alternative.
@@ -245,7 +245,7 @@ for an alternative.
 
 If you set `GITHUB_KEY` and `GITHUB_SECRET` in your `.envvar` file then you can
 also use GitHub's OAuth social authentication; you can add similar logic to the
-GitHub logic (in `app/server/src/middleware/installPassport.ts`) to enable
+GitHub logic (in `@app/server/src/middleware/installPassport.ts`) to enable
 other social login providers such as Twitter, Facebook, Google, etc. For more
 information, see the [passport.js documentation](http://www.passportjs.org/docs/).
 
@@ -257,7 +257,7 @@ information, see the [passport.js documentation](http://www.passportjs.org/docs/
    - `git add .`
    - `git commit -m "PostGraphile starter base"`
 1. Change the project name in `package.json`
-1. Change the project settings in `app/config/src/index.ts`
+1. Change the project settings in `@app/config/src/index.ts`
 1. Replace the `README.md` file
 1. Commit as you usually would
 1. [Show your appreciation with sponsorship](https://www.graphile.org/sponsor/)
@@ -318,7 +318,7 @@ If you are using `graphile-migrate` make sure that you have executed
 `graphile-migrate commit` to commit all your database changes, since we only
 run committed migrations in production.
 
-Make sure you have customised `app/config/src/index.ts`.
+Make sure you have customised `@app/config/src/index.ts`.
 
 Make sure everything is committed and pushed in git.
 
@@ -360,7 +360,7 @@ capable of sending emails. To achieve this, you must configure an email
 transport. We have preconfigured support for Amazon SES. Once SES is set up,
 your domain is verified, and you've verified any emails you wish to send email
 to (or have had your sending limits removed), make sure that the `fromEmail` in
-`app/config/src/index.ts` is correct, and then create an IAM role for your
+`@app/config/src/index.ts` is correct, and then create an IAM role for your
 PostGraphile server. Here's an IAM template for sending emails - this is the
 only permission required for our IAM role currently, but you may wish to add
 others later.

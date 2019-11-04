@@ -11,7 +11,7 @@
     "test:watch": "node scripts/test.js --watch",
     "dev": "yarn && yarn codegen && concurrently --kill-others --names 'src,dev,gen,test' 'lerna run --parallel watch' 'sleep 10; lerna run --parallel dev' 'sleep 10; yarn client codegen:watch' 'sleep 15; yarn test:watch'",
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx,.graphql .",
-    "build": "yarn client codegen && lerna run build",
+    "build": "yarn codegen && lerna run build",
     "codegen": "yarn client codegen",
     "reset": "yarn clean && node ./scripts/reset.js",
     "clean": "node ./scripts/clean.js",
@@ -53,7 +53,7 @@
   },
   "workspaces": {
     "packages": [
-      "app/*",
+      "@app/*",
       "docker/package.json"
     ],
     "nohoist": [
@@ -65,7 +65,7 @@
   },
   "jest": {
     "roots": [
-      "<rootDir>/app"
+      "<rootDir>/@app"
     ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
