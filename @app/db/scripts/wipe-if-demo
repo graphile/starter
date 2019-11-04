@@ -20,5 +20,4 @@ ${PSQL:psql} "${DATABASE_URL/?ssl=1/}" <<HERE
 HERE
 
 # Reinstall the worker schema
-cd ../worker
-yarn install-db-schema
+yarn workspace @app/worker install-db-schema

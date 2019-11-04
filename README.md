@@ -4,7 +4,7 @@
 
 Take this software and use it as the starting point to build your project. Go
 make some money, and [give something
-back](https://github.com/users/benjie/sponsorship) to support us building
+back](https://github.com/sponsors/benjie) to support us building
 more tools and kits for the Node, GraphQL and PostgreSQL ecosystems.
 
 Please note that this software is not "complete," free of software defects,
@@ -106,7 +106,7 @@ To get started, please run the `yarn setup` command which should lead you
 through the necessary steps:
 
 ```
-yarn setup
+yarn && yarn setup
 ```
 
 The above command will create a `.envvar` file for you containing your secrets.
@@ -116,8 +116,9 @@ Do not commit it to version control!
 
 Depending on how you answered the setup questions, you can bring up the stack:
 
-- natively: `yarn dev`
-- with Docker: `docker-compose up`
+- natively: `yarn start`
+- with Docker: `export UID; docker-compose up`
+  - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar
 
 After a short period you should then be able to load the application at
 http://localhost:5678
@@ -178,9 +179,9 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 
 ## Documentation links
 
-### yarn dev
+### `yarn start` (or `docker-compose up`)
 
-The `yarn dev` command runs a number of tasks:
+This main command runs a number of tasks:
 
 - uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch the`migrations/current.sql` file for changes, and automatically runs it against your database when it changes
 - watches the TypeScript source code of the server, and compiles it from `@app/*/src` to `@app/*/dist` so node/`graphile-worker`/etc can run the compiled code directly
@@ -188,6 +189,9 @@ The `yarn dev` command runs a number of tasks:
 - runs `graphile-worker` to execute your tasks (e.g. sending emails)
 - watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript React hooks for you automatically, leading to strongly typed code with minimal effort
 - runs the `jest` tests in watch mode, automatically re-running as the database or test files change
+
+For `docker-compose up` it also runs the PostgreSQL server that the system
+connects to.
 
 ### Cypress e2e tests
 
@@ -217,7 +221,7 @@ pages so you can see how to handle errors from the server.
 The database is a jumping-off point; we've already committed the initial user
 system for you (but you can `uncommit` this if you need to). You can add
 idempotent SQL commands to `migrations/current.sql` and they will run when
-you save. When you're happy with your changes, run `yarn db:migrate commit`
+you save. When you're happy with your changes, run `yarn db commit`
 to commit these commands and reset `migrations/current.sql` to a blank state
 ready for the next batch of changes. We deliberately do not include
 functionality that we don't think most users will find useful.
@@ -279,10 +283,10 @@ would be welcome!
 
 ## Building the production docker image
 
-To build the production image, use `docker build`. You should supply the
-`ROOT_URL` build variable (which will be baked into the
-client code, so cannot be changed as envvars); if you don't then the defaults
-will apply (which likely will not be suitable).
+To build the production image, use `docker build` as shown below. You should
+supply the `ROOT_URL` build variable (which will be baked into the client
+code, so cannot be changed as envvars); if you don't then the defaults will
+apply (which likely will not be suitable).
 
 To build the worker, pass `TARGET="worker"` instead of the default
 `TARGET="server"`.

@@ -48,7 +48,7 @@ on app_public.my_new_table to :DATABASE_VISITOR;
 When you're happy with the changes you have made, you can commit your migration with
 
 ```
-yarn db:migrate commit
+yarn db commit
 ```
 
 This will call `graphile-migrate commit` which involves moving `current.sql`
@@ -59,7 +59,7 @@ If you've not yet merged your changes (and no-one else has ran them) then you
 can run
 
 ```
-yarn db:migrate uncommit
+yarn db uncommit
 ```
 
 and it will perform the reverse of this process so that you may modify the migrations again.

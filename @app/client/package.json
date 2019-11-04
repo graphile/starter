@@ -15,7 +15,7 @@
     "@types/nprogress": "^0.2.0",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
-    "antd": "^3.23.4",
+    "antd": "^3.24.3",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.12",
@@ -38,11 +38,11 @@
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@graphql-codegen/cli": "^1.5.0",
-    "@graphql-codegen/fragment-matcher": "1.5.0",
-    "@graphql-codegen/typescript": "1.5.0",
-    "@graphql-codegen/typescript-graphql-files-modules": "1.5.0",
-    "@graphql-codegen/typescript-operations": "1.5.0",
-    "@graphql-codegen/typescript-react-apollo": "1.5.0",
+    "@graphql-codegen/fragment-matcher": "1.8.2",
+    "@graphql-codegen/typescript": "1.8.2",
+    "@graphql-codegen/typescript-graphql-files-modules": "1.8.2",
+    "@graphql-codegen/typescript-operations": "1.8.2",
+    "@graphql-codegen/typescript-react-apollo": "1.8.2",
     "babel-plugin-import": "^1.12.0"
   }
 }

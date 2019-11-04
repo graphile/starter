@@ -8,13 +8,14 @@
     "watch": "tsc -w",
     "start": "yarn gw",
     "dev": "cd dist && node -r @app/config/env --inspect=9757 ../node_modules/.bin/graphile-worker --watch",
-    "install-db-schema": "yarn gw --schema-only"
+    "install-db-schema": "mkdir -p dist && yarn gw --schema-only"
   },
   "dependencies": {
+    "@app/config": "0.0.0",
     "@types/html-to-text": "^1.4.31",
     "@types/mjml": "^4.0.2",
     "@types/nodemailer": "^6.2.1",
-    "aws-sdk": "^2.508.0",
+    "aws-sdk": "^2.556.0",
     "graphile-worker": "^0.2.0-alpha.0",
     "html-to-text": "^5.0.0",
     "lodash": "^4.17.15",

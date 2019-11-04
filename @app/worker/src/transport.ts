@@ -1,8 +1,10 @@
 import * as nodemailer from "nodemailer";
 import * as aws from "aws-sdk";
 import { awsRegion } from "@app/config";
-import { readFile, writeFile } from "./fs";
+import { promises as fsp } from "fs";
 import chalk from "chalk";
+
+const { readFile, writeFile } = fsp;
 
 const isDev = process.env.NODE_ENV !== "production";
 

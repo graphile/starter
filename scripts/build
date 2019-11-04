@@ -1,2 +1,0 @@
-(cd @app/client && yarn codegen)
-(cd @app/server && yarn build)

@@ -1,4 +1,5 @@
 import * as session from "express-session";
+import * as redis from "redis";
 import * as ConnectRedis from "connect-redis";
 import * as ConnectPgSimple from "connect-pg-simple";
 import { Application } from "express";
@@ -28,7 +29,9 @@ export default (app: Application) => {
        * https://medium.com/mtholla/managing-node-js-express-sessions-with-redis-94cd099d6f2f
        */
       new RedisStore({
-        url: process.env.REDIS_URL,
+        client: redis.createClient({
+          url: process.env.REDIS_URL,
+        }),
       })
     : /*
        * Using PostgreSQL for session storage is easy to set up, but increases

@@ -2,9 +2,18 @@ version: "2"
 services:
   base:
     image: node:10
+    user: $UID
+    environment:
+      # pg_dump doesn't work in docker-compose mode currently
+      - PG_DUMP=echo pg_dump
     volumes:
       - .:/app
       - .docker/node_modules:/app/node_modules
+      - .docker/node_modules_client:/app/@app/client/node_modules
+      - .docker/node_modules_db:/app/@app/db/node_modules
+      - .docker/node_modules_e2e:/app/@app/e2e/node_modules
+      - .docker/node_modules_server:/app/@app/server/node_modules
+      - .docker/node_modules_worker:/app/@app/worker/node_modules
     working_dir: /app
 
   install:
@@ -15,13 +24,21 @@ services:
   server-src-build:
     extends:
       service: base
-    command: cd @app/server && yarn build
+    command: yarn workspace @app/server build
 
-  db-migrate-reset:
+  db-reset:
     extends:
       service: base
-    command: yarn db:migrate reset
-  db-migrate-migrate:
+    command: yarn db reset
+  db-migrate:
     extends:
       service: base
-    command: yarn db:migrate migrate
+    command: yarn db migrate
+  db-commit:
+    extends:
+      service: base
+    command: yarn db commit
+  db-uncommit:
+    extends:
+      service: base
+    command: yarn db uncommit

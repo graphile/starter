@@ -3,6 +3,8 @@ if [ "$GM_DBURL" = "" ]; then
   echo "This script should only be ran from inside graphile-migrate";
   exit 1;
 fi
+
+# When ran inside docker-compose we need to be able to run a different pg_dump binary
 ${PG_DUMP:-pg_dump} \
   --no-sync \
   --schema-only \

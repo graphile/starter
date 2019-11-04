@@ -11,18 +11,30 @@
     { "autoFix": true, "language": "javascriptreact" },
     { "autoFix": true, "language": "typescript" },
     { "autoFix": true, "language": "typescriptreact" },
-    { "autoFix": true, "language": "graphql" }
+    { "autoFix": false, "language": "graphql" }
   ],
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+
   // ESLint calls prettier for these types already, so don't let them squabble
+  "javascript.format.enable": false,
+  "typescript.format.enable": false,
   "prettier.disableLanguages": [
     "javascript",
     "javascriptreact",
     "typescript",
-    "typescriptreact",
-    "graphql"
+    "typescriptreact"
   ],
-  "files.insertFinalNewline": true,
-  "files.trimTrailingWhitespace": true,
-  "javascript.format.enable": false,
-  "typescript.format.enable": false
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": false
+  },
+  "[typescript]": {
+    "editor.formatOnSave": false
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": false
+  }
 }

@@ -4,9 +4,11 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "setup": "./scripts/setup",
     "docker:setup": "yarn docker setup",
-    "start": "./scripts/check-setup && yarn dev",
+    "docker:start": "./scripts/check-setup && yarn dev",
+    "clean": "node ./scripts/clean.js",
+    "setup": "npx -p dotenv -p inquirer ./scripts/setup.js",
+    "start": "node ./scripts/start.js",
     "test": "node scripts/test.js",
     "test:watch": "node scripts/test.js --watch",
     "dev": "yarn && yarn codegen && concurrently --kill-others --names 'src,dev,gen,test' 'lerna run --parallel watch' 'sleep 10; lerna run --parallel dev' 'sleep 10; yarn client codegen:watch' 'sleep 15; yarn test:watch'",
@@ -14,9 +16,8 @@
     "build": "yarn codegen && lerna run build",
     "codegen": "yarn client codegen",
     "reset": "yarn clean && node ./scripts/reset.js",
-    "clean": "node ./scripts/clean.js",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
-    "--RUN COMMANDS IN WORKSPACES--": "",
+    "--shortcuts to run commands in workspaces--": "",
     "client": "yarn workspace @app/client run",
     "db": "yarn workspace @app/db run",
     "e2e": "yarn workspace @app/e2e run",
@@ -30,18 +31,20 @@
     "lerna": "^3.18.3"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.18",
+    "@types/jest": "^24.0.20",
     "@typescript-eslint/eslint-plugin": "^2.5.0",
     "@typescript-eslint/parser": "^2.5.0",
-    "concurrently": "^4.1.1",
-    "eslint": "^6.1.0",
-    "eslint-config-prettier": "^6.0.0",
+    "concurrently": "^5.0.0",
+    "dotenv": "^8.2.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-graphql": "^3.0.3",
-    "eslint-plugin-jest": "^22.16.0",
+    "eslint-plugin-jest": "^23.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^2.2.0",
     "eslint_d": "^8.0.0",
+    "inquirer": "^7.0.0",
     "jest": "^24.9.0",
     "mock-req": "^0.2.0",
     "mock-res": "^0.5.0",
@@ -49,7 +52,11 @@
     "prettier": "^1.18.2",
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.1.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "update-dotenv": "^1.1.1"
+  },
+  "resolutions": {
+    "graphql": "14.x"
   },
   "workspaces": {
     "packages": [

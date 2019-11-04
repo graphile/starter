@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
-const paths = ["app/*/dist", "app/client/.next"];
+const paths = ["@app/*/dist", "@app/client/.next"];
 paths.forEach(path => {
   try {
     if (fs.existsSync(path)) {
