@@ -28,7 +28,7 @@ services:
     depends_on:
       - db
     #* Overrides default command so things don't shut down after the process ends.
-    command: sleep infinity
+    command: yarn start
 
   # extends web, is made for live developing
   dev:
@@ -81,7 +81,6 @@ services:
   # This runs the database that everything else connects to
   db:
     image: postgres:11
-    user: $UID
     volumes:
       - db-volume:/var/lib/postgresql/data
     ports:
