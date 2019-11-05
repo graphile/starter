@@ -25,7 +25,7 @@ const inquirer = require("inquirer");
 
 // fixes spwanSync not throwing ENOENT on windows
 const platform = require("os").platform();
-const yarnCmd = platform && platform !== "win32" ? "yarn" : "yarn.cmd";
+const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 
 if (isNpx) {
   // Reset the NODE_PATH dance above
