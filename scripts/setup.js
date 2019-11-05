@@ -38,11 +38,22 @@ async function tryMkdir(path) {
 }
 
 const spawnSync = (cmd, args, options) => {
+  if (options && options.log)
+  {
+
+    console.log(`Running: {${cmd} ${args && args.join(" ")}}`);
+    console.log(options);
+  }
+
   const result = rawSpawnSync(cmd, args, {
     stdio: ["pipe", "inherit", "inherit"],
     ...options,
   });
 
+  if (options && options.log) {
+    console.log(`Result: `);
+    console.log(result);
+  }
   const { error, status, signal, stderr, stdout } = result;
 
   if (error) {
