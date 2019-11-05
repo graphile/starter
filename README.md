@@ -167,6 +167,11 @@ stick with the answer you gave during setup. -->
 
 ## Developing with hot reload
 
+<!--
+### Natively
+Todo write about native hot reloading
+-->
+
 ### Docker
 
 There is another "secret" service `dev` inside `docker-compose.dev` which
@@ -187,8 +192,15 @@ etc already installed.
 #### Using VS Code with Remote Container Extension
 
 A `.devcontainer` folder is also provided.
+
 Once you follow the one-time steps in setup, you can from now simplye opened this container in VSCode.
 This feels like natively developing but is also a already pre-configured docker enviroment
+
+If you want to use your local configs e.g. `gitconfig` your `ssh` creds etc,
+uncomment `postCreateCommand` in `devcontainer.json` and the appropiate volume mounts
+at service `dev` in `docker-compose.yml`
+
+**BE AWARE:** on windows your whole `$HOME` folder will be copied over, including all your `ssh` creds.
 
 ##### One time only
 
@@ -206,9 +218,9 @@ FROM my_project_webapp:latest
 - Type `>Remote-Containers: Reopen in Container`
 - Develop like being natively on this machine
 - eg. Use VSCode File Explore
-- eg. Use bash inside container directly: `yarn start`
-- - Try: `Ctrl+Shift+~`, if shell panel is hidden
 - eg. Run extensions only inside this enviroment
+- eg. Use bash inside container directly: `yarn start`
+  - Try: `Ctrl+Shift+~`, if shell panel is hidden
 
 ## Features
 

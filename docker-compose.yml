@@ -48,6 +48,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
       #* You may want to enable following lines
+      #* to use your local configs inside container
+      # - ./docker:/local-docker
+      # Linux host only
       ## avoids vscode reinstalls
       ## https://code.visualstudio.com/docs/remote/containers-advanced#_avoiding-extension-reinstalls-on-container-rebuild
       # - vscode-extensions:/root/.vscode-server
@@ -59,8 +62,7 @@ services:
       # - $HOME/.bashrc:/root/.home-localhost/.bashrc:ro
       ## copies your .gitconfig
       # - $HOME/.gitconfig:/root/.home-localhost/.gitconfig:ro
-      ##! Fix for windows (can't mount single files)
-      - ./docker:/local-docker
+      ##! Fix for windows host only (can't mount single files)
       ##comment all the other `.home-localhost` lines above this
       # - $HOME:/root/.home-localhost:ro
 
