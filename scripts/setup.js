@@ -102,7 +102,9 @@ async function readDotenv() {
   } catch (e) {
     /* noop */
   }
-  return buffer ? dotenv.parse(buffer) : null;
+  const config = buffer ? dotenv.parse(buffer) : null;
+  // also read from current env, because docker-compose already populates it
+  return {...config, ...process.env}
 }
 
 function encodeDotenvValue(str) {
