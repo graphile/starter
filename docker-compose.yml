@@ -1,23 +1,22 @@
 version: "3.7"
 services:
   webapp:
-    # Uncomment the next line to use a non-root user. On Linux, this will prevent
-    # new files getting created as root, but you may need to update the USER_UID
-    # and USER_GID in .devcontainer/Dockerfile to match your user if not 1000.
-    # user: node
-
     build:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - docker/.env.docker
-
+      - docker/docker.env
+    #* Uncomment the next line to use a non-root user. On Linux, this will prevent
+    #* new files getting created as root, but you may need to update the USER_UID
+    #* and USER_GID in .devcontainer/Dockerfile to match your user if not 1000.
+    # user: $UID
     volumes:
-      - .:/app
-      - node_modules-volume:/app/node_modules
+      - .:/@app
+      - ./data:/data
+      - node_modules-volume:/@app/node_modules
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
-    working_dir: /app
+    working_dir: /@app
     networks:
       - default
     ports:
@@ -29,10 +28,8 @@ services:
       - 9757:9757
     depends_on:
       - db
-    # Overrides default command so things don't shut down after the process ends.
-    # command: sleep infinity
-    # command: bash -c "yarn start; $SHELL"
-    command: yarn setup && yarn start
+    #* Overrides default command so things don't shut down after the process ends.
+    command: yarn start
 
   # extends web, is made for live developing
   dev:
@@ -40,16 +37,20 @@ services:
       context: .
       dockerfile: docker/dev.Dockerfile
     env_file:
-      - docker/.env.docker
+      - docker/docker.env
     volumes:
       #* same as service: webapp
-      - .:/app
-      - node_modules-volume:/app/node_modules
+      - .:/@app
+      - ./data:/data
+      - node_modules-volume:/@app/node_modules
 
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
 
       #* You may want to enable following lines
+      #* to use your local configs inside container
+      # - ./docker:/local-docker
+      # Linux host only
       ## avoids vscode reinstalls
       ## https://code.visualstudio.com/docs/remote/containers-advanced#_avoiding-extension-reinstalls-on-container-rebuild
       # - vscode-extensions:/root/.vscode-server
@@ -61,12 +62,12 @@ services:
       # - $HOME/.bashrc:/root/.home-localhost/.bashrc:ro
       ## copies your .gitconfig
       # - $HOME/.gitconfig:/root/.home-localhost/.gitconfig:ro
-      ##! Fix for windows (can't mount single files)
+      ##! Fix for windows host only (can't mount single files)
       ##comment all the other `.home-localhost` lines above this
       # - $HOME:/root/.home-localhost:ro
 
     # just extends service: webapp
-    working_dir: /app
+    working_dir: /@app
     networks:
       - default
     ports:
@@ -108,5 +109,5 @@ networks:
 volumes:
   db-volume:
   node_modules-volume:
-  # used for keeeping vscode-extensions while rebuilding
+  #* used for keeeping vscode-extensions while rebuilding
   # vscode-extensions:

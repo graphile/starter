@@ -3,7 +3,7 @@
   "name": "Node.js & Postgres",
   "dockerComposeFile": "../docker-compose.yml",
   "service": "dev",
-  "workspaceFolder": "/app",
+  "workspaceFolder": "/@app",
 
   // Use 'settings' to set *default* container specific settings.json values on container create.
   // You can edit these settings after create using File > Preferences > Settings > Remote.
@@ -18,8 +18,7 @@
   // "shutdownAction": "none",
 
   // Uncomment next line if you want to copy your .ssh creds and other config files for easier use inside container
-  // "postCreateCommand": "mkdir -p /root/.ssh && cp -r /root/.home-localhost/.ssh/* /root/.ssh && chmod 700 /root/.ssh && chmod 600 /root/.ssh/* && cp /root/.home-localhost/.gitconfig /root/.gitconfig && cp /root/.home-localhost/.bashrc /root/.bashrc && mkdir -p /root/.config/nvim && echo \"/root/.vimrc /root/.config/nvim/init.vim \" | xargs -n 1 cp -v /root/.home-localhost/.vimrc && mkdir -p ~/.vim/autoload && mkdir -p /root/.local/share/nvim/site/autoload  && echo \"/root/.vim/autoload/ /root/.local/share/nvim/site/autoload/ \" | xargs -n 1 cp -r -v /root/.home-localhost/.vim/autoload/* && echo \"/root/.bashrc /root/.gitconfig /root/.ssh/config /root/.vimrc /root/.config/nvim/init.vim\" | xargs -n 1 dos2unix && nvim +'PlugInstall --sync' +qa || true",
-
+  // "postCreateCommand": "bash /local-docker/scripts/copy-local-config-and-ssh-creds.sh",
   // Add the IDs of extensions you want installed when the container is created in the array below.
   "extensions": [
     "dbaeumer.vscode-eslint",

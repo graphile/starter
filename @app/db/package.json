@@ -1,0 +1,21 @@
+{
+  "name": "@app/db",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "gm": "node -r @app/config/env node_modules/.bin/graphile-migrate",
+    "migrate": "yarn gm migrate",
+    "watch": "yarn gm watch",
+    "commit": "yarn gm commit",
+    "uncommit": "yarn gm uncommit",
+    "reset": "yarn gm reset",
+    "dump": "yarn gm migrate && yarn gm reset --shadow && yarn gm migrate --shadow --force",
+    "wipe-if-demo": "./scripts/wipe-if-demo"
+  },
+  "dependencies": {
+    "graphile-migrate": "^0.0.17"
+  },
+  "devDependencies": {
+    "lodash": "^4.17.15"
+  }
+}

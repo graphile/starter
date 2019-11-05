@@ -4,7 +4,7 @@
 
 Take this software and use it as the starting point to build your project. Go
 make some money, and [give something
-back](https://github.com/users/benjie/sponsorship) to support us building
+back](https://github.com/sponsors/benjie) to support us building
 more tools and kits for the Node, GraphQL and PostgreSQL ecosystems.
 
 Please note that this software is not "complete," free of software defects,
@@ -85,45 +85,142 @@ And please give some love to our featured sponsors 🤩:
 
 ## Prerequisites
 
+You can either work with this project `local` or use a pre-configured `docker` enviroment.
+
+For users of Visual Studio Code (VSCode), a `.vscode` folder is included with
+editor settings and debugger settings provided, plus a list of recommended
+extensions. There is also a `.devcontainer` folder, which makes developing with
+these docker containers a breeze.
+
+### Local
+
 - Node.js v10+ must be installed
-- Either a PostgreSQL v10+ server must be available, or Docker and docker-compose must be available
+- Either a PostgreSQL v10+ server must be available
 - VSCode is recommended, but any editor will do
 
 This software has been developed under Mac and Linux, and should work in a
 `bash` environment. I'm not sure if it works under Windows; PRs to fix
 Windows compatibility issues would be welcome (please keep them small!).
 
-For users of Visual Studio Code (VSCode), a `.vscode` folder is included with
-editor settings and debugger settings provided, plus a list of recommended
-extensions.
+### Docker
+
+- [`docker`](https://docs.docker.com/install/)
+- [`docker-compose`](https://docs.docker.com/compose/install/).
 
 ## Getting started
 
+### One time setup (docker only)
+
+#### Just `docker-compose`
+
+- Start PostgreSQL servers: `docker-compose up -d db`
+- Run one time setup in webapp: `docker-compose run --rm webapp bash`
+- Follow: [Inital Setup](#inital_setup) inside this new shell
+
+### Inital setup
+
+**(same for local and all docker)**
+
 This project is designed to work with `yarn`. If you don't have `yarn`
-installed, you can install it with `npm install -g yarn`.
+installed, you can install it with `npm install -g yarn`. Docker setup already
+has `yarn` & `npm` installed and configured
 
 To get started, please run the `yarn setup` command which should lead you
 through the necessary steps:
 
 ```
-yarn setup
+yarn && yarn setup
 ```
 
-The above command will create a `.envvar` file for you containing your secrets.
+The above command will create a `.env` file for you containing your secrets.
 Do not commit it to version control!
 
 ## Running
 
-Depending on how you answered the setup questions, you can bring up the stack:
+You can bring up the stack:
 
-- natively: `yarn dev`
-- with Docker: `docker-compose up`
+Natively:
+
+```
+yarn_start
+```
+
+Docker:
+
+```
+docker-compose up webapp
+```
+
+<!--
+? not sure we still need this
+? maybe add reference to docker-compose.yml webapp.user property
+- with Docker: `export UID; docker-compose up`
+  - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar -->
 
 After a short period you should then be able to load the application at
 http://localhost:5678
 
+<!--
+? not sure we still need this, if you redo setup, it might workt
 **Be careful not to mix and match Docker-mode vs local-mode.** You should
-stick with the answer you gave during setup.
+stick with the answer you gave during setup. -->
+
+## Developing with hot reload
+
+<!--
+### Natively
+Todo write about native hot reloading
+-->
+
+### Docker
+
+There is another "secret" service `dev` inside `docker-compose.dev` which
+kind of simply extends `webapp`, our normal `Next.js` service container.
+
+This decision was made to separate the docker service intend.
+
+Service `webapp` is for starting Next.js and keeps running until stopped.
+This is similiar to a production deployment enviroment. Although hot reload
+and enviroment varare still tuned for active development. See
+[Building the production docker image](#building_the_production_docker_image)
+on how to optimise your Dockerfile for produciton.
+
+Service `dev` is for attaching to docker container bash and developing
+actively from inside. It has several developer tools and configs for eg. git, vim,
+etc already installed.
+
+#### Using VS Code with Remote Container Extension
+
+A `.devcontainer` folder is also provided.
+
+Once you follow the one-time steps in setup, you can from now simplye opened this container in VSCode.
+This feels like natively developing but is also a already pre-configured docker enviroment
+
+If you want to use your local configs e.g. `gitconfig` your `ssh` creds etc,
+uncomment `postCreateCommand` in `devcontainer.json` and the appropiate volume mounts
+at service `dev` in `docker-compose.yml`
+
+**BE AWARE:** on windows your whole `$HOME` folder will be copied over, including all your `ssh` creds.
+
+##### One time only
+
+- Edit: `.devcontainer/dev.Dockerfile`
+- Replace `graphile-starter` in Line 6 with your projects folders basename eg.
+
+```docker
+FROM my_project_webapp:latest
+```
+
+##### Open project in VSCode and start developing
+
+- Install vscode-extension: [ms-vscode-remote.remote-container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- Press `Ctrl+Shift+P`
+- Type `>Remote-Containers: Reopen in Container`
+- Develop like being natively on this machine
+- eg. Use VSCode File Explore
+- eg. Run extensions only inside this enviroment
+- eg. Use bash inside container directly: `yarn start`
+  - Try: `Ctrl+Shift+~`, if shell panel is hidden
 
 ## Features
 
@@ -136,7 +233,7 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **PostGraphile configured for lean schema** — very tidy GraphQL schema, adhering to PostGraphile best practices
 - [x] **Autoformatting** ─ Thanks to `prettier` and `eslint`, code can be auto-formatted (and auto-fixed) on save
 - [x] **Job queue** — we've added and configured <a href="https://github.com/graphile/worker">graphile-worker</a> to perform background tasks for you, such as sending emails, and included some example tasks
-- [x] **Express server** — with Benjie's [easy to customise and understand middleware system](app/server/src/index.ts)
+- [x] **Express server** — with Benjie's [easy to customise and understand middleware system](@app/server/src/index.ts)
 - [x] **Debugability** ─ The server, worker, tests and client are all ready to be debugged using [VSCode's built in breakpoints](https://code.visualstudio.com/docs/editor/debugging)
 - [x] **Hot reloading** — edit a component and it's re-rendered immediately (warning: state is _not_ restored, because this typically leads to instability); provided by Next.js
 - [x] **SSR with hot reloading** — if you turn JS off and reload the page you should be greeted with the same content anyway; provided by Next.js
@@ -178,16 +275,19 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 
 ## Documentation links
 
-### yarn dev
+### `yarn start` (or `docker-compose up webapp`)
 
-The `yarn dev` command runs a number of tasks:
+This main command runs a number of tasks:
 
 - uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch the`migrations/current.sql` file for changes, and automatically runs it against your database when it changes
-- watches the TypeScript source code of the server, and compiles it from `app/*/src` to `app/*/dist` so node/`graphile-worker`/etc can run the compiled code directly
+- watches the TypeScript source code of the server, and compiles it from `@app/*/src` to `@app/*/dist` so node/`graphile-worker`/etc can run the compiled code directly
 - runs the node server (includes PostGraphile and Next.js middlewares)
 - runs `graphile-worker` to execute your tasks (e.g. sending emails)
 - watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript React hooks for you automatically, leading to strongly typed code with minimal effort
 - runs the `jest` tests in watch mode, automatically re-running as the database or test files change
+
+For `docker-compose up` it also runs the PostgreSQL server that the system
+connects to.
 
 ### Cypress e2e tests
 
@@ -200,10 +300,10 @@ tests to ensure that your project remains rock-solid at all times.
 
 We use Next.js ([docs](https://nextjs.org/)) to handle the various common
 concerns of a React application for us (server-side rendering, routing,
-bundling, bundle-splitting, etc). The `app/client/src/pages/_app.tsx` file is a
+bundling, bundle-splitting, etc). The `@app/client/src/pages/_app.tsx` file is a
 [custom &lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to
 add any providers you need to. We've already set it up with `withApollo` from
-`app/client/src/lib/withApollo` which includes all the Apollo configuration,
+`@app/client/src/lib/withApollo` which includes all the Apollo configuration,
 including the client URL.
 
 ### AntD
@@ -217,7 +317,7 @@ pages so you can see how to handle errors from the server.
 The database is a jumping-off point; we've already committed the initial user
 system for you (but you can `uncommit` this if you need to). You can add
 idempotent SQL commands to `migrations/current.sql` and they will run when
-you save. When you're happy with your changes, run `yarn db:migrate commit`
+you save. When you're happy with your changes, run `yarn db commit`
 to commit these commands and reset `migrations/current.sql` to a blank state
 ready for the next batch of changes. We deliberately do not include
 functionality that we don't think most users will find useful.
@@ -230,22 +330,22 @@ To read more about migrations with graphile-migrate, see the
 ### graphile-worker
 
 We've added a few example workers for you, including the `send_email` worker
-which performs email templating for you. See `app/worker/src/tasks` for the
+which performs email templating for you. See `@app/worker/src/tasks` for the
 tasks we've created (and to add your own), and see the [graphile-worker
 docs](https://github.com/graphile/worker) for more information.
 
 ### Server
 
-The server entry point is `app/server/src/index.ts`; you'll see that it
+The server entry point is `@app/server/src/index.ts`; you'll see that it
 contains documentation and has split the middleware up into a manageable
 fashion. We use traditional cookie sessions, but you can switch this out
 for an alternative.
 
 ### Login with GitHub
 
-If you set `GITHUB_KEY` and `GITHUB_SECRET` in your `.envvar` file then you can
+If you set `GITHUB_KEY` and `GITHUB_SECRET` in your `.env` file then you can
 also use GitHub's OAuth social authentication; you can add similar logic to the
-GitHub logic (in `app/server/src/middleware/installPassport.ts`) to enable
+GitHub logic (in `@app/server/src/middleware/installPassport.ts`) to enable
 other social login providers such as Twitter, Facebook, Google, etc. For more
 information, see the [passport.js documentation](http://www.passportjs.org/docs/).
 
@@ -257,7 +357,7 @@ information, see the [passport.js documentation](http://www.passportjs.org/docs/
    - `git add .`
    - `git commit -m "PostGraphile starter base"`
 1. Change the project name in `package.json`
-1. Change the project settings in `app/config/src/index.ts`
+1. Change the project settings in `@app/config/src/index.ts`
 1. Replace the `README.md` file
 1. Commit as you usually would
 1. [Show your appreciation with sponsorship](https://www.graphile.org/sponsor/)
@@ -279,10 +379,10 @@ would be welcome!
 
 ## Building the production docker image
 
-To build the production image, use `docker build`. You should supply the
-`ROOT_URL` build variable (which will be baked into the
-client code, so cannot be changed as envvars); if you don't then the defaults
-will apply (which likely will not be suitable).
+To build the production image, use `docker build` as shown below. You should
+supply the `ROOT_URL` build variable (which will be baked into the client
+code, so cannot be changed as envvars); if you don't then the defaults will
+apply (which likely will not be suitable).
 
 To build the worker, pass `TARGET="worker"` instead of the default
 `TARGET="server"`.
@@ -318,7 +418,7 @@ If you are using `graphile-migrate` make sure that you have executed
 `graphile-migrate commit` to commit all your database changes, since we only
 run committed migrations in production.
 
-Make sure you have customised `app/config/src/index.ts`.
+Make sure you have customised `@app/config/src/index.ts`.
 
 Make sure everything is committed and pushed in git.
 
@@ -360,7 +460,7 @@ capable of sending emails. To achieve this, you must configure an email
 transport. We have preconfigured support for Amazon SES. Once SES is set up,
 your domain is verified, and you've verified any emails you wish to send email
 to (or have had your sending limits removed), make sure that the `fromEmail` in
-`app/config/src/index.ts` is correct, and then create an IAM role for your
+`@app/config/src/index.ts` is correct, and then create an IAM role for your
 PostGraphile server. Here's an IAM template for sending emails - this is the
 only permission required for our IAM role currently, but you may wish to add
 others later.
