@@ -96,7 +96,7 @@ services:
   pgtools:
     image: postgres:11
     volumes:
-      - ../data:/data
+      - /work/data:/data
     networks:
       - default
 
