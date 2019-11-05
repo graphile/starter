@@ -171,13 +171,6 @@ async function updateDotenv(answers) {
   );
 
   add(
-    "DOCKER_MODE",
-    "n",
-    `\
-# Are we using the Docker mode?`
-  );
-
-  add(
     "NODE_ENV",
     "development",
     `\
@@ -277,21 +270,8 @@ async function updateDotenv(answers) {
 
 async function main() {
   const config = (await readDotenv()) || {};
-  const defaultAnswers = {
-    ...config,
-    DOCKER_MODE: config.DOCKER_MODE === "y",
-  };
-  const mergeAnswers = cb => answers => cb({ ...defaultAnswers, ...answers });
+  const mergeAnswers = cb => answers => cb({ ...config, ...answers });
   const questions = [
-    {
-      type: "confirm",
-      name: "DOCKER_MODE",
-      message:
-        "Would you like to use our (experimental) Docker mode? (Recommended for Windows, or if you don't want PostgreSQL installed locally)",
-      default: config.DOCKER_MODE === "y",
-      when: !("DOCKER_MODE" in config),
-    },
-
     {
       type: "input",
       name: "DATABASE_NAME",
@@ -303,18 +283,13 @@ async function main() {
           : "That doesn't look like a good name for a database, try something simpler - just lowercase alphanumeric and underscores",
       when: !config.DATABASE_NAME,
     },
-
     {
       type: "input",
       name: "DATABASE_HOST",
       message:
         "What's the hostname of your database server (include :port if it's not the default :5432)?",
-      default: mergeAnswers(answers =>
-        answers.DOCKER_MODE ? "pg" : config.DATABASE_HOST || "localhost"
-      ),
-      when: mergeAnswers(
-        answers => !answers.DOCKER_MODE && !("DATABASE_HOST" in config)
-      ),
+      default: "localhost",
+      when: !config.DATABASE_HOST,
     },
 
     {
@@ -325,35 +300,14 @@ async function main() {
           `Please enter a superuser connection string to the database server (so we can drop/create the '${answers.DATABASE_NAME}' and '${answers.DATABASE_NAME}_shadow' databases) - IMPORTANT: it must not be a connection to the '${answers.DATABASE_NAME}' database itself, instead try 'template1'.`
       ),
       default: mergeAnswers(answers =>
-        answers.DOCKER_MODE
-          ? "postgres://postgres@pg/template1"
-          : config.ROOT_DATABASE_URL ||
             `postgres://${
               answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
             }/template1`
       ),
-      when: mergeAnswers(
-        answers => !answers.DOCKER_MODE && !config.ROOT_DATABASE_URL
-      ),
+      when: !config.ROOT_DATABASE_URL
     },
   ];
-  const rawAnswers = await inquirer.prompt(questions);
-
-  const dockerMode = config.DOCKER_MODE
-    ? config.DOCKER_MODE === "y"
-    : rawAnswers.DOCKER_MODE;
-  const answers = {
-    ...(dockerMode
-      ? {
-          DATABASE_HOST: "pg",
-          ROOT_DATABASE_URL: "postgres://postgres@pg/template1",
-        }
-      : null),
-    ...rawAnswers,
-
-    // Convert boolean to string
-    DOCKER_MODE: dockerMode ? "y" : "n",
-  };
+  const answers = await inquirer.prompt(questions);
 
   await updateDotenv({
     ...config,
@@ -361,37 +315,8 @@ async function main() {
   });
 
   // And perform setup
-
-  if (dockerMode) {
-    // Need to create these folders as owned by us before Docker starts
-    await tryMkdir(`${__dirname}/../.docker`);
-    await tryMkdir(`${__dirname}/../.docker/postgres_data`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules_client`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules_db`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules_e2e`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules_server`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules_worker`);
-    spawnSync("docker-compose", [
-      "-f",
-      "docker-compose.builder.yml",
-      "run",
-      `--user=${process.env.UID}`,
-      "--rm",
-      "install",
-    ]);
-    spawnSync("docker-compose", [
-      "-f",
-      "docker-compose.builder.yml",
-      "run",
-      `--user=${process.env.UID}`,
-      "--rm",
-      "server-src-build",
-    ]);
-  } else {
-    spawnSync("yarn");
-    spawnSync("yarn", ["server", "build"]);
-  }
+  spawnSync("yarn");
+  spawnSync("yarn", ["server", "build"]);
 
   // FINALLY we can source our environment
   dotenv.config({ path: `${__dirname}/../.env` }); // Be sure to use dotenv from npx
@@ -404,55 +329,37 @@ async function main() {
     DATABASE_OWNER_PASSWORD,
     DATABASE_VISITOR,
     ROOT_DATABASE_URL,
+    CONFIRM_DROP,
   } = process.env;
 
-  console.log(process.env.DATABASE_URL);
 
-  const confirm = await inquirer.prompt([
-    {
-      type: "confirm",
-      name: "CONFIRM",
-      default: false,
-      message: `We're going to drop (if necessary):
+  if(!CONFIRM_DROP) {
+    const confirm = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "CONFIRM",
+        default: false,
+        message: `We're going to drop (if necessary):
 
-- database ${DATABASE_NAME}
-- database ${DATABASE_NAME}_shadow
-- database role ${DATABASE_VISITOR} (cascade)
-- database role ${DATABASE_AUTHENTICATOR} (cascade)
-- database role ${DATABASE_OWNER}`,
-    },
-  ]);
-
-  if (!confirm.CONFIRM) {
-    console.error("Confirmation failed; exiting");
-    process.exit(1);
+  - database ${DATABASE_NAME}
+  - database ${DATABASE_NAME}_shadow
+  - database role ${DATABASE_VISITOR} (cascade)
+  - database role ${DATABASE_AUTHENTICATOR} (cascade)
+  - database role ${DATABASE_OWNER}`,
+      },
+    ]);
+    if (!confirm.CONFIRM) {
+      console.error("Confirmation failed; exiting");
+      process.exit(1);
+    }
   }
 
   console.log("Installing or reinstalling the roles and database...");
+  const psql_cmd = process.env.PSQL || "psql";
   const psqlStandardArgs = ["-X", "-v", "ON_ERROR_STOP=1"];
-  const psql = dockerMode
-    ? (args, options) =>
-        spawnSync(
-          "docker-compose",
-          [
-            "run",
-            `--user=${process.env.UID}`,
-            "--rm",
-            "pg",
-            "psql",
-            ...psqlStandardArgs,
-            ...args,
-          ],
-          options
-        )
-    : (args, options) =>
-        spawnSync("psql", [...psqlStandardArgs, ...args], options);
-  if (dockerMode) {
-    spawnSync("docker-compose", ["down"]);
-    spawnSync("docker-compose", ["up", "-d", "pg"]);
-    process.once("exit", () => {
-      spawnSync("docker-compose", ["down"]);
-    });
+  const psql = (args, options) => {
+        spawnSync(psql_cmd, [...psqlStandardArgs, ...args], options);
+  }
 
     // Wait for PostgreSQL to come up
     let attempts = 0;
@@ -504,23 +411,8 @@ GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
 `,
   });
 
-  if (dockerMode) {
-    spawnSync("docker-compose", [
-      "-f",
-      "docker-compose.builder.yml",
-      "run",
-      `--user=${process.env.UID}`,
-      "--rm",
-      "db-reset",
-    ]);
-  } else {
-    spawnSync("yarn", ["db", "reset"]);
-    spawnSync("yarn", ["db", "reset", "--shadow"]);
-  }
-
-  if (dockerMode) {
-    spawnSync("docker-compose", ["down"]);
-  }
+  spawnSync("yarn", ["db", "reset"]);
+  spawnSync("yarn", ["db", "reset", "--shadow"]);
 
   console.log();
   console.log();
@@ -532,11 +424,8 @@ GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
 
   console.log("🚀 To get started, run:");
   console.log();
-  if (dockerMode) {
-    console.log("  export UID; docker-compose up");
-  } else {
-    console.log("  yarn start");
-  }
+  console.log("  yarn start");
+
   console.log();
   console.log(
     "🙏 Please support our Open Source work: https://graphile.org/sponsor"
