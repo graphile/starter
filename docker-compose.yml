@@ -12,6 +12,7 @@ services:
     # user: $UID
     volumes:
       - .:/@app
+      - ./data:/data
       - node_modules-volume:/@app/node_modules
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
@@ -40,6 +41,7 @@ services:
     volumes:
       #* same as service: webapp
       - .:/@app
+      - ./data:/data
       - node_modules-volume:/@app/node_modules
 
       # let's us run docker & docker-compose from inside container (used for yarn setup)
