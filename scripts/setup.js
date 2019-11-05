@@ -23,6 +23,10 @@ const { spawnSync: rawSpawnSync } = require("child_process");
 const dotenv = require("dotenv");
 const inquirer = require("inquirer");
 
+// fixes spwanSync not throwing ENOENT on windows
+const plattform = require("os").platform();
+const yarn_cmd = plattform && plattform !== "win32" ? "yarn" : "yarn.cmd";
+
 if (isNpx) {
   // Reset the NODE_PATH dance above
   process.env.NODE_PATH = oldNodePath;
@@ -378,8 +382,8 @@ async function main() {
       "server-src-build",
     ]);
   } else {
-    spawnSync("yarn");
-    spawnSync("yarn", ["server", "build"]);
+    spawnSync(yarn_cmd);
+    spawnSync(yarn_cmd, ["server", "build"]);
   }
 
   // FINALLY we can source our environment
@@ -503,8 +507,8 @@ GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
       "db-reset",
     ]);
   } else {
-    spawnSync("yarn", ["db", "reset"]);
-    spawnSync("yarn", ["db", "reset", "--shadow"]);
+    spawnSync(yarn_cmd, ["db", "reset"]);
+    spawnSync(yarn_cmd, ["db", "reset", "--shadow"]);
   }
 
   if (dockerMode) {
