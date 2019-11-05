@@ -4,8 +4,6 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "docker:setup": "yarn docker setup",
-    "docker:start": "./scripts/check-setup && yarn dev",
     "clean": "node ./scripts/clean.js",
     "setup": "npx -p dotenv -p inquirer ./scripts/setup.js",
     "start": "node ./scripts/start.js",

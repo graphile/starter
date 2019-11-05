@@ -85,22 +85,54 @@ And please give some love to our featured sponsors 🤩:
 
 ## Prerequisites
 
+You can either work with this project `local` or use a pre-configured `docker` enviroment.
+
+For users of Visual Studio Code (VSCode), a `.vscode` folder is included with
+editor settings and debugger settings provided, plus a list of recommended
+extensions. There is also a `.devcontainer` folder, which makes developing with
+these docker containers a breeze.
+
+### Local
+
 - Node.js v10+ must be installed
-- Either a PostgreSQL v10+ server must be available, or Docker and docker-compose must be available
+- Either a PostgreSQL v10+ server must be available
 - VSCode is recommended, but any editor will do
 
 This software has been developed under Mac and Linux, and should work in a
 `bash` environment. I'm not sure if it works under Windows; PRs to fix
 Windows compatibility issues would be welcome (please keep them small!).
 
-For users of Visual Studio Code (VSCode), a `.vscode` folder is included with
-editor settings and debugger settings provided, plus a list of recommended
-extensions.
+### Docker
+
+- [`docker`](https://docs.docker.com/install/)
+- [`docker-compose`](https://docs.docker.com/compose/install/).
 
 ## Getting started
 
+### One time setup (docker only)
+
+#### Using VS Code with Remote Container Extension
+
+A `.devcontainer` folder is provided, so you can simply develop this project with a pre-configured docker devcontainer enviroment.
+
+- Install vscode-extension: [ms-vscode-remote.remote-container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- Press `Ctrl+Shift+P`
+- Type `>Remote-Containers: Reopen in Container`
+- Follow: [Inital Setup](#inital_setup) inside the container bash (try: `Ctrl+Shift+~`, if shell panel is hidden)
+
+#### Just `docker-compose`
+
+- Start next.js and PostgreSQL servers: `docker-compose up -d webapp db`
+- Attach to docker container bash: `docker-compose exec webapp bash`
+- Follow: [Inital Setup](#inital_setup) inside this new shell
+
+### Inital setup
+
+**(same for local and all docker)**
+
 This project is designed to work with `yarn`. If you don't have `yarn`
-installed, you can install it with `npm install -g yarn`.
+installed, you can install it with `npm install -g yarn`. Docker setup already
+has `yarn` & `npm` installed and configured
 
 To get started, please run the `yarn setup` command which should lead you
 through the necessary steps:
@@ -114,17 +146,24 @@ Do not commit it to version control!
 
 ## Running
 
-Depending on how you answered the setup questions, you can bring up the stack:
+You can bring up the stack:
 
-- natively: `yarn start`
+- `yarn start`
+  <!--
+
+? not sure we still need this
+? maybe add reference to docker-compose.yml webapp.user property
+
 - with Docker: `export UID; docker-compose up`
-  - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar
+  - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar -->
 
 After a short period you should then be able to load the application at
 http://localhost:5678
 
+<!--
+? not sure we still need this, if you redo setup, it might workt
 **Be careful not to mix and match Docker-mode vs local-mode.** You should
-stick with the answer you gave during setup.
+stick with the answer you gave during setup. -->
 
 ## Features
 
