@@ -357,61 +357,48 @@ async function main() {
   }
 
   console.log("Installing or reinstalling the roles and database...");
+  // setup database via bash script, because spawnSync is not working
+  spawnSync("./scripts/setup-reset-db",[],{log:true})
+
+  //! Not working with docker-compose
+  // throws Error ENOENT, but docker-compose is available and works without args
   const psql_cmd = process.env.PSQL || "psql";
   const psqlStandardArgs = ["-X", "-v", "ON_ERROR_STOP=1"];
   const psql = (args, options) => {
         spawnSync(psql_cmd, [...psqlStandardArgs, ...args], options);
   }
 
-    // Wait for PostgreSQL to come up
-    let attempts = 0;
-    while (true) {
-      try {
-        psql([ROOT_DATABASE_URL, "-c", 'select true as "Connection test";'], {
-          stdio: "ignore",
-        });
-        break;
-      } catch (e) {
-        attempts++;
-        if (attempts <= 30) {
-          console.log(`Database is not ready yet (attempt ${attempts})`);
-        } else {
-          console.log(`Database never came up, aborting :(`);
-          process.exit(1);
-        }
-        await sleep(1000);
-      }
-    }
-  }
+  // psql([ROOT_DATABASE_URL], {
+    // input: `
 
-  psql([ROOT_DATABASE_URL], {
-    input: `
--- RESET database
-DROP DATABASE IF EXISTS ${DATABASE_NAME};
-DROP DATABASE IF EXISTS ${DATABASE_NAME}_shadow;
-DROP DATABASE IF EXISTS ${DATABASE_NAME}_test;
-DROP ROLE IF EXISTS ${DATABASE_VISITOR};
-DROP ROLE IF EXISTS ${DATABASE_AUTHENTICATOR};
-DROP ROLE IF EXISTS ${DATABASE_OWNER};
+//   console.log(`
+// -- RESET database
+// DROP DATABASE IF EXISTS ${DATABASE_NAME};
+// DROP DATABASE IF EXISTS ${DATABASE_NAME}_shadow;
+// DROP DATABASE IF EXISTS ${DATABASE_NAME}_test;
+// DROP ROLE IF EXISTS ${DATABASE_VISITOR};
+// DROP ROLE IF EXISTS ${DATABASE_AUTHENTICATOR};
+// DROP ROLE IF EXISTS ${DATABASE_OWNER};
 
--- Now to set up the database cleanly:
--- Ref: https://devcenter.heroku.com/articles/heroku-postgresql#connection-permissions
+// -- Now to set up the database cleanly:
+// -- Ref: https://devcenter.heroku.com/articles/heroku-postgresql#connection-permissions
 
--- This is the root role for the database
-CREATE ROLE ${DATABASE_OWNER} WITH LOGIN PASSWORD '${DATABASE_OWNER_PASSWORD}'
-  -- IMPORTANT: don't grant SUPERUSER in production, we only need this so we can load the watch fixtures!
-  SUPERUSER;
+// -- This is the root role for the database
+// CREATE ROLE ${DATABASE_OWNER} WITH LOGIN PASSWORD '${DATABASE_OWNER_PASSWORD}'
+//   -- IMPORTANT: don't grant SUPERUSER in production, we only need this so we can load the watch fixtures!
+//   SUPERUSER;
 
--- This is the no-access role that PostGraphile will run as by default
-CREATE ROLE ${DATABASE_AUTHENTICATOR} WITH LOGIN PASSWORD '${DATABASE_AUTHENTICATOR_PASSWORD}' NOINHERIT;
+// -- This is the no-access role that PostGraphile will run as by default
+// CREATE ROLE ${DATABASE_AUTHENTICATOR} WITH LOGIN PASSWORD '${DATABASE_AUTHENTICATOR_PASSWORD}' NOINHERIT;
 
--- This is the role that PostGraphile will switch to (from ${DATABASE_AUTHENTICATOR}) during a GraphQL request
-CREATE ROLE ${DATABASE_VISITOR};
+// -- This is the role that PostGraphile will switch to (from ${DATABASE_AUTHENTICATOR}) during a GraphQL request
+// CREATE ROLE ${DATABASE_VISITOR};
 
--- This enables PostGraphile to switch from ${DATABASE_AUTHENTICATOR} to ${DATABASE_VISITOR}
-GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
-`,
-  });
+// -- This enables PostGraphile to switch from ${DATABASE_AUTHENTICATOR} to ${DATABASE_VISITOR}
+// GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
+// `
+//});
+
 
   spawnSync("yarn", ["db", "reset"]);
   spawnSync("yarn", ["db", "reset", "--shadow"]);
