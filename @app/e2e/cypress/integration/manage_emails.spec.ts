@@ -37,11 +37,11 @@ context("Manage emails", () => {
     });
 
     // Action: verify the email
-    cy.serverCommand("getEmailSecrets", { email }).then((secrets: any) => {
+    cy.serverCommand("getEmailSecrets", { email }).then(secrets => {
       const { user_email_id, verification_token } = secrets;
       const url = `${Cypress.env("ROOT_URL")}/verify?id=${encodeURIComponent(
         user_email_id
-      )}&token=${encodeURIComponent(verification_token)}`;
+      )}&token=${encodeURIComponent(verification_token!)}`;
       cy.visit(url);
       cy.contains("Email Verified").should("exist");
       cy.visit(Cypress.env("ROOT_URL") + "/settings/emails");
