@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "scripts": {
     "--DOCKER HELPERS--": "",
-    "setup": "yarn db:up && yarn compose run -r webapp yarn setup",
+    "setup": "yarn down && yarn db:up && yarn compose run -rm webapp yarn setup",
     "start": "yarn web:up && yarn compose:exec:web yarn start",
     "dev": "yarn compose:exec:dev bash",
     "dev:run": "yarn compose:exec:dev yarn start",
-    "reset": "yarn compose down && yarn reset:volumes && yarn rebuild && yarn web:up && yarn compose:exec:web yarn reset",
+    "reset": "yarn down && yarn reset:volumes && yarn rebuild && yarn web:up && yarn compose:exec:web yarn reset",
     "compose": "docker-compose -f ../docker-compose.yml -p graphile-starter",
     "web:up": "yarn compose up -d webapp",
     "db:up": "yarn compose up -d db",
