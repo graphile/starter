@@ -24,8 +24,8 @@ const dotenv = require("dotenv");
 const inquirer = require("inquirer");
 
 // fixes spwanSync not throwing ENOENT on windows
-const plattform = require("os").platform();
-const yarn_cmd = plattform && plattform !== "win32" ? "yarn" : "yarn.cmd";
+const platform = require("os").platform();
+const yarnCmd = platform && platform !== "win32" ? "yarn" : "yarn.cmd";
 
 if (isNpx) {
   // Reset the NODE_PATH dance above
@@ -320,8 +320,8 @@ async function main() {
   });
 
   // And perform setup
-  spawnSync(yarn_cmd);
-  spawnSync(yarn_cmd, ["server", "build"]);
+  spawnSync(yarnCmd);
+  spawnSync(yarnCmd, ["server", "build"]);
 
   // FINALLY we can source our environment
   dotenv.config({ path: `${__dirname}/../.env` }); // Be sure to use dotenv from npx
