@@ -95,7 +95,7 @@ these docker containers a breeze.
 ### Local
 
 - Node.js v10+ must be installed
-- Either a PostgreSQL v10+ server must be available
+- PostgreSQL v10+ server must be available
 - VSCode is recommended, but any editor will do
 
 This software has been developed under Mac and Linux, and should work in a
@@ -118,17 +118,17 @@ A `.devcontainer` folder is provided, so you can simply develop this project wit
 - Install vscode-extension: [ms-vscode-remote.remote-container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 - Press `Ctrl+Shift+P`
 - Type `>Remote-Containers: Reopen in Container`
-- Follow: [Inital Setup](#inital_setup) inside the container bash (try: `Ctrl+Shift+~`, if shell panel is hidden)
+- Follow: [Initial Setup](#initial_setup) inside the container bash (try: `Ctrl+Shift+~`, if shell panel is hidden)
 
 #### Just `docker-compose`
 
 - Start next.js and PostgreSQL servers: `docker-compose up -d webapp db`
 - Attach to docker container bash: `docker-compose exec webapp bash`
-- Follow: [Inital Setup](#inital_setup) inside this new shell
+- Follow: [Initial Setup](#initial_setup) inside this new shell
 
-### Inital setup
+### Initial Setup
 
-**(same for local and all docker)**
+**(same for local and all docker variants)**
 
 This project is designed to work with `yarn`. If you don't have `yarn`
 installed, you can install it with `npm install -g yarn`. Docker setup already
@@ -138,7 +138,7 @@ To get started, please run the `yarn setup` command which should lead you
 through the necessary steps:
 
 ```
-yarn && yarn setup
+yarn setup
 ```
 
 The above command will create a `.env` file for you containing your secrets.
@@ -170,7 +170,7 @@ Which then runs `yarn start` inside the webapp container.
 Please be aware, that if you run it via `docker-compose run webapp` (how it was described above in the setup part), because outside ports aren't automatically opened with `docker-compose run`
 
 <!--
-? not sure we still need this, if you redo setup, it might workt
+? not sure we still need this, if you redo setup, it might work
 **Be careful not to mix and match Docker-mode vs local-mode.** You should
 stick with the answer you gave during setup. -->
 
