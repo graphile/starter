@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-if [ -f ./.envvar ]; then
-  echo "Using existing .envvar"
-  . ./.envvar
-fi
-
-yarn dev
