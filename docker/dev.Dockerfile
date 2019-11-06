@@ -15,6 +15,8 @@ RUN \
   && apt-get -y install --no-install-recommends git \
   # neovim
   && apt-get -y install --no-install-recommends neovim \
+  # tmux
+  && apt-get -y install --no-install-recommends tmux \
   # dos2unix for config files of windows user
   && apt-get -y install --no-install-recommends dos2unix \
   # Clean up
