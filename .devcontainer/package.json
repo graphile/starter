@@ -1,0 +1,22 @@
+{
+  "name": "My_Project_Here",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Description of project here",
+  "scripts": {
+    "devcontainer:setup": "cross-env DOCKER-MODE=y bash -c \". ../graphile-starter-project/.env && yarn docker-reset && yarn docker-run-setup\"",
+    "devcontainer:up": "cross-env DOCKER-MODE=y bash -c \". ../graphile-starter-project/.env && yarn docker-reset && yarn docker-up -d\"",
+    "devcontainer:dev": "cross-env DOCKER-MODE=y bash -c \". ../graphile-starter-project/.env && yarn docker-attach-dev\"",
+    "docker-up":"docker-compose --project-name graphile-starter_devcontainer up",
+    "docker-attach-dev": "docker-compose --project-name graphile-starter_devcontainer exec dev bash -c \"yarn dev\"",
+    "docker-reset":"docker-compose --project-name graphile-starter_devcontainer down",
+    "docker-run-setup": "yarn docker-build-once && docker-compose --project-name graphile-starter_devcontainer -f docker-compose.yml exec dev bash -c \"yarn setup\"",
+    "docker-build-once":"docker-compose --project-name graphile-starter_devcontainer -f docker-compose.yml up -d --build"
+  },
+  "author": "Benjie Gillam <code@benjiegillam.com>",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "dependencies": {},
+  "devDependencies": {
+    "cross-env": "^6.0.3"
+  }
+}
