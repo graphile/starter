@@ -111,10 +111,19 @@ Windows compatibility issues would be welcome (please keep them small!).
 
 ### One time setup (docker only)
 
+#### Using VS Code with Remote Container Extension
+
+A `.devcontainer` folder is provided, so you can simply develop this project with a pre-configured docker devcontainer enviroment.
+
+- Install vscode-extension: [ms-vscode-remote.remote-container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- Press `Ctrl+Shift+P`
+- Type `>Remote-Containers: Reopen in Container`
+- Follow: [Inital Setup](#inital_setup) inside the container bash (try: `Ctrl+Shift+~`, if shell panel is hidden)
+
 #### Just `docker-compose`
 
-- Start PostgreSQL servers: `docker-compose up -d db`
-- Run one time setup in webapp: `docker-compose run --rm webapp bash`
+- Start next.js and PostgreSQL servers: `docker-compose up -d webapp db`
+- Attach to docker container bash: `docker-compose exec webapp bash`
 - Follow: [Inital Setup](#inital_setup) inside this new shell
 
 ### Inital setup
@@ -139,89 +148,21 @@ Do not commit it to version control!
 
 You can bring up the stack:
 
-Natively:
+- `yarn start`
+  <!--
 
-```
-yarn_start
-```
-
-Docker:
-
-```
-docker-compose up webapp
-```
-
-<!--
 ? not sure we still need this
 ? maybe add reference to docker-compose.yml webapp.user property
+
 - with Docker: `export UID; docker-compose up`
   - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar -->
 
-Which then runs `yarn start` inside the webapp container.
-
 **NOTE:** `export UID` is really important on linux hosts, otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar.
-
-Please be aware, that if you run it via `docker-compose run webapp` (how it was described above in the setup part), because outside ports aren't automatically opened with `docker-compose run`
 
 <!--
 ? not sure we still need this, if you redo setup, it might workt
 **Be careful not to mix and match Docker-mode vs local-mode.** You should
 stick with the answer you gave during setup. -->
-
-## Developing with hot reload
-
-<!--
-### Natively
-Todo write about native hot reloading
--->
-
-### Docker
-
-There is another "secret" service `dev` inside `docker-compose.dev` which
-kind of simply extends `webapp`, our normal `Next.js` service container.
-
-This decision was made to separate the docker service intend.
-
-Service `webapp` is for starting Next.js and keeps running until stopped.
-This is similiar to a production deployment enviroment. Although hot reload
-and enviroment varare still tuned for active development. See
-[Building the production docker image](#building_the_production_docker_image)
-on how to optimise your Dockerfile for produciton.
-
-Service `dev` is for attaching to docker container bash and developing
-actively from inside. It has several developer tools and configs for eg. git, vim,
-etc already installed.
-
-#### Using VS Code with Remote Container Extension
-
-A `.devcontainer` folder is also provided.
-Once you follow the one-time steps in setup, you can from now simplye opened this container in VSCode.
-This feels like natively developing but is also a already pre-configured docker enviroment
-
-##### One time only
-
-- Edit: `.devcontainer/dev.Dockerfile`
-- Replace `graphile-starter` in Line 6 with your projects folders basename eg.
-
-```docker
-FROM my_project_webapp:latest
-```
-
-##### Open project in VSCode and start developing
-
-- Install vscode-extension: [ms-vscode-remote.remote-container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-- Press `Ctrl+Shift+P`
-- Type `>Remote-Containers: Reopen in Container`
-- Develop like being natively on this machine
-- eg. Use VSCode File Explore
-  <<<<<<< HEAD
-- eg. Run extensions only inside this enviroment
-- eg. Use bash inside container directly: `yarn start`
-  - # Try: `Ctrl+Shift+~`, if shell panel is hidden
-- eg. Use bash inside container directly: `yarn start`
-- - Try: `Ctrl+Shift+~`, if shell panel is hidden
-- eg. Run extensions only inside this enviroment
-  > > > > > > > 3aa3e97... Separate docker services intend.
 
 ## Features
 
