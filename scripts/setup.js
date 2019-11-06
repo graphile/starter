@@ -304,13 +304,12 @@ async function main() {
         answers =>
           `Please enter a superuser connection string to the database server (so we can drop/create the '${answers.DATABASE_NAME}' and '${answers.DATABASE_NAME}_shadow' databases) - IMPORTANT: it must not be a connection to the '${answers.DATABASE_NAME}' database itself, instead try 'template1'.`
       ),
-      default: mergeAnswers(
-        answers =>
-          `postgres://${
-            answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
-          }/template1`
+      default: mergeAnswers(answers =>
+            `postgres://${
+              answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
+            }/template1`
       ),
-      when: !config.ROOT_DATABASE_URL,
+      when: !config.ROOT_DATABASE_URL
     },
   ];
   const answers = await inquirer.prompt(questions);
@@ -321,8 +320,8 @@ async function main() {
   });
 
   // And perform setup
-  spawnSync(yarnCmd);
-  spawnSync(yarnCmd, ["server", "build"]);
+  spawnSync("yarn");
+  spawnSync("yarn", ["server", "build"]);
 
   // FINALLY we can source our environment
   dotenv.config({ path: `${__dirname}/../.env` }); // Be sure to use dotenv from npx
@@ -338,7 +337,8 @@ async function main() {
     CONFIRM_DROP,
   } = process.env;
 
-  if (!CONFIRM_DROP) {
+
+  if(!CONFIRM_DROP) {
     const confirm = await inquirer.prompt([
       {
         type: "confirm",
@@ -360,31 +360,29 @@ async function main() {
   }
 
   console.log("Installing or reinstalling the roles and database...");
+  const psql_cmd = process.env.PSQL || "psql";
+  const psqlStandardArgs = ["-X", "-v", "ON_ERROR_STOP=1"];
+  const psql = (args, options) => {
+        spawnSync(psql_cmd, [...psqlStandardArgs, ...args], options);
+  }
 
-  const pgPool = new pg.Pool({
-    connectionString: ROOT_DATABASE_URL,
-  });
-
-  pgPool.on("error", err => {
-    // Ignore
-    console.log(
-      "An error occurred whilst trying to talk to the database: " + err.message
-    );
-  });
-
-  // Wait for PostgreSQL to come up
-  let attempts = 0;
-  while (true) {
-    try {
-      await pgPool.query('select true as "Connection test";');
-      break;
-    } catch (e) {
-      attempts++;
-      if (attempts <= 30) {
-        console.log(`Database is not ready yet (attempt ${attempts})`);
-      } else {
-        console.log(`Database never came up, aborting :(`);
-        process.exit(1);
+    // Wait for PostgreSQL to come up
+    let attempts = 0;
+    while (true) {
+      try {
+        psql([ROOT_DATABASE_URL, "-c", 'select true as "Connection test";'], {
+          stdio: "ignore",
+        });
+        break;
+      } catch (e) {
+        attempts++;
+        if (attempts <= 30) {
+          console.log(`Database is not ready yet (attempt ${attempts})`);
+        } else {
+          console.log(`Database never came up, aborting :(`);
+          process.exit(1);
+        }
+        await sleep(1000);
       }
       await sleep(1000);
     }
@@ -409,25 +407,8 @@ async function main() {
       `CREATE ROLE ${DATABASE_OWNER} WITH LOGIN PASSWORD '${DATABASE_OWNER_PASSWORD}' SUPERUSER;`
     );
 
-    // This is the no-access role that PostGraphile will run as by default`);
-    await client.query(
-      `CREATE ROLE ${DATABASE_AUTHENTICATOR} WITH LOGIN PASSWORD '${DATABASE_AUTHENTICATOR_PASSWORD}' NOINHERIT;`
-    );
-
-    // This is the role that PostGraphile will switch to (from ${DATABASE_AUTHENTICATOR}) during a GraphQL request
-    await client.query(`CREATE ROLE ${DATABASE_VISITOR};`);
-
-    // This enables PostGraphile to switch from ${DATABASE_AUTHENTICATOR} to ${DATABASE_VISITOR}
-    await client.query(
-      `GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};`
-    );
-  } finally {
-    await client.release();
-  }
-  await pgPool.end();
-
-  spawnSync(yarnCmd, ["db", "reset"]);
-  spawnSync(yarnCmd, ["db", "reset", "--shadow"]);
+  spawnSync("yarn", ["db", "reset"]);
+  spawnSync("yarn", ["db", "reset", "--shadow"]);
 
   console.log();
   console.log();
