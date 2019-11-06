@@ -9,7 +9,7 @@
     "setup": "npx -p dotenv -p inquirer -p pg ./scripts/setup.js",
     "start": "node ./scripts/start.js",
     "test": "node scripts/test.js",
-    "test:watch": "node scripts/test.js --watch",
+    "test:watch": "node scripts/test.js --watchAll",
     "dev": "yarn && yarn codegen && concurrently --kill-others --names 'src,dev,gen,test' 'lerna run --parallel watch' 'sleep 10; lerna run --parallel dev' 'sleep 10; yarn client codegen:watch' 'sleep 15; yarn test:watch'",
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx,.graphql .",
     "build": "yarn codegen && lerna run build",
