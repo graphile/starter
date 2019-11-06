@@ -89,7 +89,6 @@ services:
     working_dir: /root/home
     volumes:
       - db-volume:/var/lib/postgresql/data
-      - ./data:/data
     ports:
       - 5433:5432
     networks:
