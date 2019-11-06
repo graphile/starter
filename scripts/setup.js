@@ -28,6 +28,10 @@ const pg = require("pg");
 const platform = require("os").platform();
 const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 
+// fixes spwanSync not throwing ENOENT on windows
+const plattform = require("os").platform();
+const yarn_cmd = plattform && plattform !== "win32" ? "yarn" : "yarn.cmd";
+
 if (isNpx) {
   // Reset the NODE_PATH dance above
   process.env.NODE_PATH = oldNodePath;
@@ -304,12 +308,13 @@ async function main() {
         answers =>
           `Please enter a superuser connection string to the database server (so we can drop/create the '${answers.DATABASE_NAME}' and '${answers.DATABASE_NAME}_shadow' databases) - IMPORTANT: it must not be a connection to the '${answers.DATABASE_NAME}' database itself, instead try 'template1'.`
       ),
-      default: mergeAnswers(answers =>
-            `postgres://${
-              answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
-            }/template1`
+      default: mergeAnswers(
+        answers =>
+          `postgres://${
+            answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
+          }/template1`
       ),
-      when: !config.ROOT_DATABASE_URL
+      when: !config.ROOT_DATABASE_URL,
     },
   ];
   const answers = await inquirer.prompt(questions);
@@ -320,8 +325,8 @@ async function main() {
   });
 
   // And perform setup
-  spawnSync("yarn");
-  spawnSync("yarn", ["server", "build"]);
+  spawnSync(yarn_cmd);
+  spawnSync(yarn_cmd, ["server", "build"]);
 
   // FINALLY we can source our environment
   dotenv.config({ path: `${__dirname}/../.env` }); // Be sure to use dotenv from npx
@@ -337,8 +342,7 @@ async function main() {
     CONFIRM_DROP,
   } = process.env;
 
-
-  if(!CONFIRM_DROP) {
+  if (!CONFIRM_DROP) {
     const confirm = await inquirer.prompt([
       {
         type: "confirm",
@@ -363,52 +367,42 @@ async function main() {
   const psql_cmd = process.env.PSQL || "psql";
   const psqlStandardArgs = ["-X", "-v", "ON_ERROR_STOP=1"];
   const psql = (args, options) => {
-        spawnSync(psql_cmd, [...psqlStandardArgs, ...args], options);
-  }
+    spawnSync(psql_cmd, [...psqlStandardArgs, ...args], options);
+  };
 
-    // Wait for PostgreSQL to come up
-    let attempts = 0;
-    while (true) {
-      try {
-        psql([ROOT_DATABASE_URL, "-c", 'select true as "Connection test";'], {
-          stdio: "ignore",
-        });
-        break;
-      } catch (e) {
-        attempts++;
-        if (attempts <= 30) {
-          console.log(`Database is not ready yet (attempt ${attempts})`);
-        } else {
-          console.log(`Database never came up, aborting :(`);
-          process.exit(1);
-        }
-        await sleep(1000);
-      }
-      await sleep(1000);
-    }
-  }
+  // psql([ROOT_DATABASE_URL], {
+  // input: `
 
-  const client = await pgPool.connect();
-  try {
-    // RESET database
-    await client.query(`DROP DATABASE IF EXISTS ${DATABASE_NAME};`);
-    await client.query(`DROP DATABASE IF EXISTS ${DATABASE_NAME}_shadow;`);
-    await client.query(`DROP DATABASE IF EXISTS ${DATABASE_NAME}_test;`);
-    await client.query(`DROP ROLE IF EXISTS ${DATABASE_VISITOR};`);
-    await client.query(`DROP ROLE IF EXISTS ${DATABASE_AUTHENTICATOR};`);
-    await client.query(`DROP ROLE IF EXISTS ${DATABASE_OWNER};`);
+  //   console.log(`
+  // -- RESET database
+  // DROP DATABASE IF EXISTS ${DATABASE_NAME};
+  // DROP DATABASE IF EXISTS ${DATABASE_NAME}_shadow;
+  // DROP DATABASE IF EXISTS ${DATABASE_NAME}_test;
+  // DROP ROLE IF EXISTS ${DATABASE_VISITOR};
+  // DROP ROLE IF EXISTS ${DATABASE_AUTHENTICATOR};
+  // DROP ROLE IF EXISTS ${DATABASE_OWNER};
 
-    // Now to set up the database cleanly:
-    // Ref: https://devcenter.heroku.com/articles/heroku-postgresql#connection-permissions
+  // -- Now to set up the database cleanly:
+  // -- Ref: https://devcenter.heroku.com/articles/heroku-postgresql#connection-permissions
 
-    // This is the root role for the database`);
-    await client.query(
-      // IMPORTANT: don't grant SUPERUSER in production, we only need this so we can load the watch fixtures!
-      `CREATE ROLE ${DATABASE_OWNER} WITH LOGIN PASSWORD '${DATABASE_OWNER_PASSWORD}' SUPERUSER;`
-    );
+  // -- This is the root role for the database
+  // CREATE ROLE ${DATABASE_OWNER} WITH LOGIN PASSWORD '${DATABASE_OWNER_PASSWORD}'
+  //   -- IMPORTANT: don't grant SUPERUSER in production, we only need this so we can load the watch fixtures!
+  //   SUPERUSER;
 
-  spawnSync("yarn", ["db", "reset"]);
-  spawnSync("yarn", ["db", "reset", "--shadow"]);
+  // -- This is the no-access role that PostGraphile will run as by default
+  // CREATE ROLE ${DATABASE_AUTHENTICATOR} WITH LOGIN PASSWORD '${DATABASE_AUTHENTICATOR_PASSWORD}' NOINHERIT;
+
+  // -- This is the role that PostGraphile will switch to (from ${DATABASE_AUTHENTICATOR}) during a GraphQL request
+  // CREATE ROLE ${DATABASE_VISITOR};
+
+  // -- This enables PostGraphile to switch from ${DATABASE_AUTHENTICATOR} to ${DATABASE_VISITOR}
+  // GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
+  // `
+  //});
+
+  spawnSync(yarn_cmd, ["db", "reset"]);
+  spawnSync(yarn_cmd, ["db", "reset", "--shadow"]);
 
   console.log();
   console.log();
