@@ -13,7 +13,10 @@ RUN \
   apt-get update \
   # install git
   && apt-get -y install --no-install-recommends git \
-  #
+  # neovim
+  && apt-get -y install --no-install-recommends neovim \
+  # dos2unix for config files of windows user
+  && apt-get -y install --no-install-recommends dos2unix \
   # Clean up
   && apt-get autoremove -y \
   && apt-get clean -y \
