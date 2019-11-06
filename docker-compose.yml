@@ -83,8 +83,11 @@ services:
   # This runs the database that everything else connects to
   db:
     image: postgres:11
+    # needs to be 2 directories deep for dump-db.sh to work
+    working_dir: /root/home
     volumes:
       - db-volume:/var/lib/postgresql/data
+      - ./data:/data
     ports:
       - 5432:5432
     networks:
