@@ -115,6 +115,8 @@ Windows compatibility issues would be welcome (please keep them small!).
 
 - Start PostgreSQL servers: `docker-compose up -d db`
 - Run one time setup in webapp: `docker-compose run --rm webapp bash`
+  - You also can use this alias which combines them and runs `yarn setup` (see docker/package.json)
+  - `yarn docker setup`
 - Follow: [Initial Setup](#initial_setup) inside this new shell
 
 ### Initial Setup
@@ -189,11 +191,28 @@ Service `dev` is for attaching to docker container bash and developing
 actively from inside. It has several developer tools and configs for eg. git, vim,
 etc already installed.
 
-#### Using VS Code with Remote Container Extension
+**Aliases** for quickly using `dev` container without VSCode:
+
+#### Attach to shell, inside `dev` container:
+
+```
+yarn docker dev
+```
+
+#### Run `yarn start` inside `dev` container:
+
+```
+yarn docker dev:run
+```
+
+See `docker/package.json` to learn about more aliases
+
+#### Using VSCode with Remote Container Extension
 
 A `.devcontainer` folder is also provided.
 
-Once you follow the one-time steps in setup, you can from now simplye opened this container in VSCode.
+Once you follow the one-time steps in setup, you can from now simplye opened this container in VS
+Code.
 This feels like natively developing but is also a already pre-configured docker enviroment
 
 If you want to use your local configs e.g. `gitconfig` your `ssh` creds etc,
@@ -217,7 +236,7 @@ FROM my_project_webapp:latest
 - Press `Ctrl+Shift+P`
 - Type `>Remote-Containers: Reopen in Container`
 - Develop like being natively on this machine
-- eg. Use VSCode File Explore
+- eg. Use VSCode File Explorer
 - eg. Run extensions only inside this enviroment
 - eg. Use bash inside container directly: `yarn start`
   - Try: `Ctrl+Shift+~`, if shell panel is hidden
