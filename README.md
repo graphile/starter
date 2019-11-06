@@ -408,6 +408,7 @@ To build the worker, pass `TARGET="worker"` instead of the default
 
 ```sh
 docker build \
+  --file production.Dockerfile \
   --build-arg ROOT_URL="http://localhost:5678" \
   --build-arg TARGET="server" \
   .
