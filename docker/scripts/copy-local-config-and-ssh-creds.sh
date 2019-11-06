@@ -12,6 +12,8 @@ chmod 600 /root/.ssh/*
 cp /root/.home-localhost/.gitconfig /root/.gitconfig
 # Copy bashconfig
 cp /root/.home-localhost/.bashrc /root/.bashrc
+# Copy tmux
+cp /root/.home-localhost/tmux.conf /root/tmux.conf
 # Copy vimrc for vim & nvim
 mkdir -p /root/.config/nvim
 echo "/root/.vimrc /root/.config/nvim/init.vim" | xargs -n 1 cp -v /root/.home-localhost/.vimrc
