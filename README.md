@@ -148,16 +148,26 @@ Do not commit it to version control!
 
 You can bring up the stack:
 
-- `yarn start`
-  <!--
+After a short period you should then be able to load the application at
+http://localhost:5678
 
-? not sure we still need this
-? maybe add reference to docker-compose.yml webapp.user property
+### Natively:
 
-- with Docker: `export UID; docker-compose up`
-  - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar -->
+```
+yarn start
+```
+
+### Docker:
+
+```
+export UID; docker-compose up webapp
+```
+
+Which then runs `yarn start` inside the webapp container.
 
 **NOTE:** `export UID` is really important on linux hosts, otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar.
+
+Please be aware, that if you run it via `docker-compose run webapp` (how it was described above in the setup part), because outside ports aren't automatically opened with `docker-compose run`
 
 <!--
 ? not sure we still need this, if you redo setup, it might workt
