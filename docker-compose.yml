@@ -11,12 +11,11 @@ services:
     #* and USER_GID in .devcontainer/Dockerfile to match your user if not 1000.
     # user: $UID
     volumes:
-      - .:/@app
-      - ./data:/data
-      - node_modules-volume:/@app/node_modules
+      - .:/work
+      - node_modules-volume:/work/node_modules
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
-    working_dir: /@app
+    working_dir: /work
     networks:
       - default
     ports:
@@ -40,9 +39,8 @@ services:
       - docker/docker.env
     volumes:
       #* same as service: webapp
-      - .:/@app
-      - ./data:/data
-      - node_modules-volume:/@app/node_modules
+      - .:/work
+      - node_modules-volume:/work/node_modules
 
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
@@ -67,7 +65,7 @@ services:
       # - $HOME:/root/.home-localhost:ro
 
     # just extends service: webapp
-    working_dir: /@app
+    working_dir: /work
     networks:
       - default
     ports:
@@ -98,7 +96,7 @@ services:
   pgtools:
     image: postgres:11
     volumes:
-      - ../data:/data
+      - /work/data:/data
     networks:
       - default
 
