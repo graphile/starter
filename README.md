@@ -164,6 +164,63 @@ You can bring up the stack:
 **Be careful not to mix and match Docker-mode vs local-mode.** You should
 stick with the answer you gave during setup. -->
 
+## Developing with hot reload
+
+<!--
+### Natively
+Todo write about native hot reloading
+-->
+
+### Docker
+
+There is another "secret" service `dev` inside `docker-compose.dev` which
+kind of simply extends `webapp`, our normal `Next.js` service container.
+
+This decision was made to separate the docker service intend.
+
+Service `webapp` is for starting Next.js and keeps running until stopped.
+This is similiar to a production deployment enviroment. Although hot reload
+and enviroment varare still tuned for active development. See
+[Building the production docker image](#building_the_production_docker_image)
+on how to optimise your Dockerfile for produciton.
+
+Service `dev` is for attaching to docker container bash and developing
+actively from inside. It has several developer tools and configs for eg. git, vim,
+etc already installed.
+
+#### Using VS Code with Remote Container Extension
+
+A `.devcontainer` folder is also provided.
+
+Once you follow the one-time steps in setup, you can from now simplye opened this container in VSCode.
+This feels like natively developing but is also a already pre-configured docker enviroment
+
+If you want to use your local configs e.g. `gitconfig` your `ssh` creds etc,
+uncomment `postCreateCommand` in `devcontainer.json` and the appropiate volume mounts
+at service `dev` in `docker-compose.yml`
+
+**BE AWARE:** on windows your whole `$HOME` folder will be copied over, including all your `ssh` creds.
+
+##### One time only
+
+- Edit: `.devcontainer/dev.Dockerfile`
+- Replace `graphile-starter` in Line 6 with your projects folders basename eg.
+
+```docker
+FROM my_project_webapp:latest
+```
+
+##### Open project in VSCode and start developing
+
+- Install vscode-extension: [ms-vscode-remote.remote-container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- Press `Ctrl+Shift+P`
+- Type `>Remote-Containers: Reopen in Container`
+- Develop like being natively on this machine
+- eg. Use VSCode File Explore
+- eg. Run extensions only inside this enviroment
+- eg. Use bash inside container directly: `yarn start`
+  - Try: `Ctrl+Shift+~`, if shell panel is hidden
+
 ## Features
 
 Checked features have been implemented, unchecked features are goals for the future.
