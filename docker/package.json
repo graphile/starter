@@ -1,21 +1,22 @@
 {
-  "name": "@app/docker",
+  "name": "docker-helpers",
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "setup": "yarn web:up && yarn compose:exec:web yarn setup",
-    "start": "yarn web:up && yarn compose:exec:web yarn start",
-    "dev:run": "yarn compose:exec:dev yarn start",
-    "dev:attach": "yarn compose:exec:dev bash",
     "--DOCKER HELPERS--": "",
-    "reset": "yarn compose down --remove-orphans && yarn reset:volumes && yarn rebuild && yarn web:up && yarn compose:exec:web yarn reset",
-    "compose": "docker-compose -f ../docker-compose.yml",
+    "setup": "yarn db:up && yarn compose run -r webapp yarn setup",
+    "start": "yarn web:up && yarn compose:exec:web yarn start",
+    "dev": "yarn compose:exec:dev bash",
+    "dev:run": "yarn compose:exec:dev yarn start",
+    "reset": "yarn compose down && yarn reset:volumes && yarn rebuild && yarn web:up && yarn compose:exec:web yarn reset",
+    "compose": "docker-compose -f ../docker-compose.yml -p graphile-starter",
     "web:up": "yarn compose up -d webapp",
+    "db:up": "yarn compose up -d db",
     "compose:exec:web": "yarn compose exec webapp",
-    "compose:exec:dev": "yarn compose up -d dev && yarn compose exec dev ",
+    "compose:exec:dev": "yarn down && yarn compose up -d dev && yarn compose exec dev ",
     "rebuild": "yarn compose build",
     "reset:volumes": "node ./scripts/clean-volumes.js",
-    "down": "yarn docker:compose down --remove-orphans"
+    "down": "yarn compose down --remove-orphans"
   },
   "dependencies": {},
   "devDependencies": {}

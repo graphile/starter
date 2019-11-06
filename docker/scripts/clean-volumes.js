@@ -11,7 +11,7 @@ try {
   // TODO: make it all js scripting
   // deletes all docker volumes
   execSync(
-    'cd .. && bash -c "docker volume rm ${PWD##*/}_devcontainer_db-volume  ${PWD##*/}_devcontainer_node_modules-volume ${PWD##*/}_devcontainer_vscode-extensions || true"',
+    'cd .. && bash -c "docker volume rm ${PWD##*/}_db-volume  ${PWD##*/}_node_modules-volume ${PWD##*/}_vscode-extensions ${PWD##*/}_devcontainer_db-volume  ${PWD##*/}_devcontainer_node_modules-volume ${PWD##*/}_devcontainer_vscode-extensions || true"',
     opts
   );
 } catch (err) {

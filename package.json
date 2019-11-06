@@ -21,7 +21,7 @@
     "e2e": "yarn workspace @app/e2e run",
     "server": "yarn workspace @app/server run",
     "worker": "yarn workspace @app/worker run",
-    "docker": "yarn workspace @app/docker run"
+    "docker": "yarn --cwd ./docker"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -58,8 +58,7 @@
   },
   "workspaces": {
     "packages": [
-      "@app/*",
-      "docker/package.json"
+      "@app/*"
     ],
     "nohoist": [
       "**/cypress"
