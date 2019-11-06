@@ -17,8 +17,9 @@
   // Uncomment the line below if you want to keep your containers running after VS Code shuts down.
   // "shutdownAction": "none",
 
-  // Uncomment next line if you want to copy your .ssh creds and other config files for easier use inside container
-  // "postCreateCommand": "bash /local-docker/scripts/copy-local-config-and-ssh-creds.sh",
+  // Runs setup
+  // Also prepares ssh creds for easier use
+  "postCreateCommand": "mkdir -p /root/.ssh && cp -r /root/.ssh-localhost/* /root/.ssh && chmod 700 /root/.ssh && chmod 600 /root/.ssh/* || true ; yarn setup",
 
   // Add the IDs of extensions you want installed when the container is created in the array below.
   "extensions": [
