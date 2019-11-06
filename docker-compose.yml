@@ -65,6 +65,7 @@ services:
       ## copies your .gitconfig
       # - $HOME/.gitconfig:/root/.home-localhost/.gitconfig:ro
       ##! Fix for windows (can't mount single files)
+      - ./docker:/local-docker
       ##comment all the other `.home-localhost` lines above this
       # - $HOME:/root/.home-localhost:ro
 
