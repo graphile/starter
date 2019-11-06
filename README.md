@@ -111,19 +111,10 @@ Windows compatibility issues would be welcome (please keep them small!).
 
 ### One time setup (docker only)
 
-#### Using VS Code with Remote Container Extension
-
-A `.devcontainer` folder is provided, so you can simply develop this project with a pre-configured docker devcontainer enviroment.
-
-- Install vscode-extension: [ms-vscode-remote.remote-container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-- Press `Ctrl+Shift+P`
-- Type `>Remote-Containers: Reopen in Container`
-- Follow: [Initial Setup](#initial_setup) inside the container bash (try: `Ctrl+Shift+~`, if shell panel is hidden)
-
 #### Just `docker-compose`
 
-- Start next.js and PostgreSQL servers: `docker-compose up -d webapp db`
-- Attach to docker container bash: `docker-compose exec webapp bash`
+- Start PostgreSQL servers: `docker-compose up -d db`
+- Run one time setup in webapp: `docker-compose run --rm webapp bash`
 - Follow: [Initial Setup](#initial_setup) inside this new shell
 
 ### Initial Setup
