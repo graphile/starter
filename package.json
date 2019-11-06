@@ -5,6 +5,7 @@
   "description": "Description of project here",
   "scripts": {
     "clean": "node ./scripts/clean.js",
+    "reset": "yarn clean && node ./scripts/reset.js",
     "setup": "npx -p dotenv -p inquirer -p pg ./scripts/setup.js",
     "start": "node ./scripts/start.js",
     "test": "node scripts/test.js",
@@ -13,7 +14,6 @@
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx,.graphql .",
     "build": "yarn codegen && lerna run build",
     "codegen": "yarn client codegen",
-    "reset": "yarn clean && node ./scripts/reset.js",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
     "--shortcuts to run commands in workspaces--": "",
     "client": "yarn workspace @app/client run",
