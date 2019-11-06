@@ -139,20 +139,23 @@ Do not commit it to version control!
 
 You can bring up the stack:
 
-After a short period you should then be able to load the application at
-http://localhost:5678
-
-### Natively:
+Natively:
 
 ```
-yarn start
+yarn_start
 ```
 
-### Docker:
+Docker:
 
 ```
-export UID; docker-compose up webapp
+docker-compose up webapp
 ```
+
+<!--
+? not sure we still need this
+? maybe add reference to docker-compose.yml webapp.user property
+- with Docker: `export UID; docker-compose up`
+  - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar -->
 
 Which then runs `yarn start` inside the webapp container.
 
@@ -192,15 +195,8 @@ etc already installed.
 #### Using VS Code with Remote Container Extension
 
 A `.devcontainer` folder is also provided.
-
 Once you follow the one-time steps in setup, you can from now simplye opened this container in VSCode.
 This feels like natively developing but is also a already pre-configured docker enviroment
-
-If you want to use your local configs e.g. `gitconfig` your `ssh` creds etc,
-uncomment `postCreateCommand` in `devcontainer.json` and the appropiate volume mounts
-at service `dev` in `docker-compose.yml`
-
-**BE AWARE:** on windows your whole `$HOME` folder will be copied over, including all your `ssh` creds.
 
 ##### One time only
 
@@ -218,9 +214,14 @@ FROM my_project_webapp:latest
 - Type `>Remote-Containers: Reopen in Container`
 - Develop like being natively on this machine
 - eg. Use VSCode File Explore
+  <<<<<<< HEAD
 - eg. Run extensions only inside this enviroment
 - eg. Use bash inside container directly: `yarn start`
-  - Try: `Ctrl+Shift+~`, if shell panel is hidden
+  - # Try: `Ctrl+Shift+~`, if shell panel is hidden
+- eg. Use bash inside container directly: `yarn start`
+- - Try: `Ctrl+Shift+~`, if shell panel is hidden
+- eg. Run extensions only inside this enviroment
+  > > > > > > > 3aa3e97... Separate docker services intend.
 
 ## Features
 
