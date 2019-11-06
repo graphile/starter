@@ -11,11 +11,10 @@ services:
     #* and USER_GID in .devcontainer/Dockerfile to match your user if not 1000.
     # user: $UID
     volumes:
-      - .:/work
-      - node_modules-volume:/work/node_modules
-      # let's us run docker & docker-compose from inside container (used for yarn setup)
-      - /var/run/docker.sock:/var/run/docker.sock
-    working_dir: /work
+      - .:/app
+      - node_modules-volume:/app/node_modules
+    working_dir: /app
+    command: yarn dev
     networks:
       - default
     ports:
@@ -102,5 +101,3 @@ networks:
 volumes:
   db-volume:
   node_modules-volume:
-  #* used for keeeping vscode-extensions while rebuilding
-  # vscode-extensions:
