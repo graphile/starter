@@ -22,10 +22,11 @@ const { randomBytes } = require("crypto");
 const { spawnSync: rawSpawnSync } = require("child_process");
 const dotenv = require("dotenv");
 const inquirer = require("inquirer");
+const pg = require("pg");
 
 // fixes spwanSync not throwing ENOENT on windows
 const platform = require("os").platform();
-const yarnCmd = platform && platform !== "win32" ? "yarn" : "yarn.cmd";
+const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 
 if (isNpx) {
   // Reset the NODE_PATH dance above
@@ -359,50 +360,74 @@ async function main() {
   }
 
   console.log("Installing or reinstalling the roles and database...");
-  // setup database via bash script, because spawnSync is not working
-  spawnSync("bash", ["./scripts/setup-reset-db"], { log: true });
 
-  //! Not working with docker-compose
-  // throws Error ENOENT, but docker-compose is available and works without args
-  const psql_cmd = process.env.PSQL || "psql";
-  const psqlStandardArgs = ["-X", "-v", "ON_ERROR_STOP=1"];
-  const psql = (args, options) => {
-    spawnSync(psql_cmd, [...psqlStandardArgs, ...args], options);
-  };
+  const pgPool = new pg.Pool({
+    connectionString: ROOT_DATABASE_URL,
+  });
 
-  // psql([ROOT_DATABASE_URL], {
-  // input: `
+  pgPool.on("error", err => {
+    // Ignore
+    console.log(
+      "An error occurred whilst trying to talk to the database: " + err.message
+    );
+  });
 
-  //   console.log(`
-  // -- RESET database
-  // DROP DATABASE IF EXISTS ${DATABASE_NAME};
-  // DROP DATABASE IF EXISTS ${DATABASE_NAME}_shadow;
-  // DROP DATABASE IF EXISTS ${DATABASE_NAME}_test;
-  // DROP ROLE IF EXISTS ${DATABASE_VISITOR};
-  // DROP ROLE IF EXISTS ${DATABASE_AUTHENTICATOR};
-  // DROP ROLE IF EXISTS ${DATABASE_OWNER};
+  // Wait for PostgreSQL to come up
+  let attempts = 0;
+  while (true) {
+    try {
+      await pgPool.query('select true as "Connection test";');
+      break;
+    } catch (e) {
+      attempts++;
+      if (attempts <= 30) {
+        console.log(`Database is not ready yet (attempt ${attempts})`);
+      } else {
+        console.log(`Database never came up, aborting :(`);
+        process.exit(1);
+      }
+      await sleep(1000);
+    }
+  }
 
-  // -- Now to set up the database cleanly:
-  // -- Ref: https://devcenter.heroku.com/articles/heroku-postgresql#connection-permissions
+  const client = await pgPool.connect();
+  try {
+    // RESET database
+    await client.query(`DROP DATABASE IF EXISTS ${DATABASE_NAME};`);
+    await client.query(`DROP DATABASE IF EXISTS ${DATABASE_NAME}_shadow;`);
+    await client.query(`DROP DATABASE IF EXISTS ${DATABASE_NAME}_test;`);
+    await client.query(`DROP ROLE IF EXISTS ${DATABASE_VISITOR};`);
+    await client.query(`DROP ROLE IF EXISTS ${DATABASE_AUTHENTICATOR};`);
+    await client.query(`DROP ROLE IF EXISTS ${DATABASE_OWNER};`);
 
-  // -- This is the root role for the database
-  // CREATE ROLE ${DATABASE_OWNER} WITH LOGIN PASSWORD '${DATABASE_OWNER_PASSWORD}'
-  //   -- IMPORTANT: don't grant SUPERUSER in production, we only need this so we can load the watch fixtures!
-  //   SUPERUSER;
+    // Now to set up the database cleanly:
+    // Ref: https://devcenter.heroku.com/articles/heroku-postgresql#connection-permissions
 
-  // -- This is the no-access role that PostGraphile will run as by default
-  // CREATE ROLE ${DATABASE_AUTHENTICATOR} WITH LOGIN PASSWORD '${DATABASE_AUTHENTICATOR_PASSWORD}' NOINHERIT;
+    // This is the root role for the database`);
+    await client.query(
+      // IMPORTANT: don't grant SUPERUSER in production, we only need this so we can load the watch fixtures!
+      `CREATE ROLE ${DATABASE_OWNER} WITH LOGIN PASSWORD '${DATABASE_OWNER_PASSWORD}' SUPERUSER;`
+    );
 
-  // -- This is the role that PostGraphile will switch to (from ${DATABASE_AUTHENTICATOR}) during a GraphQL request
-  // CREATE ROLE ${DATABASE_VISITOR};
+    // This is the no-access role that PostGraphile will run as by default`);
+    await client.query(
+      `CREATE ROLE ${DATABASE_AUTHENTICATOR} WITH LOGIN PASSWORD '${DATABASE_AUTHENTICATOR_PASSWORD}' NOINHERIT;`
+    );
 
-  // -- This enables PostGraphile to switch from ${DATABASE_AUTHENTICATOR} to ${DATABASE_VISITOR}
-  // GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};
-  // `
-  //});
+    // This is the role that PostGraphile will switch to (from ${DATABASE_AUTHENTICATOR}) during a GraphQL request
+    await client.query(`CREATE ROLE ${DATABASE_VISITOR};`);
 
-  spawnSync(yarn_cmd, ["db", "reset"]);
-  spawnSync(yarn_cmd, ["db", "reset", "--shadow"]);
+    // This enables PostGraphile to switch from ${DATABASE_AUTHENTICATOR} to ${DATABASE_VISITOR}
+    await client.query(
+      `GRANT ${DATABASE_VISITOR} TO ${DATABASE_AUTHENTICATOR};`
+    );
+  } finally {
+    await client.release();
+  }
+  await pgPool.end();
+
+  spawnSync(yarnCmd, ["db", "reset"]);
+  spawnSync(yarnCmd, ["db", "reset", "--shadow"]);
 
   console.log();
   console.log();
