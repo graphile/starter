@@ -1,4 +1,4 @@
-// If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
+// If you want to run as a non-root user in the container, see ../docker-compose.yml.
 {
   "name": "Node.js & Postgres",
   "dockerComposeFile": "../docker-compose.yml",
@@ -12,7 +12,7 @@
   },
 
   // Uncomment the next line if you want start specific services in your Docker Compose config.
-  // "runServices": [""],
+  // "runServices": [],
 
   // Uncomment the line below if you want to keep your containers running after VS Code shuts down.
   // "shutdownAction": "none",
