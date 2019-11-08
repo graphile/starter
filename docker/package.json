@@ -1,0 +1,23 @@
+{
+  "name": "docker-helpers",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "--DOCKER HELPERS--": "",
+    "setup": "yarn down && yarn db:up && yarn compose run webapp yarn setup",
+    "start": "yarn web:up && yarn compose:exec:web yarn start",
+    "dev": "yarn compose:exec:dev bash",
+    "dev:run": "yarn compose:exec:dev yarn start",
+    "reset": "yarn compose down && yarn reset:volumes && yarn rebuild && yarn web:up && yarn compose:exec:web yarn reset",
+    "compose": "docker-compose -f ../docker-compose.yml -p graphile-starter",
+    "web:up": "yarn compose up -d webapp",
+    "db:up": "yarn compose up -d db",
+    "compose:exec:web": "yarn compose exec webapp",
+    "compose:exec:dev": "yarn down && yarn compose up -d dev && yarn compose exec dev ",
+    "rebuild": "yarn compose build",
+    "reset:volumes": "node ./scripts/clean-volumes.js",
+    "down": "yarn compose down --remove-orphans"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
