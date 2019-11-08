@@ -1,8 +1,13 @@
 version: "3"
 services:
   dev:
-    image: node:10
-    user: $UID
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Uncomment the next line to use a non-root user. On Linux, this will prevent
+    # new files getting created as root, but you may need to update the USER_UID
+    # and USER_GID in `Dockerfile` to match your user if not 1000.
+    # user: node
     environment:
       - FORCE_COLOR=2
     volumes:
@@ -14,7 +19,8 @@ services:
       - .docker/node_modules_server:/work/@app/server/node_modules
       - .docker/node_modules_worker:/work/@app/worker/node_modules
     working_dir: /work
-    command: yarn dev
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
     ports:
       # The main server
       - "5678:5678"
