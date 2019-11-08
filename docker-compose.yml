@@ -8,8 +8,8 @@ services:
     # new files getting created as root, but you may need to update the USER_UID
     # and USER_GID in `Dockerfile` to match your user if not 1000.
     # user: node
-    environment:
-      - FORCE_COLOR=2
+    env_file:
+      - docker/docker.env
     volumes:
       - .:/work
       - .docker/node_modules:/work/node_modules
