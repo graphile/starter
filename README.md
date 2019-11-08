@@ -9,7 +9,7 @@ more tools and kits for the Node, GraphQL and PostgreSQL ecosystems.
 
 Please note that this software is not "complete," free of software defects,
 or free of security issues — it is not a "finished" solution, but rather the
-seed of a solution which you should review, customise, fix, and develop
+seed of a solution which you should review, customize, fix, and develop
 further.
 
 It is intended that you use a "point in time" version of this software ─ it
@@ -22,7 +22,7 @@ derivative in an automated fashion.
 
 **PLEASE DONATE.**
 
-We've put an absolute tonne of work into this project to help you to turn
+We've put an absolute ton of work into this project to help you to turn
 your application idea into a reality as fast as possible. Instead of putting
 this code under a complex proprietary license we've made it available to you
 under the simple MIT license. This gives you a huge amount of freedom in how
@@ -52,7 +52,7 @@ And please give some love to our featured sponsors 🤩:
 
 - Easy to start
 - Batteries included
-  - User registration, login, forgot password, email management, settings, etc
+  - User registration, login, forgot password, email management, settings, etc.
   - AntD design framework
   - Preconfigured everything
 - Development speed
@@ -81,7 +81,7 @@ And please give some love to our featured sponsors 🤩:
   - extremely high performance
   - optionally separate out job queue
   - optionally separate out SSR
-  - optional redis session store
+  - optional Redis session store
 
 ## Prerequisites
 
@@ -137,19 +137,19 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **PostGraphile configured for lean schema** — very tidy GraphQL schema, adhering to PostGraphile best practices
 - [x] **Autoformatting** ─ Thanks to `prettier` and `eslint`, code can be auto-formatted (and auto-fixed) on save
 - [x] **Job queue** — we've added and configured <a href="https://github.com/graphile/worker">graphile-worker</a> to perform background tasks for you, such as sending emails, and included some example tasks
-- [x] **Express server** — with Benjie's [easy to customise and understand middleware system](@app/server/src/index.ts)
-- [x] **Debugability** ─ The server, worker, tests and client are all ready to be debugged using [VSCode's built in breakpoints](https://code.visualstudio.com/docs/editor/debugging)
+- [x] **Express server** — with Benjie's [easy to customize and understand middleware system](@app/server/src/index.ts)
+- [x] **Debuggability** ─ The server, worker, tests and client are all ready to be debugged using [VSCode's built in breakpoints](https://code.visualstudio.com/docs/editor/debugging)
 - [x] **Hot reloading** — edit a component and it's re-rendered immediately (warning: state is _not_ restored, because this typically leads to instability); provided by Next.js
 - [x] **SSR with hot reloading** — if you turn JS off and reload the page you should be greeted with the same content anyway; provided by Next.js
 - [x] **Productive roll-forward migrations** — we use <a href="https://github.com/graphile/migrate">graphile-migrate</a> for development speed, but you're welcome to switch to whatever migration library you like
-- [x] **Realtime** — PostGraphile is configured with `@graphile/pg-pubsub` to enable realtime events from the DB; and Apollo is configured to consume them
+- [x] **Realtime** — PostGraphile is configured with `@graphile/pg-pubsub` to enable Realtime events from the DB; and Apollo is configured to consume them
 - [x] **Production build** — command to generate a production build of the project using `yarn run build`
 - [x] **Production Docker build** — how to build a Docker image you could use in production
 - [x] **Deployment instructions: Heroku** — how to deploy to Heroku
 - [x] **Database tests** — Jest configured to test the database, plus initial tests for various database functions and tables
 - [x] **GraphQL tests** — Jest configured to test the GraphQL schema, plus some initial tests
 - [x] **Acceptance tests** — implemented with Cypress
-- [x] **Docker development flow** — enables work on this project using Docker (rather than running the Postgres/etc directly on your machine)
+- [x] **Docker development flow** — enables work on this project using Docker (rather than running the Postgres/etc. directly on your machine)
 - [x] **Documented error codes** — specification of existing error codes, examples of them being used, and space to add more
 - [x] **Prebuilt user system** — supporting both username/password registration and OAuth / social authentication (Twitter, GitHub, Facebook, ...)
   - [x] Register via email with sensible validation and error handling
@@ -164,11 +164,11 @@ Checked features have been implemented, unchecked features are goals for the fut
   - [x] Forgot password flow
   - [x] Unlinking social profiles
 - [x] **Sessions** — to persist login information in the traditional way (with cookies)
-- [x] **Responsive email templates** — we've added MJML and a templating system to help you format emails; all emails go through the `send_email` worker task so it's easy to customise
-- [x] **Email transport** — we've configured nodemailer to use ethereal.email to catch all development emails, and AWS' SES in production (easy to replace with a different provider thanks to nodemailer)
-- [x] **Ant Design** — &ldquo;A design system with values of Nature and Determinacy for better user experience of enterprise applications&rdquo;
-- [x] **Linting** — provided by `eslint`, `prettier` and `@typescript-eslint`. Can be extended with extremely powerful lint rules to protect your project from bugs, bad practices, and inconsistencies; configured with sensible but not too intrusive (hopefully) defaults focussed on GraphQL development
-- [x] **HTML→text emails** — automated conversion from your pretty templates to plain text emails for users that prefer that
+- [x] **Responsive email templates** — we've added MJML and a templating system to help you format emails; all emails go through the `send_email` worker task so it's easy to customize
+- [x] **Email transport** — we've configured Nodemailer to use ethereal.email to catch all development emails, and AWS' SES in production (easy to replace with a different provider thanks to Nodemailer)
+- [x] **Ant Design** — "A design system with values of Nature and Determinacy for better user experience of enterprise applications"
+- [x] **Linting** — provided by `eslint`, `prettier` and `@typescript-eslint`. Can be extended with extremely powerful lint rules to protect your project from bugs, bad practices, and inconsistencies; configured with sensible but not too intrusive (hopefully) defaults focused on GraphQL development
+- [x] **HTML→Text emails** — automated conversion from your pretty templates to plain text emails for users that prefer that
 - [x] **Form validation** — using AntD's `Form` component
 
 ## TODO
@@ -184,8 +184,8 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 This main command runs a number of tasks:
 
 - uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch the`migrations/current.sql` file for changes, and automatically runs it against your database when it changes
-- watches the TypeScript source code of the server, and compiles it from `@app/*/src` to `@app/*/dist` so node/`graphile-worker`/etc can run the compiled code directly
-- runs the node server (includes PostGraphile and Next.js middlewares)
+- watches the TypeScript source code of the server, and compiles it from `@app/*/src` to `@app/*/dist` so node/`graphile-worker`/etc. can run the compiled code directly
+- runs the node server (includes PostGraphile and Next.js middleware)
 - runs `graphile-worker` to execute your tasks (e.g. sending emails)
 - watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript React hooks for you automatically, leading to strongly typed code with minimal effort
 - runs the `jest` tests in watch mode, automatically re-running as the database or test files change
@@ -205,7 +205,7 @@ tests to ensure that your project remains rock-solid at all times.
 We use Next.js ([docs](https://nextjs.org/)) to handle the various common
 concerns of a React application for us (server-side rendering, routing,
 bundling, bundle-splitting, etc). The `@app/client/src/pages/_app.tsx` file is a
-[custom &lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to
+[custom lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to
 add any providers you need to. We've already set it up with `withApollo` from
 `@app/client/src/lib/withApollo` which includes all the Apollo configuration,
 including the client URL.
@@ -322,7 +322,7 @@ If you are using `graphile-migrate` make sure that you have executed
 `graphile-migrate commit` to commit all your database changes, since we only
 run committed migrations in production.
 
-Make sure you have customised `@app/config/src/index.ts`.
+Make sure you have customized `@app/config/src/index.ts`.
 
 Make sure everything is committed and pushed in git.
 
@@ -332,17 +332,17 @@ Once your database server is running, you can use our `heroku-setup` script to
 automate the setup process. This script does the following:
 
 - Creates the Heroku app
-- Adds the redis extension to this heroku app
+- Adds the redis extension to this Heroku app
 - Creates the database in the database server
 - Creates the relevant roles, generating random passwords for them
 - Installs some common database extensions
 - Sets the Heroku config variables
-- Adds the heroku app as a git remote named 'heroku'
+- Adds the Heroku app as a git remote named 'Heroku'
 - Pushes the 'master' branch to Heroku to perform your initial build
 
-Copy `heroku-setup.template` to `heroku-setup`, then edit it and customise the
+Copy `heroku-setup.template` to `heroku-setup`, then edit it and customize the
 settings at the top. We also recommend reading through the script and
-customising it as you see fit - particularly if you are using additional
+customizing it as you see fit - particularly if you are using additional
 extensions that need installing.
 
 Now run the script:
@@ -352,8 +352,8 @@ bash heroku-setup
 ```
 
 Hopefully all has gone well. If not, step through the remaining tasks in the
-heroku-setup script and fix each task as you go. We've designed the script so
-that if your superuser credentials are wrong, or the heroku app already exists,
+Heroku-setup script and fix each task as you go. We've designed the script so
+that if your superuser credentials are wrong, or the Heroku app already exists,
 you can just edit the settings and try again. All other errors will probably
 need manual intervention. Verbosity is high so you can track exactly what
 happened.
