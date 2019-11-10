@@ -42,10 +42,12 @@ services:
     # needs to be 2 directories deep for dump-db.sh to work
     working_dir: /root/home
     volumes:
-      - .docker/postgres_data:/var/lib/postgresql/data
+      - db-volume:/var/lib/postgresql/data
       - ./data:/data
     ports:
       - "5432:5432"
     restart: unless-stopped
     command: postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
 
+volumes:
+  db-volume:
