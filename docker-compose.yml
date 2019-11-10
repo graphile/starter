@@ -19,6 +19,8 @@ services:
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /work
+    networks:
+      - default
     ports:
       # The main server
       - "5678:5678"
@@ -67,6 +69,8 @@ services:
       # - $HOME:/root/.home-localhost:ro
 
     working_dir: /work
+    networks:
+      - default
     ports:
       # The main server
       - "5678:5678"
@@ -91,7 +95,13 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
+    networks:
+      - default
     command: postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
+
+networks:
+  default:
+    name: graphile-starter
 
 volumes:
   db-volume:
