@@ -4,6 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    # needed for dev.Dockerfile to reference it, even when folder basename changes
+    # if you change this, also change FROM in dev.Dockerfile
+    container_name: graphile-starter_webapp
     # Uncomment the next line to use a non-root user. On Linux, this will prevent
     # new files getting created as root, but you may need to update the USER_UID
     # and USER_GID in `Dockerfile` to match your user if not 1000.
@@ -16,10 +19,6 @@ services:
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /work
-    depends_on:
-      - db
-    # Overrides default command so things don't shut down after the process ends.
-    command: sleep infinity
     ports:
       # The main server
       - "5678:5678"
@@ -29,6 +28,34 @@ services:
       - "9757:9757"
     depends_on:
       - db
+    #* Overrides default command so things don't shut down after the process ends.
+    command: yarn start
+
+  # extends web, is made for live developing
+  dev:
+    build:
+      context: .
+      dockerfile: docker/dev.Dockerfile
+    env_file:
+      - docker/docker.env
+    volumes:
+      #* same as service: webapp
+      - .:/work
+      - node_modules-volume:/work/node_modules
+      # let's us run docker & docker-compose from inside container (used for yarn setup)
+      - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /work
+    ports:
+      # The main server
+      - "5678:5678"
+      # Node `--inspect=...` port numbers for debugging
+      - "9678:9678"
+      - "9876:9876"
+      - "9757:9757"
+    depends_on:
+      - db
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
 
   # This runs the database that everything else connects to
   db:

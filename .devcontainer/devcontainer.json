@@ -2,7 +2,7 @@
 {
   "name": "Node.js & Postgres",
   "dockerComposeFile": "../docker-compose.yml",
-  "service": "webapp",
+  "service": "dev", // attaches to this service after docker-compose up `runServices`
   "workspaceFolder": "/work",
 
   // Use 'settings' to set *default* container specific settings.json values on container create.
@@ -12,7 +12,7 @@
   },
 
   // Uncomment the next line if you want start specific services in your Docker Compose config.
-  "runServices": ["webapp"],
+  "runServices": ["dev"], // only run dev, not also webapp
 
   // Uncomment the line below if you want to keep your containers running after VS Code shuts down.
   // "shutdownAction": "none",
