@@ -12,12 +12,7 @@ services:
       - docker/docker.env
     volumes:
       - .:/work
-      - .docker/node_modules:/work/node_modules
-      - .docker/node_modules_client:/work/@app/client/node_modules
-      - .docker/node_modules_db:/work/@app/db/node_modules
-      - .docker/node_modules_e2e:/work/@app/e2e/node_modules
-      - .docker/node_modules_server:/work/@app/server/node_modules
-      - .docker/node_modules_worker:/work/@app/worker/node_modules
+      - node_modules-volume:/work/node_modules
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /work
@@ -51,3 +46,4 @@ services:
 
 volumes:
   db-volume:
+  node_modules-volume:
