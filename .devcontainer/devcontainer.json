@@ -18,7 +18,7 @@
   // "shutdownAction": "none",
 
   // Uncomment next line if you want to copy your .ssh creds and other config files for easier use inside container
-  // "postCreateCommand": "",
+  //"postCreateCommand": "bash ./docker/scripts/copy-local-config-and-ssh-creds.sh",
 
   // Add the IDs of extensions you want installed when the container is created in the array below.
   "extensions": [
