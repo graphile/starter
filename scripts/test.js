@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 require("@app/config/env");
 const { execSync, spawnSync } = require("child_process");
 const concurrently = require("concurrently");
