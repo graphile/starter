@@ -10,7 +10,7 @@ services:
     # Uncomment the next line to use a non-root user. On Linux, this will prevent
     # new files getting created as root, but you may need to update the USER_UID
     # and USER_GID in `Dockerfile` to match your user if not 1000.
-    # user: node
+    user: $UID
     env_file:
       - docker/docker.env
     volumes:
@@ -40,6 +40,10 @@ services:
       dockerfile: docker/dev.Dockerfile
     env_file:
       - docker/docker.env
+    # Uncomment the next line to use a non-root user. On Linux, this will prevent
+    # new files getting created as root, but you may need to update the USER_UID
+    # and USER_GID in `Dockerfile` to match your user if not 1000.
+    user: $UID
     volumes:
       #* same as service: webapp
       - .:/work
@@ -86,6 +90,9 @@ services:
   # This runs the database that everything else connects to
   db:
     image: postgres:11
+    # Uncomment the next line to use a non-root user. On Linux, this will prevent
+    # new files getting created as root, but you may need to update the USER_UID
+    # and USER_GID in `Dockerfile` to match your user if not 1000.
     user: $UID
     # needs to be 2 directories deep for dump-db.sh to work
     working_dir: /root/home
