@@ -85,22 +85,50 @@ And please give some love to our featured sponsors 🤩:
 
 ## Prerequisites
 
+You can either work with this project `local` or use a pre-configured `docker` enviroment.
+
+For users of Visual Studio Code (VSCode), a `.vscode` folder is included with
+editor settings and debugger settings provided, plus a list of recommended
+extensions. There is also a `.devcontainer` folder, which makes developing with
+these docker containers a breeze.
+
+### Local/Natively
+
 - Node.js v10+ must be installed
-- Either a PostgreSQL v10+ server must be available, or Docker and docker-compose must be available
+- PostgreSQL v10+ server must be available
 - VSCode is recommended, but any editor will do
 
 This software has been developed under Mac and Linux, and should work in a
 `bash` environment. I'm not sure if it works under Windows; PRs to fix
 Windows compatibility issues would be welcome (please keep them small!).
 
-For users of Visual Studio Code (VSCode), a `.vscode` folder is included with
-editor settings and debugger settings provided, plus a list of recommended
-extensions.
+### Docker
+
+- [`docker`](https://docs.docker.com/install/)
+- [`docker-compose`](https://docs.docker.com/compose/install/)
 
 ## Getting started
 
+### Only if you want to work with `docker-compose` setup
+
+- Start PostgreSQL servers: `docker-compose up -d db`
+- Run one time setup in "webapp": `docker-compose run webapp bash`
+- Follow: [Initial Setup](#initial_setup) inside this new shell
+
+Alias to combine all of above (including "Initial Setup"):
+
+```
+# provided by `docker/package.json`
+yarn docker setup
+```
+
+### Initial Setup
+
+**(same for local and all docker variants)**
+
 This project is designed to work with `yarn`. If you don't have `yarn`
-installed, you can install it with `npm install -g yarn`.
+installed, you can install it with `npm install -g yarn`. Docker setup already
+has `yarn` & `npm` installed and configured.
 
 To get started, please run the `yarn setup` command which should lead you
 through the necessary steps:
@@ -114,17 +142,33 @@ Do not commit it to version control!
 
 ## Running
 
-Depending on how you answered the setup questions, you can bring up the stack:
+You can bring up the stack with:
 
-- natively: `yarn start`
-- with Docker: `export UID; docker-compose up`
-  - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar
+### Natively:
+
+```
+yarn start
+```
+
+### Docker:
+
+```
+export UID; docker-compose up webapp
+```
+
+Which then runs `yarn start` inside the `webapp` container.
 
 After a short period you should then be able to load the application at
 http://localhost:5678
 
+**NOTE:** `export UID` is really important on Linux hosts, otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar.
+
+Please be aware, that if you run it via `docker-compose run webapp` (how it was described above in the setup part) it won't work, because outside ports aren't automatically opened with `docker-compose run`
+
+<!--
+? not sure we still need this, if you redo setup, it might work
 **Be careful not to mix and match Docker-mode vs local-mode.** You should
-stick with the answer you gave during setup.
+stick with the answer you gave during setup. -->
 
 ## Features
 
@@ -146,6 +190,7 @@ Checked features have been implemented, unchecked features are goals for the fut
 - [x] **Production build** — command to generate a production build of the project using `yarn run build`
 - [x] **Production Docker build** — how to build a Docker image you could use in production
 - [x] **Deployment instructions: Heroku** — how to deploy to Heroku
+
 - [x] **Database tests** — Jest configured to test the database, plus initial tests for various database functions and tables
 - [x] **GraphQL tests** — Jest configured to test the GraphQL schema, plus some initial tests
 - [x] **Acceptance tests** — implemented with Cypress
@@ -179,7 +224,7 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 
 ## Documentation links
 
-### `yarn start` (or `docker-compose up`)
+### `yarn start` (or `docker-compose up webapp`)
 
 This main command runs a number of tasks:
 
@@ -190,8 +235,10 @@ This main command runs a number of tasks:
 - watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript React hooks for you automatically, leading to strongly typed code with minimal effort
 - runs the `jest` tests in watch mode, automatically re-running as the database or test files change
 
-For `docker-compose up` it also runs the PostgreSQL server that the system
+For `docker-compose up webapp` also runs the PostgreSQL server that the system
 connects to.
+
+You also could use only use PostgreSQL server via `docker-compose up -d db` and develop natively.
 
 ### Cypress e2e tests
 
@@ -270,9 +317,13 @@ information, see the [passport.js documentation](http://www.passportjs.org/docs/
 
 Docker creates the files in `.docker` as root. As these files are owned by
 root you have to `sudo` to deal with them. 🙄
+Or use `export UID; docker compose ...`
 
-PostgreSQL logs from Docker on stdout were overwhelming so we now write them
-to the Postgres data directory `.docker/postgres_data/logs/`. We've enabled
+PostgreSQL logs from Docker on stdout were overwhelming, so we recommend to only start the `db` services in detached mode: `docker-compose up -d db`.
+
+To see logs on your `stdout` you can use: `docker-compose logs db` anytime.
+
+We've enabled
 `log_truncate_on_rotation` but you may need to prune these periodically. See
 [log file
 maintenance](https://www.postgresql.org/docs/current/logfile-maintenance.html).
@@ -280,6 +331,137 @@ maintenance](https://www.postgresql.org/docs/current/logfile-maintenance.html).
 Our Docker setup seems to trigger more watch events than the native one, so
 it seems to do more redundant work/produce more output. A PR to fix this
 would be welcome!
+
+## Using and developing with included `docker-compose` setup
+
+### Explanation:
+
+The docker environment (`docker-compose.yml`) is set up so you can almost work with this repo like you would on a native machine.
+
+There is a `webapp` docker-compose service which has `node` and `yarn` already installed. Once you have everything setup
+you can simply start it via `docker-compose up`.
+Or use the the alias `yarn docker start` (provided by `docker/package.json`), which does some more useful stuff as well.
+
+You also could just start the service in detached mode and then attach into the running service to then work from inside like you would natively. You can do this with the `webapp` service as well with the `dev` service, which provides a few more developer tools (like `git`, `tmux`, ...) which are only helpful for developing but not for running node server.
+
+**NOTE (for Windows)**: For _hot-reloading_ to work, you may need to install and run [docker-volume-watcher](https://github.com/merofeev/docker-windows-volume-watcher)
+
+#### Use Case Example:
+
+> Attach to `dev`, run `yarn db migrate` to start a migration and then keep on developing on react client with hot reloading:
+
+```sh
+# make sure everything is ready to start and no ports are blocked
+$: docker-compose down
+# start dev (and linked db) service in detached mode (so we can continue typing)
+$: docker-compose up -d dev
+# attach to dev container shell
+$: docker-compose exec dev bash
+# start migration from inside container
+@dev$: yarn db migrate
+# develop on client with hot reloading
+@dev$: yarn start
+# wait a little
+# after it prompts you so,open `localhost:5678` in your browser of choice
+```
+
+> Compact alias for above:
+
+```sh
+# (provided by `docker/package.json`)
+
+# make sure everything is ready to start and no ports are blocked
+# start dev (and linked db) service in detached mode (so we can continue typing)
+# attach to dev container shell
+$: yarn docker dev
+# start migration from inside container
+@dev$: yarn db migrate
+# develop on client with hot reloading
+@dev$: yarn start
+# wait a little
+# after it prompts you so,open `localhost:5678` in your browser of choice
+```
+
+### About `dev` docker-compose service
+
+There is another "secret" service `dev` inside `docker-compose.yml` which
+kind of simply extends `webapp`, our normal `node.js` server service container.
+
+This decision was made to separate the docker services, one for minimal setup and for comfortable developing.
+
+Service `webapp` is for starting Node.js server with React and Next.js keeps running until `yarn start` stops or crashes.
+This is similar to a production deployment environment. Although hot reload
+and everything else like environment variables are still tuned for active development and not production ready.
+See:
+[Building the production docker image](#building_the_production_docker_image),
+on how to optimize your `Dockerfile` for production.
+
+Service `dev` is for attaching to docker container bash and developing
+actively from inside. It has several developer tools and configs for eg. git, vim,
+... already installed.
+
+**Aliases** for quickly using `dev` container (without VSCode):
+
+#### Attach to shell, inside `dev` container:
+
+```
+yarn docker dev
+```
+
+#### Run `yarn start` inside `dev` container:
+
+```
+yarn docker dev:start
+```
+
+See `docker/package.json` to learn about more aliases.
+
+### About VSCode with Remote Container Extension
+
+A `.devcontainer` folder is also provided, which enables `Visual Studio Code Remote - Containers` extension to develop from inside the container.
+
+> The Visual Studio Code Remote - Containers extension lets you use a Docker container as a full-featured development environment. It allows you to open any folder inside (or mounted into) a container and take advantage of Visual Studio Code's full feature set. A `devcontainer.json` file in your project tells VS Code how to access (or create) a development container with a well-defined tool and runtime stack. This container can be used to run an application or to sandbox tools, libraries, or runtimes needed for working with a codebase.
+
+> Workspace files are mounted from the local file system or copied or cloned into the container. Extensions are installed and run inside the container, where they have full access to the tools, platform, and file system. This means that you can seamlessly switch your entire development environment just by connecting to a different container.
+
+> This lets VS Code provide a local-quality development experience — including full IntelliSense (completions), code navigation, and debugging — regardless of where your tools (or code) are located.
+
+See [Developing inside a Container](https://code.visualstudio.com/docs/remote/containers) for more.
+
+Once you follow the one-time steps in setup, you can from now simply opened this container in VS
+Code.
+
+This feels like natively developing but is also a already pre-configured docker environment
+environment
+
+#### If you want to use your local configs e.g. `gitconfig` your `ssh` creds.
+
+Uncomment `postCreateCommand` in `devcontainer.json` and the appropriate volume mounts
+at service `dev` in `docker-compose.yml`
+
+**BE AWARE:** on windows your whole `$HOME` folder will be copied over, including all your `ssh` creds.
+
+### Using VSCode with Remote Container Extension
+
+#### One time only
+
+- Edit: `.devcontainer/dev.Dockerfile`
+- Replace `graphile-starter` in Line 6 with your projects folders basename eg. `my_project`
+
+```docker
+FROM my_project_webapp:latest
+```
+
+### Open project in VSCode and start developing
+
+- Install vscode-extension: [ms-vscode-remote.remote-container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- Press `Ctrl+Shift+P`
+- Type `>Remote-Containers: Reopen in Container`
+- Develop like being natively on this machine
+- eg. Use VSCode File Explorer
+- eg. Run extensions only inside this environment
+- eg. Use bash inside container directly: `yarn start`
+  - Try: `Ctrl+Shift+~`, if shell panel is hidden
 
 ## Building the production docker image
 
@@ -293,6 +475,7 @@ To build the worker, pass `TARGET="worker"` instead of the default
 
 ```sh
 docker build \
+  --file production.Dockerfile \
   --build-arg ROOT_URL="http://localhost:5678" \
   --build-arg TARGET="server" \
   .
