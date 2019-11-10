@@ -18,6 +18,8 @@ services:
       - .docker/node_modules_e2e:/work/@app/e2e/node_modules
       - .docker/node_modules_server:/work/@app/server/node_modules
       - .docker/node_modules_worker:/work/@app/worker/node_modules
+      # let's us run docker & docker-compose from inside container (used for yarn setup)
+      - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /work
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
@@ -31,8 +33,11 @@ services:
   pg:
     image: postgres:11
     user: $UID
+    # needs to be 2 directories deep for dump-db.sh to work
+    working_dir: /root/home
     volumes:
       - .docker/postgres_data:/var/lib/postgresql/data
+      - ./data:/data
     ports:
       - "5432:5432"
     restart: unless-stopped
