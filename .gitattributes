@@ -1,0 +1,6 @@
+*.js text=auto eol=lf
+*.ts text=auto eol=lf
+*.json text=auto eol=lf
+*.md text=auto eol=lf
+*.sh text=auto eol=lf
+*.yml text=auto eol=lf
