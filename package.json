@@ -4,7 +4,8 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "clean": "rm -Rf @app/*/dist @app/client/.next",
+    "clean": "node ./scripts/clean.js",
+    "reset": "yarn clean && node ./scripts/reset.js",
     "setup": "npx -p dotenv -p inquirer -p pg ./scripts/setup.js",
     "start": "node ./scripts/start.js",
     "test": "node scripts/test.js",
