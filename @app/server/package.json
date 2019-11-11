@@ -1,51 +1,22 @@
 {
   "name": "@app/server",
+  "description": "graphile starter using nuxt.js w/ TS",
+  "version": "2.10.1",
   "private": true,
-  "version": "0.0.0",
-  "scripts": {
-    "build": "tsc && chmod +x dist/index.js",
-    "watch": "tsc --watch",
-    "start": "node -r @app/config/env dist/index.js",
-    "dev": "nodemon --watch 'dist/**/*.js' -x 'sleep 10; node --inspect=9678 -r @app/config/env -r source-map-support/register' dist/index.js"
-  },
   "dependencies": {
-    "@app/client": "0.0.0",
-    "@app/config": "0.0.0",
-    "@graphile-contrib/pg-simplify-inflector": "^5.0.0-beta.1",
-    "@graphile/pg-pubsub": "^4.4.3",
-    "@graphile/pro": "^0.9.0",
-    "@graphile/subscriptions-lds": "^4.4.4",
-    "@types/chalk": "^2.2.0",
-    "@types/connect-pg-simple": "^4.2.0",
-    "@types/connect-redis": "^0.0.11",
-    "@types/express-session": "^1.15.13",
-    "@types/graphql": "*",
-    "@types/helmet": "^0.0.44",
-    "@types/morgan": "^1.7.36",
-    "@types/passport": "^1.0.0",
-    "@types/passport-github": "^1.1.5",
-    "@types/pg": "^7.4.14",
-    "@types/redis": "^2.8.14",
-    "chalk": "^2.4.2",
-    "connect-pg-simple": "^6.0.0",
-    "connect-redis": "^4.0.3",
-    "express": "^4.17.1",
-    "express-session": "^1.16.2",
-    "graphile-utils": "^4.4.4",
-    "helmet": "^3.21.1",
-    "lodash": "^4.17.15",
-    "morgan": "^1.9.1",
-    "next": "^9.0.3",
-    "passport": "^0.4.0",
-    "passport-github": "^1.1.0",
-    "pg": "^7.12.1",
-    "postgraphile": "^4.4.4",
-    "redis": "^2.8.0",
-    "source-map-support": "^0.5.13",
-    "subscriptions-transport-ws": "^0.9.16",
-    "ws": "^7.1.2"
+    "@nuxtjs/axios": "5.6.0",
+    "@nuxt/typescript-runtime": "0.2.1",
+    "nuxt": "2.10.1",
+    "nuxt-property-decorator": "2.4.0",
+    "vuex-class": "0.3.2"
+  },
+  "scripts": {
+    "dev": "nuxt-ts",
+    "build": "nuxt-ts build",
+    "start": "nuxt-ts start",
+    "generate": "nuxt-ts generate"
   },
   "devDependencies": {
-    "graphql": "^14.4.2"
+    "@nuxt/typescript-build": "0.3.1"
   }
 }
