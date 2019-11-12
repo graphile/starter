@@ -56,7 +56,7 @@ services:
       #* to use your local configs inside container
       ## avoids vscode extensions reinstalls
       ## https://code.visualstudio.com/docs/remote/containers-advanced#_avoiding-extension-reinstalls-on-container-rebuild
-      # - vscode-extensions:/root/.vscode-server
+      - vscode-extensions:/root/.vscode-server
       #! LINUX HOST ONLY
       ## copies your ssh credentials, to be able to use them from within the container
       ## (see: https://code.visualstudio.com/docs/remote/containers#_sharing-git-credentials-with-your-container)
@@ -70,7 +70,7 @@ services:
       ##! WINDOWS HOST ONLY
       ##* on windows host can't mount single files
       ## comment all the other `.home-localhost` lines above this
-      # - $HOME:/root/.home-localhost:ro
+      - /c/Users/Joe/AppData/Roaming/.home:/root/.home-localhost:ro
 
     working_dir: /work
     networks:
@@ -113,5 +113,5 @@ networks:
 volumes:
   db-volume:
   node_modules-volume:
-  # used for keeeping vscode-extensions while rebuilding
-  # vscode-extensions:
+  #* used for keeeping vscode-extensions while rebuilding
+  vscode-extensions:
