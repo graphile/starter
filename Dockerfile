@@ -26,7 +26,7 @@ RUN \
   && curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
   &&  chmod 755 /usr/local/bin/docker-compose \
   # Verify git and needed tools are installed
-  && apt-get -y install git iproute2 procps \
+  && apt-get -y install git bash-completion iproute2 procps \
   #
   # Remove outdated yarn from /opt and install via package
   # so it can be easily updated via apt-get upgrade yarn
