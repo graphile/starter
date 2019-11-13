@@ -25,6 +25,7 @@
     "@types/passport-github": "^1.1.5",
     "@types/pg": "^7.11.2",
     "@types/redis": "^2.8.14",
+    "ant-design-vue": "^1.4.4",
     "chalk": "^3.0.0",
     "connect-pg-simple": "^6.0.1",
     "connect-redis": "^4.0.3",
@@ -53,6 +54,10 @@
     "generate": "nuxt-ts generate"
   },
   "devDependencies": {
+    "@nuxt/typescript-build": "0.3.1",
     "@types/node": "^12.12.7",
+    "babel-plugin-import": "^1.12.2",
+    "less": "^3.10.3",
+    "less-loader": "^5.0.0"
   }
 }

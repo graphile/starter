@@ -1,6 +1,7 @@
 <template>
   <section>
     <h1 class="header">Nuxt TypeScript Starter</h1>
+    <Button type="primary">Enjoy it</Button>
     <div class="cards">
       <Card v-for="person in people" :key="person.id" :person="person"></Card>
     </div>
@@ -12,10 +13,12 @@ import { Component, Vue } from "nuxt-property-decorator";
 import { State } from "vuex-class";
 import { Person } from "~/types";
 import Card from "~/components/Card.vue";
+import { Button } from "ant-design-vue";
 
 @Component({
   components: {
     Card,
+    Button,
   },
 })
 export default class extends Vue {
