@@ -48,10 +48,11 @@
     "ws": "^7.2.0"
   },
   "scripts": {
-    "dev": "nuxt-ts",
-    "build": "nuxt-ts build",
-    "start": "nuxt-ts start",
-    "generate": "nuxt-ts generate"
+    "env": "nuxt-ts:env",
+    "build": "nuxt-ts:env build",
+    "start": "nuxt-ts:env start",
+    "generate": "nuxt-ts:env generate",
+    "nuxt-ts:env": "node -r @app/config/env node_modules/.bin/nuxt-ts"
   },
   "devDependencies": {
     "@nuxt/typescript-build": "0.3.1",
