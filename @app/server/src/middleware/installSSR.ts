@@ -8,7 +8,7 @@ if (!process.env.NODE_ENV) {
 
 const isDev = process.env.NODE_ENV !== "production";
 
-export default async function installNext(app: Express) {
+export default async function installSSR(app: Express) {
   // @ts-ignore Next had a bad typing file, they claim `export default` but should have `export =`
   // Ref: https://unpkg.com/next@9.0.3/dist/server/next.js
   const nextApp = next({
