@@ -13,6 +13,7 @@
   "dependencies": {
     "@app/config": "0.0.0",
     "@types/html-to-text": "^1.4.31",
+    "@types/lodash": "^4.14.146",
     "@types/mjml": "^4.0.2",
     "@types/nodemailer": "^6.2.1",
     "aws-sdk": "^2.556.0",
