@@ -1,6 +1,9 @@
 import path from "path";
 export default {
-  modulesDir: path.resolve(__dirname, "../../node_modules/"),
+  modulesDir: [
+    path.resolve(__dirname, "../../node_modules/"),
+    path.resolve(__dirname, "../../@app/"), // TODO: (more testing) let's nuxt see @app after hot-reload
+  ],
   server: {
     //TODO: read $PORT
     port: 5678, // default: 3000
@@ -37,10 +40,11 @@ export default {
     loaders: {
       less: {
         javascriptEnabled: true,
-        /*         modifyVars: {
+        modifyVars: {
+          "layout-header-background": "#fff",
           "primary-color": "rgba(222, 12, 101, 1.0)",
           "component-background": "#ffffff",
-        }, */
+        },
       },
     },
   },
