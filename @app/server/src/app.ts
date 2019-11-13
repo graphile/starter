@@ -23,7 +23,13 @@ export function getTyped(app: Express, key: string): any {
   return app.get(key);
 }
 
-export async function makeApp(httpServer?: Server): Promise<Express> {
+export async function makeApp({
+  installNext = true,
+  httpServer,
+}: {
+  installNext?: boolean;
+  httpServer?: Server;
+} = {}): Promise<Express> {
   const isTest = process.env.NODE_ENV === "test";
   const isDev = process.env.NODE_ENV === "development";
 
@@ -77,7 +83,9 @@ export async function makeApp(httpServer?: Server): Promise<Express> {
     await middleware.installCypressServerCommand(app);
   }
   await middleware.installPostGraphile(app);
-  await middleware.installNext(app);
+  if (installNext) {
+    await middleware.installNext(app);
+  }
 
   /*
    * Error handling middleware

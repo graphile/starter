@@ -15,7 +15,7 @@ async function main() {
   const httpServer = createServer();
 
   // Make our application (loading all the middleware, etc)
-  const app = await makeApp(httpServer);
+  const app = await makeApp({ httpServer });
 
   // Add our application to our HTTP server
   httpServer.addListener("request", app);
