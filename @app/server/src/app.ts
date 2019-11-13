@@ -3,6 +3,7 @@ import express, { Express } from "express";
 import * as middleware from "./middleware";
 import { makeShutdownActions, ShutdownAction } from "./shutdownActions";
 import { Middleware } from "postgraphile";
+import { sanitiseEnv } from "./utils";
 
 export function getTyped(app: Express, key: "httpServer"): Server | void; // Server may not always be supplied, e.g. where mounting on a subroute
 export function getTyped(
@@ -24,12 +25,12 @@ export function getTyped(app: Express, key: string): any {
 }
 
 export async function makeApp({
-  installNext = true,
   httpServer,
 }: {
-  installNext?: boolean;
   httpServer?: Server;
 } = {}): Promise<Express> {
+  sanitiseEnv();
+
   const isTest = process.env.NODE_ENV === "test";
   const isDev = process.env.NODE_ENV === "development";
 
@@ -83,9 +84,7 @@ export async function makeApp({
     await middleware.installCypressServerCommand(app);
   }
   await middleware.installPostGraphile(app);
-  if (installNext) {
-    await middleware.installNext(app);
-  }
+  await middleware.installSSR(app);
 
   /*
    * Error handling middleware

@@ -2,15 +2,12 @@
 /* eslint-disable no-console */
 import chalk from "chalk";
 import { createServer } from "http";
-import { sanitiseEnv } from "./utils";
 import { makeApp, getTyped } from "./app";
 
 // @ts-ignore
 const packageJson = require("../../../package.json");
 
 async function main() {
-  sanitiseEnv();
-
   // Create our HTTP server
   const httpServer = createServer();
 
