@@ -3,12 +3,30 @@ import { urlencoded } from "body-parser";
 import { Pool } from "pg";
 
 export default (app: Application) => {
+  // Only enable this in test/development mode
   if (!["test", "development"].includes(process.env.NODE_ENV || "")) {
     throw new Error("This code must not run in production");
   }
+
+  /*
+   * Furthermore we require the `ENABLE_CYPRESS_COMMANDS` environmental variable
+   * to be set; this gives us extra protection against accidental XSS/CSRF
+   * attacks.
+   */
   const safeToRun = process.env.ENABLE_CYPRESS_COMMANDS === "1";
+
   const rootPgPool: Pool = app.get("rootPgPool");
+
+  /*
+   * This function is invoked for the /cypressServerCommand route and is
+   * responsible for parsing the request and handing it off to the relevant
+   * function.
+   */
   const handleCypressServerCommand: RequestHandler = async (req, res, next) => {
+    /*
+     * If we didn't set ENABLE_CYPRESS_COMMANDS, output a warning to the server
+     * log, and then pretend the /cypressServerCommand route doesn't exist.
+     */
     if (!safeToRun) {
       console.error(
         "/cypressServerCommand denied because ENABLE_CYPRESS_COMMANDS is not set."
@@ -17,22 +35,42 @@ export default (app: Application) => {
       next();
       return;
     }
+
     try {
+      // Try to read and parse the commands from the request.
       const { query } = req;
       if (!query) {
         throw new Error("Query not specified");
       }
+
       const { command: rawCommand, payload: rawPayload } = query;
       if (!rawCommand) {
         throw new Error("Command not specified");
       }
+
       const command = String(rawCommand);
       const payload = rawPayload ? JSON.parse(rawPayload) : {};
+
+      // Now run the actual command:
       const result = await runCommand(req, res, rootPgPool, command, payload);
-      if (result !== null) {
+
+      if (result === null) {
+        /*
+         * When a command returns null, we assume they've handled sending the
+         * response. This allows commands to do things like redirect to new
+         * pages when they're done.
+         */
+      } else {
+        /*
+         * The command returned a result, send it back to the test suite.
+         */
         res.json(result);
       }
     } catch (e) {
+      /*
+       * If anything goes wrong, let the test runner know so that it can fail
+       * the test.
+       */
       res.status(500).json({
         error: {
           message: e.message,

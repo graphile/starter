@@ -46,7 +46,8 @@ function serverCommand(
 }>;
 
 /**
- * Creates a verified or unverified user, bypassing all safety checks. Redirects to `next`.
+ * Creates a verified or unverified user, bypassing all safety checks.
+ * Redirects to `next`.
  *
  * Default values:
  *
@@ -74,7 +75,8 @@ function serverCommand(
 }>;
 
 /**
- * Gets the secrets for the specified email, allowing Cypress to perform email validation. If unspecified, email defaults to `testuser@example.com`
+ * Gets the secrets for the specified email, allowing Cypress to perform email
+ * validation. If unspecified, email defaults to `testuser@example.com`.
  */
 function serverCommand(
   command: "getEmailSecrets",
@@ -84,6 +86,7 @@ function serverCommand(
   verification_token: string | null;
 }>;
 
+// The actual implementation of the 'serverCommand' function.
 function serverCommand(command: string, payload?: any): any {
   const url = `${Cypress.env(
     "ROOT_URL"
