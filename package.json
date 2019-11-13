@@ -11,7 +11,7 @@
     "test:watch": "node scripts/test.js --watch",
     "dev": "yarn && yarn graphql build && concurrently --kill-others --names 'src,dev,gen,test' 'lerna run --parallel watch' 'sleep 10; lerna run --parallel dev' 'sleep 10; yarn graphql watch' 'sleep 15; yarn test:watch'",
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx,.graphql .",
-    "build": "yarn graphql build && lerna run build",
+    "build": "lerna run build",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
     "--shortcuts to run commands in workspaces--": "",
     "client": "yarn workspace @app/client run",
