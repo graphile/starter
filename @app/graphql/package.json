@@ -2,17 +2,20 @@
   "name": "@app/graphql",
   "private": true,
   "version": "0.0.0",
-  "main": "index.tsx",
+  "main": "index.js",
   "scripts": {
-    "build": "graphql-codegen --config codegen.yml",
-    "watch": "yarn run build --watch"
+    "build": "yarn build:codegen && yarn build:tsc",
+    "watch": "touch index.tsx; concurrently --kill-others --names 'gql,tsc' 'yarn watch:codegen' 'yarn watch:tsc'",
+    "build:codegen": "graphql-codegen --config codegen.yml",
+    "build:tsc": "tsc",
+    "watch:codegen": "yarn build:codegen --watch",
+    "watch:tsc": "yarn build:tsc --watch"
   },
-  "dependencies": {
-    "@graphql-codegen/add": "^1.5.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@apollo/react-hooks": "^3.1.3",
     "@babel/cli": "^7.5.5",
+    "@graphql-codegen/add": "^1.5.0",
     "@graphql-codegen/cli": "^1.8.3",
     "@graphql-codegen/typescript": "^1.8.3",
     "@graphql-codegen/typescript-operations": "^1.8.3",
