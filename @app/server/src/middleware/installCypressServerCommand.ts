@@ -1,8 +1,9 @@
-import { Application, RequestHandler, Request, Response } from "express";
+import { Express, RequestHandler, Request, Response } from "express";
 import { urlencoded } from "body-parser";
 import { Pool } from "pg";
+import { getTyped } from "../app";
 
-export default (app: Application) => {
+export default (app: Express) => {
   // Only enable this in test/development mode
   if (!["test", "development"].includes(process.env.NODE_ENV || "")) {
     throw new Error("This code must not run in production");
@@ -15,7 +16,7 @@ export default (app: Application) => {
    */
   const safeToRun = process.env.ENABLE_CYPRESS_COMMANDS === "1";
 
-  const rootPgPool: Pool = app.get("rootPgPool");
+  const rootPgPool: Pool = getTyped(app, "rootPgPool");
 
   /*
    * This function is invoked for the /cypressServerCommand route and is

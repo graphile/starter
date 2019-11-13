@@ -1,5 +1,6 @@
-import * as passport from "passport";
-import { RequestHandler, Application, Request } from "express";
+import passport from "passport";
+import { RequestHandler, Express, Request } from "express";
+import { getTyped } from "../app";
 
 interface DbSession {
   uuid: string;
@@ -52,7 +53,7 @@ const setReturnTo: RequestHandler = (req, _res, next) => {
 };
 
 export default (
-  app: Application,
+  app: Express,
   service: string,
   Strategy: new (...args: any) => passport.Strategy,
   strategyConfig: any,
@@ -64,7 +65,7 @@ export default (
     postRequest = (_req: Request) => {},
   } = {}
 ) => {
-  const rootPgPool = app.get("rootPgPool");
+  const rootPgPool = getTyped(app, "rootPgPool");
 
   passport.use(
     new Strategy(
@@ -98,7 +99,7 @@ export default (
           if (req.user && req.user.session_id) {
             ({
               rows: [session],
-            } = await rootPgPool.query(
+            } = await rootPgPool.query<DbSession>(
               "select * from app_private.sessions where uuid = $1",
               [req.user.session_id]
             ));
@@ -133,7 +134,7 @@ export default (
           if (!session) {
             ({
               rows: [session],
-            } = await rootPgPool.query(
+            } = await rootPgPool.query<DbSession>(
               `insert into app_private.sessions (user_id) values ($1) returning *`,
               [user.id]
             ));

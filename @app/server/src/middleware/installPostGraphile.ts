@@ -3,10 +3,11 @@ import {
   makePluginHook,
   PostGraphileOptions,
   Middleware,
+  enhanceHttpServerWithSubscriptions,
 } from "postgraphile";
 import { NodePlugin } from "graphile-build";
 import { Pool } from "pg";
-import { Application, Request, Response } from "express";
+import { Express, Request, Response } from "express";
 import PgPubsub from "@graphile/pg-pubsub";
 import PgSimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
 import GraphilePro from "@graphile/pro"; // Requires license key
@@ -14,6 +15,7 @@ import PassportLoginPlugin from "../plugins/PassportLoginPlugin";
 import PrimaryKeyMutationsOnlyPlugin from "../plugins/PrimaryKeyMutationsOnlyPlugin";
 import SubscriptionsPlugin from "../plugins/SubscriptionsPlugin";
 import handleErrors from "../utils/handleErrors";
+import { getTyped } from "../app";
 
 type UUID = string;
 
@@ -43,7 +45,7 @@ const pluginHook = makePluginHook([
 ]);
 
 interface IPostGraphileOptionsOptions {
-  websocketMiddlewares?: Middleware[];
+  websocketMiddlewares?: Middleware<Request, Response>[];
   rootPgPool: Pool;
 }
 
@@ -228,17 +230,20 @@ export function getPostGraphileOptions({
   return options;
 }
 
-export default function installPostGraphile(app: Application) {
-  const websocketMiddlewares = app.get("websocketMiddlewares");
-  const rootPgPool: Pool = app.get("rootPgPool");
-  app.use(
-    postgraphile<Request, Response>(
-      process.env.AUTH_DATABASE_URL,
-      "app_public",
-      getPostGraphileOptions({
-        websocketMiddlewares,
-        rootPgPool,
-      })
-    )
+export default function installPostGraphile(app: Express) {
+  const websocketMiddlewares = getTyped(app, "websocketMiddlewares");
+  const rootPgPool: Pool = getTyped(app, "rootPgPool");
+  const middleware = postgraphile<Request, Response>(
+    process.env.AUTH_DATABASE_URL,
+    "app_public",
+    getPostGraphileOptions({
+      websocketMiddlewares,
+      rootPgPool,
+    })
   );
+  app.use(middleware);
+  const httpServer = getTyped(app, "httpServer");
+  if (httpServer) {
+    enhanceHttpServerWithSubscriptions(httpServer, middleware);
+  }
 }

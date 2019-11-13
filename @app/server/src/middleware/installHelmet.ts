@@ -1,6 +1,6 @@
-import { Application } from "express";
-import * as helmet from "helmet";
+import { Express } from "express";
+import helmet from "helmet";
 
-export default function installHelmet(app: Application) {
+export default function installHelmet(app: Express) {
   app.use(helmet());
 }

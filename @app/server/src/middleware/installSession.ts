@@ -1,8 +1,9 @@
-import * as session from "express-session";
+import session from "express-session";
 import * as redis from "redis";
-import * as ConnectRedis from "connect-redis";
-import * as ConnectPgSimple from "connect-pg-simple";
-import { Application } from "express";
+import ConnectRedis from "connect-redis";
+import ConnectPgSimple from "connect-pg-simple";
+import { Express } from "express";
+import { getTyped } from "../app";
 
 const RedisStore = ConnectRedis(session);
 const PgStore = ConnectPgSimple(session);
@@ -18,8 +19,8 @@ const MAXIMUM_SESSION_DURATION_IN_MILLISECONDS =
   parseInt(process.env.MAXIMUM_SESSION_DURATION_IN_MILLISECONDS || "", 10) ||
   3 * DAY;
 
-export default (app: Application) => {
-  const rootPgPool = app.get("rootPgPool");
+export default (app: Express) => {
+  const rootPgPool = getTyped(app, "rootPgPool");
 
   const store = process.env.REDIS_URL
     ? /*
@@ -56,5 +57,5 @@ export default (app: Application) => {
   });
 
   app.use(sessionMiddleware);
-  app.get("websocketMiddlewares").push(sessionMiddleware);
+  getTyped(app, "websocketMiddlewares").push(sessionMiddleware);
 };
