@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import SharedLayout from "../components/SharedLayout";
 import { useApolloClient } from "@apollo/react-hooks";
-import { useRegisterMutation } from "../graphql";
+import { useRegisterMutation } from "@app/graphql";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { Form, Input, Tooltip, Icon, Button, Alert } from "antd";
 import { SyntheticEvent } from "react";

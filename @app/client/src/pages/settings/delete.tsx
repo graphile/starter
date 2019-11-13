@@ -7,7 +7,7 @@ import { ApolloError } from "apollo-client";
 import {
   useRequestAccountDeletionMutation,
   useConfirmAccountDeletionMutation,
-} from "../../graphql";
+} from "@app/graphql";
 import { useRouter } from "next/router";
 
 const { Text } = Typography;

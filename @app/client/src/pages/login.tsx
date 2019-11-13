@@ -17,7 +17,7 @@ import { Form, Icon, Input, Button, Alert, Typography } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { promisify } from "util";
 import { useApolloClient } from "@apollo/react-hooks";
-import { useLoginMutation } from "../graphql";
+import { useLoginMutation } from "@app/graphql";
 import Router from "next/router";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";

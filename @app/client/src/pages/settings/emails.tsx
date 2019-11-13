@@ -8,7 +8,7 @@ import {
   useResendEmailVerificationMutation,
   useMakeEmailPrimaryMutation,
   useDeleteEmailMutation,
-} from "../../graphql";
+} from "@app/graphql";
 import { Alert, List, Avatar, Form, Input, Button } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { ApolloError } from "apollo-client";

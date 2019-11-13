@@ -16,7 +16,7 @@ import {
   useLogoutMutation,
   useCurrentUserUpdatedSubscription,
   SharedLayout_UserFragment,
-} from "../graphql";
+} from "@app/graphql";
 import Router from "next/router";
 import { useApolloClient } from "@apollo/react-hooks";
 import { useCallback } from "react";
