@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-import * as express from "express";
+import express from "express";
 import { sanitiseEnv } from "./utils";
 import * as middleware from "./middleware";
 

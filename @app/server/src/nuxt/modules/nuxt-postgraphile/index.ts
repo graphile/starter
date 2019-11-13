@@ -1,49 +1,44 @@
-import { join } from 'path'
-import consola from 'consola'
-import chalk from 'chalk'
-import { postgraphile, makePluginHook } from 'postgraphile'
-import PGConsolaHookPlugin from './pg-plugins/consola'
+import consola from "consola";
+import chalk from "chalk";
+import createApp from "../../../createApp";
+import { Module } from "@nuxt/types";
 
-const logger = consola.withScope('postgraphile')
+const nuxtPostgraphile: Module = async function() {
+  // Use this, this.options, this.nuxt
+  // Use moduleOptions
+  const app = await createApp();
 
-export default function (moduleOptions) {
-  const config = this.options.postgraphile || moduleOptions || {}
+  const logger = consola.withScope("postgraphile");
 
-  // See https://www.graphile.org/postgraphile/usage-library/#api-postgraphilepgconfig-schemaname-options
-  config.pgConfig = config.pgConfig || 'postgres:///'
-  // Learn about namespaces: https://www.graphile.org/postgraphile/namespaces/
-  config.schemaName = config.schemaName || 'public'
-  config.options = config.options || {}
-  // Activate graphiql on dev
-  if (this.options.dev && typeof config.options.graphiql === 'undefined') {
-    config.options.graphiql = true
+  interface options {
+    https: string;
+    host: string;
+    port: string;
   }
-  // Activate enhanceGraphiql graphiql on dev
-  if (this.options.dev && typeof config.options.enhanceGraphiql === 'undefined') {
-    config.options.enhanceGraphiql = true
-  }
-  // options.pluginHook
-  const hookPlugins = config.options.hookPlugins || []
-  // Add consola hook plugin
-  hookPlugins.push(PGConsolaHookPlugin({ logger }))
-  // Generate options.pluginHook
-  config.options.pluginHook = makePluginHook(hookPlugins)
+
+  const pgRoute = "/api";
+  // Log server infos
+  this.nuxt.hook("listen", (_server: string, serverOptions: options) => {
+    const { https, host, port } = serverOptions;
+    const serverUrl = `http${https ? "s" : ""}://${host}:${port}${pgRoute}`;
+
+    const badgeMessages = this.options!.cli!.badgeMessages;
+    badgeMessages.push(`${chalk.cyan("GraphQL")}: ${serverUrl}/graphql`);
+    const config = this.options.postgraphile || {
+      options: { graphiql: false },
+    };
+    if (config.options.graphiql) {
+      badgeMessages.push(`${chalk.magenta("GraphiQL")}: ${serverUrl}/graphiql`);
+    }
+  });
 
   // Add server middleware
   // TODO: Use Nuxt workers + watch postgraphile files related to restart own worker
-  logger.info(`Connecting PostGraphile to ${config.pgConfig}`)
+  logger.info(`Connecting PostGraphile `);
   this.addServerMiddleware({
-    path: '/postgraphile',
-    handler: postgraphile(config.pgConfig, config.schemaName, config.options)
-  })
+    path: pgRoute,
+    handler: app,
+  });
+};
 
-  // Log server infos
-  this.nuxt.hook('listen', (server, { https, host, port }) => {
-    const serverUrl = `http${https ? 's' : ''}://${host}:${port}/postgraphile`
-
-    this.options.cli.badgeMessages.push(`${chalk.cyan('GraphQL')}: ${serverUrl}/graphql`)
-    if (config.options.graphiql) {
-      this.options.cli.badgeMessages.push(`${chalk.magenta('GraphiQL')}: ${serverUrl}/graphiql`)
-    }
-  })
-}
+export default nuxtPostgraphile;

@@ -1,7 +1,7 @@
 {
   "name": "@app/server",
   "description": "graphile starter using nuxt.js w/ TS",
-  "version": "2.10.1",
+  "version": "0.0.0",
   "private": true,
   "dependencies": {
     "@app/client": "0.0.0",
