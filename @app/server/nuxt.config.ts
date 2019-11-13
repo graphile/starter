@@ -1,4 +1,6 @@
+import path from "path";
 export default {
+  modulesDir: path.resolve(__dirname, "../../node_modules/"),
   server: {
     //TODO: read $PORT
     port: 5678, // default: 3000

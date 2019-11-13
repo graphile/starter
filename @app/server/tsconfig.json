@@ -19,5 +19,5 @@
     },
     "types": ["@nuxt/types"]
   },
-  "exclude": ["__tests__", "node_modules"]
+  "exclude": ["__tests__"]
 }
