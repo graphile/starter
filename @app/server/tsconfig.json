@@ -11,11 +11,13 @@
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
-    "baseUrl": ".",
     "resolveJsonModule": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/nuxt/*"] // for nuxt:typecheck
     },
     "types": ["@nuxt/types"]
-  }
+  },
+  "exclude": ["__tests__", "node_modules"]
 }
