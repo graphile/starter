@@ -1273,14 +1273,6 @@
     import-from "3.0.0"
     tslib "1.10.0"
 
-"@graphql-codegen/typescript-graphql-files-modules@^1.8.3":
-  version "1.8.3"
-  resolved "https://registry.yarnpkg.com/@graphql-codegen/typescript-graphql-files-modules/-/typescript-graphql-files-modules-1.8.3.tgz#b670b12783ea3cb535d249329b800780a4ed641e"
-  integrity sha512-5exuQ65BTKOVjAMtku8QRFrx8G3j/sOdHTlK8DrCqs048MdzdVIQATNNGTw6DKSBHG4EfrIfmmBUXo9xKujv4Q==
-  dependencies:
-    "@graphql-codegen/plugin-helpers" "1.8.3"
-    tslib "1.10.0"
-
 "@graphql-codegen/typescript-operations@^1.8.3":
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/typescript-operations/-/typescript-operations-1.8.3.tgz#8be109d474528c21a4f0420d36278f8d1009365c"

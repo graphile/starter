@@ -2,7 +2,7 @@
   "name": "@app/graphql",
   "private": true,
   "version": "0.0.0",
-  "main": "src/graphql.tsx",
+  "main": "index.tsx",
   "scripts": {
     "build": "graphql-codegen --config codegen.yml",
     "watch": "yarn run build --watch"

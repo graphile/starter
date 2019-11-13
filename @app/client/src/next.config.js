@@ -54,7 +54,23 @@ if (!ROOT_URL) {
           ...config,
           module: {
             ...config.module,
-            rules: [...config.module.rules, graphqlRule],
+            rules: [
+              ...config.module.rules,
+              graphqlRule,
+              {
+                test: /\.tsx?$/,
+                include: path.resolve(`${__dirname}/../../graphql`),
+                use: {
+                  loader: "ts-loader",
+                  options: {
+                    compilerOptions: {
+                      noEmit: false,
+                      declaration: false,
+                    },
+                  },
+                },
+              },
+            ],
           },
           plugins: [
             ...config.plugins,
