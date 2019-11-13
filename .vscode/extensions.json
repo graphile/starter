@@ -7,6 +7,7 @@
     "msjsdiag.debugger-for-chrome",
     "apollographql.vscode-apollo",
     "ms-vscode-remote.vscode-remote-extensionpack",
-    "sdras.vue-vscode-extensionpack"
+    "sdras.vue-vscode-extensionpack",
+    "mrmlnc.vscode-less"
   ]
 }
