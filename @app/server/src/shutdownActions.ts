@@ -5,11 +5,24 @@
 
 export type ShutdownAction = () => any;
 
+function ignore() {}
+
 export function makeShutdownActions(): ShutdownAction[] {
   const shutdownActions: ShutdownAction[] = [];
 
+  function callShutdownActions(): Array<Promise<void> | void> {
+    return shutdownActions.map(fn => {
+      // Ensure that all actions are called, even if a previous action throws an error
+      try {
+        return fn();
+      } catch (e) {
+        return Promise.reject(e);
+      }
+    });
+  }
+
   function gracefulShutdown(callback: () => void) {
-    const promises = shutdownActions.map(fn => fn());
+    const promises = callShutdownActions();
     (async () => {
       try {
         await Promise.all(promises);
@@ -22,13 +35,17 @@ export function makeShutdownActions(): ShutdownAction[] {
   }
 
   process.once("SIGUSR2", () => {
+    // Ignore further SIGUSR2 signals whilst we're processing
+    process.on("SIGUSR2", ignore);
     gracefulShutdown(() => {
+      // Re-trigger SIGUSR2 against ourselves cause our exit
+      process.removeListener("SIGUSR2", ignore);
       process.kill(process.pid, "SIGUSR2");
     });
   });
 
   process.once("exit", () => {
-    shutdownActions.map(fn => fn());
+    callShutdownActions();
   });
 
   return shutdownActions;
