@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import get from "lodash/get";
 import { Alert, Form, Button, Input } from "antd";
 import SharedLayout, { Row, Col } from "../components/SharedLayout";
-import { useResetPasswordMutation } from "../graphql";
+import { useResetPasswordMutation } from "@app/graphql";
 import { P } from "../components/Text";
 
 interface IProps {

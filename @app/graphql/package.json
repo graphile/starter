@@ -1,7 +1,8 @@
 {
-  "name": "@app/codegen",
+  "name": "@app/graphql",
   "private": true,
   "version": "0.0.0",
+  "main": "src/graphql.tsx",
   "scripts": {
     "build": "graphql-codegen --config codegen.yml",
     "watch": "yarn run build --watch"
@@ -14,7 +15,6 @@
     "@babel/cli": "^7.5.5",
     "@graphql-codegen/cli": "^1.8.3",
     "@graphql-codegen/typescript": "^1.8.3",
-    "@graphql-codegen/typescript-graphql-files-modules": "^1.8.3",
     "@graphql-codegen/typescript-operations": "^1.8.3",
     "@graphql-codegen/typescript-react-apollo": "1.8.2",
     "babel-plugin-import": "^1.12.0",

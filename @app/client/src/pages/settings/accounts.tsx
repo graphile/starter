@@ -4,7 +4,7 @@ import {
   useCurrentUserAuthenticationsQuery,
   useUnlinkUserAuthenticationMutation,
   UserAuthentication,
-} from "../../graphql";
+} from "@app/graphql";
 import { Spin, List, Avatar, Modal } from "antd";
 import SocialLoginOptions from "../../components/SocialLoginOptions";
 import Error from "../../components/ErrorAlert";

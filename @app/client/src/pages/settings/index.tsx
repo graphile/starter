@@ -4,7 +4,7 @@ import {
   useUpdateUserMutation,
   useSettingsProfileQuery,
   ProfileSettingsForm_UserFragment,
-} from "../../graphql";
+} from "@app/graphql";
 import { promisify } from "util";
 import { Form, Input, Alert, Button } from "antd";
 import { ApolloError } from "apollo-client";
