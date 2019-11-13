@@ -27,5 +27,9 @@ export function makeShutdownActions(): ShutdownAction[] {
     });
   });
 
+  process.once("exit", () => {
+    shutdownActions.map(fn => fn());
+  });
+
   return shutdownActions;
 }
