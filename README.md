@@ -205,7 +205,7 @@ tests to ensure that your project remains rock-solid at all times.
 We use Next.js ([docs](https://nextjs.org/)) to handle the various common
 concerns of a React application for us (server-side rendering, routing,
 bundling, bundle-splitting, etc). The `@app/client/src/pages/_app.tsx` file is a
-[custom lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to
+[custom &lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to
 add any providers you need to. We've already set it up with `withApollo` from
 `@app/client/src/lib/withApollo` which includes all the Apollo configuration,
 including the client URL.
