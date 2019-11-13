@@ -1,4 +1,4 @@
-import * as morgan from "morgan";
+import morgan from "morgan";
 import { Application } from "express";
 
 const isDev = process.env.NODE_ENV === "development";
