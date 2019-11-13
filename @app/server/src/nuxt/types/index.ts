@@ -1,4 +1,4 @@
-export * from './state';
+export * from "./state";
 
 export interface Person {
   id: number;
