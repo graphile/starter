@@ -4,7 +4,7 @@ import {
   useChangePasswordMutation,
   useSettingsPasswordQuery,
   useForgotPasswordMutation,
-} from "../../graphql";
+} from "@app/graphql";
 import { promisify } from "util";
 import { Form, Input, Alert, Button } from "antd";
 import { ApolloError } from "apollo-client";

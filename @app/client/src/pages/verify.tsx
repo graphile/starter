@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import get from "lodash/get";
 import { Alert } from "antd";
 import SharedLayout, { Row, Col } from "../components/SharedLayout";
-import { useVerifyEmailMutation } from "../graphql";
+import { useVerifyEmailMutation } from "@app/graphql";
 
 interface IProps {
   id: string;

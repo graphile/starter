@@ -11,7 +11,7 @@ import SharedLayout from "../components/SharedLayout";
 import Link from "next/link";
 import { Form, Icon, Input, Button, Alert } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { useForgotPasswordMutation } from "../graphql";
+import { useForgotPasswordMutation } from "@app/graphql";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
 

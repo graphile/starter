@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "jsx": "preserve",
     "lib": ["dom", "es2017"],
     "target": "esnext",

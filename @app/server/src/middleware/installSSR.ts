@@ -1,6 +1,6 @@
 // TODO: fix to 'import next' when next fixes the bug
-import * as next from "next";
-import { Application } from "express";
+import next from "next";
+import { Express } from "express";
 
 if (!process.env.NODE_ENV) {
   throw new Error("No NODE_ENV envvar! Try `export NODE_ENV=development`");
@@ -8,7 +8,7 @@ if (!process.env.NODE_ENV) {
 
 const isDev = process.env.NODE_ENV !== "production";
 
-export default async function installNext(app: Application) {
+export default async function installSSR(app: Express) {
   // @ts-ignore Next had a bad typing file, they claim `export default` but should have `export =`
   // Ref: https://unpkg.com/next@9.0.3/dist/server/next.js
   const nextApp = next({

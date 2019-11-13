@@ -1,8 +1,9 @@
-import * as passport from "passport";
+import passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github";
 import { get } from "lodash";
 import installPassportStrategy from "./installPassportStrategy";
-import { Application } from "express";
+import { Express } from "express";
+import { getTyped } from "../app";
 
 interface DbSession {
   session_id: string;
@@ -16,7 +17,7 @@ declare global {
   }
 }
 
-export default async (app: Application) => {
+export default async (app: Express) => {
   passport.serializeUser((sessionObject: DbSession, done) => {
     done(null, sessionObject.session_id);
   });
@@ -27,11 +28,11 @@ export default async (app: Application) => {
 
   const passportInitializeMiddleware = passport.initialize();
   app.use(passportInitializeMiddleware);
-  app.get("websocketMiddlewares").push(passportInitializeMiddleware);
+  getTyped(app, "websocketMiddlewares").push(passportInitializeMiddleware);
 
   const passportSessionMiddleware = passport.session();
   app.use(passportSessionMiddleware);
-  app.get("websocketMiddlewares").push(passportSessionMiddleware);
+  getTyped(app, "websocketMiddlewares").push(passportSessionMiddleware);
 
   app.get("/logout", (req, res) => {
     req.logout();

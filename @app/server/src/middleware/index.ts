@@ -4,7 +4,7 @@ import installPassport from "./installPassport";
 import installLogging from "./installLogging";
 import installSharedStatic from "./installSharedStatic";
 import installPostGraphile from "./installPostGraphile";
-import installNext from "./installNext";
+import installSSR from "./installSSR";
 import installErrorHandler from "./installErrorHandler";
 import installCypressServerCommand from "./installCypressServerCommand";
 import installHelmet from "./installHelmet";
@@ -16,7 +16,7 @@ export {
   installLogging,
   installSharedStatic,
   installPostGraphile,
-  installNext,
+  installSSR,
   installErrorHandler,
   installCypressServerCommand,
   installHelmet,

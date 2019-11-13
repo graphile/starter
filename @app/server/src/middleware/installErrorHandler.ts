@@ -1,4 +1,4 @@
-import { Application, ErrorRequestHandler } from "express";
+import { Express, ErrorRequestHandler } from "express";
 import * as fs from "fs";
 import { template, TemplateExecutor } from "lodash";
 
@@ -40,7 +40,7 @@ function getErrorPage({ message }: ParsedError) {
   return errorPageTemplate({ message });
 }
 
-export default function(app: Application) {
+export default function(app: Express) {
   const errorRequestHandler: ErrorRequestHandler = (error, _req, res, next) => {
     try {
       const parsedError = parseError(error);
