@@ -8,14 +8,17 @@ export type ShutdownAction = () => any;
 export function makeShutdownActions(): ShutdownAction[] {
   const shutdownActions: ShutdownAction[] = [];
 
-  async function gracefulShutdown(callback: () => void) {
-    try {
-      await Promise.all(shutdownActions.map(fn => fn()));
-    } finally {
-      // 250ms of sleep before finally shutting down, give things a moment to
-      // clear up.
-      setTimeout(callback, 250);
-    }
+  function gracefulShutdown(callback: () => void) {
+    const promises = shutdownActions.map(fn => fn());
+    (async () => {
+      try {
+        await Promise.all(promises);
+      } finally {
+        // 250ms of sleep before finally shutting down, give things a moment to
+        // clear up.
+        setTimeout(callback, 250);
+      }
+    })();
   }
 
   process.once("SIGUSR2", () => {
