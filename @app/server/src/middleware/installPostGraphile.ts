@@ -19,6 +19,8 @@ import { getTyped } from "../app";
 
 type UUID = string;
 
+const isTest = process.env.NODE_ENV === "test";
+
 function uuidOrNull(input: string | number | null): UUID | null {
   if (!input) return null;
   const str = String(input);
@@ -59,6 +61,11 @@ export function getPostGraphileOptions({
 
     // This is so that PostGraphile installs the watch fixtures, it's also needed to enable live queries
     ownerConnectionString: process.env.DATABASE_URL,
+
+    // On production we still want to start even if the database isn't available.
+    // On development, we want to deal nicely with issues in the database.
+    // For these reasons, we're going to keep retryOnInitFail enabled for both environments.
+    retryOnInitFail: !isTest,
 
     // Add websocket support to the PostGraphile server; you still need to use a subscriptions plugin such as
     // @graphile/pg-pubsub

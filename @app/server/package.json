@@ -6,7 +6,7 @@
     "build": "tsc && chmod +x dist/index.js",
     "watch": "tsc --watch",
     "start": "node -r @app/config/env dist/index.js",
-    "dev": "nodemon --watch 'dist/**/*.js' -x 'node --inspect=9678 -r @app/config/env -r source-map-support/register' dist/index.js"
+    "dev": "nodemon --signal SIGINT --watch 'dist/**/*.js' -x 'node --inspect=9678 -r @app/config/env -r source-map-support/register' dist/index.js"
   },
   "dependencies": {
     "@app/client": "0.0.0",
