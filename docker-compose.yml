@@ -101,8 +101,7 @@ services:
     # your user if not 1000.
     user: $UID
 
-    # Needs to be 2 directories deep for dump-db.sh to work
-    working_dir: /root/home
+    working_dir: /
 
     volumes:
       - db-volume:/var/lib/postgresql/data
