@@ -454,7 +454,7 @@ at service `dev` in `docker-compose.yml`
 If you cloned the starter to a folder called something other than `starter` you need to fix the reference in `.devcontainer/dev.Dockerfile`. It has a line like this:
 
 ```docker
-FROM starter_server:latest
+FROM starterapp_server:latest
 ```
 
 Replace `starter` in this line with your projects folder name, for example if your cloned the starter to a folder named `my_project` then that line should now be:
