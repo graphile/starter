@@ -45,6 +45,9 @@ RUN \
   # [Optional] Update a non-root user to match UID/GID - see https://aka.ms/vscode-remote/containers/non-root-user.
   && if [ "$USER_GID" != "1000" ]; then groupmod node --gid $USER_GID; fi \
   && if [ "$USER_UID" != "1000" ]; then usermod --uid $USER_UID node; fi \
+  # Add the user to the docker group so they can access /var/run/docker.sock
+  && groupadd -g 999 docker \
+  && usermod -a -G docker node \
   # [Optional] Add add sudo support for non-root user
   && apt-get install -y sudo \
   && echo node ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/node \

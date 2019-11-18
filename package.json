@@ -21,7 +21,8 @@
     "graphql": "yarn workspace @app/graphql run",
     "server": "yarn workspace @app/server run",
     "worker": "yarn workspace @app/worker run",
-    "docker": "yarn --cwd ./docker"
+    "docker": "yarn --cwd ./docker",
+    "docker-compose": "yarn --cwd ./docker compose"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",
