@@ -46,24 +46,26 @@ const spawnSync = (cmd, args, options) => {
     throw error;
   }
 
-  if (status) {
-    console.log(stdout.toString("utf8"));
-    console.log(stderr.toString("utf8"));
-    throw new Error(
-      `Process exited with status '${status}' (running '${cmd} ${
-        args ? args.join(" ") : ""
-      }')`
-    );
-  }
-
-  if (signal) {
-    console.log(stdout.toString("utf8"));
-    console.log(stderr.toString("utf8"));
-    throw new Error(
-      `Process exited due to signal '${signal}' (running '${cmd} ${
-        args ? args.join(" ") : null
-      }')`
-    );
+  if (status || signal) {
+    if (stdout) {
+      console.log(stdout.toString("utf8"));
+    }
+    if (stderr) {
+      console.error(stderr.toString("utf8"));
+    }
+    if (status) {
+      throw new Error(
+        `Process exited with status '${status}' (running '${cmd} ${
+          args ? args.join(" ") : ""
+        }')`
+      );
+    } else {
+      throw new Error(
+        `Process exited due to signal '${signal}' (running '${cmd} ${
+          args ? args.join(" ") : null
+        }')`
+      );
+    }
   }
 
   return result;
