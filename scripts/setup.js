@@ -99,7 +99,7 @@ async function readDotenv() {
   const config = buffer ? dotenv.parse(buffer) : null;
   // also read from current env, because docker-compose already needs to know some of it
   // eg. $PG_DUMP, $CONFIRM
-  return {...config, ...process.env}
+  return { ...config, ...process.env };
 }
 
 function encodeDotenvValue(str) {
@@ -296,12 +296,13 @@ async function main() {
         answers =>
           `Please enter a superuser connection string to the database server (so we can drop/create the '${answers.DATABASE_NAME}' and '${answers.DATABASE_NAME}_shadow' databases) - IMPORTANT: it must not be a connection to the '${answers.DATABASE_NAME}' database itself, instead try 'template1'.`
       ),
-      default: mergeAnswers(answers =>
-            `postgres://${
-              answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
-            }/template1`
+      default: mergeAnswers(
+        answers =>
+          `postgres://${
+            answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
+          }/template1`
       ),
-      when: !config.ROOT_DATABASE_URL
+      when: !config.ROOT_DATABASE_URL,
     },
   ];
   const answers = await inquirer.prompt(questions);
@@ -329,8 +330,7 @@ async function main() {
     CONFIRM_DROP,
   } = process.env;
 
-
-  if(!CONFIRM_DROP) {
+  if (!CONFIRM_DROP) {
     const confirm = await inquirer.prompt([
       {
         type: "confirm",
