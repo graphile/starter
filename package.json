@@ -5,7 +5,7 @@
   "description": "Description of project here",
   "scripts": {
     "clean": "node ./scripts/clean.js",
-    "reset": "yarn clean && node ./scripts/reset.js",
+    "reset": "yarn clean && node ./scripts/delete-env-file.js",
     "setup": "npx -p dotenv -p inquirer -p pg ./scripts/setup.js",
     "start": "node ./scripts/start.js",
     "test": "node scripts/test.js",
