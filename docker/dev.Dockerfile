@@ -11,14 +11,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Configure apt and install packages
 RUN \
   apt-get update \
-  # neovim
-  && apt-get -y install --no-install-recommends neovim \
-  # tmux
-  && apt-get -y install --no-install-recommends tmux \
-  # for tmux: https://github.com/GameServerManagers/LinuxGSM/issues/817
-  && apt-get -y install --no-install-recommends locales \
+  # locales for tmux: https://github.com/GameServerManagers/LinuxGSM/issues/817
   # dos2unix for config files of windows user
-  && apt-get -y install --no-install-recommends dos2unix \
+  && apt-get -y install --no-install-recommends neovim tmux locales dos2unix \
   # Clean up
   && apt-get autoremove -y \
   && apt-get clean -y \
