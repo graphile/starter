@@ -1,19 +1,11 @@
 #!/usr/bin/env node
+const { execSync } = require("child_process");
 
 try {
-  const { execSync } = require("child_process");
-
-  const opts = {
-    stdio: "inherit",
-    cwd: process.cwd(),
-  };
-
-  // TODO: make it all js scripting
-  // deletes all docker volumes
   execSync(
-    'cd .. && bash -c "docker volume rm ${PWD##*/}_db-volume  ${PWD##*/}_node_modules-volume ${PWD##*/}_vscode-extensions ${PWD##*/}_devcontainer_db-volume  ${PWD##*/}_devcontainer_node_modules-volume ${PWD##*/}_devcontainer_vscode-extensions || true"',
-    opts
+    "docker volume rm starterapp_db-volume starterapp_node_modules-volume starterapp_vscode-extensions starterapp_devcontainer_db-volume starter_devcontainer_node_modules-volume starterapp_devcontainer_vscode-extensions",
+    { stdio: "inherit" }
   );
-} catch (err) {
-  console.error(err);
+} catch (e) {
+  /* noop */
 }
