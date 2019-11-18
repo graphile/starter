@@ -6,4 +6,4 @@ ARG USER_UID=${UID:-1000}
 ARG USER_GID=$USER_UID
 
 COPY docker/setup.sh /setup.sh
-RUN /setup.sh dev && rm /setup.sh
+RUN /setup.sh dev
