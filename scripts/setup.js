@@ -278,7 +278,7 @@ async function main() {
       message:
         "What's the hostname of your database server (include :port if it's not the default :5432)?",
       default: "localhost",
-      when: !(DATABASE_HOST in config),
+      when: !("DATABASE_HOST" in config),
     },
 
     {
