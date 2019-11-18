@@ -18,7 +18,6 @@ services:
       - docker/docker.env
     volumes:
       - .:/work
-      - node_modules-volume:/work/node_modules
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /work
@@ -52,7 +51,6 @@ services:
     volumes:
       #* same as service: server
       - .:/work
-      - node_modules-volume:/work/node_modules
 
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
@@ -120,6 +118,5 @@ networks:
 
 volumes:
   db-volume:
-  node_modules-volume:
   # used for keeeping vscode-extensions while rebuilding
   # vscode-extensions:
