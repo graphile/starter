@@ -134,7 +134,7 @@ yarn docker setup
 Alternatively you can run these steps manually:
 
 - Start PostgreSQL servers: `docker-compose up -d db`
-- Run one time setup in "webapp": `docker-compose run webapp bash`
+- Run one time setup in "server": `docker-compose run server bash`
 - Follow: [Initial Setup](#initial_setup) inside this new shell
 
 ### Initial Setup
@@ -168,19 +168,19 @@ yarn start
 ### Docker:
 
 ```
-export UID; docker-compose up webapp
+export UID; docker-compose up server
 ```
 
 **NOTE:** `export UID` is really important on Linux hosts, otherwise the files
 and folders created will end up owned by root, which is non-optimal. We
 recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar.
 
-Running this command executes `yarn start` inside the `webapp` container.
+Running this command executes `yarn start` inside the `server` container.
 
 After a short period you should be able to load the application at
 http://localhost:5678
 
-**NOTE**: if you run `docker-compose run webapp` (rather than `docker-compose up webapp`) the ports won't be exposed, so you cannot view your server.
+**NOTE**: if you run `docker-compose run server` (rather than `docker-compose up server`) the ports won't be exposed, so you cannot view your server.
 
 ## Features
 
@@ -235,7 +235,7 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 
 ## Documentation links
 
-### `yarn start` (or `docker-compose up webapp`)
+### `yarn start` (or `docker-compose up server`)
 
 This main command runs a number of tasks:
 
@@ -246,7 +246,7 @@ This main command runs a number of tasks:
 - watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript React hooks for you automatically, leading to strongly typed code with minimal effort
 - runs the `jest` tests in watch mode, automatically re-running as the database or test files change
 
-**NOTE**: `docker-compose up webapp` also runs the PostgreSQL server that the
+**NOTE**: `docker-compose up server` also runs the PostgreSQL server that the
 system connects to.
 
 You may also choose to develop locally, but use the PostgreSQL server via
@@ -351,11 +351,11 @@ This feature was the result of a herculean effort from @JoeSchr.
 
 The docker environment (`docker-compose.yml`) is set up so you can almost work with this repo like you would directly.
 
-There is a `webapp` docker-compose service which has `node` and `yarn` already installed. Once you have everything setup
+There is a `server` docker-compose service which has `node` and `yarn` already installed. Once you have everything setup
 you can simply start it via `docker-compose up`,
 or use the the alias `yarn docker start`, which does some more useful stuff as well. The `yarn docker` commands are provided by `docker/package.json`.
 
-You also could start the service in detached mode, then attach into the running service to work from inside the container like you would locally. If you want, you can do this with the `dev` service instead of the `webapp` service. The `dev` service provides a few more developer tools (like `git`, `tmux`, ...) which are helpful for developing, but it is not appropriate for production usage and may make it harder to reproduce issues.
+You also could start the service in detached mode, then attach into the running service to work from inside the container like you would locally. If you want, you can do this with the `dev` service instead of the `server` service. The `dev` service provides a few more developer tools (like `git`, `tmux`, ...) which are helpful for developing, but it is not appropriate for production usage and may make it harder to reproduce issues.
 
 **NOTE (for Windows)**: For _hot-reloading_ to work, you may need to install and run [docker-volume-watcher](https://github.com/merofeev/docker-windows-volume-watcher)
 
@@ -394,11 +394,11 @@ $ yarn docker dev
 ### About `dev` docker-compose service
 
 There is another "secret" service, `dev`, inside `docker-compose.yml` which
-extends `webapp`, our normal `node.js` server service container.
+extends `server`, our normal `node.js` server service container.
 
 This decision was made to separate the docker services, one for minimal setup and for comfortable development.
 
-The `webapp` service is for starting the Node.js server with React and Next.js, and will keep running until `yarn start` stops or crashes.
+The `server` service is for starting the Node.js server with React and Next.js, and will keep running until `yarn start` stops or crashes.
 This is similar to a production deployment environment except hot reload, environment variables, and similar things are tuned for active development (and are not production ready).
 See:
 [Building the production docker image](#building_the_production_docker_image),
@@ -454,13 +454,13 @@ at service `dev` in `docker-compose.yml`
 If you cloned the starter to a folder called something other than `starter` you need to fix the reference in `.devcontainer/dev.Dockerfile`. It has a line like this:
 
 ```docker
-FROM starter_webapp:latest
+FROM starter_server:latest
 ```
 
 Replace `starter` in this line with your projects folder name, for example if your cloned the starter to a folder named `my_project` then that line should now be:
 
 ```docker
-FROM my_project_webapp:latest
+FROM my_project_server:latest
 ```
 
 ### Open project in VSCode and start developing

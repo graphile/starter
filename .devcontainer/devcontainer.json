@@ -12,7 +12,7 @@
   },
 
   // Uncomment the next line if you want start specific services in your Docker Compose config.
-  "runServices": ["dev"], // only run dev, not also webapp
+  "runServices": ["dev"], // only run dev, not also server
 
   // Uncomment the line below if you want to keep your containers running after VS Code shuts down.
   // "shutdownAction": "none",

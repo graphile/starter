@@ -1,12 +1,12 @@
 version: "3.7"
 services:
-  webapp:
+  server:
     build:
       context: .
       dockerfile: Dockerfile
     # needed for dev.Dockerfile to reference it, even when folder basename changes
     # if you change this, also change FROM in dev.Dockerfile
-    container_name: graphile-starter_webapp
+    container_name: graphile-starter_server
     # Uncomment the next line to use a non-root user. On Linux, this will prevent
     # new files getting created as root, but you may need to update the USER_UID
     # and USER_GID in `Dockerfile` to match your user if not 1000.
@@ -45,7 +45,7 @@ services:
     # and USER_GID in `Dockerfile` to match your user if not 1000.
     user: $UID
     volumes:
-      #* same as service: webapp
+      #* same as service: server
       - .:/work
       - node_modules-volume:/work/node_modules
 
