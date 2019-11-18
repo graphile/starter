@@ -10,7 +10,7 @@
     "reset": "yarn down && yarn reset:volumes && yarn rebuild && yarn compose run server yarn reset",
     "--DOCKER HELPERS--": "",
     "db:up": "yarn compose up -d db",
-    "compose": "docker-compose -f ../docker-compose.yml -p graphile-starter",
+    "compose": "docker-compose -f ../docker-compose.yml -p starterapp",
     "compose:exec:dev": "yarn down && yarn compose up -d dev && yarn compose exec dev ",
     "reset:volumes": "node ./scripts/clean-volumes.js",
     "rebuild": "yarn compose build",
