@@ -1,21 +1,5 @@
 #!/usr/bin/env node
+const rimraf = require("rimraf");
 
-const fs = require("fs");
-const paths = ["@app/*/dist", "@app/client/.next"];
-paths.forEach(path => {
-  try {
-    if (fs.existsSync(path)) {
-      const { execSync } = require("child_process");
-
-      const opts = {
-        stdio: "inherit",
-        cwd: process.cwd(),
-      };
-
-      // deletes config in .env
-      execSync(`rm -rf ${path}`, opts);
-    }
-  } catch (err) {
-    console.error(err);
-  }
-});
+rimraf.sync("@app/*/dist");
+rimraf.sync("@app/client/.next");

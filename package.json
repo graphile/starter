@@ -48,6 +48,7 @@
     "mock-res": "^0.5.0",
     "nodemon": "^1.19.1",
     "prettier": "^1.18.2",
+    "rimraf": "^3.0.0",
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.1.0",
     "typescript": "^3.5.3",
