@@ -108,7 +108,7 @@ services:
       - db-volume:/var/lib/postgresql/data
       - ./data:/data
     ports:
-      - "5432:5432"
+      - "6543:5432"
     restart: unless-stopped
     networks:
       - default
