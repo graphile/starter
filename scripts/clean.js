@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 const rimraf = require("rimraf");
 
-rimraf.sync("@app/*/dist");
-rimraf.sync("@app/client/.next");
+rimraf.sync(`${__dirname}/../@app/*/dist`);
+rimraf.sync(`${__dirname}/../@app/client/.next`);
