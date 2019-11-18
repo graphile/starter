@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.5"
 services:
   server:
     build:
@@ -116,7 +116,8 @@ services:
 
 networks:
   default:
-    name: starterapp
+    # If you're running newer versions of docker-compose you can name this network:
+    # name: starterapp
 
 volumes:
   db-volume:
