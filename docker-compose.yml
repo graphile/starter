@@ -5,10 +5,6 @@ services:
       context: .
       dockerfile: Dockerfile
 
-    # Needed for dev.Dockerfile to reference this service, if you change this,
-    # also change FROM in dev.Dockerfile
-    container_name: starterapp_server
-
     # On Linux, this will prevent new files getting created as root, but you
     # may need to update the USER_UID and USER_GID in `Dockerfile` to match
     # your user if not 1000.

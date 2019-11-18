@@ -1,23 +1,9 @@
-#-------------------------------------------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
-#-------------------------------------------------------------------------------------------------------------
+# NOTE: this is basically a copy of the normal Dockerfile, but with `dev`
+# passed to setup.sh instead of `normal`.
+FROM node:10
 
-FROM starterapp_server:latest
+ARG USER_UID=${UID:-1000}
+ARG USER_GID=$USER_UID
 
-# Avoid warnings by switching to noninteractive
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Configure apt and install packages
-RUN \
-  apt-get update \
-  # locales for tmux: https://github.com/GameServerManagers/LinuxGSM/issues/817
-  # dos2unix for config files of windows user
-  && apt-get -y install --no-install-recommends neovim tmux locales dos2unix \
-  # Clean up
-  && apt-get autoremove -y \
-  && apt-get clean -y \
-  && rm -rf /var/lib/apt/lists/*
-
-# Switch back to dialog for any ad-hoc use of apt-get
-ENV DEBIAN_FRONTEND=
+COPY docker/setup.sh /setup.sh
+RUN /setup.sh dev && rm /setup.sh
