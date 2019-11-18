@@ -94,10 +94,11 @@ services:
   db:
     image: postgres:11
 
-    # On Linux, this will prevent new files getting created as root, but you
-    # may need to update the USER_UID and USER_GID in `Dockerfile` to match
-    # your user if not 1000.
-    user: $UID
+    # Unlike above, the Postgres image cannot start as our user account
+    # otherwise we get permission denied errors. So this one has to run as
+    # root. :(
+    #
+    # user: $UID
 
     working_dir: /
 
