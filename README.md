@@ -449,20 +449,6 @@ at service `dev` in `docker-compose.yml`
 
 ### Using VSCode with Remote Container Extension
 
-#### One time only
-
-If you cloned the starter to a folder called something other than `starter` you need to fix the reference in `.devcontainer/dev.Dockerfile`. It has a line like this:
-
-```docker
-FROM starterapp_server:latest
-```
-
-Replace `starter` in this line with your projects folder name, for example if your cloned the starter to a folder named `my_project` then that line should now be:
-
-```docker
-FROM my_project_server:latest
-```
-
 ### Open project in VSCode and start developing
 
 - Install vscode-extension: [ms-vscode-remote.remote-container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)

@@ -110,8 +110,7 @@ services:
 
 networks:
   default:
-    # If you're running newer versions of docker-compose you can name this network:
-    # name: starterapp
+    # No metadata required right now.
 
 volumes:
   db-volume:
