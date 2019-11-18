@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.5
--- Dumped by pg_dump version 11.5
+-- Dumped from database version 11.5 (Debian 11.5-1.pgdg90+1)
+-- Dumped by pg_dump version 11.5 (Debian 11.5-1.pgdg90+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
