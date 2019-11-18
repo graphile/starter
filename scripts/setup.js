@@ -22,6 +22,7 @@ const { randomBytes } = require("crypto");
 const { spawnSync: rawSpawnSync } = require("child_process");
 const dotenv = require("dotenv");
 const inquirer = require("inquirer");
+const { basename, dirname } = require("path");
 const pg = require("pg");
 
 // fixes spwanSync not throwing ENOENT on windows
@@ -253,6 +254,17 @@ async function updateDotenv(answers) {
     `\
 # Client Secret:`
   );
+
+  const externalDirName = process.argv[2];
+  if (externalDirName) {
+    const projectName = basename(dirname(externalDirName));
+    add(
+      "COMPOSE_PROJECT_NAME",
+      projectName,
+      `\
+# The name of the folder you cloned graphile-starter to (so we can run docker-compose inside a container):`
+    );
+  }
 
   data = data.trim() + "\n";
 
