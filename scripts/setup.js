@@ -34,14 +34,6 @@ if (isNpx) {
   require("module").Module._initPaths();
 }
 
-async function tryMkdir(path) {
-  try {
-    await fsp.mkdir(path);
-  } catch (e) {
-    /* noop */
-  }
-}
-
 const spawnSync = (cmd, args, options) => {
   const result = rawSpawnSync(cmd, args, {
     stdio: ["pipe", "inherit", "inherit"],
@@ -286,7 +278,7 @@ async function main() {
       message:
         "What's the hostname of your database server (include :port if it's not the default :5432)?",
       default: "localhost",
-      when: !config.DATABASE_HOST,
+      when: !(DATABASE_HOST in config),
     },
 
     {
