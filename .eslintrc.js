@@ -17,6 +17,15 @@ module.exports = {
     "prettier",
     "graphql",
   ],
+  overrides: [
+    {
+      files: ['@app/e2e/cypress/**'],
+      plugins: ['cypress'],
+      env: {
+        'cypress/globals': true,
+      },
+    },
+  ],
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: "module",
