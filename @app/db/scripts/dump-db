@@ -6,8 +6,6 @@ fi
 
 export COMPOSE_PROJECT_NAME
 
-echo "COMPOSE_PROJECT_NAME = $COMPOSE_PROJECT_NAME"
-
 # When ran inside docker-compose we need to be able to run a different pg_dump binary
 ${PG_DUMP:-pg_dump} \
   --no-sync \
