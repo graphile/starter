@@ -1,0 +1,40 @@
+// If you want to run as a non-root user in the container, see ../docker-compose.yml.
+{
+  "name": "Node.js & Postgres",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "dev", // attaches to this service after docker-compose up `runServices`
+  "workspaceFolder": "/work",
+
+  // Use 'settings' to set *default* container specific settings.json values on container create.
+  // You can edit these settings after create using File > Preferences > Settings > Remote.
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+
+  // Uncomment the next line if you want start specific services in your Docker Compose config.
+  "runServices": ["dev"], // only run dev, not also server
+
+  // Uncomment the line below if you want to keep your containers running after VS Code shuts down.
+  // "shutdownAction": "none",
+
+  // Uncomment next line if you want to copy your .ssh creds and other config files for easier use inside container
+  //"postCreateCommand": "bash ./docker/scripts/copy-local-config-and-ssh-creds.sh",
+
+  // Add the IDs of extensions you want installed when the container is created in the array below.
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "msjsdiag.debugger-for-chrome",
+    "apollographql.vscode-apollo",
+    "mikestead.dotenv",
+    "ms-azuretools.vscode-docker",
+    "p1c2u.docker-compose",
+    "dzannotti.vscode-babel-coloring",
+    "aaron-bond.better-comments",
+    "pranaygp.vscode-css-peek",
+    "codemooseus.vscode-devtools-for-chrome",
+    "wix.vscode-import-cost",
+    "cancerberosgx.vscode-typescript-refactors",
+    "steoates.autoimport"
+  ]
+}

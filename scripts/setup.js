@@ -3,6 +3,8 @@ if (parseInt(process.version.split(".")[0], 10) < 10) {
   throw new Error("This project requires Node.js >= 10.0.0");
 }
 
+const externalDirName = process.argv[2];
+
 // Deal with running inside npx
 const pathParts = (process.env.PATH || "").split(":");
 const isNpx = pathParts[0].includes("/_npx/");
@@ -22,6 +24,7 @@ const { randomBytes } = require("crypto");
 const { spawnSync: rawSpawnSync } = require("child_process");
 const dotenv = require("dotenv");
 const inquirer = require("inquirer");
+const { basename, dirname } = require("path");
 const pg = require("pg");
 
 // fixes spwanSync not throwing ENOENT on windows
@@ -32,14 +35,6 @@ if (isNpx) {
   // Reset the NODE_PATH dance above
   process.env.NODE_PATH = oldNodePath;
   require("module").Module._initPaths();
-}
-
-async function tryMkdir(path) {
-  try {
-    await fsp.mkdir(path);
-  } catch (e) {
-    /* noop */
-  }
 }
 
 const spawnSync = (cmd, args, options) => {
@@ -54,24 +49,26 @@ const spawnSync = (cmd, args, options) => {
     throw error;
   }
 
-  if (status) {
-    console.log(stdout.toString("utf8"));
-    console.log(stderr.toString("utf8"));
-    throw new Error(
-      `Process exited with status '${status}' (running '${cmd} ${
-        args ? args.join(" ") : ""
-      }')`
-    );
-  }
-
-  if (signal) {
-    console.log(stdout.toString("utf8"));
-    console.log(stderr.toString("utf8"));
-    throw new Error(
-      `Process exited due to signal '${signal}' (running '${cmd} ${
-        args ? args.join(" ") : null
-      }')`
-    );
+  if (status || signal) {
+    if (stdout) {
+      console.log(stdout.toString("utf8"));
+    }
+    if (stderr) {
+      console.error(stderr.toString("utf8"));
+    }
+    if (status) {
+      throw new Error(
+        `Process exited with status '${status}' (running '${cmd} ${
+          args ? args.join(" ") : ""
+        }')`
+      );
+    } else {
+      throw new Error(
+        `Process exited due to signal '${signal}' (running '${cmd} ${
+          args ? args.join(" ") : null
+        }')`
+      );
+    }
   }
 
   return result;
@@ -96,7 +93,10 @@ async function readDotenv() {
   } catch (e) {
     /* noop */
   }
-  return buffer ? dotenv.parse(buffer) : null;
+  const config = buffer ? dotenv.parse(buffer) : null;
+  // also read from current env, because docker-compose already needs to know some of it
+  // eg. $PG_DUMP, $CONFIRM
+  return { ...config, ...process.env };
 }
 
 function encodeDotenvValue(str) {
@@ -162,13 +162,6 @@ async function updateDotenv(answers) {
 # If you're supporting PostGraphile's development via Patreon or Graphile
 # Store, add your license key from https://store.graphile.com here so you can
 # use the Pro plugin - thanks so much!`
-  );
-
-  add(
-    "DOCKER_MODE",
-    "n",
-    `\
-# Are we using the Docker mode?`
   );
 
   add(
@@ -264,6 +257,16 @@ async function updateDotenv(answers) {
 # Client Secret:`
   );
 
+  if (externalDirName) {
+    const projectName = basename(dirname(externalDirName));
+    add(
+      "COMPOSE_PROJECT_NAME",
+      projectName,
+      `\
+# The name of the folder you cloned graphile-starter to (so we can run docker-compose inside a container):`
+    );
+  }
+
   data = data.trim() + "\n";
 
   await fsp.writeFile(DOTENV_PATH, data);
@@ -271,21 +274,8 @@ async function updateDotenv(answers) {
 
 async function main() {
   const config = (await readDotenv()) || {};
-  const defaultAnswers = {
-    ...config,
-    DOCKER_MODE: config.DOCKER_MODE === "y",
-  };
-  const mergeAnswers = cb => answers => cb({ ...defaultAnswers, ...answers });
+  const mergeAnswers = cb => answers => cb({ ...config, ...answers });
   const questions = [
-    {
-      type: "confirm",
-      name: "DOCKER_MODE",
-      message:
-        "Would you like to use our (experimental) Docker mode? (Recommended for Windows, or if you don't want PostgreSQL installed locally)",
-      default: config.DOCKER_MODE === "y",
-      when: !("DOCKER_MODE" in config),
-    },
-
     {
       type: "input",
       name: "DATABASE_NAME",
@@ -297,18 +287,13 @@ async function main() {
           : "That doesn't look like a good name for a database, try something simpler - just lowercase alphanumeric and underscores",
       when: !config.DATABASE_NAME,
     },
-
     {
       type: "input",
       name: "DATABASE_HOST",
       message:
         "What's the hostname of your database server (include :port if it's not the default :5432)?",
-      default: mergeAnswers(answers =>
-        answers.DOCKER_MODE ? "pg" : config.DATABASE_HOST || "localhost"
-      ),
-      when: mergeAnswers(
-        answers => !answers.DOCKER_MODE && !("DATABASE_HOST" in config)
-      ),
+      default: "localhost",
+      when: !("DATABASE_HOST" in config),
     },
 
     {
@@ -318,36 +303,16 @@ async function main() {
         answers =>
           `Please enter a superuser connection string to the database server (so we can drop/create the '${answers.DATABASE_NAME}' and '${answers.DATABASE_NAME}_shadow' databases) - IMPORTANT: it must not be a connection to the '${answers.DATABASE_NAME}' database itself, instead try 'template1'.`
       ),
-      default: mergeAnswers(answers =>
-        answers.DOCKER_MODE
-          ? "postgres://postgres@pg/template1"
-          : config.ROOT_DATABASE_URL ||
-            `postgres://${
-              answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
-            }/template1`
+      default: mergeAnswers(
+        answers =>
+          `postgres://${
+            answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
+          }/template1`
       ),
-      when: mergeAnswers(
-        answers => !answers.DOCKER_MODE && !config.ROOT_DATABASE_URL
-      ),
+      when: !config.ROOT_DATABASE_URL,
     },
   ];
-  const rawAnswers = await inquirer.prompt(questions);
-
-  const dockerMode = config.DOCKER_MODE
-    ? config.DOCKER_MODE === "y"
-    : rawAnswers.DOCKER_MODE;
-  const answers = {
-    ...(dockerMode
-      ? {
-          DATABASE_HOST: "pg",
-          ROOT_DATABASE_URL: "postgres://postgres@pg/template1",
-        }
-      : null),
-    ...rawAnswers,
-
-    // Convert boolean to string
-    DOCKER_MODE: dockerMode ? "y" : "n",
-  };
+  const answers = await inquirer.prompt(questions);
 
   await updateDotenv({
     ...config,
@@ -355,37 +320,8 @@ async function main() {
   });
 
   // And perform setup
-
-  if (dockerMode) {
-    // Need to create these folders as owned by us before Docker starts
-    await tryMkdir(`${__dirname}/../.docker`);
-    await tryMkdir(`${__dirname}/../.docker/postgres_data`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules_client`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules_db`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules_e2e`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules_server`);
-    await tryMkdir(`${__dirname}/../.docker/node_modules_worker`);
-    spawnSync("docker-compose", [
-      "-f",
-      "docker-compose.builder.yml",
-      "run",
-      `--user=${process.env.UID}`,
-      "--rm",
-      "install",
-    ]);
-    spawnSync("docker-compose", [
-      "-f",
-      "docker-compose.builder.yml",
-      "run",
-      `--user=${process.env.UID}`,
-      "--rm",
-      "server-src-build",
-    ]);
-  } else {
-    spawnSync(yarnCmd);
-    spawnSync(yarnCmd, ["server", "build"]);
-  }
+  spawnSync(yarnCmd);
+  spawnSync(yarnCmd, ["server", "build"]);
 
   // FINALLY we can source our environment
   dotenv.config({ path: `${__dirname}/../.env` }); // Be sure to use dotenv from npx
@@ -398,39 +334,31 @@ async function main() {
     DATABASE_OWNER_PASSWORD,
     DATABASE_VISITOR,
     ROOT_DATABASE_URL,
+    CONFIRM_DROP,
   } = process.env;
 
-  console.log(process.env.DATABASE_URL);
+  if (!CONFIRM_DROP) {
+    const confirm = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "CONFIRM",
+        default: false,
+        message: `We're going to drop (if necessary):
 
-  const confirm = await inquirer.prompt([
-    {
-      type: "confirm",
-      name: "CONFIRM",
-      default: false,
-      message: `We're going to drop (if necessary):
-
-- database ${DATABASE_NAME}
-- database ${DATABASE_NAME}_shadow
-- database role ${DATABASE_VISITOR} (cascade)
-- database role ${DATABASE_AUTHENTICATOR} (cascade)
-- database role ${DATABASE_OWNER}`,
-    },
-  ]);
-
-  if (!confirm.CONFIRM) {
-    console.error("Confirmation failed; exiting");
-    process.exit(1);
+  - database ${DATABASE_NAME}
+  - database ${DATABASE_NAME}_shadow
+  - database role ${DATABASE_VISITOR} (cascade)
+  - database role ${DATABASE_AUTHENTICATOR} (cascade)
+  - database role ${DATABASE_OWNER}`,
+      },
+    ]);
+    if (!confirm.CONFIRM) {
+      console.error("Confirmation failed; exiting");
+      process.exit(1);
+    }
   }
 
   console.log("Installing or reinstalling the roles and database...");
-  if (dockerMode) {
-    spawnSync("docker-compose", ["down"]);
-    spawnSync("docker-compose", ["up", "-d", "pg"]);
-    process.once("exit", () => {
-      spawnSync("docker-compose", ["down"]);
-    });
-  }
-
   const pgPool = new pg.Pool({
     connectionString: ROOT_DATABASE_URL,
   });
@@ -496,23 +424,8 @@ async function main() {
   }
   await pgPool.end();
 
-  if (dockerMode) {
-    spawnSync("docker-compose", [
-      "-f",
-      "docker-compose.builder.yml",
-      "run",
-      `--user=${process.env.UID}`,
-      "--rm",
-      "db-reset",
-    ]);
-  } else {
-    spawnSync(yarnCmd, ["db", "reset"]);
-    spawnSync(yarnCmd, ["db", "reset", "--shadow"]);
-  }
-
-  if (dockerMode) {
-    spawnSync("docker-compose", ["down"]);
-  }
+  spawnSync(yarnCmd, ["db", "reset"]);
+  spawnSync(yarnCmd, ["db", "reset", "--shadow"]);
 
   console.log();
   console.log();
@@ -524,11 +437,13 @@ async function main() {
 
   console.log("🚀 To get started, run:");
   console.log();
-  if (dockerMode) {
-    console.log("  export UID; docker-compose up");
+  if (externalDirName) {
+    // Probably Docker setup
+    console.log("  export UID; docker-compose up server");
   } else {
     console.log("  yarn start");
   }
+
   console.log();
   console.log(
     "🙏 Please support our Open Source work: https://graphile.org/sponsor"

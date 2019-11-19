@@ -4,7 +4,8 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "clean": "rm -Rf @app/*/dist @app/client/.next",
+    "clean": "node ./scripts/clean.js",
+    "reset": "yarn clean && node ./scripts/delete-env-file.js",
     "setup": "npx -p dotenv -p inquirer -p pg ./scripts/setup.js",
     "start": "node ./scripts/start.js",
     "test": "node scripts/test.js",
@@ -19,7 +20,9 @@
     "e2e": "yarn workspace @app/e2e run",
     "graphql": "yarn workspace @app/graphql run",
     "server": "yarn workspace @app/server run",
-    "worker": "yarn workspace @app/worker run"
+    "worker": "yarn workspace @app/worker run",
+    "docker": "yarn --cwd ./docker",
+    "docker-compose": "yarn --cwd ./docker compose"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -46,6 +49,7 @@
     "mock-res": "^0.5.0",
     "nodemon": "^1.19.1",
     "prettier": "^1.18.2",
+    "rimraf": "^3.0.0",
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.1.0",
     "typescript": "^3.5.3",

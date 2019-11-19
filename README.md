@@ -85,46 +85,81 @@ And please give some love to our featured sponsors 🤩:
 
 ## Prerequisites
 
+You can either work with this project locally (directly on your machine) or
+use a pre-configured Docker enviroment. We'll differentiate this in the README
+with a table like this one:
+
+| Local mode                      | OR  | Docker mode                               |
+| ------------------------------- | :-: | ----------------------------------------- |
+| _command for local development_ | or  | \_command for docker-compose development` |
+
+**Be careful not to mix and match Docker-mode vs local-mode for development.**
+You should make a choice and stick to it. (Developing locally but deploying
+with `production.Docker` is absolutely fine.)
+
+**IMPORTANT**: If you choose the Docker mode, be sure to read [docker/README.md](docker/README.md).
+
+For users of Visual Studio Code (VSCode), a `.vscode` folder is included with
+editor settings and debugger settings provided, plus a list of recommended
+extensions. Should you need it, there is also a `.devcontainer` folder which
+enables you to use [VSCode's remote
+containers](https://code.visualstudio.com/docs/remote/containers) giving you
+a local-like development experience whilst still using docker containers.
+
+### Local development
+
+Requires:
+
 - Node.js v10+ must be installed
-- Either a PostgreSQL v10+ server must be available, or Docker and docker-compose must be available
+- PostgreSQL v10+ server must be available
 - VSCode is recommended, but any editor will do
 
 This software has been developed under Mac and Linux, and should work in a
 `bash` environment. I'm not sure if it works under Windows; PRs to fix
 Windows compatibility issues would be welcome (please keep them small!).
+Failing that, try the Docker mode :)
 
-For users of Visual Studio Code (VSCode), a `.vscode` folder is included with
-editor settings and debugger settings provided, plus a list of recommended
-extensions.
+### Docker development
+
+Requires:
+
+- [`docker`](https://docs.docker.com/install/)
+- [`docker-compose`](https://docs.docker.com/compose/install/)
+
+Has been tested on Windows and Linux (Ubuntu 18.04LTS).
 
 ## Getting started
 
 This project is designed to work with `yarn`. If you don't have `yarn`
-installed, you can install it with `npm install -g yarn`.
+installed, you can install it with `npm install -g yarn`. The Docker setup
+already has `yarn` & `npm` installed and configured.
 
-To get started, please run the `yarn setup` command which should lead you
-through the necessary steps:
+To get started, please run:
 
-```
-yarn setup
-```
+| Local mode   | OR  | Docker mode         |
+| ------------ | :-: | ------------------- |
+| `yarn setup` | or  | `yarn docker setup` |
 
-The above command will create a `.env` file for you containing your secrets.
-Do not commit it to version control!
+This command will lead you through the necessary steps, and create a `.env`
+file for you containing your secrets.
+
+**Do not commit `.env` to version control!**
 
 ## Running
 
-Depending on how you answered the setup questions, you can bring up the stack:
+You can bring up the stack with:
 
-- natively: `yarn start`
-- with Docker: `export UID; docker-compose up`
-  - NOTE: the `export UID` is really important on Linux otherwise the folders will end up owned by root and everything will suck. We recommend adding `export UID` to your `~/.profile` or `~/.bashrc` or similar
+| Local mode   | OR  | Docker mode                            |
+| ------------ | :-: | -------------------------------------- |
+| `yarn start` | or  | `export UID; docker-compose up server` |
 
-After a short period you should then be able to load the application at
+**NOTE:** `export UID` is really important on Linux Docker hosts, otherwise
+the files and folders created by Docker will end up owned by root, which is
+non-optimal. We recommend adding `export UID` to your `~/.profile` or
+`~/.bashrc` or similar so you don't have to remember it.
+
+After a short period you should be able to load the application at
 http://localhost:5678
-
-**Be careful not to mix and match Docker-mode vs local-mode.** You should
-stick with the answer you gave during setup.
 
 ## Features
 
@@ -179,7 +214,7 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 
 ## Documentation links
 
-### `yarn start` (or `docker-compose up`)
+### `yarn start` (or `docker-compose up server`)
 
 This main command runs a number of tasks:
 
@@ -190,8 +225,11 @@ This main command runs a number of tasks:
 - watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript React hooks for you automatically, leading to strongly typed code with minimal effort
 - runs the `jest` tests in watch mode, automatically re-running as the database or test files change
 
-For `docker-compose up` it also runs the PostgreSQL server that the system
-connects to.
+**NOTE**: `docker-compose up server` also runs the PostgreSQL server that the
+system connects to.
+
+You may also choose to develop locally, but use the PostgreSQL server via
+`docker-compose up -d db`.
 
 ### Cypress e2e tests
 
@@ -266,20 +304,9 @@ information, see the [passport.js documentation](http://www.passportjs.org/docs/
 1. Commit as you usually would
 1. [Show your appreciation with sponsorship](https://www.graphile.org/sponsor/)
 
-## Docker development notes
+## Docker development
 
-Docker creates the files in `.docker` as root. As these files are owned by
-root you have to `sudo` to deal with them. 🙄
-
-PostgreSQL logs from Docker on stdout were overwhelming so we now write them
-to the Postgres data directory `.docker/postgres_data/logs/`. We've enabled
-`log_truncate_on_rotation` but you may need to prune these periodically. See
-[log file
-maintenance](https://www.postgresql.org/docs/current/logfile-maintenance.html).
-
-Our Docker setup seems to trigger more watch events than the native one, so
-it seems to do more redundant work/produce more output. A PR to fix this
-would be welcome!
+Be sure to read [docker/README.md](docker/README.md).
 
 ## Building the production docker image
 
@@ -293,6 +320,7 @@ To build the worker, pass `TARGET="worker"` instead of the default
 
 ```sh
 docker build \
+  --file production.Dockerfile \
   --build-arg ROOT_URL="http://localhost:5678" \
   --build-arg TARGET="server" \
   .

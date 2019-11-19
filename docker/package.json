@@ -1,0 +1,21 @@
+{
+  "name": "docker-helpers",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "setup": "yarn down && yarn db:up && yarn compose run server yarn setup \"$(pwd)\"",
+    "start": "yarn compose up server",
+    "dev": "yarn compose:exec:dev bash",
+    "dev:start": "yarn compose:exec:dev yarn start",
+    "reset": "yarn down && yarn reset:volumes && yarn rebuild && yarn compose run server yarn reset",
+    "--DOCKER HELPERS--": "",
+    "db:up": "yarn compose up -d db",
+    "compose": "docker-compose -f ../docker-compose.yml",
+    "compose:exec:dev": "yarn down && yarn compose up -d dev && yarn compose exec dev ",
+    "reset:volumes": "node ./scripts/clean-volumes.js",
+    "rebuild": "yarn compose build",
+    "down": "yarn compose down --remove-orphans"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
