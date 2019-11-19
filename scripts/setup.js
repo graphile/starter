@@ -3,7 +3,7 @@ if (parseInt(process.version.split(".")[0], 10) < 10) {
   throw new Error("This project requires Node.js >= 10.0.0");
 }
 
-const externalDirName = process.argv[2];
+const projectName = process.argv[2];
 
 // Deal with running inside npx
 const pathParts = (process.env.PATH || "").split(":");
@@ -257,8 +257,7 @@ async function updateDotenv(answers) {
 # Client Secret:`
   );
 
-  if (externalDirName) {
-    const projectName = basename(dirname(externalDirName));
+  if (projectName) {
     add(
       "COMPOSE_PROJECT_NAME",
       projectName,
@@ -437,7 +436,7 @@ async function main() {
 
   console.log("🚀 To get started, run:");
   console.log();
-  if (externalDirName) {
+  if (projectName) {
     // Probably Docker setup
     console.log("  export UID; docker-compose up server");
   } else {
