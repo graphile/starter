@@ -42,7 +42,7 @@ And please give some love to our featured sponsors 🤩:
 
 <table><tr>
 <td align="center"><a href="http://chads.website/"><img src="https://www.graphile.org/images/sponsors/chadf.png" width="90" height="90" alt="Chad Furman" /><br />Chad Furman</a></td>
-<td align="center"><a href="https://timescale.com/"><img src="https://www.graphile.org/images/sponsors/timescale.svg" width="90" height="90" alt="Timescale" /><br />Timescale</a></td>
+<td align="center"><a href="https://storyscript.io/?utm_source=postgraphile"><img src="https://www.graphile.org/images/sponsors/storyscript.png" width="90" height="90" alt="Storyscript" /><br />Storyscript</a></td>
 <td align="center"><a href="http://p72.vc/"><img src="https://www.graphile.org/images/sponsors/p72.png" width="90" height="90" alt="Point72 Ventures" /><br />Point72 Ventures</a></td>
 </tr></table>
 
@@ -243,7 +243,7 @@ tests to ensure that your project remains rock-solid at all times.
 We use Next.js ([docs](https://nextjs.org/)) to handle the various common
 concerns of a React application for us (server-side rendering, routing,
 bundling, bundle-splitting, etc). The `@app/client/src/pages/_app.tsx` file is a
-[custom lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to
+[custom &lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to
 add any providers you need to. We've already set it up with `withApollo` from
 `@app/client/src/lib/withApollo` which includes all the Apollo configuration,
 including the client URL.
