@@ -86,12 +86,12 @@ And please give some love to our featured sponsors 🤩:
 ## Prerequisites
 
 You can either work with this project locally (directly on your machine) or
-use a pre-configured Docker enviroment. We'll differentiate this in the README
+use a pre-configured Docker environment. We'll differentiate this in the README
 with a table like this one:
 
-| Local mode                      | OR  | Docker mode                               |
-| ------------------------------- | :-: | ----------------------------------------- |
-| _command for local development_ | or  | \_command for docker-compose development` |
+| Local mode                      | OR  | Docker mode                              |
+| ------------------------------- | :-: | ---------------------------------------- |
+| _command for local development_ | or  | _command for docker-compose development_ |
 
 **Be careful not to mix and match Docker-mode vs local-mode for development.**
 You should make a choice and stick to it. (Developing locally but deploying
