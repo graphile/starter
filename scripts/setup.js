@@ -24,10 +24,9 @@ const { randomBytes } = require("crypto");
 const { spawnSync: rawSpawnSync } = require("child_process");
 const dotenv = require("dotenv");
 const inquirer = require("inquirer");
-const { basename, dirname } = require("path");
 const pg = require("pg");
 
-// fixes spwanSync not throwing ENOENT on windows
+// fixes spawnSync not throwing ENOENT on windows
 const platform = require("os").platform();
 const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 
