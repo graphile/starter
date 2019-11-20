@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:c80c8a3770c8e7c63f13494cdb3f0f55d8166d77
+--! Hash: sha1:4af675b6fcfb0ed01e8a59c731217e0a8f43848a
 
 drop schema if exists app_public cascade;
 create schema app_public;
@@ -123,7 +123,7 @@ create policy delete_self on app_public.users for delete using (id = app_public.
 grant select on app_public.users to :DATABASE_VISITOR;
 -- NOTE: `insert` is not granted, because we'll handle that separately
 grant update(username, name, avatar_url) on app_public.users to :DATABASE_VISITOR;
-grant delete on app_public.users to :DATABASE_VISITOR;
+-- NOTE: `delete` is not granted, because we require confirmation via request_account_deletion/confirm_account_deletion
 
 comment on table app_public.users is
   E'A user who can log in to the application.';

@@ -1795,7 +1795,7 @@ GRANT USAGE ON SCHEMA app_public TO graphile_starter_visitor;
 -- Name: TABLE users; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,DELETE ON TABLE app_public.users TO graphile_starter_visitor;
+GRANT SELECT ON TABLE app_public.users TO graphile_starter_visitor;
 
 
 --
