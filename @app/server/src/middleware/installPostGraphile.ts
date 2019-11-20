@@ -98,6 +98,8 @@ export function getPostGraphileOptions({
     graphiql: isDev || !!process.env.ENABLE_GRAPHIQL,
     // Use a fancier GraphiQL with `prettier` for formatting, and header editing.
     enhanceGraphiql: true,
+    // Allow EXPLAIN in development (you can replace this with a callback function if you want more control)
+    allowExplain: isDev,
 
     // Disable query logging - we're using morgan
     disableQueryLog: true,
