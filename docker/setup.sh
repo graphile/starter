@@ -42,7 +42,7 @@ chmod 755 /usr/local/bin/docker-compose
 
 # [Optional] Update a non-root user to match UID/GID - see https://aka.ms/vscode-remote/containers/non-root-user.
 if [ "$USER_UID" != "1000" ]; then
-  usermod --uid $USER_UID node;
+  usermod --uid "$USER_UID" node;
 fi
 
 # Add the user to the docker group so they can access /var/run/docker.sock
