@@ -1,0 +1,122 @@
+/*
+ * This file contains your Smart Tags, allowing you to "tag" database entities
+ * in order to customise how your GraphQL schema is generated. If you prefer,
+ * you can use Smart Comments in the database, or you can use both.
+ *
+ * See https://www.graphile.org/postgraphile/smart-tags/ for more information.
+ */
+{
+  "$schema": "https://gist.githubusercontent.com/singingwolfboy/a7144db4e24b5d31ba81f28b878a4b51/raw/f270f4279854b5bf872cc0012f54203095c0cd27/pg-smart-tags-schema.json",
+  "version": 1,
+  "config": {
+    "class": {
+      // Equivalent to:
+      // COMMENT ON TABLE app_public.users IS E'@omit all\nA user who can log in to the application.';
+      "app_public.users": {
+        "tags": {
+          /*
+           * By doing `@omit all` we prevent the `allUsers` field from appearing in
+           * our GraphQL schema. User discovery is still possible by browsing the
+           * rest of the data, but it makes it harder for people to receive a
+           * `totalCount` of users, or enumerate them fully. Of course if you
+           * really care about this, you'd use something like uuid or maybe a
+           * feistel cipher to make it harder to determine a ceiling from the user
+           * id.
+           */
+          "omit": "all"
+        },
+        "description": "A user who can log in to the application."
+      },
+      "app_public.user_emails": {
+        "tags": {
+          /*
+           * `@omit all` because there's no point exposing `allUserEmails` -
+           * you can only see your own, and having this behaviour can lead to
+           * bad practices from frontend teams.
+           */
+          "omit": "all"
+        }
+      },
+      "app_public.user_authentications": {
+        "tags": {
+          "omit": "all",
+          "simpleCollections": "only"
+        },
+        "columns": {
+          "details": {
+            "tags": {
+              "omit": true
+            }
+          }
+        }
+      }
+    },
+    "constraint": {
+      "app_public.user_authentications.uniq_user_authentications": {
+        "tags": {
+          "omit": true
+        }
+      },
+      "app_public.user_authentications.user_authentications_pkey": {
+        "tags": {
+          "omit": "all"
+        }
+      },
+      "app_public.user_emails.user_emails_pkey": {
+        "tags": {
+          "omit": "all"
+        }
+      },
+      "app_public.user_emails.user_emails_user_id_email_key": {
+        "tags": {
+          // We don't need custom finders/relations for this
+          "omit": true
+        }
+      }
+    },
+    "procedure": {
+      "app_public.current_session_id": {
+        "tags": { "omit": true }
+      },
+      "app_public.current_user_id": {
+        "tags": { "omit": true }
+      },
+      "app_public.logout": {
+        "tags": {
+          // We add our own logout method, so we don't want to expose this via GraphQL
+          "omit": true
+        }
+      },
+      "app_public.change_password": {
+        "tags": {
+          "resultFieldName": "success"
+        }
+      },
+      "app_public.reset_password": {
+        "tags": {
+          "resultFieldName": "success"
+        }
+      },
+      "app_public.request_account_deletion": {
+        "tags": {
+          "resultFieldName": "success"
+        }
+      },
+      "app_public.confirm_account_deletion": {
+        "tags": {
+          "resultFieldName": "success"
+        }
+      },
+      "app_public.resend_email_verification_code": {
+        "tags": {
+          "resultFieldName": "success"
+        }
+      },
+      "app_public.verify_email": {
+        "tags": {
+          "resultFieldName": "success"
+        }
+      }
+    }
+  }
+}

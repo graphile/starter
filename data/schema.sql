@@ -121,8 +121,7 @@ CREATE TABLE app_public.users (
 -- Name: TABLE users; Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON TABLE app_public.users IS '@omit all
-A user who can log in to the application.';
+COMMENT ON TABLE app_public.users IS 'A user who can log in to the application.';
 
 
 --
@@ -621,8 +620,7 @@ $$;
 -- Name: FUNCTION change_password(old_password text, new_password text); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.change_password(old_password text, new_password text) IS '@resultFieldName success
-Enter your old password and a new password to change your password.';
+COMMENT ON FUNCTION app_public.change_password(old_password text, new_password text) IS 'Enter your old password and a new password to change your password.';
 
 
 --
@@ -666,8 +664,7 @@ $$;
 -- Name: FUNCTION confirm_account_deletion(token text); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.confirm_account_deletion(token text) IS '@resultFieldName success
-If you''re certain you want to delete your account, use `requestAccountDeletion` to request an account deletion token, and then supply the token through this mutation to complete account deletion.';
+COMMENT ON FUNCTION app_public.confirm_account_deletion(token text) IS 'If you''re certain you want to delete your account, use `requestAccountDeletion` to request an account deletion token, and then supply the token through this mutation to complete account deletion.';
 
 
 --
@@ -685,8 +682,7 @@ $$;
 -- Name: FUNCTION current_session_id(); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.current_session_id() IS '@omit
-Handy method to get the current session ID.';
+COMMENT ON FUNCTION app_public.current_session_id() IS 'Handy method to get the current session ID.';
 
 
 --
@@ -723,8 +719,7 @@ $$;
 -- Name: FUNCTION current_user_id(); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.current_user_id() IS '@omit
-Handy method to get the current user ID for use in RLS policies, etc; in GraphQL, use `currentUser{id}` instead.';
+COMMENT ON FUNCTION app_public.current_user_id() IS 'Handy method to get the current user ID for use in RLS policies, etc; in GraphQL, use `currentUser{id}` instead.';
 
 
 --
@@ -848,13 +843,6 @@ $$;
 
 
 --
--- Name: FUNCTION logout(); Type: COMMENT; Schema: app_public; Owner: -
---
-
-COMMENT ON FUNCTION app_public.logout() IS '@omit';
-
-
---
 -- Name: user_emails; Type: TABLE; Schema: app_public; Owner: -
 --
 
@@ -875,8 +863,7 @@ CREATE TABLE app_public.user_emails (
 -- Name: TABLE user_emails; Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON TABLE app_public.user_emails IS '@omit all
-Information about a user''s email address.';
+COMMENT ON TABLE app_public.user_emails IS 'Information about a user''s email address.';
 
 
 --
@@ -979,8 +966,7 @@ $$;
 -- Name: FUNCTION request_account_deletion(); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.request_account_deletion() IS '@resultFieldName success
-Begin the account deletion flow by requesting the confirmation email';
+COMMENT ON FUNCTION app_public.request_account_deletion() IS 'Begin the account deletion flow by requesting the confirmation email';
 
 
 --
@@ -1010,8 +996,7 @@ $$;
 -- Name: FUNCTION resend_email_verification_code(email_id integer); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.resend_email_verification_code(email_id integer) IS '@resultFieldName success
-If you didn''t receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.';
+COMMENT ON FUNCTION app_public.resend_email_verification_code(email_id integer) IS 'If you didn''t receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.';
 
 
 --
@@ -1084,8 +1069,7 @@ $$;
 -- Name: FUNCTION reset_password(user_id integer, reset_token text, new_password text); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) IS '@resultFieldName success
-After triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
+COMMENT ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) IS 'After triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
 
 
 --
@@ -1215,8 +1199,7 @@ $$;
 -- Name: FUNCTION verify_email(user_email_id integer, token text); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.verify_email(user_email_id integer, token text) IS '@resultFieldName success
-Once you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
+COMMENT ON FUNCTION app_public.verify_email(user_email_id integer, token text) IS 'Once you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
 
 
 --
@@ -1343,9 +1326,7 @@ CREATE TABLE app_public.user_authentications (
 -- Name: TABLE user_authentications; Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON TABLE app_public.user_authentications IS '@omit all
-@simpleCollections only
-Contains information about the login providers this user has used, so that they may disconnect them should they wish.';
+COMMENT ON TABLE app_public.user_authentications IS 'Contains information about the login providers this user has used, so that they may disconnect them should they wish.';
 
 
 --
@@ -1366,8 +1347,7 @@ COMMENT ON COLUMN app_public.user_authentications.identifier IS 'A unique identi
 -- Name: COLUMN user_authentications.details; Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON COLUMN app_public.user_authentications.details IS '@omit
-Additional profile details extracted from this login method';
+COMMENT ON COLUMN app_public.user_authentications.details IS 'Additional profile details extracted from this login method';
 
 
 --
@@ -1508,25 +1488,11 @@ ALTER TABLE ONLY app_public.user_authentications
 
 
 --
--- Name: CONSTRAINT uniq_user_authentications ON user_authentications; Type: COMMENT; Schema: app_public; Owner: -
---
-
-COMMENT ON CONSTRAINT uniq_user_authentications ON app_public.user_authentications IS '@omit';
-
-
---
 -- Name: user_authentications user_authentications_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
 --
 
 ALTER TABLE ONLY app_public.user_authentications
     ADD CONSTRAINT user_authentications_pkey PRIMARY KEY (id);
-
-
---
--- Name: CONSTRAINT user_authentications_pkey ON user_authentications; Type: COMMENT; Schema: app_public; Owner: -
---
-
-COMMENT ON CONSTRAINT user_authentications_pkey ON app_public.user_authentications IS '@omit all';
 
 
 --
@@ -1538,25 +1504,11 @@ ALTER TABLE ONLY app_public.user_emails
 
 
 --
--- Name: CONSTRAINT user_emails_pkey ON user_emails; Type: COMMENT; Schema: app_public; Owner: -
---
-
-COMMENT ON CONSTRAINT user_emails_pkey ON app_public.user_emails IS '@omit all';
-
-
---
 -- Name: user_emails user_emails_user_id_email_key; Type: CONSTRAINT; Schema: app_public; Owner: -
 --
 
 ALTER TABLE ONLY app_public.user_emails
     ADD CONSTRAINT user_emails_user_id_email_key UNIQUE (user_id, email);
-
-
---
--- Name: CONSTRAINT user_emails_user_id_email_key ON user_emails; Type: COMMENT; Schema: app_public; Owner: -
---
-
-COMMENT ON CONSTRAINT user_emails_user_id_email_key ON app_public.user_emails IS '@omit';
 
 
 --

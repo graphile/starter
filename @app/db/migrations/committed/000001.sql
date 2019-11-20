@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:7179e8fb8a993cfadb4c95544c734647875cf998
+--! Hash: sha1:c80c8a3770c8e7c63f13494cdb3f0f55d8166d77
 
 drop schema if exists app_public cascade;
 create schema app_public;
@@ -81,7 +81,7 @@ create function app_public.current_session_id() returns uuid as $$
   select nullif(pg_catalog.current_setting('jwt.claims.session_id', true), '')::uuid;
 $$ language sql stable;
 comment on function app_public.current_session_id() is
-  E'@omit\nHandy method to get the current session ID.';
+  E'Handy method to get the current session ID.';
 -- We've put this in public, but omitted it, because it's often useful for debugging auth issues.
 
 /*
@@ -98,7 +98,7 @@ create function app_public.current_user_id() returns int as $$
   select user_id from app_private.sessions where uuid = app_public.current_session_id();
 $$ language sql stable security definer set search_path from current;
 comment on function app_public.current_user_id() is
-  E'@omit\nHandy method to get the current user ID for use in RLS policies, etc; in GraphQL, use `currentUser{id}` instead.';
+  E'Handy method to get the current user ID for use in RLS policies, etc; in GraphQL, use `currentUser{id}` instead.';
 -- We've put this in public, but omitted it, because it's often useful for debugging auth issues.
 
 /**********/
@@ -125,14 +125,8 @@ grant select on app_public.users to :DATABASE_VISITOR;
 grant update(username, name, avatar_url) on app_public.users to :DATABASE_VISITOR;
 grant delete on app_public.users to :DATABASE_VISITOR;
 
--- By doing `@omit all` we prevent the `allUsers` field from appearing in our
--- GraphQL schema.  User discovery is still possible by browsing the rest of
--- the data, but it makes it harder for people to receive a `totalCount` of
--- users, or enumerate them fully. Of course if you really care about this,
--- you'd use something like uuid or maybe a feistel cipher to make it harder
--- to determine a ceiling from the user id.
 comment on table app_public.users is
-  E'@omit all\nA user who can log in to the application.';
+  E'A user who can log in to the application.';
 
 comment on column app_public.users.id is
   E'Unique identifier for the user.';
@@ -222,12 +216,6 @@ create table app_public.user_emails (
 );
 alter table app_public.user_emails enable row level security;
 
-comment on constraint user_emails_pkey on app_public.user_emails is
-  E'@omit all';
--- We don't need custom finders/relations for this
-comment on constraint user_emails_user_id_email_key on app_public.user_emails is
-  E'@omit';
-
 -- Once an email is verified, it may only be used by one user
 create unique index uniq_user_emails_verified_email on app_public.user_emails(email) where (is_verified is true);
 -- Only one primary email per user
@@ -255,11 +243,8 @@ create trigger _900_send_verification_email
   when (NEW.is_verified is false)
   execute procedure app_private.tg__add_job('user_emails__send_verification');
 
--- `@omit all` because there's no point exposing `allUserEmails` - you can only
--- see your own, and having this behaviour can lead to bad practices from
--- frontend teams.
 comment on table app_public.user_emails is
-  E'@omit all\nInformation about a user''s email address.';
+  E'Information about a user''s email address.';
 comment on column app_public.user_emails.email is
   E'The users email address, in `a@b.c` format.';
 comment on column app_public.user_emails.is_verified is
@@ -322,7 +307,7 @@ begin
 end;
 $$ language plpgsql volatile strict security definer;
 comment on function app_public.verify_email(user_email_id int, token text) is
-  E'@resultFieldName success\nOnce you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
+  E'Once you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
 
 
 /**********/
@@ -338,10 +323,6 @@ create table app_public.user_authentications (
   constraint uniq_user_authentications unique(service, identifier)
 );
 
-comment on constraint uniq_user_authentications on app_public.user_authentications is
-  E'@omit';
-comment on constraint user_authentications_pkey on app_public.user_authentications is
-  E'@omit all';
 alter table app_public.user_authentications enable row level security;
 create index on app_public.user_authentications(user_id);
 create trigger _100_timestamps
@@ -350,13 +331,13 @@ create trigger _100_timestamps
   execute procedure app_private.tg__timestamps();
 
 comment on table app_public.user_authentications is
-  E'@omit all\n@simpleCollections only\nContains information about the login providers this user has used, so that they may disconnect them should they wish.';
+  E'Contains information about the login providers this user has used, so that they may disconnect them should they wish.';
 comment on column app_public.user_authentications.service is
   E'The login service used, e.g. `twitter` or `github`.';
 comment on column app_public.user_authentications.identifier is
   E'A unique identifier for the user within the login service.';
 comment on column app_public.user_authentications.details is
-  E'@omit\nAdditional profile details extracted from this login method';
+  E'Additional profile details extracted from this login method';
 
 create policy select_own on app_public.user_authentications for select using (user_id = app_public.current_user_id());
 create policy delete_own on app_public.user_authentications for delete using (user_id = app_public.current_user_id()); -- TODO check this isn't the last one, or that they have a verified email address
@@ -458,8 +439,6 @@ begin
   perform set_config('jwt.claims.session_id', '', true);
 end;
 $$ language plpgsql security definer volatile set search_path from current;
-comment on function app_public.logout() is
-  E'@omit';
 
 /**********/
 
@@ -630,7 +609,7 @@ end;
 $$ language plpgsql strict volatile security definer set search_path from current;
 
 comment on function app_public.reset_password(user_id int, reset_token text, new_password text) is
-  E'@resultFieldName success\nAfter triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
+  E'After triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
 
 /**********/
 
@@ -677,7 +656,7 @@ end;
 $$ language plpgsql strict security definer volatile set search_path from current;
 
 comment on function app_public.request_account_deletion() is
-  E'@resultFieldName success\nBegin the account deletion flow by requesting the confirmation email';
+  E'Begin the account deletion flow by requesting the confirmation email';
 
 /**********/
 
@@ -711,7 +690,7 @@ end;
 $$ language plpgsql strict volatile security definer set search_path from current;
 
 comment on function app_public.confirm_account_deletion(token text) is
-  E'@resultFieldName success\nIf you''re certain you want to delete your account, use `requestAccountDeletion` to request an account deletion token, and then supply the token through this mutation to complete account deletion.';
+  E'If you''re certain you want to delete your account, use `requestAccountDeletion` to request an account deletion token, and then supply the token through this mutation to complete account deletion.';
 
 /**********/
 
@@ -747,7 +726,7 @@ end;
 $$ language plpgsql strict volatile security definer;
 
 comment on function app_public.change_password(old_password text, new_password text) is
-  E'@resultFieldName success\nEnter your old password and a new password to change your password.';
+  E'Enter your old password and a new password to change your password.';
 
 grant execute on function app_public.change_password(text, text) to :DATABASE_VISITOR;
 
@@ -997,7 +976,7 @@ begin
 end;
 $$ language plpgsql volatile security definer;
 comment on function app_public.resend_email_verification_code(email_id int) is
-  E'@resultFieldName success\nIf you didn''t receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.';
+  E'If you didn''t receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.';
 
 /**********/
 
