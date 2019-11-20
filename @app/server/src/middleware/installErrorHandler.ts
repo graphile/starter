@@ -45,6 +45,11 @@ export default function(app: Express) {
     try {
       const parsedError = parseError(error);
       const errorMessageString = `ERROR: ${parsedError.message}`;
+      if (res.headersSent) {
+        console.error(errorMessageString);
+        res.end();
+        return;
+      }
       res.status(parsedError.status);
       res.format({
         "text/plain": function() {
