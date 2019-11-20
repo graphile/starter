@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "yarn build:codegen && yarn build:tsc",
+    "build:essential": "yarn run build",
     "watch": "touch index.tsx; concurrently --kill-others --names 'gql,tsc' 'yarn watch:codegen' 'yarn watch:tsc'",
     "build:codegen": "graphql-codegen --config codegen.yml",
     "build:tsc": "tsc",

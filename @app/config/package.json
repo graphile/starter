@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
+    "build:essential": "yarn run build",
     "watch": "tsc -w"
   },
   "dependencies": {

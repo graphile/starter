@@ -10,7 +10,7 @@
     "start": "node ./scripts/start.js",
     "test": "node scripts/test.js",
     "test:watch": "node scripts/test.js --watch",
-    "dev": "yarn && yarn graphql build && concurrently --kill-others --names 'src,dev,gen,test' 'lerna run --parallel watch' 'sleep 10; lerna run --parallel dev' 'sleep 10; yarn graphql watch' 'sleep 15; yarn test:watch'",
+    "dev": "yarn && lerna run --parallel build:essential && concurrently --kill-others --names 'src,dev,gen,test' 'lerna run --parallel watch' 'lerna run --parallel dev' 'yarn graphql watch' 'sleep 10; yarn test:watch'",
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx,.graphql .",
     "build": "lerna run build",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
