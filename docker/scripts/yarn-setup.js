@@ -27,4 +27,17 @@ const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 
 spawnSync(yarnCmd, ["down"]);
 spawnSync(yarnCmd, ["db:up"]);
+
+// Fix permissions
+spawnSync(yarnCmd, [
+  "compose",
+  "run",
+  "server",
+  "sudo",
+  "bash",
+  "-c",
+  "chmod o+rwx /var/run/docker.sock && chown -R node /work/node_modules /work/@app/*/node_modules",
+]);
+
+// Run setup as normal
 spawnSync(yarnCmd, ["compose", "run", "server", "yarn", "setup", projectName]);
