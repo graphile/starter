@@ -36,41 +36,43 @@
            */
           omit: "all",
         },
+        constraint: {
+          user_emails_pkey: {
+            tags: {
+              omit: "all",
+            },
+          },
+          user_emails_user_id_email_key: {
+            tags: {
+              // We don't need custom finders/relations for this
+              omit: true,
+            },
+          },
+        },
       },
       "app_public.user_authentications": {
         tags: {
           omit: "all",
           simpleCollections: "only",
         },
-        columns: {
+        attribute: {
           details: {
             tags: {
               omit: true,
             },
           },
         },
-      },
-    },
-    constraint: {
-      "app_public.user_authentications.uniq_user_authentications": {
-        tags: {
-          omit: true,
-        },
-      },
-      "app_public.user_authentications.user_authentications_pkey": {
-        tags: {
-          omit: "all",
-        },
-      },
-      "app_public.user_emails.user_emails_pkey": {
-        tags: {
-          omit: "all",
-        },
-      },
-      "app_public.user_emails.user_emails_user_id_email_key": {
-        tags: {
-          // We don't need custom finders/relations for this
-          omit: true,
+        constraint: {
+          uniq_user_authentications: {
+            tags: {
+              omit: true,
+            },
+          },
+          user_authentications_pkey: {
+            tags: {
+              omit: "all",
+            },
+          },
         },
       },
     },

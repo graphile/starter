@@ -7164,18 +7164,10 @@ graphile-migrate@^0.0.17:
     pg-connection-string "^2.1.0"
     pg-minify "^1.5.1"
 
-graphile-utils@4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/graphile-utils/-/graphile-utils-4.5.0.tgz#b50d19609b36ea3f615d09cc2dfb7654a80a6a04"
-  integrity sha512-nbHaU4vCRNXOVtzCL3Cg4AnUKZSmA7yNGMd9+09SCEUZf15Y2unKARqiKMkjFM+D17POzH1RlEgiiVI1P2T8FQ==
-  dependencies:
-    debug "^4.1.1"
-    graphql ">=0.9 <0.14 || ^14.0.2"
-
-graphile-utils@^4.5.0-rc.0:
-  version "4.5.0-rc.0"
-  resolved "https://registry.yarnpkg.com/graphile-utils/-/graphile-utils-4.5.0-rc.0.tgz#1d37c87670616200a97fc28a833ec9c79895cf0f"
-  integrity sha512-xB7HZUjJNMQZW7Lhqp362i0O47HHH+ogAdi/ItgXnHDDRZ8oItviLcv8TEf05Acc9kX/DFUmVwogdGCI9ZRpKQ==
+graphile-utils@^4.5.1:
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/graphile-utils/-/graphile-utils-4.5.1.tgz#dfae0c9f808ab93b4c4dcf227c4e1550d1999755"
+  integrity sha512-+26GmlGSO+tgl3PZbqzoe1sDJVlMs2MvES0YlEGBdXRwNoTkVL8CHjYfqJf4Peo+OOlQ2qez/rpo9jaU1Q52dw==
   dependencies:
     debug "^4.1.1"
     graphql ">=0.9 <0.14 || ^14.0.2"
@@ -12001,10 +11993,10 @@ postgraphile-core@4.5.0:
     graphile-build "4.5.0"
     graphile-build-pg "4.5.0"
 
-postgraphile@^4.5.0-rc.2:
-  version "4.5.0-rc.2"
-  resolved "https://registry.yarnpkg.com/postgraphile/-/postgraphile-4.5.0-rc.2.tgz#ed8cb52fc1f125cf07660fb6188998adc9226c46"
-  integrity sha512-qoD5vFRauEBSFjYjcl1rqNFLR4PHQGX5R+/tXV1j1nLHLYohel8KjukG7653IT/Jzyxc3AE/SjpoJd3YsIZViw==
+postgraphile@^4.5.0-rc.3:
+  version "4.5.0-rc.3"
+  resolved "https://registry.yarnpkg.com/postgraphile/-/postgraphile-4.5.0-rc.3.tgz#01ad4fe9ef65db11d963c76d33c78dd226bc17cd"
+  integrity sha512-8qDvfJNxha9oWJbZicK+MUB3QqP+/TjoLv//KXvt9d6vo0KJ9nlwImC9qyI5DOds+SCU906N2V/7QgkKYObWcA==
   dependencies:
     "@graphile/lru" "4.5.0"
     "@types/json5" "^0.0.30"
@@ -12018,7 +12010,7 @@ postgraphile@^4.5.0-rc.2:
     conventional-changelog-cli "^2.0.27"
     debug "^4.1.1"
     finalhandler "^1.0.6"
-    graphile-utils "4.5.0"
+    graphile-utils "^4.5.1"
     graphql "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.2"
     http-errors "^1.5.1"
     iterall "^1.0.2"
