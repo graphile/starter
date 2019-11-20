@@ -38,6 +38,10 @@ export default (app: Express) => {
   app.set("authPgPool", authPgPool);
 
   const shutdownActions = getShutdownActions(app);
-  shutdownActions.push(() => rootPgPool.end());
-  shutdownActions.push(() => authPgPool.end());
+  shutdownActions.push(() => {
+    rootPgPool.end();
+  });
+  shutdownActions.push(() => {
+    authPgPool.end();
+  });
 };

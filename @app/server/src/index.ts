@@ -49,7 +49,9 @@ async function main() {
 
   // Nodemon SIGUSR2 handling
   const shutdownActions = getShutdownActions(app);
-  shutdownActions.push(() => httpServer.close());
+  shutdownActions.push(() => {
+    httpServer.close();
+  });
 }
 
 main().catch(e => {

@@ -33,7 +33,9 @@ export async function makeApp({
   const shutdownActions = makeShutdownActions();
 
   if (isDev) {
-    shutdownActions.push(() => require("inspector").close());
+    shutdownActions.push(() => {
+      require("inspector").close();
+    });
   }
 
   /*

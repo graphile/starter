@@ -3,7 +3,7 @@
  * we might not come up cleanly again (inside nodemon).
  */
 
-export type ShutdownAction = () => any;
+export type ShutdownAction = () => void | Promise<void>;
 
 function ignore() {}
 
@@ -31,13 +31,25 @@ export function makeShutdownActions(): ShutdownAction[] {
       return callback();
     }
 
+    let called = false;
+    function callbackOnce() {
+      if (!called) {
+        called = true;
+        callback();
+      }
+    }
+
+    // Guarantee the callback will be called
+    const guaranteeCallback = setTimeout(callbackOnce, 3000);
+    guaranteeCallback.unref();
+
     (async () => {
       try {
         await Promise.all(promises);
       } finally {
         // Sleep before finally shutting down, give things a moment to
         // clear up (particularly the inspector port)
-        setTimeout(callback, 250);
+        setTimeout(callbackOnce, 250);
       }
     })();
   }
@@ -46,10 +58,8 @@ export function makeShutdownActions(): ShutdownAction[] {
     // Ignore further SIGHUP signals whilst we're processing
     process.on("SIGHUP", ignore);
     gracefulShutdown(() => {
-      // Re-trigger SIGHUP against ourselves cause our exit
-      process.removeListener("SIGHUP", ignore);
-
       process.kill(process.pid, "SIGHUP");
+      process.exit(1);
     });
   });
 
