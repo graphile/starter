@@ -7,3 +7,4 @@ dist
 /@app/e2e/cypress/videos
 /@app/graphql/index.*
 .agignore
+*.tsbuildinfo

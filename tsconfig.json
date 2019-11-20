@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "incremental": true,
+
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
