@@ -5,7 +5,6 @@
     "dbaeumer.vscode-eslint", // ESLint
     "esbenp.prettier-vscode", // Prettier
     "apollographql.vscode-apollo", // GraphQL support
-    "mrmlnc.vscode-json5", // postgraphile.tags.json5 uses JSON5
     "msjsdiag.debugger-for-chrome", // Chrome debugger integration
     "ms-vscode-remote.vscode-remote-extensionpack" // OPTIONAL: develop inside of Docker containers
   ]

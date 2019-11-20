@@ -21,7 +21,9 @@ import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
 import { resolve } from "path";
 
 const TagsFilePlugin = makePgSmartTagsFromFilePlugin(
-  resolve(__dirname, "../../postgraphile.tags.json5")
+  // We're using JSONC for VSCode compatibility; also using an explicit file
+  // path keeps the tests happy.
+  resolve(__dirname, "../../postgraphile.tags.jsonc")
 );
 
 type UUID = string;
