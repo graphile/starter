@@ -6,14 +6,14 @@
  * See https://www.graphile.org/postgraphile/smart-tags/ for more information.
  */
 {
-  "$schema": "https://gist.githubusercontent.com/singingwolfboy/a7144db4e24b5d31ba81f28b878a4b51/raw/f270f4279854b5bf872cc0012f54203095c0cd27/pg-smart-tags-schema.json",
-  "version": 1,
-  "config": {
-    "class": {
+  $schema: "https://gist.githubusercontent.com/singingwolfboy/a7144db4e24b5d31ba81f28b878a4b51/raw/f270f4279854b5bf872cc0012f54203095c0cd27/pg-smart-tags-schema.json",
+  version: 1,
+  config: {
+    class: {
       // Equivalent to:
       // COMMENT ON TABLE app_public.users IS E'@omit all\nA user who can log in to the application.';
       "app_public.users": {
-        "tags": {
+        tags: {
           /*
            * By doing `@omit all` we prevent the `allUsers` field from appearing in
            * our GraphQL schema. User discovery is still possible by browsing the
@@ -23,100 +23,100 @@
            * feistel cipher to make it harder to determine a ceiling from the user
            * id.
            */
-          "omit": "all"
+          omit: "all",
         },
-        "description": "A user who can log in to the application."
+        description: "A user who can log in to the application.",
       },
       "app_public.user_emails": {
-        "tags": {
+        tags: {
           /*
            * `@omit all` because there's no point exposing `allUserEmails` -
            * you can only see your own, and having this behaviour can lead to
            * bad practices from frontend teams.
            */
-          "omit": "all"
-        }
+          omit: "all",
+        },
       },
       "app_public.user_authentications": {
-        "tags": {
-          "omit": "all",
-          "simpleCollections": "only"
+        tags: {
+          omit: "all",
+          simpleCollections: "only",
         },
-        "columns": {
-          "details": {
-            "tags": {
-              "omit": true
-            }
-          }
-        }
-      }
+        columns: {
+          details: {
+            tags: {
+              omit: true,
+            },
+          },
+        },
+      },
     },
-    "constraint": {
+    constraint: {
       "app_public.user_authentications.uniq_user_authentications": {
-        "tags": {
-          "omit": true
-        }
+        tags: {
+          omit: true,
+        },
       },
       "app_public.user_authentications.user_authentications_pkey": {
-        "tags": {
-          "omit": "all"
-        }
+        tags: {
+          omit: "all",
+        },
       },
       "app_public.user_emails.user_emails_pkey": {
-        "tags": {
-          "omit": "all"
-        }
+        tags: {
+          omit: "all",
+        },
       },
       "app_public.user_emails.user_emails_user_id_email_key": {
-        "tags": {
+        tags: {
           // We don't need custom finders/relations for this
-          "omit": true
-        }
-      }
+          omit: true,
+        },
+      },
     },
-    "procedure": {
+    procedure: {
       "app_public.current_session_id": {
-        "tags": { "omit": true }
+        tags: { omit: true },
       },
       "app_public.current_user_id": {
-        "tags": { "omit": true }
+        tags: { omit: true },
       },
       "app_public.logout": {
-        "tags": {
+        tags: {
           // We add our own logout method, so we don't want to expose this via GraphQL
-          "omit": true
-        }
+          omit: true,
+        },
       },
       "app_public.change_password": {
-        "tags": {
-          "resultFieldName": "success"
-        }
+        tags: {
+          resultFieldName: "success",
+        },
       },
       "app_public.reset_password": {
-        "tags": {
-          "resultFieldName": "success"
-        }
+        tags: {
+          resultFieldName: "success",
+        },
       },
       "app_public.request_account_deletion": {
-        "tags": {
-          "resultFieldName": "success"
-        }
+        tags: {
+          resultFieldName: "success",
+        },
       },
       "app_public.confirm_account_deletion": {
-        "tags": {
-          "resultFieldName": "success"
-        }
+        tags: {
+          resultFieldName: "success",
+        },
       },
       "app_public.resend_email_verification_code": {
-        "tags": {
-          "resultFieldName": "success"
-        }
+        tags: {
+          resultFieldName: "success",
+        },
       },
       "app_public.verify_email": {
-        "tags": {
-          "resultFieldName": "success"
-        }
-      }
-    }
-  }
+        tags: {
+          resultFieldName: "success",
+        },
+      },
+    },
+  },
 }
