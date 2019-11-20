@@ -10,7 +10,12 @@ function ignore() {}
 export function makeShutdownActions(): ShutdownAction[] {
   const shutdownActions: ShutdownAction[] = [];
 
+  let shutdownActionsCalled = false;
   function callShutdownActions(): Array<Promise<void> | void> {
+    if (shutdownActionsCalled) {
+      return [];
+    }
+    shutdownActionsCalled = true;
     return shutdownActions.map(fn => {
       // Ensure that all actions are called, even if a previous action throws an error
       try {
@@ -22,6 +27,10 @@ export function makeShutdownActions(): ShutdownAction[] {
   }
   function gracefulShutdown(callback: () => void) {
     const promises = callShutdownActions();
+    if (promises.length === 0) {
+      return callback();
+    }
+
     (async () => {
       try {
         await Promise.all(promises);
