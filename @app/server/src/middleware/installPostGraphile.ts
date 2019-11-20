@@ -5,7 +5,7 @@ import {
   Middleware,
   enhanceHttpServerWithSubscriptions,
 } from "postgraphile";
-import { TagsFilePlugin } from "postgraphile/plugins";
+import { makePgSmartTagsFromFilePlugin } from "postgraphile/plugins";
 import { NodePlugin } from "graphile-build";
 import { Pool } from "pg";
 import { Express, Request, Response } from "express";
@@ -18,6 +18,11 @@ import SubscriptionsPlugin from "../plugins/SubscriptionsPlugin";
 import handleErrors from "../utils/handleErrors";
 import { getWebsocketMiddlewares, getHttpServer } from "../app";
 import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
+import { resolve } from "path";
+
+const TagsFilePlugin = makePgSmartTagsFromFilePlugin(
+  resolve(__dirname, "../../postgraphile.tags.json5")
+);
 
 type UUID = string;
 
