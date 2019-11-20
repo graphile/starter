@@ -239,9 +239,10 @@ export function getPostGraphileOptions({
 
 export default function installPostGraphile(app: Express) {
   const websocketMiddlewares = getTyped(app, "websocketMiddlewares");
-  const rootPgPool: Pool = getTyped(app, "rootPgPool");
+  const authPgPool = getTyped(app, "authPgPool");
+  const rootPgPool = getTyped(app, "rootPgPool");
   const middleware = postgraphile<Request, Response>(
-    process.env.AUTH_DATABASE_URL,
+    authPgPool,
     "app_public",
     getPostGraphileOptions({
       websocketMiddlewares,
