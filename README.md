@@ -125,7 +125,8 @@ Requires:
 
 - [`docker`](https://docs.docker.com/install/)
 - [`docker-compose`](https://docs.docker.com/compose/install/)
-- Ensure you've allocated Docker at least 4GB of RAM
+- Ensure you've allocated Docker **at least** 4GB of RAM; significantly more recommended
+  - (Development only, production is much more efficient.)
 
 Has been tested on Windows and Linux (Ubuntu 18.04LTS).
 
