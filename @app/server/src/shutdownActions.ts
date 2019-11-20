@@ -41,13 +41,15 @@ export function makeShutdownActions(): ShutdownAction[] {
       }
     })();
   }
-  process.once("SIGINT", () => {
-    // Ignore further SIGINT signals whilst we're processing
-    process.on("SIGINT", ignore);
+
+  process.once("SIGHUP", () => {
+    // Ignore further SIGHUP signals whilst we're processing
+    process.on("SIGHUP", ignore);
     gracefulShutdown(() => {
-      // Re-trigger SIGINT against ourselves cause our exit
-      process.removeListener("SIGINT", ignore);
-      process.kill(process.pid, "SIGINT");
+      // Re-trigger SIGHUP against ourselves cause our exit
+      process.removeListener("SIGHUP", ignore);
+
+      process.kill(process.pid, "SIGHUP");
     });
   });
 
