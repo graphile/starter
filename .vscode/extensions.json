@@ -2,10 +2,11 @@
   // See https://go.microsoft.com/fwlink/?LinkId=827846
   // for the documentation about the extensions.json format
   "recommendations": [
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-    "msjsdiag.debugger-for-chrome",
-    "apollographql.vscode-apollo",
-    "ms-vscode-remote.vscode-remote-extensionpack"
+    "dbaeumer.vscode-eslint", // ESLint
+    "esbenp.prettier-vscode", // Prettier
+    "apollographql.vscode-apollo", // GraphQL support
+    "mrmlnc.vscode-json5", // postgraphile.tags.json5 uses JSON5
+    "msjsdiag.debugger-for-chrome", // Chrome debugger integration
+    "ms-vscode-remote.vscode-remote-extensionpack" // OPTIONAL: develop inside of Docker containers
   ]
 }
