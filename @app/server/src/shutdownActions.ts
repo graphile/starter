@@ -43,22 +43,14 @@ export function makeShutdownActions(): ShutdownAction[] {
     const guaranteeCallback = setTimeout(callbackOnce, 3000);
     guaranteeCallback.unref();
 
-    (async () => {
-      try {
-        await Promise.all(promises);
-      } finally {
-        // Sleep before finally shutting down, give things a moment to
-        // clear up (particularly the inspector port)
-        setTimeout(callbackOnce, 250);
-      }
-    })();
+    Promise.all(promises).then(callbackOnce, callbackOnce);
   }
 
-  process.once("SIGHUP", () => {
-    // Ignore further SIGHUP signals whilst we're processing
-    process.on("SIGHUP", ignore);
+  process.once("SIGINT", () => {
+    // Ignore further SIGINT signals whilst we're processing
+    process.on("SIGINT", ignore);
     gracefulShutdown(() => {
-      process.kill(process.pid, "SIGHUP");
+      process.kill(process.pid, "SIGINT");
       process.exit(1);
     });
   });
