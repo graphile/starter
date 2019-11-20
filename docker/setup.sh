@@ -58,5 +58,9 @@ apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
 
+# Fix permissions (taken from https://hub.docker.com/r/bitnami/express/dockerfile/)
+mkdir -p /dist /app /.npm /.config /.cache /.local
+chmod g+rwx /dist /app /.npm /.config /.cache /.local
+
 # Self-destruct
 rm /setup.sh
