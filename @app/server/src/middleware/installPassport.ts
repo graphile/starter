@@ -3,7 +3,7 @@ import { Strategy as GitHubStrategy } from "passport-github";
 import { get } from "lodash";
 import installPassportStrategy from "./installPassportStrategy";
 import { Express } from "express";
-import { getTyped } from "../app";
+import { getWebsocketMiddlewares } from "../app";
 
 interface DbSession {
   session_id: string;
@@ -28,11 +28,11 @@ export default async (app: Express) => {
 
   const passportInitializeMiddleware = passport.initialize();
   app.use(passportInitializeMiddleware);
-  getTyped(app, "websocketMiddlewares").push(passportInitializeMiddleware);
+  getWebsocketMiddlewares(app).push(passportInitializeMiddleware);
 
   const passportSessionMiddleware = passport.session();
   app.use(passportSessionMiddleware);
-  getTyped(app, "websocketMiddlewares").push(passportSessionMiddleware);
+  getWebsocketMiddlewares(app).push(passportSessionMiddleware);
 
   app.get("/logout", (req, res) => {
     req.logout();

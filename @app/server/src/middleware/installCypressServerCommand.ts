@@ -1,7 +1,7 @@
 import { Express, RequestHandler, Request, Response } from "express";
 import { urlencoded } from "body-parser";
 import { Pool } from "pg";
-import { getTyped } from "../app";
+import { getRootPgPool } from "./installDatabasePools";
 
 export default (app: Express) => {
   // Only enable this in test/development mode
@@ -16,7 +16,7 @@ export default (app: Express) => {
    */
   const safeToRun = process.env.ENABLE_CYPRESS_COMMANDS === "1";
 
-  const rootPgPool: Pool = getTyped(app, "rootPgPool");
+  const rootPgPool = getRootPgPool(app);
 
   /*
    * This function is invoked for the /cypressServerCommand route and is

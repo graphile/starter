@@ -5,23 +5,19 @@ import { makeShutdownActions, ShutdownAction } from "./shutdownActions";
 import { Middleware } from "postgraphile";
 import { sanitiseEnv } from "./utils";
 
-export function getTyped(app: Express, key: "httpServer"): Server | void; // Server may not always be supplied, e.g. where mounting on a subroute
-export function getTyped(
-  app: Express,
-  key: "shutdownActions"
-): ShutdownAction[];
-export function getTyped(
-  app: Express,
-  key: "websocketMiddlewares"
-): Middleware<express.Request, express.Response>[];
-/**
- * By default, app.get(string) returns 'any'; but we know what the types will
- * be of certain things, so we've created the `getTyped` function that'll
- * automatically get the right type for the given key. Always use this over
- * `app.get(string)`.
- */
-export function getTyped(app: Express, key: string): any {
-  return app.get(key);
+// Server may not always be supplied, e.g. where mounting on a subroute
+export function getHttpServer(app: Express): Server | void {
+  return app.get("httpServer");
+}
+
+export function getShutdownActions(app: Express): ShutdownAction[] {
+  return app.get("shutdownActions");
+}
+
+export function getWebsocketMiddlewares(
+  app: Express
+): Middleware<express.Request, express.Response>[] {
+  return app.get("websocketMiddlewares");
 }
 
 export async function makeApp({

@@ -1,6 +1,6 @@
 import passport from "passport";
 import { RequestHandler, Express, Request } from "express";
-import { getTyped } from "../app";
+import { getRootPgPool } from "./installDatabasePools";
 
 interface DbSession {
   uuid: string;
@@ -65,7 +65,7 @@ export default (
     postRequest = (_req: Request) => {},
   } = {}
 ) => {
-  const rootPgPool = getTyped(app, "rootPgPool");
+  const rootPgPool = getRootPgPool(app);
 
   passport.use(
     new Strategy(

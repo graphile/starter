@@ -3,7 +3,8 @@ import * as redis from "redis";
 import ConnectRedis from "connect-redis";
 import ConnectPgSimple from "connect-pg-simple";
 import { Express } from "express";
-import { getTyped } from "../app";
+import { getRootPgPool } from "./installDatabasePools";
+import { getWebsocketMiddlewares } from "../app";
 
 const RedisStore = ConnectRedis(session);
 const PgStore = ConnectPgSimple(session);
@@ -20,7 +21,7 @@ const MAXIMUM_SESSION_DURATION_IN_MILLISECONDS =
   3 * DAY;
 
 export default (app: Express) => {
-  const rootPgPool = getTyped(app, "rootPgPool");
+  const rootPgPool = getRootPgPool(app);
 
   const store = process.env.REDIS_URL
     ? /*
@@ -57,5 +58,5 @@ export default (app: Express) => {
   });
 
   app.use(sessionMiddleware);
-  getTyped(app, "websocketMiddlewares").push(sessionMiddleware);
+  getWebsocketMiddlewares(app).push(sessionMiddleware);
 };

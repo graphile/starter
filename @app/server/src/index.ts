@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 import chalk from "chalk";
 import { createServer } from "http";
-import { makeApp, getTyped } from "./app";
+import { makeApp, getShutdownActions } from "./app";
 
 // @ts-ignore
 const packageJson = require("../../../package.json");
@@ -48,7 +48,7 @@ async function main() {
   });
 
   // Nodemon SIGUSR2 handling
-  const shutdownActions = getTyped(app, "shutdownActions");
+  const shutdownActions = getShutdownActions(app);
   shutdownActions.push(() => httpServer.close());
 }
 

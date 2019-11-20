@@ -16,7 +16,8 @@ import PassportLoginPlugin from "../plugins/PassportLoginPlugin";
 import PrimaryKeyMutationsOnlyPlugin from "../plugins/PrimaryKeyMutationsOnlyPlugin";
 import SubscriptionsPlugin from "../plugins/SubscriptionsPlugin";
 import handleErrors from "../utils/handleErrors";
-import { getTyped } from "../app";
+import { getWebsocketMiddlewares, getHttpServer } from "../app";
+import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
 
 type UUID = string;
 
@@ -242,9 +243,9 @@ export function getPostGraphileOptions({
 }
 
 export default function installPostGraphile(app: Express) {
-  const websocketMiddlewares = getTyped(app, "websocketMiddlewares");
-  const authPgPool = getTyped(app, "authPgPool");
-  const rootPgPool = getTyped(app, "rootPgPool");
+  const websocketMiddlewares = getWebsocketMiddlewares(app);
+  const authPgPool = getAuthPgPool(app);
+  const rootPgPool = getRootPgPool(app);
   const middleware = postgraphile<Request, Response>(
     authPgPool,
     "app_public",
@@ -254,7 +255,7 @@ export default function installPostGraphile(app: Express) {
     })
   );
   app.use(middleware);
-  const httpServer = getTyped(app, "httpServer");
+  const httpServer = getHttpServer(app);
   if (httpServer) {
     enhanceHttpServerWithSubscriptions(httpServer, middleware);
   }

@@ -1,11 +1,12 @@
 import { Pool } from "pg";
 import { Express } from "express";
-import { getTyped } from "../app";
+import { getShutdownActions } from "../app";
 
-declare module "../app" {
-  // Tell the rest of our code about the settings we're making available on the Express app
-  export function getTyped(app: Express, field: "rootPgPool"): Pool;
-  export function getTyped(app: Express, field: "authPgPool"): Pool;
+export function getRootPgPool(app: Express): Pool {
+  return app.get("rootPgPool");
+}
+export function getAuthPgPool(app: Express): Pool {
+  return app.get("authPgPool");
 }
 
 /**
@@ -36,7 +37,7 @@ export default (app: Express) => {
   authPgPool.on("error", swallowPoolError);
   app.set("authPgPool", authPgPool);
 
-  const shutdownActions = getTyped(app, "shutdownActions");
+  const shutdownActions = getShutdownActions(app);
   shutdownActions.push(() => rootPgPool.end());
   shutdownActions.push(() => authPgPool.end());
 };
