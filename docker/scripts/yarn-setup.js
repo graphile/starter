@@ -2,6 +2,11 @@ const { spawnSync: baseSpawnSync } = require("child_process");
 const { basename, dirname, resolve } = require("path");
 const platform = require("os").platform();
 
+if (platform !== 'win32' && !process.env.UID) {
+  console.error("You should run `export UID` before running 'yarn docker setup' otherwise you may end up with permissions issues.");
+  process.exit(1);
+}
+
 function spawnSync(command, args, options = {}) {
   const result = baseSpawnSync(command, args, {
     stdio: "inherit",
