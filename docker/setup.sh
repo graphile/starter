@@ -39,9 +39,9 @@ curl https://get.docker.com/builds/Linux/x86_64/docker-latest.tgz | tar xvz -C /
 curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod 755 /usr/local/bin/docker-compose
 
+
 # [Optional] Update a non-root user to match UID/GID - see https://aka.ms/vscode-remote/containers/non-root-user.
-if [ "$USER_GID" != "1000" ]; then
-  groupmod node --gid $USER_GID;
+if [ "$USER_UID" != "1000" ]; then
   usermod --uid $USER_UID node;
 fi
 
@@ -58,9 +58,10 @@ apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
 
-# Fix permissions (taken from https://hub.docker.com/r/bitnami/express/dockerfile/)
-mkdir -p /dist /app /.npm /.config /.cache /.local
-chmod g+rwx /dist /app /.npm /.config /.cache /.local
+# Fix permissions (inspired by https://hub.docker.com/r/bitnami/express/dockerfile/)
+mkdir -p /dist /app /.npm /.yarn /.config /.cache /.local
+touch /.yarnrc
+chmod g+rwX /dist /app /.npm /.yarn /.config /.cache /.local /.yarnrc
 
 # Self-destruct
 rm /setup.sh

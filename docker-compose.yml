@@ -4,6 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        USER_UID: $UID
+        SETUP_MODE: normal
 
     # On Linux, this will prevent new files getting created as root, but you
     # may need to update the USER_UID and USER_GID in `Dockerfile` to match
@@ -35,7 +38,11 @@ services:
   dev:
     build:
       context: .
-      dockerfile: docker/dev.Dockerfile
+      dockerfile: Dockerfile
+      args:
+        USER_UID: $UID
+        SETUP_MODE: dev
+
     env_file:
       - docker/docker.env
 
@@ -113,6 +120,7 @@ networks:
     # No metadata required right now.
 
 volumes:
+  # Postgres' data
   db-volume:
   # used for keeeping vscode-extensions while rebuilding
   # vscode-extensions:

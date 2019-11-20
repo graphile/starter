@@ -5,7 +5,7 @@ FROM node:10
 # user UID/GID to avoid permission issues with bind mounts. Update USER_UID / USER_GID
 # if yours is not 1000. See https://aka.ms/vscode-remote/containers/non-root-user.
 ARG USER_UID=${UID:-1000}
-ARG USER_GID=$USER_UID
+ARG SETUP_MODE=normal
 
 COPY docker/setup.sh /setup.sh
-RUN /setup.sh normal
+RUN /setup.sh $SETUP_MODE
