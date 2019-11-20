@@ -3,22 +3,6 @@ if (parseInt(process.version.split(".")[0], 10) < 10) {
   throw new Error("This project requires Node.js >= 10.0.0");
 }
 
-const projectName = process.argv[2];
-
-// Deal with running inside npx
-const pathParts = (process.env.PATH || "").split(":");
-const isNpx = pathParts[0].includes("/_npx/");
-const oldNodePath = process.env.NODE_PATH;
-if (isNpx) {
-  // We're running in npx; add npx to our NODE_PATH
-  process.env.NODE_PATH = require("path").resolve(
-    process.cwd(),
-    `${pathParts[0]}/../lib/node_modules`
-  );
-  // Ref: https://github.com/nodejs/node/issues/18229
-  require("module").Module._initPaths();
-}
-
 const fsp = require("fs").promises;
 const { randomBytes } = require("crypto");
 const { spawnSync: rawSpawnSync } = require("child_process");
@@ -28,13 +12,10 @@ const pg = require("pg");
 
 // fixes spawnSync not throwing ENOENT on windows
 const platform = require("os").platform();
-const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 
-if (isNpx) {
-  // Reset the NODE_PATH dance above
-  process.env.NODE_PATH = oldNodePath;
-  require("module").Module._initPaths();
-}
+const projectName = process.argv[2];
+
+const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 
 const spawnSync = (cmd, args, options) => {
   const result = rawSpawnSync(cmd, args, {
@@ -322,7 +303,7 @@ async function main() {
   spawnSync(yarnCmd, ["server", "build"]);
 
   // FINALLY we can source our environment
-  dotenv.config({ path: `${__dirname}/../.env` }); // Be sure to use dotenv from npx
+  dotenv.config({ path: `${__dirname}/../.env` });
   require(`${__dirname}/../@app/config/extra`);
   const {
     DATABASE_AUTHENTICATOR,
