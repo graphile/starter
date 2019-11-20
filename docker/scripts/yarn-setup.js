@@ -1,8 +1,8 @@
-const { execSync, spawnSync } = require("child_process");
+const { spawnSync } = require("child_process");
 const { basename, dirname, resolve } = require("path");
 const platform = require("os").platform();
 
-const options = { windowsHide: true, stdio: "inherit" };
+const options = { stdio: "inherit", windowsHide: true };
 
 // The `docker-compose` project name defaults to the directory name containing
 // `docker-compose.yml`, which is the root folder of our project. Let's call
@@ -10,10 +10,11 @@ const options = { windowsHide: true, stdio: "inherit" };
 // ROOT:
 const projectName = basename(dirname(dirname(resolve(__dirname))));
 
-// fixes spawnSync not throwing ENOENT on windows
+// On Windows we must run 'yarn.cmd' rather than 'yarn'
 const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
-execSync(`${yarnCmd} down`, options);
-execSync(`${yarnCmd} db:up`, options);
+
+spawnSync(yarnCmd, ["down"], options);
+spawnSync(yarnCmd, ["db:up"], options);
 spawnSync(
   yarnCmd,
   ["compose", "run", "server", "yarn", "setup", projectName],
