@@ -217,8 +217,6 @@ export function getPostGraphileOptions({
      * access to, e.g., the logged in user.
      */
     async additionalGraphQLContextFromRequest(req) {
-      //console.dir(req);
-      console.log(req.url + " || " + (req.user && req.user.session_id));
       return {
         // The current session id
         sessionId: req.user && uuidOrNull(req.user.session_id),
