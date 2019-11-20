@@ -138,12 +138,17 @@ already has `yarn` & `npm` installed and configured.
 
 To get started, please run:
 
-| Local mode   | OR  | Docker mode         |
-| ------------ | :-: | ------------------- |
-| `yarn setup` | or  | `yarn docker setup` |
+| Local mode   | OR  | Docker mode                     |
+| ------------ | :-: | ------------------------------- |
+| `yarn setup` | or  | `export UID; yarn docker setup` |
 
 This command will lead you through the necessary steps, and create a `.env`
 file for you containing your secrets.
+
+**NOTE:** `export UID` is really important on Linux Docker hosts, otherwise
+the files and folders created by Docker will end up owned by root, which is
+non-optimal. We recommend adding `export UID` to your `~/.profile` or
+`~/.bashrc` or similar so you don't have to remember it.
 
 **Do not commit `.env` to version control!**
 
@@ -154,11 +159,6 @@ You can bring up the stack with:
 | Local mode   | OR  | Docker mode                            |
 | ------------ | :-: | -------------------------------------- |
 | `yarn start` | or  | `export UID; docker-compose up server` |
-
-**NOTE:** `export UID` is really important on Linux Docker hosts, otherwise
-the files and folders created by Docker will end up owned by root, which is
-non-optimal. We recommend adding `export UID` to your `~/.profile` or
-`~/.bashrc` or similar so you don't have to remember it.
 
 After a short period you should be able to load the application at
 http://localhost:5678
