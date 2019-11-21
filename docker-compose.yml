@@ -65,6 +65,14 @@ services:
 
       # let's us run docker & docker-compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
+      - nm_root:/work/node_modules
+      - nm_app_client:/work/@app/client/node_modules
+      - nm_app_config:/work/@app/config/node_modules
+      - nm_app_db:/work/@app/db/node_modules
+      - nm_app_e2e:/work/@app/e2e/node_modules
+      - nm_app_graphql:/work/@app/graphql/node_modules
+      - nm_app_server:/work/@app/server/node_modules
+      - nm_app_worker:/work/@app/worker/node_modules
 
       #* You may want to enable following lines
       #* to use your local configs inside container
