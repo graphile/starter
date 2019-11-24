@@ -263,6 +263,10 @@ export default function installPostGraphile(app: Express) {
       rootPgPool,
     })
   );
+  app.use((req, _res, next) => {
+    req.app.set("graphile", middleware);
+    next();
+  });
   app.use(middleware);
   const httpServer = getHttpServer(app);
   if (httpServer) {
