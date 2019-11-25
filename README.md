@@ -4,7 +4,7 @@
 
 Take this software and use it as the starting point to build your project. Go
 make some money, and [give something
-back](https://github.com/sponsors/benjie) to support us building
+back](https://graphile.org/sponsor/) to support us building
 more tools and kits for the Node, GraphQL and PostgreSQL ecosystems.
 
 Please note that this software is not "complete," free of software defects,
