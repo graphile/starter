@@ -48,6 +48,21 @@ And please give some love to our featured sponsors 🤩:
 
 <!-- SPONSORS_END -->
 
+## Table of contents
+
+- [Goals](#goals)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Running](#running)
+- [Features](#features)
+- [To do](#todo)
+- [Documentation links](#documentation-links)
+- [Making it yours](#making-it-yours)
+- [Docker development](#docker-development-1)
+- [Deploying to Heroku](#deploying-to-heroku)
+- [License](#mit-license)
+
+
 ## Goals
 
 PostGraphile Starter is intended as an off-the-shelf stater project which does your application set-up for you. Included is the beginning of an app which uses Node, GraphQL and PostGraphile with a user registration system and the AntD design framework - everything you need to quickly get started with your application idea.
@@ -121,7 +136,7 @@ Requirements:
 This software has been developed under Mac and Linux, and should work in a
 `bash` environment.
 
-Windows users: The starter hasn't been fully tested under Windows; PRs to fix
+Windows users: PostGraphile Starter hasn't been fully tested under Windows; PRs to fix
 Windows compatibility issues are welcome (please keep them small!)
 Failing that, try the Docker mode :)
 
