@@ -191,7 +191,7 @@ http://localhost:5678
 - TypeScript
 - AntD design framework
 
-- **Batteries included:**
+**Batteries included:**
   - **Prebuilt user system** — supporting both username/password registration and OAuth / social authentication (Twitter, GitHub, Facebook, ...)
     - Register via email with sensible validation and error handling
     - Register via social
