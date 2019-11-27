@@ -67,14 +67,16 @@ And please give some love to our featured sponsors 🤩:
 
 PostGraphile Starter is intended as an off-the-shelf stater project which does your application set-up for you. Included is the beginning of an app which uses Node, GraphQL and PostGraphile with a user registration system and the AntD design framework - everything you need to quickly get started with your application idea.
 
-The Starter's goals are:
+Some of our goals in making this are:
 
 - Easy to start
-- Batteries included
+- Simple (just node server and database, no additional services required)
+- Well tested
+- Batteries included:
   - User registration, login, forgot password, email management, settings, etc.
   - AntD design framework
   - Preconfigured everything
-- Development speed
+- Development speed:
   - Hot reloading where possible, auto-restart where not
   - Code formatting, linting, type-checking all pre-configured
   - Re-run relevant tests (even database tests) on changes
@@ -82,21 +84,18 @@ The Starter's goals are:
   - Strongly typed throughout
   - Servers and clients set up for easy debugging (e.g. via `chrome://inspect`)
   - Sensibly laid out source-code, including middleware system
-- Best practices
+- Best practices:
   - GraphQL best practices
   - PostGraphile best practices
   - Testing best practices
   - Node best practices
-- Security
-  - Using [RLS](https://learn.graphile.org/docs/PostgreSQL_Row_Level_Security_Infosheet.pdf)
-- Scalable
+- Scalable:
   - extremely high performance
   - optionally separate out job queue
   - optionally separate out SSR
   - optional Redis session store
-- Well tested
-- Simple (just node server and database, no additional services required)
-- VSCode integration (optional)
+- Security, using [RLS](https://learn.graphile.org/docs/PostgreSQL_Row_Level_Security_Infosheet.pdf)
+- VSCode integration (optional):
   - Plugin recommendations
   - Preconfigured settings
   - ESLint and Prettier integration (without conflicts)
@@ -136,9 +135,7 @@ Requirements:
 This software has been developed under Mac and Linux, and should work in a
 `bash` environment.
 
-Windows users: PostGraphile Starter hasn't been fully tested under Windows; PRs to fix
-Windows compatibility issues are welcome (please keep them small!)
-Failing that, try the Docker mode :)
+**Windows users**: PostGraphile Starter hasn't been fully tested under Windows; PRs to fix Windows compatibility issues are welcome (please keep them small!) Failing that, try the Docker mode :)
 
 ### Docker development
 
