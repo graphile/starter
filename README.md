@@ -4,9 +4,9 @@
 
 Graphile Starter is an opinionated off-the-shelf stater project with the
 boilerplate done for you. Included is the beginning of an app which uses Node,
-GraphQL and PostGraphile with a user registration system and the AntD design
-framework - everything you need to quickly get started with your application
-idea.
+GraphQL and PostGraphile with a user registration system, testing suite, and the
+AntD design framework - everything you need to quickly get started with your
+application idea.
 
 Please note that this software is not "complete," free of software defects, or
 free of security issues — it is not a "finished" solution, but rather the seed
@@ -54,6 +54,7 @@ And please give some love to our featured sponsors 🤩:
 - [Running](#running)
 - [Making it yours](#making-it-yours)
 - [Docker development](#docker-development-1)
+- [Production build](#production-build-for-local-mode)
 - [Deploying to Heroku](#deploying-to-heroku)
 - [License](#mit-license)
 
@@ -70,7 +71,7 @@ There are four tenets to Graphile Starter:
 - Speedy development
 - Batteries included
 - Type safety
-- Best practises
+- Best practices
 
 Graphile Starter is easy to start and everything is preconfigured as much as
 possible.
@@ -91,7 +92,7 @@ use
 **Type safety**: pre-configured type checking, strongly typed throughout with
 TypeScript
 
-**Best practices**: GraphQL, PostGraphile, Node and testing best practises
+**Best practices**: GraphQL, PostGraphile, Node and testing best practices
 
 See [TECHNICAL_DECISIONS.md](TECHNICAL_DECISIONS.md) for a more detailed list of
 features included and the technical decisions behind them.
@@ -123,7 +124,7 @@ containers.
 
 ### Local development
 
-Requirements:
+Requires:
 
 - Node.js v10+ must be installed
 - PostgreSQL v10+ server must be available
@@ -138,7 +139,7 @@ Failing that, try the Docker mode :)
 
 ### Docker development
 
-Requirements:
+Requires:
 
 - [`docker`](https://docs.docker.com/install/)
 - [`docker-compose`](https://docs.docker.com/compose/install/)
@@ -210,7 +211,7 @@ You may also choose to develop locally, but use the PostgreSQL server via
 1. In that folder run:
    - `git init`
    - `git add .`
-   - `git commit -m "PostGraphile starter base"`
+   - `git commit -m "Graphile Starter base"`
 1. Change the project name in `package.json`
 1. Change the project settings in `@app/config/src/index.ts`
 1. Replace the `README.md` file
@@ -258,6 +259,10 @@ docker run --rm -it --init -p 5678:5678 \
 
 Currently if you miss required envvars weird things will happen; we don't
 currently have environment validation (PRs welcome!).
+
+## Production build for local mode
+
+Use `yarn run build` to generate a production build of the project
 
 ## Deploying to Heroku
 

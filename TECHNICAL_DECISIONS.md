@@ -1,11 +1,25 @@
-## Documentation links
+# Technical Decisions in Graphile Starter
+
+## Table of contents
+
+- [Overview](#overview)
+- [Cypress e2e tests](#cypress-e2e-tests)
+- [Next.js](#nextjs)
+- [AntD](#antd)
+- [Initial database](#initial-database)
+- [graphile-migrate](#graphile-migrate)
+- [graphile-worker](#graphile-worker)
+- [Server](#server)
+- [Login with GitHub](#login-with-github)
+
+## Overview
 
 ### Cypress e2e tests
 
-Thanks to Cypress.io for sponsoring this work, we've added e2e tests covering
-loading the various pages, registering an account, logging in, verifying and
-managing your emails. You should be able to easily build on top of these tests
-to ensure that your project remains rock-solid at all times.
+With thanks to Cypress.io for sponsoring this work, we've added e2e tests
+covering loading the various pages, registering an account, logging in,
+verifying and managing your emails. You should be able to easily build on top of
+these tests to ensure that your project remains rock-solid at all times.
 
 ### Next.js
 
