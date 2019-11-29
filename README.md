@@ -59,9 +59,11 @@ And please give some love to our featured sponsors 🤩:
 
 ## Features
 
-Graphile Starter gets you started with a PostGraphile, GraphQL, Node stack with
-strong typing through TypeScript, routing through Next.js and design through
-AntD.
+Graphile Starter gets you started with a
+[PostGraphile](https://www.graphile.org/postgraphile/),
+[GraphQL](https://graphql.org/learn/), Node stack with strong typing through
+TypeScript, routing and server-side rendering through
+[Next.js](https://nextjs.org/) and design through [AntD](https://ant.design/).
 
 There are four tenets to Graphile Starter:
 
@@ -73,13 +75,18 @@ There are four tenets to Graphile Starter:
 Graphile Starter is easy to start and everything is preconfigured as much as
 possible.
 
-**Batteries included**: full user system and OAuth, design framework, Cypress
-testing suite, security, email templating and transport; optional VS Code
-integration with plugin recommendations, preconfigured settings, ESLint and
-Prettier integration and debugging profiles
+**Batteries included**:
+[full user system and OAuth](/TECHNICAL_DECISIONS.md#prebuilt-user-system),
+design framework, jest and
+[Cypress end-to-end](/TECHNICAL_DECISIONS.md#cypress-e2e-tests) testing,
+security, email templating and transport; optional VS Code integration with
+plugin recommendations, preconfigured settings, ESLint and Prettier integration
+and debugging profiles
 
-**Development speed**: hot reloading, code formatting and linting, easy
-debugging, idempotent migration system, job queue and server middleware included
+**Development speed**: hot reloading, easy debugging; Graphile's
+[idempotent migration system](https://github.com/graphile/migrate),
+[job queue](/TECHNICAL_DECISIONS.md#job-queue) and server middleware ready to
+use
 
 **Type safety**: pre-configured type checking, strongly typed throughout with
 TypeScript
@@ -207,6 +214,7 @@ You may also choose to develop locally, but use the PostgreSQL server via
 1. Change the project name in `package.json`
 1. Change the project settings in `@app/config/src/index.ts`
 1. Replace the `README.md` file
+1. Add your own copyright notices to the `LICENSE.md` file
 1. Commit as you usually would
 1. [Show your appreciation with sponsorship](https://www.graphile.org/sponsor/)
 
