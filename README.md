@@ -1,19 +1,19 @@
-# PostGraphile Starter
+# Graphile Starter
 
 ## Purpose
 
-Take this software and use it as the starting point to build your project. Go
-make some money, and [give something
-back](https://graphile.org/sponsor/) to support us building
-more tools and kits for the Node, GraphQL and PostgreSQL ecosystems.
+Graphile Starter is an opinionated off-the-shelf stater project with the
+boilerplate done for you. Included is the beginning of an app which uses Node,
+GraphQL and PostGraphile with a user registration system and the AntD design
+framework - everything you need to quickly get started with your application
+idea.
 
-Please note that this software is not "complete," free of software defects,
-or free of security issues — it is not a "finished" solution, but rather the
-seed of a solution which you should review, customize, fix, and develop
-further.
+Please note that this software is not "complete," free of software defects, or
+free of security issues — it is not a "finished" solution, but rather the seed
+of a solution which you should review, customize, fix, and develop further.
 
-It is intended that you use a "point in time" version of this software ─ it
-is not intended that you can merge updates to this software into your own
+It is intended that you use a "point in time" version of this software ─ it is
+not intended that you can merge updates to this software into your own
 derivative in an automated fashion.
 
 <!-- SPONSORS_BEGIN -->
@@ -22,19 +22,17 @@ derivative in an automated fashion.
 
 **PLEASE DONATE.**
 
-We've put an absolute ton of work into this project to help you to turn
-your application idea into a reality as fast as possible. Instead of putting
-this code under a complex proprietary license we've made it available to you
-under the simple MIT license. This gives you a huge amount of freedom in how
-you use it, but it also makes it very hard for us to earn a living from our
-hard work.
+Take this software and use it as the starting point to build your project. Go
+make some money, and [give something back](https://graphile.org/sponsor/) to
+support us building more tools and kits for the Node, GraphQL and PostgreSQL
+ecosystems. We have made this project available under the simple and liberal MIT
+license to give you to a huge amount of freedom in how you use it, but this
+isn't possible without the help of our wonderful sponsors.
 
-Work like this wouldn't be possible without the help of [our wonderful
-sponsors](https://www.graphile.org/sponsor/); but we need more people to join
-their ranks so we can continue to bring about awesome projects like this.
-We'd love to spend more time on open source, building tools that will save
-you and others even more time and money ─ please sponsor our open source
-efforts:
+We need more people to join our sponsors so we can continue to bring about
+awesome projects like this. We'd love to spend more time on open source,
+building tools that will save you and others even more time and money ─ please
+sponsor our open source efforts:
 
 ### [Click here to find out more about sponsors and sponsorship.](https://www.graphile.org/sponsor/)
 
@@ -50,7 +48,7 @@ And please give some love to our featured sponsors 🤩:
 
 ## Table of contents
 
-- [Goals](#goals)
+- [Philosophy](#philosophy)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Running](#running)
@@ -62,67 +60,53 @@ And please give some love to our featured sponsors 🤩:
 - [Deploying to Heroku](#deploying-to-heroku)
 - [License](#mit-license)
 
+## Philosophy
 
-## Goals
+There are four tenets to Graphile Starter:
 
-PostGraphile Starter is intended as an off-the-shelf stater project which does your application set-up for you. Included is the beginning of an app which uses Node, GraphQL and PostGraphile with a user registration system and the AntD design framework - everything you need to quickly get started with your application idea.
+- Speedy development
+- Batteries included
+- Type safety
+- Best practises
 
-Some of our goals in making this are:
+Graphile Starter is easy to start and everything is preconfigured as much as
+possible.
 
-- Easy to start
-- Simple (just node server and database, no additional services required)
-- Well tested
-- Batteries included:
-  - User registration, login, forgot password, email management, settings, etc.
-  - AntD design framework
-  - Preconfigured everything
-- Development speed:
-  - Hot reloading where possible, auto-restart where not
-  - Code formatting, linting, type-checking all pre-configured
-  - Re-run relevant tests (even database tests) on changes
-  - Idempotent migration system
-  - Strongly typed throughout
-  - Servers and clients set up for easy debugging (e.g. via `chrome://inspect`)
-  - Sensibly laid out source-code, including middleware system
-- Best practices:
-  - GraphQL best practices
-  - PostGraphile best practices
-  - Testing best practices
-  - Node best practices
-- Scalable:
-  - extremely high performance
-  - optionally separate out job queue
-  - optionally separate out SSR
-  - optional Redis session store
-- Security, using [RLS](https://learn.graphile.org/docs/PostgreSQL_Row_Level_Security_Infosheet.pdf)
-- VSCode integration (optional):
-  - Plugin recommendations
-  - Preconfigured settings
-  - ESLint and Prettier integration (without conflicts)
-  - Debugging profiles for node server, worker and frontend
+Batteries included: full user system, design framework, testing suite, security,
+optional VS Code integration with plugin recommendations, preconfigured
+settings, ESLint and Prettier integration and debugging profiles
+
+Development speed: hot reloading, code formatting and linting, easy debugging,
+idempotent migration system
+
+Type saftey: type checking all pre-configured and strongly typed throughout
+
+Best practices: GraphQL, PostGraphile, Node and testing best practises
 
 ## Prerequisites
 
-You can either work with this project locally (directly on your machine) or
-use a pre-configured Docker environment. We'll differentiate this in the README
-with a table like this one:
+You can either work with this project locally (directly on your machine) or use
+a pre-configured Docker environment. We'll differentiate this in the README with
+a table like this one:
 
 | Local mode                      | OR  | Docker mode                              |
 | ------------------------------- | :-: | ---------------------------------------- |
 | _command for local development_ | or  | _command for docker-compose development_ |
 
 **Be careful not to mix and match Docker-mode vs local-mode for development.**
-You should make a choice and stick to it. (Developing locally but deploying
-with `production.Docker` is absolutely fine.)
+You should make a choice and stick to it. (Developing locally but deploying with
+`production.Docker` is absolutely fine.)
 
-**IMPORTANT**: If you choose the Docker mode, be sure to read [docker/README.md](docker/README.md).
+**IMPORTANT**: If you choose the Docker mode, be sure to read
+[docker/README.md](docker/README.md).
 
 For users of Visual Studio Code (VSCode), a `.vscode` folder is included with
 editor settings and debugger settings provided, plus a list of recommended
 extensions. Should you need it, there is also a `.devcontainer` folder which
-enables you to use [VSCode's remote
-containers](https://code.visualstudio.com/docs/remote/containers) giving you
-a local-like development experience whilst still using docker containers.
+enables you to use
+[VSCode's remote containers](https://code.visualstudio.com/docs/remote/containers)
+giving you a local-like development experience whilst still using docker
+containers.
 
 ### Local development
 
@@ -135,7 +119,9 @@ Requirements:
 This software has been developed under Mac and Linux, and should work in a
 `bash` environment.
 
-**Windows users**: PostGraphile Starter hasn't been fully tested under Windows; PRs to fix Windows compatibility issues are welcome (please keep them small!) Failing that, try the Docker mode :)
+**Windows users**: PostGraphile Starter hasn't been fully tested under Windows;
+PRs to fix Windows compatibility issues are welcome (please keep them small!)
+Failing that, try the Docker mode :)
 
 ### Docker development
 
@@ -143,7 +129,8 @@ Requirements:
 
 - [`docker`](https://docs.docker.com/install/)
 - [`docker-compose`](https://docs.docker.com/compose/install/)
-- Ensure you've allocated Docker **at least** 4GB of RAM; significantly more recommended
+- Ensure you've allocated Docker **at least** 4GB of RAM; significantly more
+  recommended
   - (Development only, production is much more efficient)
 
 Has been tested on Windows and Linux (Ubuntu 18.04LTS).
@@ -160,11 +147,11 @@ To get started, please run:
 | ------------ | :-: | ------------------------------- |
 | `yarn setup` | or  | `export UID; yarn docker setup` |
 
-This command will lead you through the necessary steps, and create a `.env`
-file for you containing your secrets.
+This command will lead you through the necessary steps, and create a `.env` file
+for you containing your secrets.
 
-**NOTE:** `export UID` is really important on Linux Docker hosts, otherwise
-the files and folders created by Docker will end up owned by root, which is
+**NOTE:** `export UID` is really important on Linux Docker hosts, otherwise the
+files and folders created by Docker will end up owned by root, which is
 non-optimal. We recommend adding `export UID` to your `~/.profile` or
 `~/.bashrc` or similar so you don't have to remember it.
 
@@ -184,7 +171,8 @@ http://localhost:5678
 ## Features
 
 **The tech stack:**
-- PostgresSQL
+
+- PostgresSQL (included only in docker)
 - PostGraphile
 - GraphQL
 - React through Next.js
@@ -192,70 +180,112 @@ http://localhost:5678
 - AntD design framework
 
 **Batteries included:**
-  - **Prebuilt user system** — supporting both username/password registration and OAuth / social authentication (Twitter, GitHub, Facebook, ...)
-    - Register via email with sensible validation and error handling
-    - Register via social
-    - Verify email flow
-    - Handle errors in email verification flow
-    - Login (with mixed case username/email, or via social)
-    - Email management (add more, delete old, change primary, resend verification)
-    - `User.isVerified` to check they have at least on verified email (can use this to govern further permissions)
-    - Update profile information
-    - Change password flow
-    - Forgot password flow
-    - Unlinking social profiles
-  - **Ant Design Framework** — "A design system with values of Nature and Determinacy for better user experience of enterprise applications"
-  - **Preconfigured everything** - get started on developing without having to write boilerplate
+
+- **Prebuilt user system** — supporting both username/password registration and
+  OAuth / social authentication (Twitter, GitHub, Facebook, ...)
+  - Register via email with sensible validation and error handling
+  - Register via social
+  - Verify email flow
+  - Handle errors in email verification flow
+  - Login (with mixed case username/email, or via social)
+  - Email management (add more, delete old, change primary, resend verification)
+  - `User.isVerified` to check they have at least on verified email (can use
+    this to govern further permissions)
+  - Update profile information
+  - Change password flow
+  - Forgot password flow
+  - Unlinking social profiles
+- **Ant Design Framework** — "A design system with values of Nature and
+  Determinacy for better user experience of enterprise applications"
+- **Preconfigured everything** - get started on developing without having to
+  write boilerplate
 
 - **Development speed:**
-  - **Hot reloading** — edit a component and it's re-rendered immediately (warning: state is _not_ restored, because this typically leads to instability); provided by Next.js
-  - **SSR with hot reloading** — if you turn JS off and reload the page you should be greeted with the same content anyway; provided by Next.js
-  - **TypeScript** — make your project maintainable by starting with strong typing throughout
-  - **Linting** — provided by `eslint`, `prettier` and `@typescript-eslint`. Can be extended with extremely powerful lint rules to protect your project from bugs, bad practices, and inconsistencies; configured with sensible but not too intrusive (hopefully) defaults focused on GraphQL development
-  - **Autoformatting** ─ Thanks to `prettier` and `eslint`, code can be auto-formatted (and auto-fixed) on save
 
+  - **Hot reloading** — edit a component and it's re-rendered immediately
+    (warning: state is _not_ restored, because this typically leads to
+    instability); provided by Next.js
+  - **SSR with hot reloading** — if you turn JS off and reload the page you
+    should be greeted with the same content anyway; provided by Next.js
+  - **TypeScript** — make your project maintainable by starting with strong
+    typing throughout
+  - **Linting** — provided by `eslint`, `prettier` and `@typescript-eslint`. Can
+    be extended with extremely powerful lint rules to protect your project from
+    bugs, bad practices, and inconsistencies; configured with sensible but not
+    too intrusive (hopefully) defaults focused on GraphQL development
+  - **Autoformatting** ─ Thanks to `prettier` and `eslint`, code can be
+    auto-formatted (and auto-fixed) on save
+  - **Debuggability** ─ The server, worker, tests and client are all ready to be
+    debugged using
+    [VSCode's built in breakpoints](https://code.visualstudio.com/docs/editor/debugging)
 
+- ## **Best practices:**
 
 -
 - **React hooks** — modern react code
-- **GraphQL** — on the backend through PostGraphile, on the frontend via Apollo client
-- **Autogenerated Type-safe GraphQL Hooks** — using `graphql-code-generator` to turn your GraphQL queries and mutations into strongly typed React hooks instantly
-- **PostGraphile configured for lean schema** — very tidy GraphQL schema, adhering to PostGraphile best practices
-- Save Time:
-  -
-  - **Debuggability** ─ The server, worker, tests and client are all ready to be debugged using [VSCode's built in breakpoints](https://code.visualstudio.com/docs/editor/debugging)
+- **GraphQL** — on the backend through PostGraphile, on the frontend via Apollo
+  client
+- **Autogenerated Type-safe GraphQL Hooks** — using `graphql-code-generator` to
+  turn your GraphQL queries and mutations into strongly typed React hooks
+  instantly
+- **PostGraphile configured for lean schema** — very tidy GraphQL schema,
+  adhering to PostGraphile best practices
 - Testing:
-- **Database tests** — Jest configured to test the database, plus initial tests for various database functions and tables
-- **GraphQL tests** — Jest configured to test the GraphQL schema, plus some initial tests
+- **Database tests** — Jest configured to test the database, plus initial tests
+  for various database functions and tables
+- **GraphQL tests** — Jest configured to test the GraphQL schema, plus some
+  initial tests
 - **Acceptance tests** — implemented with Cypress
 
-- [x] **Job queue** — we've added and configured <a href="https://github.com/graphile/worker">graphile-worker</a> to perform background tasks for you, such as sending emails, and included some example tasks
-- [x] **Express server** — with Benjie's [easy to customize and understand middleware system](@app/server/src/index.ts)
+- [x] **Job queue** — we've added and configured
+      <a href="https://github.com/graphile/worker">graphile-worker</a> to
+      perform background tasks for you, such as sending emails, and included
+      some example tasks
+- [x] **Express server** — with Benjie's
+      [easy to customize and understand middleware system](@app/server/src/index.ts)
 
 - [x]
 - [x]
-- [x] **Productive roll-forward migrations** — we use <a href="https://github.com/graphile/migrate">graphile-migrate</a> for development speed, but you're welcome to switch to whatever migration library you like
-- [x] **Realtime** — PostGraphile is configured with `@graphile/pg-pubsub` to enable Realtime events from the DB; and Apollo is configured to consume them
-- [x] **Production build** — command to generate a production build of the project using `yarn run build`
-- [x] **Production Docker build** — how to build a Docker image you could use in production
+- [x] **Productive roll-forward migrations** — we use
+      <a href="https://github.com/graphile/migrate">graphile-migrate</a> for
+      development speed, but you're welcome to switch to whatever migration
+      library you like
+- [x] **Realtime** — PostGraphile is configured with `@graphile/pg-pubsub` to
+      enable Realtime events from the DB; and Apollo is configured to consume
+      them
+- [x] **Production build** — command to generate a production build of the
+      project using `yarn run build`
+- [x] **Production Docker build** — how to build a Docker image you could use in
+      production
 - [x] **Deployment instructions: Heroku** — how to deploy to Heroku
 
-- [x] **Docker development flow** — enables work on this project using Docker (rather than running the Postgres/etc. directly on your machine)
-- [x] **Documented error codes** — specification of existing error codes, examples of them being used, and space to add more
+- [x] **Docker development flow** — enables work on this project using Docker
+      (rather than running the Postgres/etc. directly on your machine)
+- [x] **Documented error codes** — specification of existing error codes,
+      examples of them being used, and space to add more
 
-- [x] **Sessions** — to persist login information in the traditional way (with cookies)
-- [x] **Responsive email templates** — we've added MJML and a templating system to help you format emails; all emails go through the `send_email` worker task so it's easy to customize
-- [x] **Email transport** — we've configured Nodemailer to use ethereal.email to catch all development emails, and AWS' SES in production (easy to replace with a different provider thanks to Nodemailer)
+- [x] **Sessions** — to persist login information in the traditional way (with
+      cookies)
+- [x] **Responsive email templates** — we've added MJML and a templating system
+      to help you format emails; all emails go through the `send_email` worker
+      task so it's easy to customize
+- [x] **Email transport** — we've configured Nodemailer to use ethereal.email to
+      catch all development emails, and AWS' SES in production (easy to replace
+      with a different provider thanks to Nodemailer)
 - [x]
 - [x]
-- [x] **HTML→Text emails** — automated conversion from your pretty templates to plain text emails for users that prefer that
+- [x] **HTML→Text emails** — automated conversion from your pretty templates to
+      plain text emails for users that prefer that
 - [x] **Form validation** — using AntD's `Form` component
 
 ## TODO
 
-Here's some more things we'd like to demonstrate that we've not got around to yet. (If you're interested in helping, reach out on Discord: http://discord.gg/graphile)
+Here's some more things we'd like to demonstrate that we've not got around to
+yet. (If you're interested in helping, reach out on Discord:
+http://discord.gg/graphile)
 
-- [ ] **File uploads** — user can change their avatar, but this approach can be extended to other areas
+- [ ] **File uploads** — user can change their avatar, but this approach can be
+      extended to other areas
 
 ## Documentation links
 
@@ -263,12 +293,19 @@ Here's some more things we'd like to demonstrate that we've not got around to ye
 
 This main command runs a number of tasks:
 
-- uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch the`migrations/current.sql` file for changes, and automatically runs it against your database when it changes
-- watches the TypeScript source code of the server, and compiles it from `@app/*/src` to `@app/*/dist` so node/`graphile-worker`/etc. can run the compiled code directly
+- uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch
+  the`migrations/current.sql` file for changes, and automatically runs it
+  against your database when it changes
+- watches the TypeScript source code of the server, and compiles it from
+  `@app/*/src` to `@app/*/dist` so node/`graphile-worker`/etc. can run the
+  compiled code directly
 - runs the node server (includes PostGraphile and Next.js middleware)
 - runs `graphile-worker` to execute your tasks (e.g. sending emails)
-- watches your GraphQL files and your PostGraphile schema for changes and generates your TypeScript React hooks for you automatically, leading to strongly typed code with minimal effort
-- runs the `jest` tests in watch mode, automatically re-running as the database or test files change
+- watches your GraphQL files and your PostGraphile schema for changes and
+  generates your TypeScript React hooks for you automatically, leading to
+  strongly typed code with minimal effort
+- runs the `jest` tests in watch mode, automatically re-running as the database
+  or test files change
 
 **NOTE**: `docker-compose up server` also runs the PostgreSQL server that the
 system connects to.
@@ -280,16 +317,16 @@ You may also choose to develop locally, but use the PostgreSQL server via
 
 Thanks to Cypress.io for sponsoring this work, we've added e2e tests covering
 loading the various pages, registering an account, logging in, verifying and
-managing your emails. You should be able to easily build on top of these
-tests to ensure that your project remains rock-solid at all times.
+managing your emails. You should be able to easily build on top of these tests
+to ensure that your project remains rock-solid at all times.
 
 ### Next.js
 
 We use Next.js ([docs](https://nextjs.org/)) to handle the various common
 concerns of a React application for us (server-side rendering, routing,
 bundling, bundle-splitting, etc). The `@app/client/src/pages/_app.tsx` file is a
-[custom &lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to
-add any providers you need to. We've already set it up with `withApollo` from
+[custom &lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to add
+any providers you need to. We've already set it up with `withApollo` from
 `@app/client/src/lib/withApollo` which includes all the Apollo configuration,
 including the client URL.
 
@@ -303,11 +340,11 @@ pages so you can see how to handle errors from the server.
 
 The database is a jumping-off point; we've already committed the initial user
 system for you (but you can `uncommit` this if you need to). You can add
-idempotent SQL commands to `migrations/current.sql` and they will run when
-you save. When you're happy with your changes, run `yarn db commit`
-to commit these commands and reset `migrations/current.sql` to a blank state
-ready for the next batch of changes. We deliberately do not include
-functionality that we don't think most users will find useful.
+idempotent SQL commands to `migrations/current.sql` and they will run when you
+save. When you're happy with your changes, run `yarn db commit` to commit these
+commands and reset `migrations/current.sql` to a blank state ready for the next
+batch of changes. We deliberately do not include functionality that we don't
+think most users will find useful.
 
 ### graphile-migrate
 
@@ -318,15 +355,15 @@ To read more about migrations with graphile-migrate, see the
 
 We've added a few example workers for you, including the `send_email` worker
 which performs email templating for you. See `@app/worker/src/tasks` for the
-tasks we've created (and to add your own), and see the [graphile-worker
-docs](https://github.com/graphile/worker) for more information.
+tasks we've created (and to add your own), and see the
+[graphile-worker docs](https://github.com/graphile/worker) for more information.
 
 ### Server
 
 The server entry point is `@app/server/src/index.ts`; you'll see that it
 contains documentation and has split the middleware up into a manageable
-fashion. We use traditional cookie sessions, but you can switch this out
-for an alternative.
+fashion. We use traditional cookie sessions, but you can switch this out for an
+alternative.
 
 ### Login with GitHub
 
@@ -334,11 +371,13 @@ If you set `GITHUB_KEY` and `GITHUB_SECRET` in your `.env` file then you can
 also use GitHub's OAuth social authentication; you can add similar logic to the
 GitHub logic (in `@app/server/src/middleware/installPassport.ts`) to enable
 other social login providers such as Twitter, Facebook, Google, etc. For more
-information, see the [passport.js documentation](http://www.passportjs.org/docs/).
+information, see the
+[passport.js documentation](http://www.passportjs.org/docs/).
 
 ## Making it yours
 
-1. Download and extract a zip of [the latest release from GitHub](https://github.com/graphile/starter/releases)
+1. Download and extract a zip of
+   [the latest release from GitHub](https://github.com/graphile/starter/releases)
 1. In that folder run:
    - `git init`
    - `git add .`
@@ -356,9 +395,9 @@ Be sure to read [docker/README.md](docker/README.md).
 ## Building the production docker image
 
 To build the production image, use `docker build` as shown below. You should
-supply the `ROOT_URL` build variable (which will be baked into the client
-code, so cannot be changed as envvars); if you don't then the defaults will
-apply (which likely will not be suitable).
+supply the `ROOT_URL` build variable (which will be baked into the client code,
+so cannot be changed as envvars); if you don't then the defaults will apply
+(which likely will not be suitable).
 
 To build the worker, pass `TARGET="worker"` instead of the default
 `TARGET="server"`.
@@ -371,7 +410,8 @@ docker build \
   .
 ```
 
-When you run the image you must pass it the relevant environmental variables, for example:
+When you run the image you must pass it the relevant environmental variables,
+for example:
 
 ```sh
 docker run --rm -it --init -p 5678:5678 \
@@ -392,8 +432,8 @@ currently have environment validation (PRs welcome!).
 ## Deploying to Heroku
 
 If you are using `graphile-migrate` make sure that you have executed
-`graphile-migrate commit` to commit all your database changes, since we only
-run committed migrations in production.
+`graphile-migrate commit` to commit all your database changes, since we only run
+committed migrations in production.
 
 Make sure you have customized `@app/config/src/index.ts`.
 
@@ -455,14 +495,15 @@ others later.
 }
 ```
 
-Generate an Access Key for this IAM role, and then tell Heroku the access key
-id and secret:
+Generate an Access Key for this IAM role, and then tell Heroku the access key id
+and secret:
 
 ```
 heroku config:set AWS_ACCESS_KEY_ID="..." AWS_SECRET_ACCESS_KEY="..." -a $APP_NAME
 ```
 
-Now you can tell Heroku to run the worker process as well as the currently running 'web' process:
+Now you can tell Heroku to run the worker process as well as the currently
+running 'web' process:
 
 ```
 heroku ps:scale worker=1 -a $APP_NAME
@@ -476,8 +517,8 @@ to reflect that your account is now verified.
 **Remember** the first account registered will be an admin account, so be sure
 to register promptly.
 
-You can also configure your application for social login. This works the same
-as in development except the callback URL will be different, something like
+You can also configure your application for social login. This works the same as
+in development except the callback URL will be different, something like
 `https://MY_HEROKU_APP_NAME.herokuapp.com/auth/github/callback`. Set the GitHub
 OAuth secrets on your Heroku app to trigger a restart and enable social login:
 
@@ -505,4 +546,5 @@ drop role dbname;
 ## MIT License
 
 This is open source software; you may use, modify and distribute it under the
-terms of the MIT License, see [GRAPHILE_STARTER_LICENSE.md](./GRAPHILE_STARTER_LICENSE.md).
+terms of the MIT License, see
+[GRAPHILE_STARTER_LICENSE.md](./GRAPHILE_STARTER_LICENSE.md).
