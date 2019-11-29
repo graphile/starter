@@ -76,9 +76,7 @@ There are four tenets to Graphile Starter:
 Graphile Starter is easy to start and everything is preconfigured as much as
 possible.
 
-**Batteries included**:
-[full user system and OAuth](/TECHNICAL_DECISIONS.md#prebuilt-user-system),
-design framework, jest and
+**Batteries included**: full user system and OAuth, design framework, jest and
 [Cypress end-to-end](/TECHNICAL_DECISIONS.md#cypress-e2e-tests) testing,
 security, email templating and transport; optional VS Code integration with
 plugin recommendations, preconfigured settings, ESLint and Prettier integration
