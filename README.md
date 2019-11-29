@@ -52,7 +52,6 @@ And please give some love to our featured sponsors 🤩:
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Running](#running)
-- [Documentation links](#documentation-links)
 - [Making it yours](#making-it-yours)
 - [Docker development](#docker-development-1)
 - [Deploying to Heroku](#deploying-to-heroku)
@@ -60,7 +59,7 @@ And please give some love to our featured sponsors 🤩:
 
 ## Features
 
-Graphile Starter gets you started with a PostGraphile, GraphQL, React stack with
+Graphile Starter gets you started with a PostGraphile, GraphQL, Node stack with
 strong typing through TypeScript, routing through Next.js and design through
 AntD.
 
@@ -175,10 +174,6 @@ You can bring up the stack with:
 After a short period you should be able to load the application at
 http://localhost:5678
 
-## Documentation links
-
-### `yarn start` (or `docker-compose up server`)
-
 This main command runs a number of tasks:
 
 - uses [`graphile-migrate`](https://github.com/graphile/migrate) to watch
@@ -200,67 +195,6 @@ system connects to.
 
 You may also choose to develop locally, but use the PostgreSQL server via
 `docker-compose up -d db`.
-
-### Cypress e2e tests
-
-Thanks to Cypress.io for sponsoring this work, we've added e2e tests covering
-loading the various pages, registering an account, logging in, verifying and
-managing your emails. You should be able to easily build on top of these tests
-to ensure that your project remains rock-solid at all times.
-
-### Next.js
-
-We use Next.js ([docs](https://nextjs.org/)) to handle the various common
-concerns of a React application for us (server-side rendering, routing,
-bundling, bundle-splitting, etc). The `@app/client/src/pages/_app.tsx` file is a
-[custom &lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to add
-any providers you need to. We've already set it up with `withApollo` from
-`@app/client/src/lib/withApollo` which includes all the Apollo configuration,
-including the client URL.
-
-### AntD
-
-The component library we're using is AntD ([docs](https://ant.design/)); we've
-demonstrated how to use the form validation components on the login/register
-pages so you can see how to handle errors from the server.
-
-### Initial database
-
-The database is a jumping-off point; we've already committed the initial user
-system for you (but you can `uncommit` this if you need to). You can add
-idempotent SQL commands to `migrations/current.sql` and they will run when you
-save. When you're happy with your changes, run `yarn db commit` to commit these
-commands and reset `migrations/current.sql` to a blank state ready for the next
-batch of changes. We deliberately do not include functionality that we don't
-think most users will find useful.
-
-### graphile-migrate
-
-To read more about migrations with graphile-migrate, see the
-[graphile-migrate docs](https://github.com/graphile/migrate).
-
-### graphile-worker
-
-We've added a few example workers for you, including the `send_email` worker
-which performs email templating for you. See `@app/worker/src/tasks` for the
-tasks we've created (and to add your own), and see the
-[graphile-worker docs](https://github.com/graphile/worker) for more information.
-
-### Server
-
-The server entry point is `@app/server/src/index.ts`; you'll see that it
-contains documentation and has split the middleware up into a manageable
-fashion. We use traditional cookie sessions, but you can switch this out for an
-alternative.
-
-### Login with GitHub
-
-If you set `GITHUB_KEY` and `GITHUB_SECRET` in your `.env` file then you can
-also use GitHub's OAuth social authentication; you can add similar logic to the
-GitHub logic (in `@app/server/src/middleware/installPassport.ts`) to enable
-other social login providers such as Twitter, Facebook, Google, etc. For more
-information, see the
-[passport.js documentation](http://www.passportjs.org/docs/).
 
 ## Making it yours
 
