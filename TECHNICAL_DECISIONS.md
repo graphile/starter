@@ -156,7 +156,7 @@ information, see the
 * **Ant Design Framework** — "A design system with values of Nature and
   Determinacy for better user experience of enterprise applications"
 
-- **Express server** — with Benjie's
+- **Express server** — with Graphile's
   [easy to customize and understand middleware system](@app/server/src/index.ts)
 
 - **Job queue** — we've added and configured
