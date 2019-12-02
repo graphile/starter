@@ -144,6 +144,7 @@ Requires:
 
 - Node.js v10+ must be installed (v12 recommended)
 - PostgreSQL v10+ server must be available
+- `pg_dump` command must be available (or you can remove this functionality)
 - VSCode is recommended, but any editor will do
 
 This software has been developed under Mac and Linux, and should work in a
