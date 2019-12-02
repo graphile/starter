@@ -19,10 +19,10 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ['@app/e2e/cypress/**'],
-      plugins: ['cypress'],
+      files: ["@app/e2e/cypress/**"],
+      plugins: ["cypress"],
       env: {
-        'cypress/globals': true,
+        "cypress/globals": true,
       },
     },
   ],

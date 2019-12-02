@@ -1,8 +1,8 @@
 # Error codes
 
 PostgreSQL has a built in list of error codes that are associated with the
-errors that it produces. These are outlined [in the PostgreSQL
-documentation](https://www.postgresql.org/docs/current/errcodes-appendix.html).
+errors that it produces. These are outlined
+[in the PostgreSQL documentation](https://www.postgresql.org/docs/current/errcodes-appendix.html).
 
 Our custom functions may also raise exceptions with custom error codes. When we
 add a custom errorcode to our database, we document it in this file.
