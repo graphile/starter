@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:12
 
 # The node image comes with a base non-root 'node' user which this Dockerfile
 # gives sudo access. However, for Linux, this user's GID/UID must match your local
