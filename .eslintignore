@@ -2,3 +2,4 @@ node_modules
 **/dist
 /data
 /@app/graphql/index.*
+/@app/client/.next
