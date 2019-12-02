@@ -237,6 +237,18 @@ async function updateDotenv(answers) {
 # Client Secret:`
   );
 
+  const nodeVersion = parseInt(
+    process.version.replace(/\..*$/, "").replace(/[^0-9]/g, ""),
+    10
+  );
+
+  add(
+    "GRAPHILE_TURBO",
+    nodeVersion >= 12 ? "1" : "",
+    `\
+# Set to 1 only if you're on Node v12 of higher; enables advanced optimisations:`
+  );
+
   if (projectName) {
     add(
       "COMPOSE_PROJECT_NAME",
