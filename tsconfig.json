@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "incremental": true,
+    "noEmitOnError": true,
 
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
