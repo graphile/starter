@@ -8,9 +8,10 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { onError } from "apollo-link-error";
 import ws from "ws";
 import { pick } from "lodash";
+import GraphileLink from "./GraphileLink";
 
 export default withApollo(
-  ({ headers, initialState }) => {
+  ({ headers, initialState, ctx }) => {
     const ROOT_URL = process.env.ROOT_URL;
     if (!ROOT_URL) {
       throw new Error("ROOT_URL envvar is not set");
@@ -19,23 +20,29 @@ export default withApollo(
     const onErrorLink = onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors)
         graphQLErrors.map(({ message, locations, path }) =>
-          console.log(
+          console.error(
             `[GraphQL error]: message: ${message}, location: ${JSON.stringify(
               locations
             )}, path: ${JSON.stringify(path)}`
           )
         );
-      if (networkError) console.log(`[Network error]: ${networkError}`);
+      if (networkError) console.error(`[Network error]: ${networkError}`);
     });
-
-    const httpLink = new HttpLink({
-      uri: `${ROOT_URL}/graphql`,
-      credentials: "same-origin",
-      ...(isServer
-        ? { headers: pick(headers, "user-agent", "dnt", "cookie") }
-        : null),
-    });
-
+    const { req, res }: any = ctx || {};
+    const httpLink =
+      req && res
+        ? new GraphileLink({
+            req,
+            res,
+            postgraphileMiddleware: req.app.get("postgraphileMiddleware"),
+          })
+        : new HttpLink({
+            uri: `${ROOT_URL}/graphql`,
+            credentials: "same-origin",
+            ...(isServer
+              ? { headers: pick(headers, "user-agent", "dnt", "cookie") }
+              : null),
+          });
     const wsLink = new WebSocketLink({
       uri: `${ROOT_URL.replace(/^http/, "ws")}/graphql`,
       options: {

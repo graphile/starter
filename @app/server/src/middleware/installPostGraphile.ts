@@ -263,7 +263,11 @@ export default function installPostGraphile(app: Express) {
       rootPgPool,
     })
   );
+
+  app.set("postgraphileMiddleware", middleware);
+
   app.use(middleware);
+
   const httpServer = getHttpServer(app);
   if (httpServer) {
     enhanceHttpServerWithSubscriptions(httpServer, middleware);
