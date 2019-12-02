@@ -5,6 +5,7 @@
   "scripts": {
     "setup": "node ./scripts/yarn-setup.js",
     "start": "yarn compose up server",
+    "bash": "yarn compose exec server bash",
     "dev": "yarn compose:exec:dev bash",
     "dev:start": "yarn compose:exec:dev yarn start",
     "reset": "yarn down && yarn reset:volumes && yarn rebuild && yarn compose run server yarn reset",

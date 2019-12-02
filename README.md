@@ -194,9 +194,9 @@ non-optimal. We recommend adding `export UID` to your `~/.profile` or
 
 You can bring up the stack with:
 
-| Local mode   | OR  | Docker mode                            |
-| ------------ | :-: | -------------------------------------- |
-| `yarn start` | or  | `export UID; docker-compose up server` |
+| Local mode   | OR  | Docker mode                     |
+| ------------ | :-: | ------------------------------- |
+| `yarn start` | or  | `export UID; yarn docker start` |
 
 After a short period you should be able to load the application at
 http://localhost:5678
@@ -222,6 +222,18 @@ system connects to.
 
 You may also choose to develop locally, but use the PostgreSQL server via
 `docker-compose up -d db`.
+
+Then for development you may need a console; you can open one with:
+
+| Local mode | OR  | Docker mode                    |
+| ---------- | :-: | ------------------------------ |
+| `bash`     | or  | `export UID; yarn docker bash` |
+
+To shut everything down:
+
+| Local mode | OR  | Docker mode                    |
+| ---------- | :-: | ------------------------------ |
+| Ctrl-c     | or  | `export UID; yarn docker down` |
 
 ## Making it yours
 
