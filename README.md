@@ -9,8 +9,16 @@ system, session management, optimised job queue, a significant amount of
 pre-configured tooling, tests (both end-to-end and more granular) and much more.
 
 It is suitable for building projects both large and small, with a focus on
-getting started quickly - you can use it to start a project during a hack day,
-and then scale that to a massive audience with ease.
+productivity. You might use it:
+
+- to go from conception to launch of a web app during a hack day
+- as the foundation for client projects at your web agency
+- to build your side-hustle without spending lots of time on boilerplate
+- to build a SaaS project to help fund your open source work
+
+However you use it, the project can be deployed to many platforms, and can be
+scaled to larger audiences both horizontally and vertically with very few
+changes.
 
 Please note that this software is not "complete," free of software defects, or
 free of security issues — it is not a "finished" solution, but rather the seed
