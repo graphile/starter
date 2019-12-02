@@ -34,6 +34,7 @@ jobs:
         run: |
           cp .env.ci .env
           yarn --frozen-lockfile
+          CONFIRM_DROP=1 yarn setup
           yarn build
           yarn lint
           yarn test
