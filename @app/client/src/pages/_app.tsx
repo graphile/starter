@@ -2,7 +2,7 @@ import "antd/dist/antd.less";
 import "nprogress/nprogress.css";
 import "../styles.less";
 import * as React from "react";
-import App, { Container } from "next/app";
+import App from "next/app";
 import { ApolloProvider } from "@apollo/react-hooks";
 import withApollo from "../lib/withApollo";
 import { ApolloClient } from "apollo-client";
@@ -53,11 +53,9 @@ class MyApp extends App<{ apollo: ApolloClient<any> }> {
     const { Component, pageProps, apollo } = this.props;
 
     return (
-      <Container>
-        <ApolloProvider client={apollo}>
-          <Component {...pageProps} />
-        </ApolloProvider>
-      </Container>
+      <ApolloProvider client={apollo}>
+        <Component {...pageProps} />
+      </ApolloProvider>
     );
   }
 }
