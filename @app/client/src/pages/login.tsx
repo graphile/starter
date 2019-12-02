@@ -23,6 +23,7 @@ import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
 import Redirect from "../components/Redirect";
 import SocialLoginOptions from "../components/SocialLoginOptions";
+import { resetWebsocketConnection } from "../lib/withApollo";
 
 const { Paragraph } = Typography;
 
@@ -153,6 +154,7 @@ function LoginForm({
         });
         // Success: refetch
         client.resetStore();
+        resetWebsocketConnection();
         Router.push(onSuccessRedirectTo);
       } catch (e) {
         const code = getCodeFromError(e);

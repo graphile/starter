@@ -8,6 +8,15 @@ import { onError } from "apollo-link-error";
 import ws from "ws";
 import GraphileLink from "./GraphileLink";
 import { getOperationAST } from "graphql";
+import { SubscriptionClient } from "subscriptions-transport-ws";
+
+let wsClient: SubscriptionClient | null = null;
+
+export function resetWebsocketConnection(): void {
+  if (wsClient) {
+    wsClient.close(false, false);
+  }
+}
 
 function makeServerSideLink(req: any, res: any) {
   return new GraphileLink({
@@ -22,13 +31,14 @@ function makeClientSideLink(ROOT_URL: string) {
     uri: `${ROOT_URL}/graphql`,
     credentials: "same-origin",
   });
-  const wsLink = new WebSocketLink({
-    uri: `${ROOT_URL.replace(/^http/, "ws")}/graphql`,
-    options: {
+  wsClient = new SubscriptionClient(
+    `${ROOT_URL.replace(/^http/, "ws")}/graphql`,
+    {
       reconnect: true,
     },
-    webSocketImpl: typeof WebSocket !== "undefined" ? WebSocket : ws,
-  });
+    typeof WebSocket !== "undefined" ? WebSocket : ws
+  );
+  const wsLink = new WebSocketLink(wsClient);
 
   // Using the ability to split links, you can send data to each link
   // depending on what kind of operation is being sent.

@@ -21,6 +21,7 @@ import {
   extractError,
 } from "../errors";
 import { formItemLayout, tailFormItemLayout } from "../forms";
+import { resetWebsocketConnection } from "../lib/withApollo";
 
 interface RegisterProps {}
 
@@ -110,6 +111,7 @@ function RegistrationForm({
         });
         // Success: refetch
         client.resetStore();
+        resetWebsocketConnection();
         Router.push(onSuccessRedirectTo);
       } catch (e) {
         const code = getCodeFromError(e);
