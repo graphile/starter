@@ -34,7 +34,7 @@ export default withApollo(
         ? new GraphileLink({
             req,
             res,
-            graphile: req.app.get("graphile"),
+            postgraphileMiddleware: req.app.get("postgraphileMiddleware"),
           })
         : new HttpLink({
             uri: `${ROOT_URL}/graphql`,
