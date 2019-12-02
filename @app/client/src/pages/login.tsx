@@ -127,7 +127,9 @@ function LoginForm({
   error,
   setError,
 }: LoginFormProps) {
-  const [login] = useLoginMutation();
+  const [login] = useLoginMutation({
+    refetchQueries: ["SharedLayout"],
+  });
   const client = useApolloClient();
   const validateFields: (
     fieldNames?: Array<string>,

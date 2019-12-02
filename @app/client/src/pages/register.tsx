@@ -76,7 +76,9 @@ function RegistrationForm({
   error,
   setError,
 }: RegistrationFormProps) {
-  const [register] = useRegisterMutation();
+  const [register] = useRegisterMutation({
+    refetchQueries: ["SharedLayout"],
+  });
   const client = useApolloClient();
   const [confirmDirty, setConfirmDirty] = useState(false);
 
