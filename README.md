@@ -2,11 +2,15 @@
 
 ## Purpose
 
-Graphile Starter is an opinionated off-the-shelf stater project with the
-boilerplate done for you. Included is the beginning of an app which uses Node,
-GraphQL and PostGraphile with a user registration system, testing suite, and the
-AntD design framework - everything you need to quickly get started with your
-application idea.
+Graphile Starter is an opinionated quick-start project for full-stack
+application development in React, Node.js, GraphQL and PostgreSQL. It includes
+the foundations of a modern web application, with a full user registration
+system, session management, optimised job queue, a significant amount of
+pre-configured tooling, tests (both end-to-end and more granular) and much more.
+
+It is suitable for building projects both large and small, with a focus on
+getting started quickly - you can use it to start a project during a hack day,
+and then scale that to a massive audience with ease.
 
 Please note that this software is not "complete," free of software defects, or
 free of security issues — it is not a "finished" solution, but rather the seed
