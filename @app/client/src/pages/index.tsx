@@ -192,7 +192,8 @@ export default function Home() {
           </ol>
           <Paragraph>
             We also advise addressing the <code>TODO</code> items in the
-            codebase, particularly the one in <code>@app/db/scripts/wipe-if-demo</code>
+            codebase, particularly the one in{" "}
+            <code>@app/db/scripts/wipe-if-demo</code>
           </Paragraph>
 
           <Title level={4}>Production readiness</Title>
