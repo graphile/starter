@@ -141,9 +141,12 @@ Requires:
 This software has been developed under Mac and Linux, and should work in a
 `bash` environment.
 
-**Windows users**: PostGraphile Starter hasn't been fully tested under Windows;
-PRs to fix Windows compatibility issues are welcome (please keep them small!)
-Failing that, try the Docker mode :)
+**Windows users**: making a project like Graphile Starter run smoothly on
+Windows can be a challenge; `@JoeSchr` and `@hips` on the
+[Graphile Discord](http://discord.gg/graphile) have been working in improving
+this and they're pretty pleased with the result, but you may still get some
+teething problems. PRs to fix Windows compatibility issues are welcome (please
+keep them small!) Failing that, try the Docker mode :)
 
 ### Docker development
 
