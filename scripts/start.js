@@ -9,4 +9,10 @@ if (!fs.existsSync(ENVFILE)) {
   process.exit(1);
 }
 
-spawn("yarn", ["dev"], { stdio: "inherit" });
+spawn("yarn", ["dev"], {
+  stdio: "inherit",
+  env: {
+    ...process.env,
+    YARN_SILENT: "1",
+  },
+});
