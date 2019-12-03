@@ -30,10 +30,15 @@ if (process.argv.length > 3) {
   concurrently(
     [
       {
-        name: "tests",
+        name: "jest",
         command: `node --inspect=9876 node_modules/.bin/jest -i ${arg}`,
+        prefixColor: "greenBright",
       },
-      { name: "___db", command: "yarn db watch --shadow" },
+      {
+        name: "testdb",
+        command: "yarn db watch --shadow",
+        prefixColor: "blue",
+      },
     ],
     {
       killOthers: ["failure"],
