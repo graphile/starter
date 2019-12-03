@@ -20,6 +20,14 @@ However you use it, the project can be deployed to many platforms, and can be
 scaled to larger audiences both horizontally and vertically with very few
 changes.
 
+**Not intended for beginners**: this project combines a lot of technologies
+together to produce a highly productive development environment, and includes a
+pre-built database schema for an advanced account system. If you're not already
+familiar with a lot of these technologies, or haven't built a database-driven
+project before, you may find that there's too many things to get your head
+around at once. For beginners, we recommend you start with the
+[PostGraphile schema design tutorial](https://www.graphile.org/postgraphile/postgresql-schema-design/).
+
 Please note that this software is not "complete," free of software defects, or
 free of security issues — it is not a "finished" solution, but rather the seed
 of a solution which you should review, customize, fix, and develop further.
