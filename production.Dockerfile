@@ -47,6 +47,7 @@ COPY --from=builder /app/@app/client/src/next.config.js /app/@app/client/src/nex
 COPY --from=builder /app/@app/$TARGET/package.json /app/@app/$TARGET/
 COPY --from=builder /app/@app/$TARGET/dist/ /app/@app/$TARGET/dist/
 COPY --from=builder /app/@app/client/.next /app/@app/client/.next
+COPY --from=builder /app/@app/server/postgraphile.tags.jsonc /app/@app/server/
 
 # Shared args shouldn't be overridable at runtime (because they're baked into
 # the built JS).
