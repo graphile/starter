@@ -3,9 +3,9 @@ import express, { Express } from "express";
 import * as middleware from "./middleware";
 import { makeShutdownActions, ShutdownAction } from "./shutdownActions";
 import { Middleware } from "postgraphile";
-import { sanitiseEnv } from "./utils";
+import { sanitizeEnv } from "./utils";
 
-// Server may not always be supplied, e.g. where mounting on a subroute
+// Server may not always be supplied, e.g. where mounting on a sub-route
 export function getHttpServer(app: Express): Server | void {
   return app.get("httpServer");
 }
@@ -25,7 +25,7 @@ export async function makeApp({
 }: {
   httpServer?: Server;
 } = {}): Promise<Express> {
-  sanitiseEnv();
+  sanitizeEnv();
 
   const isTest = process.env.NODE_ENV === "test";
   const isDev = process.env.NODE_ENV === "development";

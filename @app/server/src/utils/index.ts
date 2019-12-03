@@ -1,4 +1,4 @@
-export function sanitiseEnv() {
+export function sanitizeEnv() {
   const requiredEnvvars = [
     "AUTH_DATABASE_URL",
     "DATABASE_URL",
