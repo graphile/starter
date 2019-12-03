@@ -77,9 +77,7 @@ function RegistrationForm({
   error,
   setError,
 }: RegistrationFormProps) {
-  const [register] = useRegisterMutation({
-    refetchQueries: ["SharedLayout"],
-  });
+  const [register] = useRegisterMutation({});
   const client = useApolloClient();
   const [confirmDirty, setConfirmDirty] = useState(false);
 
@@ -110,8 +108,8 @@ function RegistrationForm({
           },
         });
         // Success: refetch
-        client.resetStore();
         resetWebsocketConnection();
+        client.resetStore();
         Router.push(onSuccessRedirectTo);
       } catch (e) {
         const code = getCodeFromError(e);

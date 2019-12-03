@@ -128,9 +128,7 @@ function LoginForm({
   error,
   setError,
 }: LoginFormProps) {
-  const [login] = useLoginMutation({
-    refetchQueries: ["SharedLayout"],
-  });
+  const [login] = useLoginMutation({});
   const client = useApolloClient();
   const validateFields: (
     fieldNames?: Array<string>,
@@ -153,8 +151,8 @@ function LoginForm({
           },
         });
         // Success: refetch
-        client.resetStore();
         resetWebsocketConnection();
+        client.resetStore();
         Router.push(onSuccessRedirectTo);
       } catch (e) {
         const code = getCodeFromError(e);
