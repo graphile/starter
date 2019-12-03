@@ -150,6 +150,17 @@ function RegistrationForm({
               ],
             },
           });
+        } else if (code === "23514") {
+          form.setFields({
+            username: {
+              value: form.getFieldValue("username"),
+              errors: [
+                new Error(
+                  "This username is not allowed; usernames must be between 2 and 24 characters long (inclusive), must start with a letter, and must contain only alphanumeric characters and underscores."
+                ),
+              ],
+            },
+          });
         } else {
           setError(e);
         }
