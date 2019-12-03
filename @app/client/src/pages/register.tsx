@@ -234,7 +234,7 @@ function RegistrationForm({
           rules: [
             {
               required: true,
-              message: "Please input your name",
+              message: "Please input your name.",
               whitespace: true,
             },
           ],
@@ -254,8 +254,30 @@ function RegistrationForm({
           rules: [
             {
               required: true,
-              message: "Please input your username",
+              message: "Please input your username.",
               whitespace: true,
+            },
+            {
+              min: 2,
+              message: "Username must be at least 2 characters long.",
+            },
+            {
+              max: 24,
+              message: "Username must be no more than 24 characters long.",
+            },
+            {
+              pattern: /^([a-zA-Z]|$)/,
+              message: "Username must start with a letter.",
+            },
+            {
+              pattern: /^([^_]|_[^_]|_$)*$/,
+              message:
+                "Username must not contain two underscores next to each other.",
+            },
+            {
+              pattern: /^[a-zA-Z0-9_]*$/,
+              message:
+                "Username must contain only alphanumeric characters and underscores.",
             },
           ],
         })(<Input data-cy="registerpage-input-username" />)}
@@ -265,11 +287,11 @@ function RegistrationForm({
           rules: [
             {
               type: "email",
-              message: "The input is not valid E-mail",
+              message: "The input is not valid E-mail.",
             },
             {
               required: true,
-              message: "Please input your E-mail",
+              message: "Please input your E-mail.",
             },
           ],
         })(<Input data-cy="registerpage-input-email" />)}
@@ -279,7 +301,7 @@ function RegistrationForm({
           rules: [
             {
               required: true,
-              message: "Please input your password",
+              message: "Please input your password.",
             },
             {
               validator: validateToNextPassword,
@@ -292,7 +314,7 @@ function RegistrationForm({
           rules: [
             {
               required: true,
-              message: "Please confirm your password",
+              message: "Please confirm your password.",
             },
             {
               validator: compareToFirstPassword,
