@@ -14,5 +14,6 @@ spawn("yarn", ["dev"], {
   env: {
     ...process.env,
     YARN_SILENT: "1",
+    npm_config_loglevel: "silent",
   },
 });
