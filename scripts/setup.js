@@ -20,6 +20,11 @@ const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 const spawnSync = (cmd, args, options) => {
   const result = rawSpawnSync(cmd, args, {
     stdio: ["pipe", "inherit", "inherit"],
+    env: {
+      ...process.env,
+      YARN_SILENT: "1",
+      npm_config_loglevel: "silent",
+    },
     ...options,
   });
 
@@ -311,7 +316,6 @@ async function main() {
   });
 
   // And perform setup
-  spawnSync(yarnCmd);
   spawnSync(yarnCmd, ["server", "build"]);
 
   // FINALLY we can source our environment
