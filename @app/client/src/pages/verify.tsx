@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import get from "lodash/get";
 import { Alert } from "antd";
 import SharedLayout, { Row, Col } from "../components/SharedLayout";
+import { NextPage } from "next";
 import { useVerifyEmailMutation } from "@app/graphql";
 
 interface IProps {
@@ -9,7 +10,7 @@ interface IProps {
   token: string | null;
 }
 
-function Page(props: IProps) {
+const VerifyPage: NextPage<IProps> = props => {
   const [[id, token], setIdAndToken] = React.useState<[number, string]>([
     parseInt(props.id, 10) || 0,
     props.token || "",
@@ -78,14 +79,12 @@ function Page(props: IProps) {
       </Row>
     </SharedLayout>
   );
-}
-
-Page.getInitialProps = ({
-  query = {},
-}: {
-  query: { [key: string]: string };
-}) => {
-  return { id: query["id"], token: query["token"] };
 };
 
-export default Page;
+VerifyPage.getInitialProps = async ({ query }) => {
+  const id = typeof query.id === "string" ? query.id : query.id[0];
+  const token = typeof query.token === "string" ? query.token : query.token[0];
+  return { id, token };
+};
+
+export default VerifyPage;

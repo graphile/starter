@@ -2,6 +2,7 @@ import * as React from "react";
 import { Button, Row, Col, Typography, Divider } from "antd";
 const { Text, Title, Paragraph } = Typography;
 import SharedLayout from "../components/SharedLayout";
+import { NextPage } from "next";
 
 // Convenience helper
 const Li = ({ children, ...props }: any) => (
@@ -10,7 +11,7 @@ const Li = ({ children, ...props }: any) => (
   </li>
 );
 
-export default function Home() {
+const Home: NextPage = () => {
   return (
     <SharedLayout title="Home">
       <Row type="flex" justify="space-between" gutter={32}>
@@ -298,4 +299,6 @@ export default function Home() {
       </Row>
     </SharedLayout>
   );
-}
+};
+
+export default Home;

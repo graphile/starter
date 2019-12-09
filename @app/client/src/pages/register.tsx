@@ -7,6 +7,7 @@ import React, {
   FocusEvent,
 } from "react";
 import SharedLayout from "../components/SharedLayout";
+import { NextPage } from "next";
 import { useApolloClient } from "@apollo/react-hooks";
 import { useRegisterMutation } from "@app/graphql";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
@@ -29,7 +30,7 @@ interface RegisterProps {}
  * The registration page just renders the standard layout and embeds the
  * registration form.
  */
-export default function Register(_props: RegisterProps) {
+const Register: NextPage<RegisterProps> = _props => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
   return (
     <SharedLayout title="Register">
@@ -40,7 +41,9 @@ export default function Register(_props: RegisterProps) {
       />
     </SharedLayout>
   );
-}
+};
+
+export default Register;
 
 /**
  * These are the values in our form

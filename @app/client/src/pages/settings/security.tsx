@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo, SyntheticEvent } from "react";
 import SettingsLayout from "../../components/SettingsLayout";
+import { NextPage } from "next";
 import {
   useChangePasswordMutation,
   useSettingsPasswordQuery,
@@ -15,14 +16,16 @@ import ErrorAlert from "../../components/ErrorAlert";
 import { H3, P } from "../../components/Text";
 import Link from "next/link";
 
-export default function Settings_Security() {
+const Settings_Security: NextPage = () => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
   return (
     <SettingsLayout href="/settings/security">
       <WrappedChangePasswordForm error={error} setError={setError} />
     </SettingsLayout>
   );
-}
+};
+
+export default Settings_Security;
 
 /**
  * These are the values in our form
