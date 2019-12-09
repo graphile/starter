@@ -4,6 +4,7 @@ import {
   PostGraphileOptions,
   Middleware,
   enhanceHttpServerWithSubscriptions,
+  GraphileResolverContext,
 } from "postgraphile";
 import { makePgSmartTagsFromFilePlugin } from "postgraphile/plugins";
 import { NodePlugin } from "graphile-build";
@@ -19,6 +20,15 @@ import handleErrors from "../utils/handleErrors";
 import { getWebsocketMiddlewares, getHttpServer } from "../app";
 import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
 import { resolve } from "path";
+
+declare module "postgraphile" {
+  interface GraphileResolverContext {
+    sessionId?: string | null;
+    rootPgPool: Pool;
+    login(user: any): Promise<void>;
+    logout(): Promise<void>;
+  }
+}
 
 const TagsFilePlugin = makePgSmartTagsFromFilePlugin(
   // We're using JSONC for VSCode compatibility; also using an explicit file
@@ -216,7 +226,9 @@ export function getPostGraphileOptions({
      * resolvers). This is useful if you write your own plugins that need
      * access to, e.g., the logged in user.
      */
-    async additionalGraphQLContextFromRequest(req) {
+    async additionalGraphQLContextFromRequest(
+      req
+    ): Promise<Partial<GraphileResolverContext>> {
       return {
         // The current session id
         sessionId: req.user && uuidOrNull(req.user.session_id),
@@ -226,7 +238,7 @@ export function getPostGraphileOptions({
 
         // Use this to tell Passport.js we're logged in
         login: (user: any) =>
-          new Promise((resolve, reject) => {
+          new Promise<void>((resolve, reject) => {
             req.login(user, err => (err ? reject(err) : resolve()));
           }),
 

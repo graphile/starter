@@ -1,4 +1,4 @@
-import { Build } from "graphile-build";
+import { Build, BuildBase } from "graphile-build";
 import { SQL, QueryBuilder } from "graphile-build-pg";
 import {
   makeExtendSchemaPlugin,
@@ -63,6 +63,7 @@ const currentUserTopicFromContext = async (
  */
 const SubscriptionsPlugin = makeExtendSchemaPlugin(build => {
   const { pgSql: sql } = build;
+  if (!sql) throw new Error("Plugin loaded too early.");
   return {
     typeDefs: gql`
        type UserSubscriptionPayload {
@@ -98,10 +99,11 @@ interface TgGraphQLSubscriptionPayload {
  */
 
 function recordByIdFromTable(
-  build: Build,
+  build: Partial<Build> & BuildBase,
   sqlTable: SQL
 ): AugmentedGraphQLFieldResolver<TgGraphQLSubscriptionPayload, any> {
   const { pgSql: sql } = build;
+  if (!sql) throw new Error("Plugin loaded too early.");
   return async (
     event: TgGraphQLSubscriptionPayload,
     _args: {},

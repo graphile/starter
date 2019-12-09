@@ -55,7 +55,7 @@
     "rimraf": "^3.0.0",
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.1.0",
-    "typescript": "^3.5.3",
+    "typescript": "^3.7.3",
     "update-dotenv": "^1.1.1"
   },
   "resolutions": {

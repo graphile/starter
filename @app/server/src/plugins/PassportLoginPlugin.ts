@@ -93,6 +93,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
 
           // Fetch the data that was requested from GraphQL, and return it
           const sql = build.pgSql;
+          if (!sql) throw new Error("Plugin loaded too early");
           const [row] = await selectGraphQLResultFromTable(
             sql.fragment`app_public.users`,
             (tableAlias, sqlBuilder) => {
@@ -157,6 +158,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
 
           // Fetch the data that was requested from GraphQL, and return it
           const sql = build.pgSql;
+          if (!sql) throw new Error("Plugin loaded too early");
           const [row] = await selectGraphQLResultFromTable(
             sql.fragment`app_public.users`,
             (tableAlias, sqlBuilder) => {
