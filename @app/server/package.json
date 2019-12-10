@@ -3,9 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "tsc && chmod +x dist/index.js",
-    "build:essential": "yarn run build",
-    "watch": "tsc --watch",
+    "build": "tsc -b && chmod +x dist/index.js",
     "start": "node -r @app/config/env dist/index.js",
     "dev": "nodemon --signal SIGINT --watch 'dist/**/*.js' -x 'node --inspect=9678 -r @app/config/env -r source-map-support/register' dist/index.js"
   },

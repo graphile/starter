@@ -10,5 +10,6 @@
     "target": "es2018",
     "module": "commonjs"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [{ "path": "../config" }]
 }

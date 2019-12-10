@@ -5,9 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "build:essential": "yarn run build",
-    "watch": "tsc -w"
+    "build": "tsc"
   },
   "dependencies": {
     "dotenv": "^8.2.0"

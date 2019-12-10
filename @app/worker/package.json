@@ -4,9 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "gw": "cd dist && node -r @app/config/env ../node_modules/.bin/graphile-worker",
-    "build": "tsc",
-    "build:essential": "yarn run build",
-    "watch": "tsc -w",
+    "build": "tsc -b",
     "start": "yarn gw",
     "dev": "cd dist && node -r @app/config/env --inspect=9757 ../node_modules/.bin/graphile-worker --watch",
     "install-db-schema": "mkdir -p dist && yarn gw --schema-only"
