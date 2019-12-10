@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "build": "yarn build:codegen && yarn build:tsc",
     "build:essential": "yarn run build",
