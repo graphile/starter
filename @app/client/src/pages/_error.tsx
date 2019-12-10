@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NextPageContext } from "next";
+import { NextPage } from "next";
 import { Alert, Row, Col } from "antd";
 import Link from "next/link";
 import SharedLayout from "../components/SharedLayout";
@@ -72,34 +72,56 @@ function SocialAuthError({ provider }: { provider: string }) {
 }
 
 interface ErrorPageProps {
-  statusCode: number;
-  pathname: string;
+  statusCode: number | null | undefined;
+  pathname: string | undefined;
 }
 
-export default function ErrorPage(props: ErrorPageProps) {
+const getDisplayForError = (
+  statusCode: number,
+  authMatches: RegExpMatchArray | null
+) => {
+  if (authMatches) {
+    const CurriedSocialAuthError = () => (
+      <SocialAuthError provider={authMatches[1]} />
+    );
+    return {
+      Component: CurriedSocialAuthError,
+      title: "Application not configured for this auth provider",
+    };
+  }
+  if (statusCode === 404) {
+    return {
+      Component: FourOhFour,
+      title: "Page Not Found",
+    };
+  }
+  return {
+    Component: ErrorOccurred,
+    title: "An Error Occurred",
+  };
+};
+
+const ErrorPage: NextPage<ErrorPageProps> = props => {
   const { statusCode, pathname } = props;
   const authMatches = pathname && pathname.match(/^\/auth\/([a-z]+)/);
-  const errorCode = authMatches ? "SOCIAL_AUTH" : statusCode;
-  const [Component, title, moreProps = {}] = {
-    SOCIAL_AUTH: [
-      SocialAuthError,
-      "Application not configured for this auth provider",
-      { provider: authMatches && authMatches[1] },
-    ],
-    404: [FourOhFour, "Page Not Found"],
-  }[errorCode] || [ErrorOccurred, "An Error Occurred"];
+  const { Component, title } = getDisplayForError(
+    statusCode ? statusCode : 0,
+    authMatches ? authMatches : null
+  );
   return (
     <SharedLayout title={title}>
       <Row>
         <Col>
-          <Component {...props} {...moreProps} />
+          <Component />
         </Col>
       </Row>
     </SharedLayout>
   );
-}
+};
 
-ErrorPage.getInitialProps = ({ res, err, asPath }: NextPageContext) => ({
+ErrorPage.getInitialProps = async ({ res, err, asPath }) => ({
   pathname: asPath,
   statusCode: res ? res.statusCode : err ? err["statusCode"] : null,
 });
+
+export default ErrorPage;

@@ -5,10 +5,11 @@ import SharedLayout, { Row, Col } from "../components/SharedLayout";
 import { NextPage } from "next";
 import { useResetPasswordMutation } from "@app/graphql";
 import { P } from "../components/Text";
+import { firstIfArray } from "../utils";
 
 interface IProps {
-  userId: string;
-  token: string | null;
+  userId: string | undefined;
+  token: string | undefined;
 }
 
 const ResetPage: NextPage<IProps> = ({
@@ -16,7 +17,7 @@ const ResetPage: NextPage<IProps> = ({
   token: rawToken,
 }) => {
   const [[userId, token], setIdAndToken] = useState<[number, string]>([
-    parseInt(rawUserId, 10) || 0,
+    rawUserId ? parseInt(rawUserId, 10) || 0 : 0,
     rawToken || "",
   ]);
 
@@ -114,10 +115,10 @@ const ResetPage: NextPage<IProps> = ({
 };
 
 ResetPage.getInitialProps = async ({ query }) => {
-  const userId =
-    typeof query.user_id === "string" ? query.user_id : query.user_id[0];
-  const token = typeof query.token === "string" ? query.token : query.token[0];
-  return { userId, token };
+  return {
+    userId: firstIfArray(query.user_id),
+    token: firstIfArray(query.token),
+  };
 };
 
 export default ResetPage;

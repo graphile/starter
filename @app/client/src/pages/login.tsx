@@ -24,6 +24,7 @@ import { getCodeFromError, extractError } from "../errors";
 import Redirect from "../components/Redirect";
 import SocialLoginOptions from "../components/SocialLoginOptions";
 import { resetWebsocketConnection } from "../lib/withApollo";
+import { firstIfArray } from "../utils";
 
 const { Paragraph } = Typography;
 
@@ -104,9 +105,8 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
 };
 
 Login.getInitialProps = async ({ query }) => {
-  const next = typeof query.next === "string" ? query.next : query.next[0];
   return {
-    next,
+    next: firstIfArray(query.next),
   };
 };
 
