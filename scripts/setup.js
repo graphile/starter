@@ -269,6 +269,31 @@ async function updateDotenv(answers) {
 }
 
 async function main() {
+  try {
+    const gitStat = await fsp.stat(`${__dirname}/../.git`);
+    if (!gitStat || !gitStat.isDirectory()) {
+      throw new Error("No .git folder found");
+    }
+  } catch (e) {
+    console.error();
+    console.error();
+    console.error();
+    console.error(
+      "ERROR: Graphile Starter must run inside of a git versioned folder. Please run the following:"
+    );
+    console.error();
+    console.error("  git init");
+    console.error("  git add .");
+    console.error("  git commit -m 'Graphile Starter base'");
+    console.error();
+    console.error(
+      "For more information, read https://github.com/graphile/starter#making-it-yours"
+    );
+    console.error();
+    console.error();
+    console.error();
+    process.exit(1);
+  }
   const config = (await readDotenv()) || {};
   const mergeAnswers = cb => answers => cb({ ...config, ...answers });
   const questions = [
