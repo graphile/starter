@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NextPageContext } from "next";
+import { NextPage } from "next";
 import { Alert, Row, Col } from "antd";
 import Link from "next/link";
 import SharedLayout from "../components/SharedLayout";
@@ -39,7 +39,11 @@ function ErrorOccurred() {
   );
 }
 
-function SocialAuthError({ provider }: { provider: string }) {
+interface SocialAuthErrorProps {
+  provider: string;
+}
+
+function SocialAuthError({ provider }: SocialAuthErrorProps) {
   return (
     <div>
       <H2>This application is not configured for that auth provider</H2>
@@ -72,34 +76,60 @@ function SocialAuthError({ provider }: { provider: string }) {
 }
 
 interface ErrorPageProps {
-  statusCode: number;
-  pathname: string;
+  statusCode: number | null;
+  pathname: string | null;
 }
 
-export default function ErrorPage(props: ErrorPageProps) {
+interface ErrorComponentSpec<TProps> {
+  title: string;
+  Component: React.FC<TProps>;
+  props?: TProps;
+}
+
+const getDisplayForError = (props: ErrorPageProps): ErrorComponentSpec<any> => {
   const { statusCode, pathname } = props;
-  const authMatches = pathname && pathname.match(/^\/auth\/([a-z]+)/);
-  const errorCode = authMatches ? "SOCIAL_AUTH" : statusCode;
-  const [Component, title, moreProps = {}] = {
-    SOCIAL_AUTH: [
-      SocialAuthError,
-      "Application not configured for this auth provider",
-      { provider: authMatches && authMatches[1] },
-    ],
-    404: [FourOhFour, "Page Not Found"],
-  }[errorCode] || [ErrorOccurred, "An Error Occurred"];
+
+  const authMatches = pathname ? pathname.match(/^\/auth\/([^/?#]+)/) : null;
+  if (authMatches) {
+    return {
+      Component: SocialAuthError,
+      title: "Application not configured for this auth provider",
+      props: {
+        provider: decodeURIComponent(authMatches[1]),
+      },
+    };
+  }
+
+  switch (statusCode) {
+    case 404:
+      return {
+        Component: FourOhFour,
+        title: "Page Not Found",
+      };
+    default:
+      return {
+        Component: ErrorOccurred,
+        title: "An Error Occurred",
+      };
+  }
+};
+
+const ErrorPage: NextPage<ErrorPageProps> = props => {
+  const { Component, title, props: componentProps } = getDisplayForError(props);
   return (
     <SharedLayout title={title}>
       <Row>
         <Col>
-          <Component {...props} {...moreProps} />
+          <Component {...componentProps} />
         </Col>
       </Row>
     </SharedLayout>
   );
-}
+};
 
-ErrorPage.getInitialProps = ({ res, err, asPath }: NextPageContext) => ({
-  pathname: asPath,
-  statusCode: res ? res.statusCode : err ? err["statusCode"] : null,
+ErrorPage.getInitialProps = async ({ res, err, asPath }) => ({
+  pathname: asPath || null,
+  statusCode: res ? res.statusCode : err ? err["statusCode"] || null : null,
 });
+
+export default ErrorPage;

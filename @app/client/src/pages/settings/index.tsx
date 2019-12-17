@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo, SyntheticEvent } from "react";
 import SettingsLayout from "../../components/SettingsLayout";
+import { NextPage } from "next";
 import {
   useUpdateUserMutation,
   useSettingsProfileQuery,
@@ -15,7 +16,7 @@ import Redirect from "../../components/Redirect";
 import ErrorAlert from "../../components/ErrorAlert";
 import { H3 } from "../../components/Text";
 
-export default function Settings_Profile() {
+const Settings_Profile: NextPage = () => {
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
   const { data, loading, error } = useSettingsProfileQuery();
   return (
@@ -35,7 +36,9 @@ export default function Settings_Profile() {
       )}
     </SettingsLayout>
   );
-}
+};
+
+export default Settings_Profile;
 
 /**
  * These are the values in our form

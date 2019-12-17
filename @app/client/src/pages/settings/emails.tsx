@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { promisify } from "util";
 import SettingsLayout from "../../components/SettingsLayout";
+import { NextPage } from "next";
 import {
   useSettingsEmailsQuery,
   useAddEmailMutation,
@@ -102,7 +103,7 @@ function Email({
   );
 }
 
-export default function Settings_Emails() {
+const Settings_Emails: NextPage = () => {
   const [showAddEmailForm, setShowAddEmailForm] = useState(false);
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
   const { data, loading, error } = useSettingsEmailsQuery();
@@ -176,7 +177,9 @@ export default function Settings_Emails() {
     }
   })();
   return <SettingsLayout href="/settings/emails">{pageContent}</SettingsLayout>;
-}
+};
+
+export default Settings_Emails;
 
 interface FormValues {
   email: string;
