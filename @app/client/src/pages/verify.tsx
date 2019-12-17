@@ -4,16 +4,15 @@ import { Alert } from "antd";
 import SharedLayout, { Row, Col } from "../components/SharedLayout";
 import { NextPage } from "next";
 import { useVerifyEmailMutation } from "@app/graphql";
-import { firstIfArray } from "../utils";
 
 interface IProps {
-  id: string | undefined;
-  token: string | undefined;
+  id: number | null;
+  token: string | null;
 }
 
 const VerifyPage: NextPage<IProps> = props => {
   const [[id, token], setIdAndToken] = React.useState<[number, string]>([
-    props.id ? parseInt(props.id, 10) || 0 : 0,
+    props.id || 0,
     props.token || "",
   ]);
   const [state, setState] = React.useState<
@@ -82,8 +81,9 @@ const VerifyPage: NextPage<IProps> = props => {
   );
 };
 
-VerifyPage.getInitialProps = async ({ query }) => {
-  return { id: firstIfArray(query.id), token: firstIfArray(query.token) };
-};
+VerifyPage.getInitialProps = async ({ query: { id, token } }) => ({
+  id: typeof id === "string" ? parseInt(id, 10) || null : null,
+  token: typeof token === "string" ? token : null,
+});
 
 export default VerifyPage;

@@ -76,10 +76,15 @@ interface ErrorPageProps {
   pathname: string | undefined;
 }
 
-const getDisplayForError = (
-  statusCode: number,
-  authMatches: RegExpMatchArray | null
-) => {
+interface ComponentAndTitle {
+  Component: React.FC<{}>;
+  title: string;
+}
+
+const getDisplayForError = (props: ErrorPageProps): ComponentAndTitle => {
+  const { statusCode, pathname } = props;
+
+  const authMatches = pathname ? pathname.match(/^\/auth\/([a-z]+)/) : null;
   if (authMatches) {
     const CurriedSocialAuthError = () => (
       <SocialAuthError provider={authMatches[1]} />
@@ -89,25 +94,23 @@ const getDisplayForError = (
       title: "Application not configured for this auth provider",
     };
   }
-  if (statusCode === 404) {
-    return {
-      Component: FourOhFour,
-      title: "Page Not Found",
-    };
+
+  switch (statusCode) {
+    case 404:
+      return {
+        Component: FourOhFour,
+        title: "Page Not Found",
+      };
+    default:
+      return {
+        Component: ErrorOccurred,
+        title: "An Error Occurred",
+      };
   }
-  return {
-    Component: ErrorOccurred,
-    title: "An Error Occurred",
-  };
 };
 
 const ErrorPage: NextPage<ErrorPageProps> = props => {
-  const { statusCode, pathname } = props;
-  const authMatches = pathname && pathname.match(/^\/auth\/([a-z]+)/);
-  const { Component, title } = getDisplayForError(
-    statusCode ? statusCode : 0,
-    authMatches ? authMatches : null
-  );
+  const { Component, title } = getDisplayForError(props);
   return (
     <SharedLayout title={title}>
       <Row>

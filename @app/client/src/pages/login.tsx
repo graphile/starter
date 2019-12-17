@@ -24,7 +24,6 @@ import { getCodeFromError, extractError } from "../errors";
 import Redirect from "../components/Redirect";
 import SocialLoginOptions from "../components/SocialLoginOptions";
 import { resetWebsocketConnection } from "../lib/withApollo";
-import { firstIfArray } from "../utils";
 
 const { Paragraph } = Typography;
 
@@ -33,10 +32,10 @@ function hasErrors(fieldsError: Object) {
 }
 
 interface LoginProps {
-  next?: string;
+  next: string | null;
 }
 
-function isSafe(nextUrl: string | void | null) {
+function isSafe(nextUrl: string | null) {
   return (nextUrl && nextUrl[0] === "/") || false;
 }
 
@@ -104,11 +103,9 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
   );
 };
 
-Login.getInitialProps = async ({ query }) => {
-  return {
-    next: firstIfArray(query.next),
-  };
-};
+Login.getInitialProps = async ({ query }) => ({
+  next: typeof query.next === "string" ? query.next : null,
+});
 
 export default Login;
 

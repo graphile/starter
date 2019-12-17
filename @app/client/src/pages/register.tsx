@@ -24,13 +24,11 @@ import {
 import { formItemLayout, tailFormItemLayout } from "../forms";
 import { resetWebsocketConnection } from "../lib/withApollo";
 
-interface RegisterProps {}
-
 /**
  * The registration page just renders the standard layout and embeds the
  * registration form.
  */
-const Register: NextPage<RegisterProps> = _props => {
+const Register: NextPage = () => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
   return (
     <SharedLayout title="Register">
