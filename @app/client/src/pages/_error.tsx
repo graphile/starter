@@ -72,8 +72,8 @@ function SocialAuthError({ provider }: { provider: string }) {
 }
 
 interface ErrorPageProps {
-  statusCode: number | null | undefined;
-  pathname: string | undefined;
+  statusCode: number | null;
+  pathname: string | null;
 }
 
 interface ComponentAndTitle {
@@ -123,8 +123,8 @@ const ErrorPage: NextPage<ErrorPageProps> = props => {
 };
 
 ErrorPage.getInitialProps = async ({ res, err, asPath }) => ({
-  pathname: asPath,
-  statusCode: res ? res.statusCode : err ? err["statusCode"] : null,
+  pathname: asPath || null,
+  statusCode: res ? res.statusCode : err ? err["statusCode"] || null : null,
 });
 
 export default ErrorPage;
