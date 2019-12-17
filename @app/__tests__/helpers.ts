@@ -98,8 +98,9 @@ export const createUsers = async function createUsers(
     userCreationCounter++;
     const password = userLetter.repeat(12);
     const email = `${userLetter}${i || ""}@b.c`;
-    const user: User = (await client.query(
-      `SELECT * FROM app_private.really_create_user(
+    const user: User = (
+      await client.query(
+        `SELECT * FROM app_private.really_create_user(
         username := $1,
         email := $2,
         email_is_verified := $3,
@@ -107,15 +108,16 @@ export const createUsers = async function createUsers(
         avatar_url := $5,
         password := $6
       )`,
-      [
-        `testuser_${userLetter}`,
-        email,
-        verified,
-        `User ${userLetter}`,
-        null,
-        password,
-      ]
-    )).rows[0];
+        [
+          `testuser_${userLetter}`,
+          email,
+          verified,
+          `User ${userLetter}`,
+          null,
+          password,
+        ]
+      )
+    ).rows[0];
     expect(user.id).not.toBeNull();
     user._email = email;
     user._password = password;

@@ -54,7 +54,7 @@ const pages = {
 };
 
 interface SettingsLayoutProps {
-  href: keyof (typeof pages);
+  href: keyof typeof pages;
   children: React.ReactNode;
 }
 
