@@ -40,5 +40,6 @@ jobs:
           yarn build
           yarn lint
           yarn test
+          yarn depcheck
         env:
           CI: true

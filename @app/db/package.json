@@ -16,6 +16,8 @@
     "graphile-migrate": "^0.0.17"
   },
   "devDependencies": {
-    "lodash": "^4.17.15"
+    "@types/pg": "^7.11.2",
+    "lodash": "^4.17.15",
+    "pg": "^7.14.0"
   }
 }
