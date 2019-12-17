@@ -89,13 +89,13 @@ interface ErrorComponentSpec<TProps> {
 const getDisplayForError = (props: ErrorPageProps): ErrorComponentSpec<any> => {
   const { statusCode, pathname } = props;
 
-  const authMatches = pathname ? pathname.match(/^\/auth\/([a-z]+)/) : null;
+  const authMatches = pathname ? pathname.match(/^\/auth\/([^/?#]+)/) : null;
   if (authMatches) {
     return {
       Component: SocialAuthError,
       title: "Application not configured for this auth provider",
       props: {
-        provider: authMatches[1],
+        provider: decodeURIComponent(authMatches[1]),
       },
     };
   }
