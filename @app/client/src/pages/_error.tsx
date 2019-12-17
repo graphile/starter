@@ -39,7 +39,11 @@ function ErrorOccurred() {
   );
 }
 
-function SocialAuthError({ provider }: { provider: string }) {
+interface SocialAuthErrorProps {
+  provider: string;
+}
+
+function SocialAuthError({ provider }: SocialAuthErrorProps) {
   return (
     <div>
       <H2>This application is not configured for that auth provider</H2>
@@ -76,22 +80,23 @@ interface ErrorPageProps {
   pathname: string | null;
 }
 
-interface ComponentAndTitle {
-  Component: React.FC<{}>;
+interface ErrorComponentSpec<TProps> {
   title: string;
+  Component: React.FC<TProps>;
+  props?: TProps;
 }
 
-const getDisplayForError = (props: ErrorPageProps): ComponentAndTitle => {
+const getDisplayForError = (props: ErrorPageProps): ErrorComponentSpec<any> => {
   const { statusCode, pathname } = props;
 
   const authMatches = pathname ? pathname.match(/^\/auth\/([a-z]+)/) : null;
   if (authMatches) {
-    const CurriedSocialAuthError = () => (
-      <SocialAuthError provider={authMatches[1]} />
-    );
     return {
-      Component: CurriedSocialAuthError,
+      Component: SocialAuthError,
       title: "Application not configured for this auth provider",
+      props: {
+        provider: authMatches[1],
+      },
     };
   }
 
@@ -110,12 +115,12 @@ const getDisplayForError = (props: ErrorPageProps): ComponentAndTitle => {
 };
 
 const ErrorPage: NextPage<ErrorPageProps> = props => {
-  const { Component, title } = getDisplayForError(props);
+  const { Component, title, props: componentProps } = getDisplayForError(props);
   return (
     <SharedLayout title={title}>
       <Row>
         <Col>
-          <Component />
+          <Component {...componentProps} />
         </Col>
       </Row>
     </SharedLayout>
