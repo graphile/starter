@@ -16,7 +16,7 @@
     "@types/lodash": "^4.14.149",
     "@types/mjml": "^4.0.2",
     "@types/nodemailer": "^6.2.1",
-    "aws-sdk": "^2.556.0",
+    "aws-sdk": "^2.591.0",
     "chalk": "^3.0.0",
     "graphile-worker": "^0.2.0",
     "html-to-text": "^5.0.0",
