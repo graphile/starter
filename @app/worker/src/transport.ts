@@ -2,7 +2,7 @@ import * as nodemailer from "nodemailer";
 import * as aws from "aws-sdk";
 import { awsRegion } from "@app/config";
 import { promises as fsp } from "fs";
-import * as chalk from "chalk";
+import chalk from "chalk";
 
 const { readFile, writeFile } = fsp;
 

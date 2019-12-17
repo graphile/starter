@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-import * as chalk from "chalk";
+import chalk from "chalk";
 import { createServer } from "http";
 import { makeApp, getShutdownActions } from "./app";
 

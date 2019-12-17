@@ -11,7 +11,7 @@ import {
   fromEmail,
 } from "@app/config";
 import * as nodemailer from "nodemailer";
-import * as chalk from "chalk";
+import chalk from "chalk";
 
 const { readFile } = fsp;
 
