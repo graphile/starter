@@ -99,11 +99,11 @@ services:
       - default
     ports:
       # The main server
-      - "5678:5678"
+      - "5678"
       # Node `--inspect=...` port numbers for debugging
-      - "9678:9678"
-      - "9876:9876"
-      - "9757:9757"
+      - "9678"
+      - "9876"
+      - "9757"
     depends_on:
       - db
     # Overrides default command so things don't shut down after the process ends.
