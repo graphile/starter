@@ -15,7 +15,10 @@ const MINUTE = 60 * SECOND;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
-const { SECRET = String(Math.random()) } = process.env;
+const { SECRET } = process.env;
+if (!SECRET) {
+  throw new Error('Server misconfigured');
+}
 const MAXIMUM_SESSION_DURATION_IN_MILLISECONDS =
   parseInt(process.env.MAXIMUM_SESSION_DURATION_IN_MILLISECONDS || "", 10) ||
   3 * DAY;
