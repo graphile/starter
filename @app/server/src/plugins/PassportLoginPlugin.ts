@@ -92,7 +92,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
           }
 
           // Fetch the data that was requested from GraphQL, and return it
-          const sql = build.pgSql;
+          const sql = build.pgSql!;
           const [row] = await selectGraphQLResultFromTable(
             sql.fragment`app_public.users`,
             (tableAlias, sqlBuilder) => {
@@ -156,7 +156,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
           );
 
           // Fetch the data that was requested from GraphQL, and return it
-          const sql = build.pgSql;
+          const sql = build.pgSql!;
           const [row] = await selectGraphQLResultFromTable(
             sql.fragment`app_public.users`,
             (tableAlias, sqlBuilder) => {

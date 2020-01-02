@@ -62,7 +62,7 @@ const currentUserTopicFromContext = async (
  * And see the database trigger function `app_public.tg__graphql_subscription()`.
  */
 const SubscriptionsPlugin = makeExtendSchemaPlugin(build => {
-  const { pgSql: sql } = build;
+  const sql = build.pgSql!;
   return {
     typeDefs: gql`
        type UserSubscriptionPayload {
@@ -98,10 +98,10 @@ interface TgGraphQLSubscriptionPayload {
  */
 
 function recordByIdFromTable(
-  build: Build,
+  build: Partial<Build>,
   sqlTable: SQL
 ): AugmentedGraphQLFieldResolver<TgGraphQLSubscriptionPayload, any> {
-  const { pgSql: sql } = build;
+  const sql = build.pgSql!;
   return async (
     event: TgGraphQLSubscriptionPayload,
     _args: {},

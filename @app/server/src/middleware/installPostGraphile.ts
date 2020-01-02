@@ -60,6 +60,15 @@ interface IPostGraphileOptionsOptions {
   rootPgPool: Pool;
 }
 
+declare module "postgraphile-core" {
+  interface GraphileResolverContext {
+    sessionId: string | null | undefined;
+    rootPgPool: Pool;
+    login: (user: any) => Promise<void>;
+    logout: () => Promise<void>;
+  }
+}
+
 export function getPostGraphileOptions({
   websocketMiddlewares,
   rootPgPool,
