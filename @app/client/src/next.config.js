@@ -31,6 +31,7 @@ if (!ROOT_URL) {
       withCss,
       withLess
     )({
+      poweredByHeader: false,
       distDir: `../.next`,
       exportTrailingSlash: true,
       lessLoaderOptions: {
