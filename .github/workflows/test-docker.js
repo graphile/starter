@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 async function main() {
@@ -6,9 +6,9 @@ async function main() {
   let response;
   while (true) {
     try {
-      response = await fetch("http://localhost:5678")
+      response = await fetch("http://localhost:5678");
       if (!response.ok) {
-        throw new Error("Try again")
+        throw new Error("Try again");
       }
       break;
     } catch (e) {
@@ -31,7 +31,7 @@ async function main() {
 
   // TODO: make this test depend on the worker running
 
-  console.log("Docker tests passed.")
+  console.log("Docker tests passed.");
 }
 
 main().catch(e => {
