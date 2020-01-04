@@ -65,7 +65,8 @@
   },
   "workspaces": {
     "packages": [
-      "@app/*"
+      "@app/*",
+      "docker"
     ],
     "nohoist": [
       "**/cypress"
