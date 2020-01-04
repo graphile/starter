@@ -30,6 +30,7 @@
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",
   "dependencies": {
+    "graphql": "^14.5.8",
     "lerna": "^3.19.0"
   },
   "devDependencies": {

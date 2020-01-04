@@ -7,11 +7,13 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
-    "@app/config": "0.0.0",
     "@app/components": "0.0.0",
+    "@app/config": "0.0.0",
     "@app/graphql": "0.0.0",
     "@types/lodash": "^4.14.149",
+    "@types/node": "^13.1.4",
     "@types/nprogress": "^0.2.0",
+    "@types/react": "^16.9.17",
     "@types/ws": "^6.0.4",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
@@ -30,10 +32,12 @@
     "next": "^9.0.3",
     "next-with-apollo": "^4.2.0",
     "nprogress": "^0.2.0",
+    "prop-types": "^15.7.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "subscriptions-transport-ws": "^0.9.0",
     "tls": "^0.0.1",
+    "webpack": "^4.41.2",
     "ws": "^7.2.0"
   },
   "devDependencies": {
