@@ -65,11 +65,6 @@ RUN rm -Rf /app/node_modules /app/@app/*/node_modules
 # Build stage FINAL - COPY everything, once, and then do a clean `yarn install`
 
 FROM node:12-alpine
-# Import our shared args
-ARG PORT
-ARG NODE_ENV
-ARG ROOT_URL
-ARG TARGET
 
 EXPOSE $PORT
 WORKDIR /app/
@@ -78,6 +73,12 @@ COPY --from=clean /app/ /app/
 
 # Install yarn ASAP because it's the slowest
 RUN yarn install --frozen-lockfile --production=true --no-progress
+
+# Import our shared args
+ARG PORT
+ARG NODE_ENV
+ARG ROOT_URL
+ARG TARGET
 
 LABEL description="My PostGraphile-powered $TARGET"
 
