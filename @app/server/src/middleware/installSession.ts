@@ -17,7 +17,7 @@ const DAY = 24 * HOUR;
 
 const { SECRET } = process.env;
 if (!SECRET) {
-  throw new Error('Server misconfigured');
+  throw new Error("Server misconfigured");
 }
 const MAXIMUM_SESSION_DURATION_IN_MILLISECONDS =
   parseInt(process.env.MAXIMUM_SESSION_DURATION_IN_MILLISECONDS || "", 10) ||
