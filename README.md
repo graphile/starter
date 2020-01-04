@@ -69,6 +69,7 @@ And please give some love to our featured sponsors 🤩:
 ## Table of contents
 
 - [Features](#features)
+- [Variants](#variants)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Running](#running)
@@ -120,6 +121,10 @@ practices
 
 See [TECHNICAL_DECISIONS.md](TECHNICAL_DECISIONS.md) for a more detailed list of
 features included and the technical decisions behind them.
+
+## Variants
+
+- [Create React App edition of Graphile Starter](https://github.com/alexk111/graphile-starter-cra) - for apps without Server Side Rendering
 
 ## Prerequisites
 
