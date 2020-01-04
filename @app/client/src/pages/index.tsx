@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Button, Row, Col, Typography, Divider } from "antd";
 const { Text, Title, Paragraph } = Typography;
-import SharedLayout from "../components/SharedLayout";
+import SharedLayout from "../layout/SharedLayout";
 import { NextPage } from "next";
 
 // Convenience helper

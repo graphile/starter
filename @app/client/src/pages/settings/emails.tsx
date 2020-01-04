@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { promisify } from "util";
-import SettingsLayout from "../../components/SettingsLayout";
+import SettingsLayout from "../../layout/SettingsLayout";
 import { NextPage } from "next";
 import {
   useSettingsEmailsQuery,
@@ -13,10 +13,8 @@ import {
 import { Alert, List, Avatar, Form, Input, Button } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { ApolloError } from "apollo-client";
-import Redirect from "../../components/Redirect";
+import { Redirect, ErrorAlert, H3, P, Strong } from "@app/components";
 import { getCodeFromError, extractError } from "../../errors";
-import Error from "../../components/ErrorAlert";
-import { H3, P, Strong } from "../../components/Text";
 
 function Email({
   email,
@@ -110,7 +108,7 @@ const Settings_Emails: NextPage = () => {
   const user = data && data.currentUser;
   const pageContent = (() => {
     if (error && !loading) {
-      return <Error error={error} />;
+      return <ErrorAlert error={error} />;
     } else if (!user && !loading) {
       return (
         <Redirect

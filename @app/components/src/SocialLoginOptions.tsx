@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 
-interface SocialLoginOptionsProps {
+export interface SocialLoginOptionsProps {
   next: string;
   buttonTextFromService?: (service: string) => string;
 }
@@ -10,7 +10,7 @@ function defaultButtonTextFromService(service: string) {
   return `Sign in with ${service}`;
 }
 
-export default function SocialLoginOptions({
+export function SocialLoginOptions({
   next,
   buttonTextFromService = defaultButtonTextFromService,
 }: SocialLoginOptionsProps) {

@@ -1,0 +1,12 @@
+{
+  "name": "@app/components",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "dependencies": {
+    "antd": "^3.26.3",
+    "apollo-client": "^2.6.8",
+    "next": "^9.0.3",
+    "react": "^16.9.0",
+    "tslib": "^1.10.0"
+  }
+}

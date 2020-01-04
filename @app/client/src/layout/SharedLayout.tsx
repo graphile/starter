@@ -20,10 +20,8 @@ import {
 import Router from "next/router";
 import { useApolloClient } from "@apollo/react-hooks";
 import { useCallback } from "react";
-import StandardWidth from "./StandardWidth";
+import { StandardWidth, Warn, ErrorAlert } from "@app/components";
 import Head from "next/head";
-import Warn from "./Warn";
-import Error from "./ErrorAlert";
 import { ApolloError } from "apollo-client";
 
 const { Header, Content, Footer } = Layout;
@@ -82,7 +80,7 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
   const renderChildren = (props: SharedLayoutChildProps) => {
     const inner =
       props.error && !props.loading ? (
-        <Error error={props.error} />
+        <ErrorAlert error={props.error} />
       ) : typeof children === "function" ? (
         children(props)
       ) : (

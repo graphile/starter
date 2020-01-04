@@ -1,12 +1,8 @@
 import React from "react";
-import SharedLayout, {
-  SharedLayoutChildProps,
-} from "../components/SharedLayout";
+import SharedLayout, { SharedLayoutChildProps } from "./SharedLayout";
 import Link from "next/link";
 import { Layout, Menu, Typography } from "antd";
-import StandardWidth from "./StandardWidth";
-import Warn from "./Warn";
-import Redirect from "./Redirect";
+import { StandardWidth, Warn, Redirect } from "@app/components";
 import { TextProps } from "antd/lib/typography/Text";
 import { useRouter, NextRouter } from "next/router";
 import * as qs from "querystring";

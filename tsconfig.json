@@ -41,6 +41,7 @@
   "exclude": ["@app/e2e"],
   "references": [
     { "path": "@app/config" },
+    { "path": "@app/components" },
     { "path": "@app/graphql" },
     { "path": "@app/server" },
     { "path": "@app/worker" }

@@ -10,7 +10,7 @@ import SharedLayout, {
   Row,
   Col,
   SharedLayoutChildProps,
-} from "../components/SharedLayout";
+} from "../layout/SharedLayout";
 import { NextPage } from "next";
 import Link from "next/link";
 import { Form, Icon, Input, Button, Alert, Typography } from "antd";
@@ -21,8 +21,7 @@ import { useLoginMutation } from "@app/graphql";
 import Router from "next/router";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
-import Redirect from "../components/Redirect";
-import SocialLoginOptions from "../components/SocialLoginOptions";
+import { Redirect, SocialLoginOptions } from "@app/components";
 import { resetWebsocketConnection } from "../lib/withApollo";
 
 const { Paragraph } = Typography;

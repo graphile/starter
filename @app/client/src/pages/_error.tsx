@@ -2,8 +2,8 @@ import * as React from "react";
 import { NextPage } from "next";
 import { Alert, Row, Col } from "antd";
 import Link from "next/link";
-import SharedLayout from "../components/SharedLayout";
-import { H2, P } from "../components/Text";
+import SharedLayout from "../layout/SharedLayout";
+import { H2, P } from "@app/components";
 
 const isDev = process.env.NODE_ENV !== "production";
 
