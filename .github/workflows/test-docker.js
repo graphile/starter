@@ -1,6 +1,8 @@
 const fetch = require("node-fetch");
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const AbortController = require("abort-controller");
+const { execSync } = require("child_process");
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 async function main() {
   let attempts = 0;
@@ -26,6 +28,7 @@ async function main() {
       attempts++;
       if (attempts <= 30) {
         console.log(`Server is not ready yet: ${e.message}`);
+        execSync("docker logs gs-server", { stdio: "inherit" });
       } else {
         console.log(`Server never came up, aborting :(`);
         process.exit(1);
