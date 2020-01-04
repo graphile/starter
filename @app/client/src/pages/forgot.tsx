@@ -7,7 +7,7 @@ import React, {
   useMemo,
 } from "react";
 import { promisify } from "util";
-import SharedLayout from "../components/SharedLayout";
+import SharedLayout from "../layout/SharedLayout";
 import { NextPage } from "next";
 import Link from "next/link";
 import { Form, Icon, Input, Button, Alert } from "antd";

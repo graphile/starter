@@ -4,11 +4,11 @@ import { ApolloError } from "apollo-client";
 
 const { Paragraph } = Typography;
 
-interface IProps {
+export interface ErrorAlertProps {
   error: ApolloError | Error;
 }
 
-export default function ErrorAlert({ error }: IProps) {
+export function ErrorAlert({ error }: ErrorAlertProps) {
   return (
     <Paragraph>
       <Alert

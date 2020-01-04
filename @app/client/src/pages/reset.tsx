@@ -1,10 +1,10 @@
 import React, { useCallback, useState, useEffect } from "react";
 import get from "lodash/get";
 import { Alert, Form, Button, Input } from "antd";
-import SharedLayout, { Row, Col } from "../components/SharedLayout";
+import SharedLayout, { Row, Col } from "../layout/SharedLayout";
 import { NextPage } from "next";
 import { useResetPasswordMutation } from "@app/graphql";
-import { P } from "../components/Text";
+import { P } from "@app/components";
 
 interface IProps {
   userId: number | null;

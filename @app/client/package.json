@@ -8,6 +8,7 @@
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
     "@app/config": "0.0.0",
+    "@app/components": "0.0.0",
     "@app/graphql": "0.0.0",
     "@types/lodash": "^4.14.149",
     "@types/nprogress": "^0.2.0",

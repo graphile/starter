@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "declarationDir": "dist",
+    "lib": ["es2018", "esnext.asynciterable"],
+    "target": "es2018",
+    "module": "commonjs",
+    "jsx": "react"
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

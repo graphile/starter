@@ -1,9 +1,8 @@
 import React, { useCallback, useState } from "react";
-import SettingsLayout from "../../components/SettingsLayout";
+import SettingsLayout from "../../layout/SettingsLayout";
 import { NextPage } from "next";
-import { H3, P } from "../../components/Text";
+import { H3, P, ErrorAlert } from "@app/components";
 import { Alert, Button, Modal, Typography } from "antd";
-import ErrorAlert from "../../components/ErrorAlert";
 import { ApolloError } from "apollo-client";
 import {
   useRequestAccountDeletionMutation,

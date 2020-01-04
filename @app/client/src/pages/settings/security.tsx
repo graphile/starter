@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, SyntheticEvent } from "react";
-import SettingsLayout from "../../components/SettingsLayout";
+import SettingsLayout from "../../layout/SettingsLayout";
 import { NextPage } from "next";
 import {
   useChangePasswordMutation,
@@ -12,8 +12,7 @@ import { ApolloError } from "apollo-client";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { getCodeFromError, extractError } from "../../errors";
 import { formItemLayout, tailFormItemLayout } from "../../forms";
-import ErrorAlert from "../../components/ErrorAlert";
-import { H3, P } from "../../components/Text";
+import { H3, P, ErrorAlert } from "@app/components";
 import Link from "next/link";
 
 const Settings_Security: NextPage = () => {
