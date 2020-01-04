@@ -165,7 +165,7 @@ COMMENT ON COLUMN app_public.users.is_admin IS 'If true, the user has elevated p
 
 CREATE FUNCTION app_private.link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) RETURNS app_public.users
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_matched_user_id int;
@@ -267,6 +267,7 @@ CREATE TABLE app_private.sessions (
 
 CREATE FUNCTION app_private.login(username public.citext, password text) RETURNS app_private.sessions
     LANGUAGE plpgsql STRICT SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user app_public.users;
@@ -349,7 +350,7 @@ COMMENT ON FUNCTION app_private.login(username public.citext, password text) IS 
 
 CREATE FUNCTION app_private.really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url text, password text DEFAULT NULL::text) RETURNS app_public.users
     LANGUAGE plpgsql
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user app_public.users;
@@ -399,7 +400,7 @@ COMMENT ON FUNCTION app_private.really_create_user(username public.citext, email
 
 CREATE FUNCTION app_private.register_user(f_service character varying, f_identifier character varying, f_profile json, f_auth_details json, f_email_is_verified boolean DEFAULT false) RETURNS app_public.users
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user app_public.users;
@@ -475,7 +476,7 @@ COMMENT ON FUNCTION app_private.register_user(f_service character varying, f_ide
 
 CREATE FUNCTION app_private.tg__add_job() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   perform graphile_worker.add_job(tg_argv[0], json_build_object('id', NEW.id), coalesce(tg_argv[1], public.gen_random_uuid()::text));
@@ -497,7 +498,7 @@ COMMENT ON FUNCTION app_private.tg__add_job() IS 'Useful shortcut to create a jo
 
 CREATE FUNCTION app_private.tg__timestamps() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   NEW.created_at = (case when TG_OP = 'INSERT' then NOW() else OLD.created_at end);
@@ -520,7 +521,7 @@ COMMENT ON FUNCTION app_private.tg__timestamps() IS 'This trigger should be call
 
 CREATE FUNCTION app_private.tg_user_email_secrets__insert_with_user_email() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_verification_token text;
@@ -547,7 +548,7 @@ COMMENT ON FUNCTION app_private.tg_user_email_secrets__insert_with_user_email() 
 
 CREATE FUNCTION app_private.tg_user_secrets__insert_with_user() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   insert into app_private.user_secrets(user_id) values(NEW.id);
@@ -569,7 +570,7 @@ COMMENT ON FUNCTION app_private.tg_user_secrets__insert_with_user() IS 'Ensures 
 
 CREATE FUNCTION app_private.tg_users__make_first_user_admin() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   NEW.is_admin = true;
@@ -584,6 +585,7 @@ $$;
 
 CREATE FUNCTION app_public.change_password(old_password text, new_password text) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user app_public.users;
@@ -629,7 +631,7 @@ COMMENT ON FUNCTION app_public.change_password(old_password text, new_password t
 
 CREATE FUNCTION app_public.confirm_account_deletion(token text) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user_secret app_private.user_secrets;
@@ -709,7 +711,7 @@ COMMENT ON FUNCTION app_public."current_user"() IS 'The currently logged in user
 
 CREATE FUNCTION app_public.current_user_id() RETURNS integer
     LANGUAGE sql STABLE SECURITY DEFINER
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
   select user_id from app_private.sessions where uuid = app_public.current_session_id();
 $$;
@@ -728,7 +730,7 @@ COMMENT ON FUNCTION app_public.current_user_id() IS 'Handy method to get the cur
 
 CREATE FUNCTION app_public.forgot_password(email public.citext) RETURNS void
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user_email app_public.user_emails;
@@ -831,7 +833,7 @@ COMMENT ON FUNCTION app_public.forgot_password(email public.citext) IS 'If you''
 
 CREATE FUNCTION app_public.logout() RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   -- Delete the session
@@ -885,7 +887,8 @@ COMMENT ON COLUMN app_public.user_emails.is_verified IS 'True if the user has is
 --
 
 CREATE FUNCTION app_public.make_email_primary(email_id integer) RETURNS app_public.user_emails
-    LANGUAGE plpgsql SECURITY DEFINER
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user_email app_public.user_emails;
@@ -918,7 +921,7 @@ COMMENT ON FUNCTION app_public.make_email_primary(email_id integer) IS 'Your pri
 
 CREATE FUNCTION app_public.request_account_deletion() RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user_email app_public.user_emails;
@@ -974,7 +977,8 @@ COMMENT ON FUNCTION app_public.request_account_deletion() IS 'Begin the account 
 --
 
 CREATE FUNCTION app_public.resend_email_verification_code(email_id integer) RETURNS boolean
-    LANGUAGE plpgsql SECURITY DEFINER
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   if exists(
@@ -1005,7 +1009,7 @@ COMMENT ON FUNCTION app_public.resend_email_verification_code(email_id integer) 
 
 CREATE FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user app_public.users;
@@ -1136,7 +1140,7 @@ COMMENT ON FUNCTION app_public.tg__graphql_subscription() IS 'This function enab
 
 CREATE FUNCTION app_public.tg_user_emails__forbid_if_verified() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO 'app_public', 'app_private', 'app_hidden', 'public'
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   if exists(select 1 from app_public.user_emails where email = NEW.email and is_verified is true) then
@@ -1152,7 +1156,8 @@ $$;
 --
 
 CREATE FUNCTION app_public.tg_user_emails__verify_account_on_verified() RETURNS trigger
-    LANGUAGE plpgsql SECURITY DEFINER
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   update app_public.users set is_verified = true where id = new.user_id and is_verified is false;
@@ -1167,6 +1172,7 @@ $$;
 
 CREATE FUNCTION app_public.users_has_password(u app_public.users) RETURNS boolean
     LANGUAGE sql STABLE SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
   select (password_hash is not null) from app_private.user_secrets where user_secrets.user_id = u.id and u.id = app_public.current_user_id();
 $$;
@@ -1178,6 +1184,7 @@ $$;
 
 CREATE FUNCTION app_public.verify_email(user_email_id integer, token text) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   update app_public.user_emails
@@ -1528,6 +1535,13 @@ ALTER TABLE ONLY app_public.users
 
 
 --
+-- Name: sessions_user_id_idx; Type: INDEX; Schema: app_private; Owner: -
+--
+
+CREATE INDEX sessions_user_id_idx ON app_private.sessions USING btree (user_id);
+
+
+--
 -- Name: idx_user_emails_primary; Type: INDEX; Schema: app_public; Owner: -
 --
 
@@ -1718,13 +1732,6 @@ CREATE POLICY delete_own ON app_public.user_emails FOR DELETE USING ((user_id = 
 
 
 --
--- Name: users delete_self; Type: POLICY; Schema: app_public; Owner: -
---
-
-CREATE POLICY delete_self ON app_public.users FOR DELETE USING ((id = app_public.current_user_id()));
-
-
---
 -- Name: user_emails insert_own; Type: POLICY; Schema: app_public; Owner: -
 --
 
@@ -1792,6 +1799,23 @@ GRANT USAGE ON SCHEMA app_public TO graphile_starter_visitor;
 
 
 --
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
+--
+
+REVOKE ALL ON SCHEMA public FROM postgres;
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO graphile_starter;
+GRANT USAGE ON SCHEMA public TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION assert_valid_password(new_password text); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.assert_valid_password(new_password text) FROM PUBLIC;
+
+
+--
 -- Name: TABLE users; Type: ACL; Schema: app_public; Owner: -
 --
 
@@ -1820,10 +1844,122 @@ GRANT UPDATE(avatar_url) ON TABLE app_public.users TO graphile_starter_visitor;
 
 
 --
+-- Name: FUNCTION link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION login(username public.citext, password text); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.login(username public.citext, password text) FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url text, password text); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url text, password text) FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION register_user(f_service character varying, f_identifier character varying, f_profile json, f_auth_details json, f_email_is_verified boolean); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.register_user(f_service character varying, f_identifier character varying, f_profile json, f_auth_details json, f_email_is_verified boolean) FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION tg__add_job(); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.tg__add_job() FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION tg__timestamps(); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.tg__timestamps() FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION tg_user_email_secrets__insert_with_user_email(); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.tg_user_email_secrets__insert_with_user_email() FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION tg_user_secrets__insert_with_user(); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.tg_user_secrets__insert_with_user() FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION tg_users__make_first_user_admin(); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.tg_users__make_first_user_admin() FROM PUBLIC;
+
+
+--
 -- Name: FUNCTION change_password(old_password text, new_password text); Type: ACL; Schema: app_public; Owner: -
 --
 
+REVOKE ALL ON FUNCTION app_public.change_password(old_password text, new_password text) FROM PUBLIC;
 GRANT ALL ON FUNCTION app_public.change_password(old_password text, new_password text) TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION confirm_account_deletion(token text); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.confirm_account_deletion(token text) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.confirm_account_deletion(token text) TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION current_session_id(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.current_session_id() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.current_session_id() TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION "current_user"(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public."current_user"() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public."current_user"() TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION current_user_id(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.current_user_id() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.current_user_id() TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION forgot_password(email public.citext); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.forgot_password(email public.citext) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION logout(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.logout() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.logout() TO graphile_starter_visitor;
 
 
 --
@@ -1838,6 +1974,78 @@ GRANT SELECT,DELETE ON TABLE app_public.user_emails TO graphile_starter_visitor;
 --
 
 GRANT INSERT(email) ON TABLE app_public.user_emails TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION make_email_primary(email_id integer); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.make_email_primary(email_id integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.make_email_primary(email_id integer) TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION request_account_deletion(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.request_account_deletion() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.request_account_deletion() TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION resend_email_verification_code(email_id integer); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer) TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION reset_password(user_id integer, reset_token text, new_password text); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION tg__graphql_subscription(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.tg__graphql_subscription() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.tg__graphql_subscription() TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION tg_user_emails__forbid_if_verified(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION tg_user_emails__verify_account_on_verified(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION users_has_password(u app_public.users); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.users_has_password(u app_public.users) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION verify_email(user_email_id integer, token text); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.verify_email(user_email_id integer, token text) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.verify_email(user_email_id integer, token text) TO graphile_starter_visitor;
 
 
 --
@@ -1877,11 +2085,53 @@ ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden GRANT SE
 
 
 --
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: app_hidden; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
+
+
+--
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: app_public; Owner: -
 --
 
 ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON SEQUENCES  FROM graphile_starter;
 ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_visitor;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: app_public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON SEQUENCES  FROM graphile_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_visitor;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: -; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
 
 
 --
