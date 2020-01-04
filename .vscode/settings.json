@@ -2,10 +2,7 @@
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": true
-  },
-  "editor.codeActionsOnSaveTimeout": 750,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "eslint.enable": true,
   "eslint.lintTask.enable": true,
   "eslint.lintTask.options": "--ext .js,.jsx,.ts,.tsx,.graphql .",
@@ -16,33 +13,18 @@
     "typescriptreact",
     "graphql"
   ],
-  "files.insertFinalNewline": true,
-  "files.trimTrailingWhitespace": true,
-
-  // ESLint calls prettier for these types already, so don't let them squabble
-  "javascript.format.enable": false,
-  "typescript.format.enable": false,
-  "prettier.disableLanguages": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
-  "[javascript]": {
-    "editor.formatOnSave": false
-  },
-  "[javascriptreact]": {
-    "editor.formatOnSave": false
-  },
-  "[typescript]": {
-    "editor.formatOnSave": false
-  },
-  "[typescriptreact]": {
-    "editor.formatOnSave": false
+  "editor.codeActionsOnSaveTimeout": 750,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
   },
   "[graphql]": {
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": false
     }
-  }
+  },
+
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+
+  "prettier.disableLanguages": []
 }

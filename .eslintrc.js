@@ -5,18 +5,11 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   extends: [
     "plugin:react/recommended",
+    "prettier",
     "prettier/@typescript-eslint",
-    "plugin:prettier/recommended",
     "prettier/react",
   ],
-  plugins: [
-    "jest",
-    "@typescript-eslint",
-    "react-hooks",
-    "react",
-    "prettier",
-    "graphql",
-  ],
+  plugins: ["jest", "@typescript-eslint", "react-hooks", "react", "graphql"],
   overrides: [
     {
       files: ["@app/e2e/cypress/**"],
