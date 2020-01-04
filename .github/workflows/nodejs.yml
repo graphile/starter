@@ -18,7 +18,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
         ports:
-          - "5432:5432"
+          - "0.0.0.0:5432:5432"
         # needed because the postgres container does not provide a healthcheck
         options:
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s
@@ -55,11 +55,13 @@ jobs:
           gs-worker .
       - name: "Start docker server"
         run:
-          docker run --rm -d --init -p 5678:5678 --env-file .env --name
-          gs-server gs-server
+          docker run --rm -d --init -p 5678:5678 --env-file .env -e
+          NODE_ENV=production -e DATABASE_HOST=0.0.0.0 --name gs-server
+          gs-server
       - name: "Start docker worker"
         run:
-          docker run --rm -d --init --env-file .env --name gs-worker gs-worker
+          docker run --rm -d --init --env-file .env -e NODE_ENV=production -e
+          DATABASE_HOST=0.0.0.0 --name gs-worker gs-worker
       - name: "Test docker"
         run: node .github/workflows/test-docker.js
       - name: "Tear down docker"

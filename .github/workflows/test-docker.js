@@ -13,7 +13,7 @@ async function main() {
       break;
     } catch (e) {
       attempts++;
-      if (attempts <= 15) {
+      if (attempts <= 30) {
         console.log(`Server is not ready yet: ${e.message}`);
       } else {
         console.log(`Server never came up, aborting :(`);
