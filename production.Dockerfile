@@ -48,6 +48,7 @@ COPY --from=builder /app/@app/$TARGET/package.json /app/@app/$TARGET/
 COPY --from=builder /app/@app/$TARGET/dist/ /app/@app/$TARGET/dist/
 COPY --from=builder /app/@app/client/.next /app/@app/client/.next
 COPY --from=builder /app/@app/server/postgraphile.tags.jsonc /app/@app/server/
+COPY --from=builder /app/@app/worker/templates/ /app/@app/worker/templates/
 
 # Shared args shouldn't be overridable at runtime (because they're baked into
 # the built JS).
