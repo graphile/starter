@@ -2,6 +2,9 @@
   "name": "@app/components",
   "version": "0.0.0",
   "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -b"
+  },
   "dependencies": {
     "antd": "^3.26.3",
     "apollo-client": "^2.6.8",
