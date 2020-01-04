@@ -124,7 +124,16 @@ features included and the technical decisions behind them.
 
 ## Variants
 
-- [Create React App edition of Graphile Starter](https://github.com/alexk111/graphile-starter-cra) - for apps without Server Side Rendering
+Since this is a highly opinionated starter; community members may have slightly
+different opinions and may choose to maintain forks of this project that apply
+their own opinions. A few of these are listed below; if you maintain a fork of
+this project please make a note at the top of your own README, and add it to
+this list:
+
+- [Nuxt.js variant](https://github.com/JoeSchr/graphile-starter--private) -
+  replaces Next.js for Vue users
+- [Create React App variant](https://github.com/alexk111/graphile-starter-cra) -
+  replaces Next.js for apps without Server Side Rendering
 
 ## Prerequisites
 
