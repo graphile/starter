@@ -1,10 +1,16 @@
 --! Previous: -
---! Hash: sha1:4af675b6fcfb0ed01e8a59c731217e0a8f43848a
+--! Hash: sha1:592374c0d8429021427a509b8079c9a1e73ae3b8
 
 drop schema if exists app_public cascade;
+
+alter default privileges revoke all on sequences from public;
+alter default privileges revoke all on functions from public;
+
+alter schema public owner to :DATABASE_OWNER;
+revoke all on schema public from public;
+
 create schema app_public;
-grant usage on schema app_public to :DATABASE_VISITOR;
-alter default privileges in schema app_public grant usage, select on sequences to :DATABASE_VISITOR;
+grant usage on schema public, app_public to :DATABASE_VISITOR;
 
 /**********/
 
@@ -12,6 +18,11 @@ drop schema if exists app_hidden cascade;
 create schema app_hidden;
 grant usage on schema app_hidden to :DATABASE_VISITOR;
 alter default privileges in schema app_hidden grant usage, select on sequences to :DATABASE_VISITOR;
+
+/**********/
+
+alter default privileges in schema public, app_public, app_hidden grant usage, select on sequences to :DATABASE_VISITOR;
+alter default privileges in schema public, app_public, app_hidden grant execute on functions to :DATABASE_VISITOR;
 
 /**********/
 
@@ -25,7 +36,7 @@ begin
   perform graphile_worker.add_job(tg_argv[0], json_build_object('id', NEW.id), coalesce(tg_argv[1], public.gen_random_uuid()::text));
   return NEW;
 end;
-$$ language plpgsql volatile security definer set search_path from current;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
 comment on function app_private.tg__add_job() is
   E'Useful shortcut to create a job on insert/update. Pass the task name as the first trigger argument, and optionally the queue name as the second argument. The record id will automatically be available on the JSON payload.';
 
@@ -37,7 +48,7 @@ begin
   NEW.updated_at = (case when TG_OP = 'UPDATE' and OLD.updated_at >= NOW() then OLD.updated_at + interval '1 millisecond' else NOW() end);
   return NEW;
 end;
-$$ language plpgsql volatile set search_path from current;
+$$ language plpgsql volatile set search_path to pg_catalog, public, pg_temp;
 comment on function app_private.tg__timestamps() is
   E'This trigger should be called on all tables with created_at, updated_at - it ensures that they cannot be manipulated and that updated_at will always be larger than the previous updated_at.';
 
@@ -96,7 +107,7 @@ comment on function app_public.current_session_id() is
  */
 create function app_public.current_user_id() returns int as $$
   select user_id from app_private.sessions where uuid = app_public.current_session_id();
-$$ language sql stable security definer set search_path from current;
+$$ language sql stable security definer set search_path to pg_catalog, public, pg_temp;
 comment on function app_public.current_user_id() is
   E'Handy method to get the current user ID for use in RLS policies, etc; in GraphQL, use `currentUser{id}` instead.';
 -- We've put this in public, but omitted it, because it's often useful for debugging auth issues.
@@ -116,10 +127,10 @@ create table app_public.users (
 alter table app_public.users enable row level security;
 
 alter table app_private.sessions add constraint sessions_user_id_fkey foreign key ("user_id") references app_public.users on delete cascade;
+create index on app_private.sessions (user_id);
 
 create policy select_all on app_public.users for select using (true);
 create policy update_self on app_public.users for update using (id = app_public.current_user_id());
-create policy delete_self on app_public.users for delete using (id = app_public.current_user_id());
 grant select on app_public.users to :DATABASE_VISITOR;
 -- NOTE: `insert` is not granted, because we'll handle that separately
 grant update(username, name, avatar_url) on app_public.users to :DATABASE_VISITOR;
@@ -149,7 +160,7 @@ begin
   NEW.is_admin = true;
   return NEW;
 end;
-$$ language plpgsql volatile set search_path from current;
+$$ language plpgsql volatile set search_path to pg_catalog, public, pg_temp;
 
 create trigger _200_make_first_user_admin
   before insert on app_public.users
@@ -189,7 +200,7 @@ begin
   insert into app_private.user_secrets(user_id) values(NEW.id);
   return NEW;
 end;
-$$ language plpgsql volatile set search_path from current;
+$$ language plpgsql volatile set search_path to pg_catalog, public, pg_temp;
 create trigger _500_insert_secrets
   after insert on app_public.users
   for each row
@@ -199,7 +210,7 @@ comment on function app_private.tg_user_secrets__insert_with_user() is
 
 create function app_public.users_has_password(u app_public.users) returns boolean as $$
   select (password_hash is not null) from app_private.user_secrets where user_secrets.user_id = u.id and u.id = app_public.current_user_id();
-$$ language sql stable security definer;
+$$ language sql stable security definer set search_path to pg_catalog, public, pg_temp;
 
 /**********/
 
@@ -234,7 +245,7 @@ begin
   end if;
   return NEW;
 end;
-$$ language plpgsql volatile security definer set search_path from current;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
 create trigger _200_forbid_existing_email before insert on app_public.user_emails for each row execute procedure app_public.tg_user_emails__forbid_if_verified();
 
 create trigger _900_send_verification_email
@@ -281,7 +292,7 @@ begin
   insert into app_private.user_email_secrets(user_email_id, verification_token) values(NEW.id, v_verification_token);
   return NEW;
 end;
-$$ language plpgsql volatile security definer set search_path from current;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
 create trigger _500_insert_secrets
   after insert on app_public.user_emails
   for each row
@@ -305,7 +316,7 @@ begin
   );
   return found;
 end;
-$$ language plpgsql volatile strict security definer;
+$$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
 comment on function app_public.verify_email(user_email_id int, token text) is
   E'Once you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
 
@@ -424,7 +435,7 @@ begin
     return null;
   end if;
 end;
-$$ language plpgsql strict security definer volatile;
+$$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
 
 comment on function app_private.login(username citext, password text) is
   E'Returns a user that matches the username/password combo, or null on failure.';
@@ -438,7 +449,7 @@ begin
   -- Clear the identifier from the transaction
   perform set_config('jwt.claims.session_id', '', true);
 end;
-$$ language plpgsql security definer volatile set search_path from current;
+$$ language plpgsql security definer volatile set search_path to pg_catalog, public, pg_temp;
 
 /**********/
 
@@ -543,7 +554,7 @@ begin
   );
 
 end;
-$$ language plpgsql strict security definer volatile set search_path from current;
+$$ language plpgsql strict security definer volatile set search_path to pg_catalog, public, pg_temp;
 
 comment on function app_public.forgot_password(email public.citext) is
   E'If you''ve forgotten your password, give us one of your email addresses and we''ll send you a reset token. Note this only works if you have added an email address!';
@@ -606,7 +617,7 @@ begin
     return null;
   end if;
 end;
-$$ language plpgsql strict volatile security definer set search_path from current;
+$$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
 
 comment on function app_public.reset_password(user_id int, reset_token text, new_password text) is
   E'After triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
@@ -653,7 +664,7 @@ begin
   perform graphile_worker.add_job('user__send_delete_account_email', json_build_object('email', v_user_email.email::text, 'token', v_token));
   return true;
 end;
-$$ language plpgsql strict security definer volatile set search_path from current;
+$$ language plpgsql strict security definer volatile set search_path to pg_catalog, public, pg_temp;
 
 comment on function app_public.request_account_deletion() is
   E'Begin the account deletion flow by requesting the confirmation email';
@@ -687,7 +698,7 @@ begin
 
   raise exception 'The supplied token was incorrect - perhaps you''re logged in to the wrong account, or the token has expired?' using errcode = 'DNIED';
 end;
-$$ language plpgsql strict volatile security definer set search_path from current;
+$$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
 
 comment on function app_public.confirm_account_deletion(token text) is
   E'If you''re certain you want to delete your account, use `requestAccountDeletion` to request an account deletion token, and then supply the token through this mutation to complete account deletion.';
@@ -723,7 +734,7 @@ begin
     raise exception 'You must log in to change your password' using errcode = 'LOGIN';
   end if;
 end;
-$$ language plpgsql strict volatile security definer;
+$$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
 
 comment on function app_public.change_password(old_password text, new_password text) is
   E'Enter your old password and a new password to change your password.';
@@ -772,7 +783,7 @@ begin
 
   return v_user;
 end;
-$$ language plpgsql volatile set search_path from current;
+$$ language plpgsql volatile set search_path to pg_catalog, public, pg_temp;
 
 comment on function app_private.really_create_user(username citext, email text, email_is_verified bool, name text, avatar_url text, password text) is
   E'Creates a user account. All arguments are optional, it trusts the calling method to perform sanitisation.';
@@ -844,7 +855,7 @@ begin
 
   return v_user;
 end;
-$$ language plpgsql volatile security definer set search_path from current;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
 
 comment on function app_private.register_user(f_service character varying, f_identifier character varying, f_profile json, f_auth_details json, f_email_is_verified boolean) is
   E'Used to register a user from information gleaned from OAuth. Primarily used by link_or_register_user';
@@ -930,7 +941,7 @@ begin
     end if;
   end if;
 end;
-$$ language plpgsql volatile security definer set search_path from current;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
 
 comment on function app_private.link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) is
   E'If you''re logged in, this will link an additional OAuth login to your account if necessary. If you''re logged out it may find if an account already exists (based on OAuth details or email address) and return that, or create a new user account if necessary.';
@@ -954,7 +965,7 @@ begin
   update app_public.user_emails set is_primary = true where user_id = app_public.current_user_id() and is_primary is not true and id = email_id returning * into v_user_email;
   return v_user_email;
 end;
-$$ language plpgsql volatile security definer;
+$$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
 comment on function app_public.make_email_primary(email_id int) is
   E'Your primary email is where we''ll notify of account events; other emails may be used for discovery or login. Use this when you''re changing your email address.';
 
@@ -974,7 +985,7 @@ begin
   end if;
   return false;
 end;
-$$ language plpgsql volatile security definer;
+$$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
 comment on function app_public.resend_email_verification_code(email_id int) is
   E'If you didn''t receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.';
 
@@ -985,7 +996,7 @@ begin
   update app_public.users set is_verified = true where id = new.user_id and is_verified is false;
   return new;
 end;
-$$ language plpgsql volatile security definer;
+$$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
 
 create trigger _500_verify_account_on_verified
   after insert or update of is_verified

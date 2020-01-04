@@ -208,7 +208,7 @@ input MakeEmailPrimaryInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  emailId: Int
+  emailId: Int!
 }
 
 """The output of our `makeEmailPrimary` mutation."""
@@ -455,7 +455,7 @@ input ResendEmailVerificationCodeInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  emailId: Int
+  emailId: Int!
 }
 
 """The output of our `resendEmailVerificationCode` mutation."""
