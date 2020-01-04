@@ -53,6 +53,8 @@ jobs:
           docker build --file production.Dockerfile --build-arg
           ROOT_URL="http://localhost:5678" --build-arg TARGET="worker" --tag
           gs-worker .
+      - name: "ifconfig -a"
+        run: "ifconfig -a"
       - name: "Start docker server"
         run:
           docker run --rm -d --init -p 5678:5678 --env-file .env -e
