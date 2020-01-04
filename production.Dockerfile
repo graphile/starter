@@ -11,7 +11,6 @@ FROM node:12-alpine as builder
 # Import our shared args
 ARG NODE_ENV
 ARG ROOT_URL
-ARG TARGET
 
 # Cache node_modules for as long as possible
 COPY lerna.json package.json yarn.lock /app/
@@ -34,30 +33,31 @@ FROM node:12-alpine as clean
 # Import our shared args
 ARG NODE_ENV
 ARG ROOT_URL
-ARG TARGET
 
 # Copy over selectively just the tings we need, try and avoid the rest
 COPY --from=builder /app/lerna.json /app/package.json /app/yarn.lock /app/
-COPY --from=builder /app/@app/config /app/@app/config
-COPY --from=builder /app/@app/db /app/@app/db
+COPY --from=builder /app/@app/config/ /app/@app/config/
+COPY --from=builder /app/@app/db/ /app/@app/db/
 COPY --from=builder /app/@app/graphql/ /app/@app/graphql/
 COPY --from=builder /app/@app/components/package.json /app/@app/components/
 COPY --from=builder /app/@app/components/dist/ /app/@app/components/dist/
 COPY --from=builder /app/@app/client/package.json /app/@app/client/package.json
 COPY --from=builder /app/@app/client/assets/ /app/@app/client/assets/
 COPY --from=builder /app/@app/client/src/next.config.js /app/@app/client/src/next.config.js
-COPY --from=builder /app/@app/$TARGET/package.json /app/@app/$TARGET/
-COPY --from=builder /app/@app/$TARGET/dist/ /app/@app/$TARGET/dist/
 COPY --from=builder /app/@app/client/.next /app/@app/client/.next
+COPY --from=builder /app/@app/server/package.json /app/@app/server/
 COPY --from=builder /app/@app/server/postgraphile.tags.jsonc /app/@app/server/
+COPY --from=builder /app/@app/server/dist/ /app/@app/server/dist/
+COPY --from=builder /app/@app/worker/package.json /app/@app/worker/
 COPY --from=builder /app/@app/worker/templates/ /app/@app/worker/templates/
+COPY --from=builder /app/@app/worker/dist/ /app/@app/worker/dist/
 
 # Shared args shouldn't be overridable at runtime (because they're baked into
 # the built JS).
 #
 # Further, they aren't available in ENTRYPOINT (because it's at runtime), so
 # push them to a .env file that we can source from ENTRYPOINT.
-RUN echo -e "NODE_ENV=$NODE_ENV\nROOT_URL=$ROOT_URL\nTARGET=$TARGET" > /app/.env
+RUN echo -e "NODE_ENV=$NODE_ENV\nROOT_URL=$ROOT_URL" > /app/.env
 
 RUN rm -Rf /app/node_modules /app/@app/*/node_modules
 

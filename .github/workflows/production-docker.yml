@@ -1,0 +1,63 @@
+name: production.Dockerfile CI
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:10.11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - "0.0.0.0:5432:5432"
+        # needed because the postgres container does not provide a healthcheck
+        options:
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v1
+      # TODO: we should be able to get rid of Node here
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install pg_dump
+        run: sudo apt-get install postgresql-client-10
+      - name: setup database
+        run: |
+          cp .env.ci .env
+          yarn --frozen-lockfile
+          CONFIRM_DROP=1 yarn setup
+        env:
+          CI: true
+      - name: "Run docker server build"
+        run:
+          docker build --file production.Dockerfile --build-arg
+          ROOT_URL="http://localhost:5678" --build-arg TARGET="server" --tag
+          gs-server .
+      - name: "Run docker worker build"
+        run:
+          docker build --file production.Dockerfile --build-arg
+          ROOT_URL="http://localhost:5678" --build-arg TARGET="worker" --tag
+          gs-worker .
+      - name: "ifconfig -a"
+        run: "ifconfig -a"
+      - name: "Start docker server"
+        run:
+          docker run --rm -d --init -p 5678:5678 --env-file .env -e
+          NODE_ENV=production -e DATABASE_HOST=172.17.0.1 --name gs-server
+          gs-server
+      - name: "Start docker worker"
+        run:
+          docker run --rm -d --init --env-file .env -e NODE_ENV=production -e
+          DATABASE_HOST=172.17.0.1 --name gs-worker gs-worker
+      - name: "Test docker"
+        run: node .github/workflows/test-docker.js
+      - name: "Tear down docker"
+        run: docker kill gs-server gs-worker
