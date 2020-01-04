@@ -27,6 +27,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Install pg_dump
+        run: sudo apt-get install postgresql-client-10
       - name: setup database
         run: |
           cp .env.ci .env
