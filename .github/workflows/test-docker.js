@@ -1,12 +1,23 @@
 const fetch = require("node-fetch");
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const AbortController = require("abort-controller");
 
 async function main() {
   let attempts = 0;
   let response;
   while (true) {
     try {
-      response = await fetch("http://localhost:5678");
+      const controller = new AbortController();
+      const timeout = setTimeout(() => {
+        controller.abort();
+      }, 3000);
+      try {
+        response = await fetch("http://localhost:5678", {
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timeout);
+      }
       if (!response.ok) {
         throw new Error("Try again");
       }
