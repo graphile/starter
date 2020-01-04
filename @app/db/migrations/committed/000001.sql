@@ -1,13 +1,16 @@
 --! Previous: -
---! Hash: sha1:592374c0d8429021427a509b8079c9a1e73ae3b8
+--! Hash: sha1:8c16af6211997e3f08978175732c0c8666fe2b82
 
 drop schema if exists app_public cascade;
 
 alter default privileges revoke all on sequences from public;
 alter default privileges revoke all on functions from public;
 
-alter schema public owner to :DATABASE_OWNER;
+-- By default the public schema is owned by `postgres`; we need superuser privileges to change this :(
+-- alter schema public owner to :DATABASE_OWNER;
+
 revoke all on schema public from public;
+grant all on schema public to :DATABASE_OWNER;
 
 create schema app_public;
 grant usage on schema public, app_public to :DATABASE_VISITOR;

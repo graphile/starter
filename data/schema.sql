@@ -1802,7 +1802,6 @@ GRANT USAGE ON SCHEMA app_public TO graphile_starter_visitor;
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
 --
 
-REVOKE ALL ON SCHEMA public FROM postgres;
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO graphile_starter;
 GRANT USAGE ON SCHEMA public TO graphile_starter_visitor;
