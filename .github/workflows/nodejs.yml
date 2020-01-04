@@ -58,12 +58,12 @@ jobs:
       - name: "Start docker server"
         run:
           docker run --rm -d --init -p 5678:5678 --env-file .env -e
-          NODE_ENV=production -e DATABASE_HOST=postgres --name gs-server
+          NODE_ENV=production -e DATABASE_HOST=172.17.0.1 --name gs-server
           gs-server
       - name: "Start docker worker"
         run:
           docker run --rm -d --init --env-file .env -e NODE_ENV=production -e
-          DATABASE_HOST=postgres --name gs-worker gs-worker
+          DATABASE_HOST=172.17.0.1 --name gs-worker gs-worker
       - name: "Test docker"
         run: node .github/workflows/test-docker.js
       - name: "Tear down docker"
