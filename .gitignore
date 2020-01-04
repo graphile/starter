@@ -5,6 +5,7 @@ dist
 /heroku-setup
 /yarn-error.log
 /@app/e2e/cypress/videos
+/@app/e2e/cypress/screenshots
 /@app/graphql/index.*
 .agignore
 *.tsbuildinfo
