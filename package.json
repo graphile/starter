@@ -11,7 +11,7 @@
     "lint": "tsc -b && yarn prettier:check && eslint --ext .js,.jsx,.ts,.tsx,.graphql .",
     "lint:fix": "prettier --ignore-path .eslintignore --write '**/*.{js,jsx,ts,tsx,graphql,md}'; eslint --ext .js,.jsx,.ts,.tsx,.graphql . --fix",
     "prettier:check": "prettier --ignore-path .eslintignore --check '**/*.{js,jsx,ts,tsx,graphql,md}'",
-    "depcheck": "lerna exec --stream 'yarn depcheck --ignores=\"@app/config,@app/client,babel-plugin-import,source-map-support,@graphql-codegen/*,graphql-toolkit,net,tls\" --ignore-dirs=\".next\"'",
+    "depcheck": "lerna exec --stream 'yarn depcheck --ignores=\"@app/config,@app/client,tslib,webpack,babel-plugin-import,source-map-support,@graphql-codegen/*,graphql-toolkit,net,tls\" --ignore-dirs=\".next\"'",
     "dev": "yarn && lerna run codegen --stream && tsc -b && concurrently --kill-others --names 'TSC,WATCH,RUN,TEST' --prefix '({name})' --prefix-colors 'yellow.bold,yellow.bold,cyan.bold,greenBright.bold' 'tsc -b --watch --preserveWatchOutput' 'lerna run --parallel watch' 'lerna run --parallel dev' 'sleep 10; yarn test:watch'",
     "build": "lerna run build",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
