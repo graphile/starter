@@ -43,3 +43,24 @@ jobs:
           yarn depcheck
         env:
           CI: true
+      - name: "Run docker server build"
+        run:
+          docker build --file production.Dockerfile --build-arg
+          ROOT_URL="http://localhost:5678" --build-arg TARGET="server" --tag
+          gs-server .
+      - name: "Run docker worker build"
+        run:
+          docker build --file production.Dockerfile --build-arg
+          ROOT_URL="http://localhost:5678" --build-arg TARGET="worker" --tag
+          gs-worker .
+      - name: "Start docker server"
+        run:
+          docker run --rm -d --init -p 5678:5678 --env-file .env --name
+          gs-server gs-server
+      - name: "Start docker worker"
+        run:
+          docker run --rm -d --init --env-file .env --name gs-worker gs-worker
+      - name: "Test docker"
+        run: node .github/workflows/test-docker.js
+      - name: "Tear down docker"
+        run: docker kill gs-server gs-worker
