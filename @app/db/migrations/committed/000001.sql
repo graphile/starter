@@ -553,7 +553,7 @@ begin
   -- Trigger email send:
   perform graphile_worker.add_job(
     'user__forgot_password',
-    json_build_object('id', v_user_email.user_id, 'email', v_user_email.email::text, 'token', v_token)
+    json_build_object('id', v_user_email.id, 'email', v_user_email.email::text, 'token', v_token)
   );
 
 end;
