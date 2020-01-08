@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:8c16af6211997e3f08978175732c0c8666fe2b82
+--! Hash: sha1:4bcbf1f0f2589b31d077623d97579bd2371840d1
 
 drop schema if exists app_public cascade;
 
