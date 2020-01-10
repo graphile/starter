@@ -95,7 +95,7 @@ function ChangePasswordForm({
               value: form.getFieldValue("newPassword"),
               errors: [
                 new Error(
-                  "The server believes this password is too weak, please make it stronger"
+                  "The server believes this pass phrase is too weak, please make it stronger"
                 ),
               ],
             },
@@ -104,7 +104,7 @@ function ChangePasswordForm({
           form.setFields({
             oldPassword: {
               value: form.getFieldValue("oldPassword"),
-              errors: [new Error("Incorrect old password")],
+              errors: [new Error("Incorrect old pass phrase")],
             },
           });
         } else {
@@ -149,16 +149,16 @@ function ChangePasswordForm({
   } else if (data && data.currentUser && !data.currentUser.hasPassword) {
     return (
       <div>
-        <H3>Change password</H3>
+        <H3>Change pass phrase</H3>
         <P>
           You registered your account through social login, so you do not
-          currently have a password. If you would like a password, press the
-          button below to request a password reset email to '{email}' (you can
+          currently have a pass phrase. If you would like a pass phrase, press the
+          button below to request a pass phrase reset email to '{email}' (you can
           choose a different email by making it primary in{" "}
           <Link href="/settings/emails">email settings</Link>).
         </P>
         <Button onClick={handleResetPassword} disabled={resetInProgress}>
-          Reset password
+          Reset pass phrase
         </Button>
       </div>
     );
@@ -169,7 +169,7 @@ function ChangePasswordForm({
     <div>
       <H3>Change password</H3>
       <Form {...formItemLayout} onSubmit={handleSubmit}>
-        <Form.Item label="Old Password">
+        <Form.Item label="Old Pass phrase">
           {getFieldDecorator("oldPassword", {
             rules: [
               {
@@ -184,7 +184,7 @@ function ChangePasswordForm({
           suggestions={passwordSuggestions}
           isDirty={form.isFieldTouched("password")}
         />
-        <Form.Item label="New Password">
+        <Form.Item label="New Pass phrase">
           {getFieldDecorator("newPassword", {
             rules: [
               {
@@ -198,7 +198,7 @@ function ChangePasswordForm({
           <Form.Item>
             <Alert
               type="error"
-              message={`Changing password failed`}
+              message={`Changing pass phrase failed`}
               description={
                 <span>
                   {extractError(error).message}

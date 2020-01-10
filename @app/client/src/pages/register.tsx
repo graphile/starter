@@ -137,7 +137,7 @@ function RegistrationForm({
               value: form.getFieldValue("password"),
               errors: [
                 new Error(
-                  "The server believes this password is too weak, please make it stronger"
+                  "The server believes this pass phrase is too weak, please make it stronger"
                 ),
               ],
             },
@@ -148,7 +148,7 @@ function RegistrationForm({
               value: form.getFieldValue("email"),
               errors: [
                 new Error(
-                  "An account with this email address has already been registered, consider using the 'Forgot Password' function."
+                  "An account with this email address has already been registered, consider using the 'Forgot Pass phrase' function."
                 ),
               ],
             },
@@ -215,7 +215,7 @@ function RegistrationForm({
   const compareToFirstPassword = useCallback(
     (_rule: any, value: any, callback: any) => {
       if (value && value !== form.getFieldValue("password")) {
-        callback("Make sure your password is the same in both Password boxes.");
+        callback("Make sure your pass phrase is the same in both Pass phrase boxes.");
       } else {
         callback();
       }
@@ -310,12 +310,12 @@ function RegistrationForm({
           ],
         })(<Input data-cy="registerpage-input-email" />)}
       </Form.Item>
-      <Form.Item label="Password">
+      <Form.Item label="Pass phrase">
         {getFieldDecorator("password", {
           rules: [
             {
               required: true,
-              message: "Please input your password.",
+              message: "Please input your pass phrase.",
             },
             {
               validator: validateToNextPassword,
@@ -328,12 +328,12 @@ function RegistrationForm({
         suggestions={passwordSuggestions}
         isDirty={form.isFieldTouched("password")}
       />
-      <Form.Item label="Confirm Password">
+      <Form.Item label="Confirm Pass phrase">
         {getFieldDecorator("confirm", {
           rules: [
             {
               required: true,
-              message: "Please confirm your password.",
+              message: "Please confirm your pass phrase.",
             },
             {
               validator: compareToFirstPassword,
