@@ -6,8 +6,8 @@ set -e
 # `Procfile` - it's only used for the Graphile Starter demo.
 
 if [ "x$DEMO" != "xWIPE_DATABASE" ]; then
-  echo "This script is only intended to be used when deploying the Graphile Starter demo to Heroku, since we reset the database every time we push."
-  exit 1;
+  echo "This script is only intended to be used when deploying the Graphile Starter demo to Heroku, since we reset the database every time we push. You should delete it and delete the references to it in package.json and Procfile."
+  exit 0;
 fi;
 
 if [ "x$DATABASE_URL" = "x" ]; then
