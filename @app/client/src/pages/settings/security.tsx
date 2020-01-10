@@ -152,9 +152,9 @@ function ChangePasswordForm({
         <H3>Change pass phrase</H3>
         <P>
           You registered your account through social login, so you do not
-          currently have a pass phrase. If you would like a pass phrase, press the
-          button below to request a pass phrase reset email to '{email}' (you can
-          choose a different email by making it primary in{" "}
+          currently have a pass phrase. If you would like a pass phrase, press
+          the button below to request a pass phrase reset email to '{email}'
+          (you can choose a different email by making it primary in{" "}
           <Link href="/settings/emails">email settings</Link>).
         </P>
         <Button onClick={handleResetPassword} disabled={resetInProgress}>

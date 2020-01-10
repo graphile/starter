@@ -48,7 +48,7 @@ const Register: NextPage = () => {
       />
     </SharedLayout>
   );
-}
+};
 
 export default Register;
 
@@ -215,7 +215,9 @@ function RegistrationForm({
   const compareToFirstPassword = useCallback(
     (_rule: any, value: any, callback: any) => {
       if (value && value !== form.getFieldValue("password")) {
-        callback("Make sure your pass phrase is the same in both Pass phrase boxes.");
+        callback(
+          "Make sure your pass phrase is the same in both Pass phrase boxes."
+        );
       } else {
         callback();
       }

@@ -13,20 +13,20 @@ function strengthToPercent(strength: number): number {
 }
 
 export default function PasswordStrength({
-                                           passwordStrength,
-                                           suggestions = [
-                                             "Use a few words, avoid common phrases",
-                                             "No need for symbols, digits, or uppercase letters",
-                                           ],
-                                           isDirty = false,
-                                         }: PassProps) {
+  passwordStrength,
+  suggestions = [
+    "Use a few words, avoid common phrases",
+    "No need for symbols, digits, or uppercase letters",
+  ],
+  isDirty = false,
+}: PassProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (isDirty || suggestions.length > 0) {
       setVisible(true);
     }
-  }, [suggestions]);
+  }, [isDirty, suggestions]);
 
   if (!isDirty) return null;
 
