@@ -14,12 +14,24 @@ import { getCodeFromError, extractError } from "../../errors";
 import { formItemLayout, tailFormItemLayout } from "../../forms";
 import { H3, P, ErrorAlert } from "@app/components";
 import Link from "next/link";
+import PasswordStrength from "@app/client/src/components/PasswordStrength";
+import { setPasswordInfo } from "@app/client/src/lib/passwordHelpers";
 
 const Settings_Security: NextPage = () => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
+  const [strength, setStrength] = useState<number>(0);
+  const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
+
   return (
     <SettingsLayout href="/settings/security">
-      <WrappedChangePasswordForm error={error} setError={setError} />
+      <WrappedChangePasswordForm
+        error={error}
+        setError={setError}
+        passwordStrength={strength}
+        setPasswordStrength={setStrength}
+        passwordSuggestions={passwordSuggestions}
+        setPasswordSuggestions={setPasswordSuggestions}
+      />
     </SettingsLayout>
   );
 };
@@ -37,12 +49,18 @@ interface FormValues {
 interface ChangePasswordFormProps extends FormComponentProps<FormValues> {
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
+  passwordStrength: number;
+  setPasswordStrength: (strength: number) => void;
+  passwordSuggestions: string[];
+  setPasswordSuggestions: (suggestions: string[]) => void;
 }
 
 function ChangePasswordForm({
   form,
   error,
   setError,
+  passwordStrength,
+  passwordSuggestions,
 }: ChangePasswordFormProps) {
   const [changePassword] = useChangePasswordMutation();
   const [success, setSuccess] = useState(false);
@@ -161,6 +179,11 @@ function ChangePasswordForm({
             ],
           })(<Input type="password" />)}
         </Form.Item>
+        <PasswordStrength
+          passwordStrength={passwordStrength}
+          suggestions={passwordSuggestions}
+          isDirty={form.isFieldTouched("password")}
+        />
         <Form.Item label="New Password">
           {getFieldDecorator("newPassword", {
             rules: [
@@ -206,5 +229,8 @@ const WrappedChangePasswordForm = Form.create<ChangePasswordFormProps>({
   name: "changePasswordForm",
   onValuesChange(props) {
     props.setError(null);
+  },
+  onFieldsChange(props, changedValues) {
+    setPasswordInfo(props, changedValues);
   },
 })(ChangePasswordForm);

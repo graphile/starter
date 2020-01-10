@@ -23,6 +23,8 @@ import {
 } from "../errors";
 import { formItemLayout, tailFormItemLayout } from "../forms";
 import { resetWebsocketConnection } from "../lib/withApollo";
+import { setPasswordInfo } from "../lib/passwordHelpers";
+import PasswordStrength from "@app/client/src/components/PasswordStrength";
 
 /**
  * The registration page just renders the standard layout and embeds the
@@ -30,16 +32,23 @@ import { resetWebsocketConnection } from "../lib/withApollo";
  */
 const Register: NextPage = () => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
+  const [strength, setStrength] = useState<number>(0);
+  const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
+
   return (
     <SharedLayout title="Register">
       <WrappedRegistrationForm
+        passwordStrength={strength}
+        setPasswordStrength={setStrength}
+        passwordSuggestions={passwordSuggestions}
+        setPasswordSuggestions={setPasswordSuggestions}
         onSuccessRedirectTo="/"
         error={error}
         setError={setError}
       />
     </SharedLayout>
   );
-};
+}
 
 export default Register;
 
@@ -63,6 +72,10 @@ interface RegistrationFormProps extends FormComponentProps<FormValues> {
   onSuccessRedirectTo: string;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
+  passwordStrength: number;
+  setPasswordStrength: (strength: number) => void;
+  passwordSuggestions: string[];
+  setPasswordSuggestions: (suggestions: string[]) => void;
 }
 
 /**
@@ -77,6 +90,8 @@ function RegistrationForm({
   onSuccessRedirectTo,
   error,
   setError,
+  passwordStrength,
+  passwordSuggestions,
 }: RegistrationFormProps) {
   const [register] = useRegisterMutation({});
   const client = useApolloClient();
@@ -308,6 +323,11 @@ function RegistrationForm({
           ],
         })(<Input type="password" data-cy="registerpage-input-password" />)}
       </Form.Item>
+      <PasswordStrength
+        passwordStrength={passwordStrength}
+        suggestions={passwordSuggestions}
+        isDirty={form.isFieldTouched("password")}
+      />
       <Form.Item label="Confirm Password">
         {getFieldDecorator("confirm", {
           rules: [
@@ -359,5 +379,9 @@ const WrappedRegistrationForm = Form.create<RegistrationFormProps>({
   name: "registerform",
   onValuesChange(props) {
     props.setError(null);
+  },
+  onFieldsChange(props, changedValues) {
+    console.log(props);
+    setPasswordInfo(props, changedValues);
   },
 })(RegistrationForm);
