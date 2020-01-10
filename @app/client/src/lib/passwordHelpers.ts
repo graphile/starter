@@ -1,8 +1,18 @@
 import zxcvbn from "zxcvbn";
 
-export const setPasswordInfo = (props: any, changedValues: any) => {
+interface ExpectedProps {
+  setPasswordStrength: Function;
+  setPasswordSuggestions: Function;
+}
+
+interface ChangedValues {
+  password: {
+    value: string
+  };
+}
+
+export const setPasswordInfo = (props: ExpectedProps, changedValues: ChangedValues) => {
   const { password } = changedValues;
-  console.log(props);
 
   // On field change check to see if password changed
   if (!password) {

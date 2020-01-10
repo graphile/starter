@@ -148,7 +148,7 @@ function RegistrationForm({
               value: form.getFieldValue("email"),
               errors: [
                 new Error(
-                  "An account with this email address has already been registered, consider using the 'Forgot Pass phrase' function."
+                  "An account with this email address has already been registered, consider using the 'Forgot pass phrase' function."
                 ),
               ],
             },
@@ -216,7 +216,7 @@ function RegistrationForm({
     (_rule: any, value: any, callback: any) => {
       if (value && value !== form.getFieldValue("password")) {
         callback(
-          "Make sure your pass phrase is the same in both Pass phrase boxes."
+          "Make sure your pass phrase is the same in both pass phrase boxes."
         );
       } else {
         callback();
@@ -330,7 +330,7 @@ function RegistrationForm({
         suggestions={passwordSuggestions}
         isDirty={form.isFieldTouched("password")}
       />
-      <Form.Item label="Confirm Pass phrase">
+      <Form.Item label="Confirm pass phrase">
         {getFieldDecorator("confirm", {
           rules: [
             {
@@ -383,7 +383,6 @@ const WrappedRegistrationForm = Form.create<RegistrationFormProps>({
     props.setError(null);
   },
   onFieldsChange(props, changedValues) {
-    console.log(props);
     setPasswordInfo(props, changedValues);
   },
 })(RegistrationForm);

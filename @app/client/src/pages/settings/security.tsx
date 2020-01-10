@@ -169,12 +169,12 @@ function ChangePasswordForm({
     <div>
       <H3>Change password</H3>
       <Form {...formItemLayout} onSubmit={handleSubmit}>
-        <Form.Item label="Old Pass phrase">
+        <Form.Item label="Old pass phrase">
           {getFieldDecorator("oldPassword", {
             rules: [
               {
                 required: true,
-                message: "Please input your password",
+                message: "Please input your pass phrase",
               },
             ],
           })(<Input type="password" />)}
@@ -184,12 +184,12 @@ function ChangePasswordForm({
           suggestions={passwordSuggestions}
           isDirty={form.isFieldTouched("password")}
         />
-        <Form.Item label="New Pass phrase">
+        <Form.Item label="New pass phrase">
           {getFieldDecorator("newPassword", {
             rules: [
               {
                 required: true,
-                message: "Please confirm your password",
+                message: "Please confirm your pass phrase",
               },
             ],
           })(<Input type="password" />)}

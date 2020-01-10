@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.6 (Debian 11.6-1.pgdg90+1)
--- Dumped by pg_dump version 11.6 (Debian 11.6-1.pgdg90+1)
+-- Dumped from database version 11.5
+-- Dumped by pg_dump version 11.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1570,10 +1570,10 @@ CREATE INDEX user_authentications_user_id_idx ON app_public.user_authentications
 
 
 --
--- Name: user_authentications _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
+-- Name: users _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_authentications FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
 
 
 --
@@ -1584,10 +1584,10 @@ CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_emails
 
 
 --
--- Name: users _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
+-- Name: user_authentications _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_authentications FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
 
 
 --
@@ -1612,17 +1612,17 @@ CREATE TRIGGER _500_gql_update AFTER UPDATE ON app_public.users FOR EACH ROW EXE
 
 
 --
--- Name: user_emails _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
---
-
-CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_email_secrets__insert_with_user_email();
-
-
---
 -- Name: users _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
 CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_secrets__insert_with_user();
+
+
+--
+-- Name: user_emails _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_email_secrets__insert_with_user_email();
 
 
 --
@@ -1718,17 +1718,17 @@ ALTER TABLE app_private.user_email_secrets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE app_private.user_secrets ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: user_authentications delete_own; Type: POLICY; Schema: app_public; Owner: -
---
-
-CREATE POLICY delete_own ON app_public.user_authentications FOR DELETE USING ((user_id = app_public.current_user_id()));
-
-
---
 -- Name: user_emails delete_own; Type: POLICY; Schema: app_public; Owner: -
 --
 
 CREATE POLICY delete_own ON app_public.user_emails FOR DELETE USING ((user_id = app_public.current_user_id()));
+
+
+--
+-- Name: user_authentications delete_own; Type: POLICY; Schema: app_public; Owner: -
+--
+
+CREATE POLICY delete_own ON app_public.user_authentications FOR DELETE USING ((user_id = app_public.current_user_id()));
 
 
 --
@@ -1746,17 +1746,17 @@ CREATE POLICY select_all ON app_public.users FOR SELECT USING (true);
 
 
 --
--- Name: user_authentications select_own; Type: POLICY; Schema: app_public; Owner: -
---
-
-CREATE POLICY select_own ON app_public.user_authentications FOR SELECT USING ((user_id = app_public.current_user_id()));
-
-
---
 -- Name: user_emails select_own; Type: POLICY; Schema: app_public; Owner: -
 --
 
 CREATE POLICY select_own ON app_public.user_emails FOR SELECT USING ((user_id = app_public.current_user_id()));
+
+
+--
+-- Name: user_authentications select_own; Type: POLICY; Schema: app_public; Owner: -
+--
+
+CREATE POLICY select_own ON app_public.user_authentications FOR SELECT USING ((user_id = app_public.current_user_id()));
 
 
 --

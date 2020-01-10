@@ -207,7 +207,7 @@ function LoginForm({
         help={passwordError || ""}
       >
         {getFieldDecorator("password", {
-          rules: [{ required: true, message: "Please input your Pass phrase" }],
+          rules: [{ required: true, message: "Please input your pass phrase" }],
         })(
           <Input
             prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
