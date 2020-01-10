@@ -3,7 +3,7 @@ import { SendEmailPayload } from "./send_email";
 
 interface UserForgotPasswordPayload {
   /**
-   * user_email id
+   * user id
    */
   id: number;
 
@@ -20,19 +20,17 @@ interface UserForgotPasswordPayload {
 
 const task: Task = async (inPayload, { addJob, withPgClient }) => {
   const payload: UserForgotPasswordPayload = inPayload as any;
-  const { id: userEmailId, email, token } = payload;
+  const { id: userId, email, token } = payload;
   const {
     rows: [user],
   } = await withPgClient(pgClient =>
     pgClient.query(
       `
-      select users.*
-      from app_public.users
-      inner join app_public.user_emails
-      on user_emails.user_id = users.id
-      where user_emails.id = $1
-    `,
-      [userEmailId]
+        select users.*
+        from app_public.users
+        where id = $1
+      `,
+      [userId]
     )
   );
   if (!user) {
@@ -47,11 +45,9 @@ const task: Task = async (inPayload, { addJob, withPgClient }) => {
     template: "password_reset.mjml",
     variables: {
       token,
-      verifyLink: `${process.env.ROOT_URL}/reset?id=${encodeURIComponent(
-        String(userEmailId)
-      )}&user_id=${encodeURIComponent(user.id)}&token=${encodeURIComponent(
-        token
-      )}`,
+      verifyLink: `${process.env.ROOT_URL}/reset?user_id=${encodeURIComponent(
+        user.id
+      )}&token=${encodeURIComponent(token)}`,
     },
   };
   await addJob("send_email", sendEmailPayload);
