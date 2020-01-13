@@ -7,11 +7,14 @@ interface ExpectedProps {
 
 interface ChangedValues {
   password: {
-    value: string
+    value: string;
   };
 }
 
-export const setPasswordInfo = (props: ExpectedProps, changedValues: ChangedValues) => {
+export const setPasswordInfo = (
+  props: ExpectedProps,
+  changedValues: ChangedValues
+) => {
   const { password } = changedValues;
 
   // On field change check to see if password changed
