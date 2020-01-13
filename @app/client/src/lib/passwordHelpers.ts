@@ -6,23 +6,24 @@ interface ExpectedProps {
 }
 
 interface ChangedValues {
-  password: {
+  [key: string]: {
     value: string;
   };
 }
 
 export const setPasswordInfo = (
   props: ExpectedProps,
-  changedValues: ChangedValues
+  changedValues: ChangedValues,
+  fieldName = "password"
 ) => {
-  const { password } = changedValues;
+  const { [fieldName]: field } = changedValues;
 
   // On field change check to see if password changed
-  if (!password) {
+  if (!field) {
     return;
   }
 
-  const { score, feedback } = zxcvbn(password.value);
+  const { score, feedback } = zxcvbn(field.value);
   props.setPasswordStrength(score);
 
   const messages = [...feedback.suggestions];

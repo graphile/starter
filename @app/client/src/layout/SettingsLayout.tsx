@@ -28,7 +28,7 @@ const pages = {
     cy: "settingslayout-link-profile",
   }),
   "/settings/security": page({
-    title: "Password",
+    title: "Passphrase",
     cy: "settingslayout-link-password",
   }),
   "/settings/accounts": page({

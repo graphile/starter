@@ -140,6 +140,14 @@ function ChangePasswordForm({
     })();
   }, [email, forgotPassword, resetError, resetInProgress]);
 
+  const [passwordIsFocussed, setPasswordIsFocussed] = useState(false);
+  const setPasswordFocussed = useCallback(() => {
+    setPasswordIsFocussed(true);
+  }, [setPasswordIsFocussed]);
+  const setPasswordNotFocussed = useCallback(() => {
+    setPasswordIsFocussed(false);
+  }, [setPasswordIsFocussed]);
+
   const { getFieldDecorator } = form;
   if (loading) {
     /* noop */
@@ -166,7 +174,7 @@ function ChangePasswordForm({
   const code = getCodeFromError(error);
   return (
     <div>
-      <H3>Change password</H3>
+      <H3>Change passphrase</H3>
       <Form {...formItemLayout} onSubmit={handleSubmit}>
         <Form.Item label="Old passphrase">
           {getFieldDecorator("oldPassword", {
@@ -178,11 +186,6 @@ function ChangePasswordForm({
             ],
           })(<Input type="password" />)}
         </Form.Item>
-        <PasswordStrength
-          passwordStrength={passwordStrength}
-          suggestions={passwordSuggestions}
-          isDirty={form.isFieldTouched("password")}
-        />
         <Form.Item label="New passphrase">
           {getFieldDecorator("newPassword", {
             rules: [
@@ -191,7 +194,19 @@ function ChangePasswordForm({
                 message: "Please confirm your passphrase",
               },
             ],
-          })(<Input type="password" />)}
+          })(
+            <Input
+              type="password"
+              onFocus={setPasswordFocussed}
+              onBlur={setPasswordNotFocussed}
+            />
+          )}
+          <PasswordStrength
+            passwordStrength={passwordStrength}
+            suggestions={passwordSuggestions}
+            isDirty={form.isFieldTouched("newPassword")}
+            isFocussed={passwordIsFocussed}
+          />
         </Form.Item>
         {error ? (
           <Form.Item>
@@ -217,7 +232,7 @@ function ChangePasswordForm({
           </Form.Item>
         ) : null}
         <Form.Item {...tailFormItemLayout}>
-          <Button htmlType="submit">Change Password</Button>
+          <Button htmlType="submit">Change Passphrase</Button>
         </Form.Item>
       </Form>
     </div>
@@ -230,6 +245,6 @@ const WrappedChangePasswordForm = Form.create<ChangePasswordFormProps>({
     props.setError(null);
   },
   onFieldsChange(props, changedValues) {
-    setPasswordInfo(props, changedValues);
+    setPasswordInfo(props, changedValues, "newPassword");
   },
 })(ChangePasswordForm);
