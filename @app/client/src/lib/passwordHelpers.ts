@@ -1,8 +1,8 @@
 import zxcvbn from "zxcvbn";
 
 interface ExpectedProps {
-  setPasswordStrength: Function;
-  setPasswordSuggestions: Function;
+  setPasswordStrength: (score: number) => void;
+  setPasswordSuggestions: (message: string[]) => void;
 }
 
 interface ChangedValues {
