@@ -15,7 +15,7 @@ export const setPasswordInfo = (
   props: ExpectedProps,
   changedValues: ChangedValues,
   fieldName = "password"
-) => {
+): void => {
   const { [fieldName]: field } = changedValues;
 
   // On field change check to see if password changed
@@ -23,14 +23,7 @@ export const setPasswordInfo = (
     return;
   }
 
-  if (!field.value) {
-    return {
-      score: 0,
-      feedback: ["Please enter a passphrase"],
-    };
-  }
-
-  const { score, feedback } = zxcvbn(field.value);
+  const { score, feedback } = zxcvbn(field.value || "");
   props.setPasswordStrength(score);
 
   const messages = [...feedback.suggestions];
