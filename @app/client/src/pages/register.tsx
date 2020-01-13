@@ -24,7 +24,7 @@ import {
 import { formItemLayout, tailFormItemLayout } from "../forms";
 import { resetWebsocketConnection } from "../lib/withApollo";
 import { setPasswordInfo } from "../lib/passwordHelpers";
-import PasswordStrength from "@app/client/src/components/PasswordStrength";
+import { PasswordStrength } from "@app/components";
 
 /**
  * The registration page just renders the standard layout and embeds the

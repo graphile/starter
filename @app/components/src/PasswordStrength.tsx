@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Progress, Popover, Icon, Col, Row } from "antd";
 
-interface PassProps {
+export interface PasswordStrengthProps {
   passwordStrength: number;
   suggestions: string[];
   isDirty: boolean;
@@ -12,14 +12,14 @@ function strengthToPercent(strength: number): number {
   return (strength + 1) * 2 * 10;
 }
 
-export default function PasswordStrength({
+export function PasswordStrength({
   passwordStrength,
   suggestions = [
     "Use a few words, avoid common phrases",
     "No need for symbols, digits, or uppercase letters",
   ],
   isDirty = false,
-}: PassProps) {
+}: PasswordStrengthProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
