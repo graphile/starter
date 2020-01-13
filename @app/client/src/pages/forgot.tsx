@@ -42,7 +42,7 @@ function ForgotPasswordForm({
   setError,
 }: ForgotPasswordFormProps) {
   const [forgotPassword] = useForgotPasswordMutation();
-  const [success, setSuccess] = useState(false);
+  const [successfulEmail, setSuccessfulEmail] = useState<string | null>(null);
 
   const validateFields: (
     fieldNames?: Array<string>,
@@ -58,13 +58,14 @@ function ForgotPasswordForm({
       setError(null);
       try {
         const values = await validateFields();
+        const email = values.email;
         await forgotPassword({
           variables: {
-            email: values.email,
+            email,
           },
         });
         // Success: refetch
-        setSuccess(true);
+        setSuccessfulEmail(email);
       } catch (e) {
         setError(e);
       }
@@ -85,12 +86,12 @@ function ForgotPasswordForm({
 
   const code = getCodeFromError(error);
 
-  if (success) {
+  if (successfulEmail != null) {
     return (
       <Alert
         type="success"
         message="You've got mail"
-        description="We've sent you an email reset link; click the link and follow the instructions"
+        description={`We've sent an email reset link to '${successfulEmail}'; click the link and follow the instructions. If you don't receive the link, please ensure you entered the email address correctly, and check in your spam folder just in case.`}
       />
     );
   }
