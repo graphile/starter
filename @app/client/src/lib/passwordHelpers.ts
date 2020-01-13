@@ -23,6 +23,13 @@ export const setPasswordInfo = (
     return;
   }
 
+  if (!field.value) {
+    return {
+      score: 0,
+      feedback: ["Please enter a passphrase"],
+    };
+  }
+
   const { score, feedback } = zxcvbn(field.value);
   props.setPasswordStrength(score);
 
