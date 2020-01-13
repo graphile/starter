@@ -44,7 +44,7 @@ context("Login", () => {
     cy.getCy("loginpage-button-submit").click();
 
     // Assertion
-    cy.contains("Incorrect username or password").should("exist");
+    cy.contains("Incorrect username or passphrase").should("exist");
     cy.url().should("equal", Cypress.env("ROOT_URL") + "/login"); // Should be on login page still
     cy.getCy("header-login-button").should("exist"); // Should not be logged in
     cy.getCy("layout-dropdown-user").should("not.exist"); // Should not be logged in

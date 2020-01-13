@@ -25,7 +25,7 @@ context("RegisterAccount", () => {
     cy.getCy("registerpage-name-label").should("exist");
     cy.contains("Registration failed");
     cy.contains("input your name");
-    cy.contains("input your password");
+    cy.contains("input your passphrase");
   });
 
   context("Account creation", () => {
