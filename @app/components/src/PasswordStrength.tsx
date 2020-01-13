@@ -57,15 +57,14 @@ export function PasswordStrength({
   );
 
   return (
-    <Row>
-      <Col span={8} />
-      <Col span={14}>
+    <Row style={{ lineHeight: "2rem" }}>
+      <Col span={20} offset={1}>
         <Progress
           percent={strengthToPercent(passwordStrength)}
           status={passwordStrength < 2 ? "exception" : undefined}
         />
       </Col>
-      <Col span={2}>
+      <Col span={3}>
         <Popover
           placement="bottomRight"
           title={"Password Hints"}
@@ -77,7 +76,6 @@ export function PasswordStrength({
           <div
             style={{
               width: "100%",
-              height: "100%",
               textAlign: "right",
               padding: "0 13px",
             }}

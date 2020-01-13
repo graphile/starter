@@ -339,13 +339,13 @@ function RegistrationForm({
             onBlur={setPasswordNotFocussed}
           />
         )}
+        <PasswordStrength
+          passwordStrength={passwordStrength}
+          suggestions={passwordSuggestions}
+          isDirty={form.isFieldTouched("password")}
+          isFocussed={passwordIsFocussed}
+        />
       </Form.Item>
-      <PasswordStrength
-        passwordStrength={passwordStrength}
-        suggestions={passwordSuggestions}
-        isDirty={form.isFieldTouched("password")}
-        isFocussed={passwordIsFocussed}
-      />
       <Form.Item label="Confirm passphrase">
         {getFieldDecorator("confirm", {
           rules: [
