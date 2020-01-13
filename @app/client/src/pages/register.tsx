@@ -231,6 +231,14 @@ function RegistrationForm({
     [focusElement]
   );
 
+  const [passwordIsFocussed, setPasswordIsFocussed] = useState(false);
+  const setPasswordFocussed = useCallback(() => {
+    setPasswordIsFocussed(true);
+  }, [setPasswordIsFocussed]);
+  const setPasswordNotFocussed = useCallback(() => {
+    setPasswordIsFocussed(false);
+  }, [setPasswordIsFocussed]);
+
   const { getFieldDecorator } = form;
 
   const code = getCodeFromError(error);
@@ -323,12 +331,20 @@ function RegistrationForm({
               validator: validateToNextPassword,
             },
           ],
-        })(<Input type="password" data-cy="registerpage-input-password" />)}
+        })(
+          <Input
+            type="password"
+            data-cy="registerpage-input-password"
+            onFocus={setPasswordFocussed}
+            onBlur={setPasswordNotFocussed}
+          />
+        )}
       </Form.Item>
       <PasswordStrength
         passwordStrength={passwordStrength}
         suggestions={passwordSuggestions}
         isDirty={form.isFieldTouched("password")}
+        isFocussed={passwordIsFocussed}
       />
       <Form.Item label="Confirm passphrase">
         {getFieldDecorator("confirm", {

@@ -5,6 +5,7 @@ export interface PasswordStrengthProps {
   passwordStrength: number;
   suggestions: string[];
   isDirty: boolean;
+  isFocussed: boolean;
 }
 
 function strengthToPercent(strength: number): number {
@@ -19,14 +20,27 @@ export function PasswordStrength({
     "No need for symbols, digits, or uppercase letters",
   ],
   isDirty = false,
+  isFocussed = false,
 }: PasswordStrengthProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (isDirty || suggestions.length > 0) {
+    // Auto-display popup
+    if (isFocussed && isDirty && suggestions.length > 0) {
       setVisible(true);
     }
-  }, [isDirty, suggestions]);
+    // Auto-hide when there's no suggestions
+    if (suggestions.length === 0) {
+      setVisible(false);
+    }
+  }, [isDirty, isFocussed, suggestions]);
+
+  // Blur on password field focus loss
+  useEffect(() => {
+    if (!isFocussed) {
+      setVisible(false);
+    }
+  }, [isFocussed]);
 
   if (!isDirty) return null;
 
@@ -45,22 +59,34 @@ export function PasswordStrength({
   return (
     <Row>
       <Col span={8} />
-      <Col span={15}>
+      <Col span={14}>
         <Progress
           percent={strengthToPercent(passwordStrength)}
           status={passwordStrength < 2 ? "exception" : undefined}
         />
       </Col>
-      <Col span={1} style={{ textAlign: "right" }}>
+      <Col span={2}>
         <Popover
-          placement="right"
+          placement="bottomRight"
           title={"Password Hints"}
           content={content}
           trigger="click"
           visible={visible}
           onVisibleChange={handleVisibleChange}
         >
-          <Icon type="info-circle" />
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              textAlign: "right",
+              padding: "0 13px",
+            }}
+          >
+            <Icon
+              type="info-circle"
+              style={suggestions.length > 0 ? {} : { visibility: "hidden" }}
+            />
+          </div>
         </Popover>
       </Col>
     </Row>
