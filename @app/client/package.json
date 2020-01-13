@@ -15,6 +15,7 @@
     "@types/nprogress": "^0.2.0",
     "@types/react": "^16.9.17",
     "@types/ws": "^6.0.4",
+    "@types/zxcvbn": "^4.4.0",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
     "antd": "^3.26.3",
@@ -38,7 +39,8 @@
     "subscriptions-transport-ws": "^0.9.0",
     "tls": "^0.0.1",
     "webpack": "^4.41.2",
-    "ws": "^7.2.0"
+    "ws": "^7.2.0",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.2",

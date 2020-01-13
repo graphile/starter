@@ -159,7 +159,7 @@ function LoginForm({
           form.setFields({
             password: {
               value: form.getFieldValue("password"),
-              errors: [new Error("Incorrect username or password")],
+              errors: [new Error("Incorrect username or passphrase")],
             },
           });
         } else {
@@ -207,19 +207,19 @@ function LoginForm({
         help={passwordError || ""}
       >
         {getFieldDecorator("password", {
-          rules: [{ required: true, message: "Please input your Password" }],
+          rules: [{ required: true, message: "Please input your passphrase" }],
         })(
           <Input
             prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
             size="large"
             type="password"
-            placeholder="Password"
+            placeholder="Passphrase"
             data-cy="loginpage-input-password"
           />
         )}
 
         <Link href="/forgot">
-          <a>Forgotten password?</a>
+          <a>Forgotten passphrase?</a>
         </Link>
       </Form.Item>
 

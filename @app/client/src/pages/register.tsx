@@ -23,6 +23,8 @@ import {
 } from "../errors";
 import { formItemLayout, tailFormItemLayout } from "../forms";
 import { resetWebsocketConnection } from "../lib/withApollo";
+import { setPasswordInfo } from "../lib/passwordHelpers";
+import { PasswordStrength } from "@app/components";
 
 /**
  * The registration page just renders the standard layout and embeds the
@@ -30,9 +32,16 @@ import { resetWebsocketConnection } from "../lib/withApollo";
  */
 const Register: NextPage = () => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
+  const [strength, setStrength] = useState<number>(0);
+  const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
+
   return (
     <SharedLayout title="Register">
       <WrappedRegistrationForm
+        passwordStrength={strength}
+        setPasswordStrength={setStrength}
+        passwordSuggestions={passwordSuggestions}
+        setPasswordSuggestions={setPasswordSuggestions}
         onSuccessRedirectTo="/"
         error={error}
         setError={setError}
@@ -63,6 +72,10 @@ interface RegistrationFormProps extends FormComponentProps<FormValues> {
   onSuccessRedirectTo: string;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
+  passwordStrength: number;
+  setPasswordStrength: (strength: number) => void;
+  passwordSuggestions: string[];
+  setPasswordSuggestions: (suggestions: string[]) => void;
 }
 
 /**
@@ -77,6 +90,8 @@ function RegistrationForm({
   onSuccessRedirectTo,
   error,
   setError,
+  passwordStrength,
+  passwordSuggestions,
 }: RegistrationFormProps) {
   const [register] = useRegisterMutation({});
   const client = useApolloClient();
@@ -122,7 +137,7 @@ function RegistrationForm({
               value: form.getFieldValue("password"),
               errors: [
                 new Error(
-                  "The server believes this password is too weak, please make it stronger"
+                  "The server believes this passphrase is too weak, please make it stronger"
                 ),
               ],
             },
@@ -133,7 +148,7 @@ function RegistrationForm({
               value: form.getFieldValue("email"),
               errors: [
                 new Error(
-                  "An account with this email address has already been registered, consider using the 'Forgot Password' function."
+                  "An account with this email address has already been registered, consider using the 'Forgot passphrase' function."
                 ),
               ],
             },
@@ -200,7 +215,9 @@ function RegistrationForm({
   const compareToFirstPassword = useCallback(
     (_rule: any, value: any, callback: any) => {
       if (value && value !== form.getFieldValue("password")) {
-        callback("Make sure your password is the same in both Password boxes.");
+        callback(
+          "Make sure your passphrase is the same in both passphrase boxes."
+        );
       } else {
         callback();
       }
@@ -213,6 +230,14 @@ function RegistrationForm({
     () => void (focusElement.current && focusElement.current!.focus()),
     [focusElement]
   );
+
+  const [passwordIsFocussed, setPasswordIsFocussed] = useState(false);
+  const setPasswordFocussed = useCallback(() => {
+    setPasswordIsFocussed(true);
+  }, [setPasswordIsFocussed]);
+  const setPasswordNotFocussed = useCallback(() => {
+    setPasswordIsFocussed(false);
+  }, [setPasswordIsFocussed]);
 
   const { getFieldDecorator } = form;
 
@@ -295,25 +320,38 @@ function RegistrationForm({
           ],
         })(<Input data-cy="registerpage-input-email" />)}
       </Form.Item>
-      <Form.Item label="Password">
+      <Form.Item label="Passphrase">
         {getFieldDecorator("password", {
           rules: [
             {
               required: true,
-              message: "Please input your password.",
+              message: "Please input your passphrase.",
             },
             {
               validator: validateToNextPassword,
             },
           ],
-        })(<Input type="password" data-cy="registerpage-input-password" />)}
+        })(
+          <Input
+            type="password"
+            data-cy="registerpage-input-password"
+            onFocus={setPasswordFocussed}
+            onBlur={setPasswordNotFocussed}
+          />
+        )}
+        <PasswordStrength
+          passwordStrength={passwordStrength}
+          suggestions={passwordSuggestions}
+          isDirty={form.isFieldTouched("password")}
+          isFocussed={passwordIsFocussed}
+        />
       </Form.Item>
-      <Form.Item label="Confirm Password">
+      <Form.Item label="Confirm passphrase">
         {getFieldDecorator("confirm", {
           rules: [
             {
               required: true,
-              message: "Please confirm your password.",
+              message: "Please confirm your passphrase.",
             },
             {
               validator: compareToFirstPassword,
@@ -359,5 +397,8 @@ const WrappedRegistrationForm = Form.create<RegistrationFormProps>({
   name: "registerform",
   onValuesChange(props) {
     props.setError(null);
+  },
+  onFieldsChange(props, changedValues) {
+    setPasswordInfo(props, changedValues);
   },
 })(RegistrationForm);
