@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:8c16af6211997e3f08978175732c0c8666fe2b82
+--! Hash: sha1:4be49e527161e4b03af6630d795e00271405d754
 
 drop schema if exists app_public cascade;
 
@@ -456,7 +456,6 @@ $$ language plpgsql security definer volatile set search_path to pg_catalog, pub
 
 /**********/
 
-drop table if exists app_private.unregistered_email_password_resets;
 create table app_private.unregistered_email_password_resets (
   email citext constraint unregistered_email_pkey primary key,
   attempts int not null default 1,
