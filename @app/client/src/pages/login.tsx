@@ -197,6 +197,7 @@ function LoginForm({
             size="large"
             prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
             placeholder="E-mail or Username"
+            autoComplete="email username"
             ref={focusElement}
             data-cy="loginpage-input-username"
           />
@@ -214,6 +215,7 @@ function LoginForm({
             size="large"
             type="password"
             placeholder="Passphrase"
+            autoComplete="current-password"
             data-cy="loginpage-input-password"
           />
         )}

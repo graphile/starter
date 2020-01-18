@@ -262,7 +262,13 @@ function RegistrationForm({
               whitespace: true,
             },
           ],
-        })(<Input ref={focusElement} data-cy="registerpage-input-name" />)}
+        })(
+          <Input
+            ref={focusElement}
+            autoComplete="name"
+            data-cy="registerpage-input-name"
+          />
+        )}
       </Form.Item>
       <Form.Item
         label={
@@ -304,7 +310,12 @@ function RegistrationForm({
                 "Username must contain only alphanumeric characters and underscores.",
             },
           ],
-        })(<Input data-cy="registerpage-input-username" />)}
+        })(
+          <Input
+            autoComplete="username"
+            data-cy="registerpage-input-username"
+          />
+        )}
       </Form.Item>
       <Form.Item label="E-mail">
         {getFieldDecorator("email", {
@@ -334,6 +345,7 @@ function RegistrationForm({
         })(
           <Input
             type="password"
+            autoComplete="new-password"
             data-cy="registerpage-input-password"
             onFocus={setPasswordFocussed}
             onBlur={setPasswordNotFocussed}
@@ -360,6 +372,7 @@ function RegistrationForm({
         })(
           <Input
             type="password"
+            autoComplete="new-password"
             onBlur={handleConfirmBlur}
             data-cy="registerpage-input-password2"
           />
