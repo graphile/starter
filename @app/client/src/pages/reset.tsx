@@ -230,6 +230,7 @@ function ResetForm({
           })(
             <Input
               type="password"
+              autoComplete="new-password"
               data-cy="registerpage-input-password"
               onFocus={setPasswordFocussed}
               onBlur={setPasswordNotFocussed}
@@ -256,6 +257,7 @@ function ResetForm({
           })(
             <Input
               type="password"
+              autoComplete="new-password"
               onBlur={handleConfirmBlur}
               data-cy="registerpage-input-password2"
             />
