@@ -379,7 +379,7 @@ function RegistrationForm({
         )}
       </Form.Item>
       {error ? (
-        <Form.Item>
+        <Form.Item label="Error">
           <Alert
             type="error"
             message={`Registration failed`}
