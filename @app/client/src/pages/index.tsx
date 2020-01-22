@@ -135,7 +135,7 @@ const Home: NextPage = () => {
 
           <Title level={4}>What now?</Title>
           <Paragraph>
-            To get started, click "login" at the top right, then choose "Create
+            To get started, click "Sign in" at the top right, then choose "Create
             One" to create a new account.
           </Paragraph>
           <Paragraph>
