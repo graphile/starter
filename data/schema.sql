@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.6 (Debian 11.6-1.pgdg90+1)
--- Dumped by pg_dump version 11.6 (Debian 11.6-1.pgdg90+1)
+-- Dumped from database version 12.1
+-- Dumped by pg_dump version 12.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -97,7 +97,7 @@ $$;
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: users; Type: TABLE; Schema: app_public; Owner: -
@@ -1573,70 +1573,70 @@ CREATE INDEX user_authentications_user_id_idx ON app_public.user_authentications
 -- Name: user_authentications _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_authentications FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_authentications FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
 
 
 --
 -- Name: user_emails _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_emails FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
 
 
 --
 -- Name: users _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
 
 
 --
 -- Name: user_emails _200_forbid_existing_email; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _200_forbid_existing_email BEFORE INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_public.tg_user_emails__forbid_if_verified();
+CREATE TRIGGER _200_forbid_existing_email BEFORE INSERT ON app_public.user_emails FOR EACH ROW EXECUTE FUNCTION app_public.tg_user_emails__forbid_if_verified();
 
 
 --
 -- Name: users _200_make_first_user_admin; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _200_make_first_user_admin BEFORE INSERT ON app_public.users FOR EACH ROW WHEN ((new.id = 1)) EXECUTE PROCEDURE app_private.tg_users__make_first_user_admin();
+CREATE TRIGGER _200_make_first_user_admin BEFORE INSERT ON app_public.users FOR EACH ROW WHEN ((new.id = 1)) EXECUTE FUNCTION app_private.tg_users__make_first_user_admin();
 
 
 --
 -- Name: users _500_gql_update; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_gql_update AFTER UPDATE ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_public.tg__graphql_subscription('userChanged', 'graphql:user:$1', 'id');
+CREATE TRIGGER _500_gql_update AFTER UPDATE ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_public.tg__graphql_subscription('userChanged', 'graphql:user:$1', 'id');
 
 
 --
 -- Name: user_emails _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_email_secrets__insert_with_user_email();
+CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE FUNCTION app_private.tg_user_email_secrets__insert_with_user_email();
 
 
 --
 -- Name: users _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_secrets__insert_with_user();
+CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_private.tg_user_secrets__insert_with_user();
 
 
 --
 -- Name: user_emails _500_verify_account_on_verified; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_verify_account_on_verified AFTER INSERT OR UPDATE OF is_verified ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS TRUE)) EXECUTE PROCEDURE app_public.tg_user_emails__verify_account_on_verified();
+CREATE TRIGGER _500_verify_account_on_verified AFTER INSERT OR UPDATE OF is_verified ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS TRUE)) EXECUTE FUNCTION app_public.tg_user_emails__verify_account_on_verified();
 
 
 --
 -- Name: user_emails _900_send_verification_email; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _900_send_verification_email AFTER INSERT ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS FALSE)) EXECUTE PROCEDURE app_private.tg__add_job('user_emails__send_verification');
+CREATE TRIGGER _900_send_verification_email AFTER INSERT ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS FALSE)) EXECUTE FUNCTION app_private.tg__add_job('user_emails__send_verification');
 
 
 --
@@ -1788,14 +1788,14 @@ ALTER TABLE app_public.users ENABLE ROW LEVEL SECURITY;
 -- Name: SCHEMA app_hidden; Type: ACL; Schema: -; Owner: -
 --
 
-GRANT USAGE ON SCHEMA app_hidden TO graphile_starter_visitor;
+GRANT USAGE ON SCHEMA app_hidden TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: SCHEMA app_public; Type: ACL; Schema: -; Owner: -
 --
 
-GRANT USAGE ON SCHEMA app_public TO graphile_starter_visitor;
+GRANT USAGE ON SCHEMA app_public TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1803,8 +1803,8 @@ GRANT USAGE ON SCHEMA app_public TO graphile_starter_visitor;
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
-GRANT ALL ON SCHEMA public TO graphile_starter;
-GRANT USAGE ON SCHEMA public TO graphile_starter_visitor;
+GRANT ALL ON SCHEMA public TO graphile_starter_photo_upload;
+GRANT USAGE ON SCHEMA public TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1818,28 +1818,28 @@ REVOKE ALL ON FUNCTION app_private.assert_valid_password(new_password text) FROM
 -- Name: TABLE users; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT ON TABLE app_public.users TO graphile_starter_visitor;
+GRANT SELECT ON TABLE app_public.users TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: COLUMN users.username; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT UPDATE(username) ON TABLE app_public.users TO graphile_starter_visitor;
+GRANT UPDATE(username) ON TABLE app_public.users TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: COLUMN users.name; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT UPDATE(name) ON TABLE app_public.users TO graphile_starter_visitor;
+GRANT UPDATE(name) ON TABLE app_public.users TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: COLUMN users.avatar_url; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT UPDATE(avatar_url) ON TABLE app_public.users TO graphile_starter_visitor;
+GRANT UPDATE(avatar_url) ON TABLE app_public.users TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1910,7 +1910,7 @@ REVOKE ALL ON FUNCTION app_private.tg_users__make_first_user_admin() FROM PUBLIC
 --
 
 REVOKE ALL ON FUNCTION app_public.change_password(old_password text, new_password text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.change_password(old_password text, new_password text) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.change_password(old_password text, new_password text) TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1918,7 +1918,7 @@ GRANT ALL ON FUNCTION app_public.change_password(old_password text, new_password
 --
 
 REVOKE ALL ON FUNCTION app_public.confirm_account_deletion(token text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.confirm_account_deletion(token text) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.confirm_account_deletion(token text) TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1926,7 +1926,7 @@ GRANT ALL ON FUNCTION app_public.confirm_account_deletion(token text) TO graphil
 --
 
 REVOKE ALL ON FUNCTION app_public.current_session_id() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.current_session_id() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.current_session_id() TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1934,7 +1934,7 @@ GRANT ALL ON FUNCTION app_public.current_session_id() TO graphile_starter_visito
 --
 
 REVOKE ALL ON FUNCTION app_public."current_user"() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public."current_user"() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public."current_user"() TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1942,7 +1942,7 @@ GRANT ALL ON FUNCTION app_public."current_user"() TO graphile_starter_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.current_user_id() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.current_user_id() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.current_user_id() TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1950,7 +1950,7 @@ GRANT ALL ON FUNCTION app_public.current_user_id() TO graphile_starter_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.forgot_password(email public.citext) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1958,21 +1958,21 @@ GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO graphil
 --
 
 REVOKE ALL ON FUNCTION app_public.logout() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.logout() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.logout() TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: TABLE user_emails; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,DELETE ON TABLE app_public.user_emails TO graphile_starter_visitor;
+GRANT SELECT,DELETE ON TABLE app_public.user_emails TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: COLUMN user_emails.email; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT INSERT(email) ON TABLE app_public.user_emails TO graphile_starter_visitor;
+GRANT INSERT(email) ON TABLE app_public.user_emails TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1980,7 +1980,7 @@ GRANT INSERT(email) ON TABLE app_public.user_emails TO graphile_starter_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.make_email_primary(email_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.make_email_primary(email_id integer) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.make_email_primary(email_id integer) TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1988,7 +1988,7 @@ GRANT ALL ON FUNCTION app_public.make_email_primary(email_id integer) TO graphil
 --
 
 REVOKE ALL ON FUNCTION app_public.request_account_deletion() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.request_account_deletion() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.request_account_deletion() TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -1996,7 +1996,7 @@ GRANT ALL ON FUNCTION app_public.request_account_deletion() TO graphile_starter_
 --
 
 REVOKE ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer) TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -2004,7 +2004,7 @@ GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer
 --
 
 REVOKE ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -2012,7 +2012,7 @@ GRANT ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token tex
 --
 
 REVOKE ALL ON FUNCTION app_public.tg__graphql_subscription() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.tg__graphql_subscription() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.tg__graphql_subscription() TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -2020,7 +2020,7 @@ GRANT ALL ON FUNCTION app_public.tg__graphql_subscription() TO graphile_starter_
 --
 
 REVOKE ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -2028,7 +2028,7 @@ GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO graphil
 --
 
 REVOKE ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -2036,7 +2036,7 @@ GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO
 --
 
 REVOKE ALL ON FUNCTION app_public.users_has_password(u app_public.users) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO graphile_starter_photo_upload_visitor;
 
 
 --
@@ -2044,93 +2044,93 @@ GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO graph
 --
 
 REVOKE ALL ON FUNCTION app_public.verify_email(user_email_id integer, token text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.verify_email(user_email_id integer, token text) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.verify_email(user_email_id integer, token text) TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: TABLE user_authentications; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,DELETE ON TABLE app_public.user_authentications TO graphile_starter_visitor;
+GRANT SELECT,DELETE ON TABLE app_public.user_authentications TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: SEQUENCE user_authentications_id_seq; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,USAGE ON SEQUENCE app_public.user_authentications_id_seq TO graphile_starter_visitor;
+GRANT SELECT,USAGE ON SEQUENCE app_public.user_authentications_id_seq TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: SEQUENCE user_emails_id_seq; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,USAGE ON SEQUENCE app_public.user_emails_id_seq TO graphile_starter_visitor;
+GRANT SELECT,USAGE ON SEQUENCE app_public.user_emails_id_seq TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: SEQUENCE users_id_seq; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,USAGE ON SEQUENCE app_public.users_id_seq TO graphile_starter_visitor;
+GRANT SELECT,USAGE ON SEQUENCE app_public.users_id_seq TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: app_hidden; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden REVOKE ALL ON SEQUENCES  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA app_hidden REVOKE ALL ON SEQUENCES  FROM graphile_starter_photo_upload;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA app_hidden GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: app_hidden; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM graphile_starter_photo_upload;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA app_hidden GRANT ALL ON FUNCTIONS  TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: app_public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON SEQUENCES  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA app_public REVOKE ALL ON SEQUENCES  FROM graphile_starter_photo_upload;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA app_public GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: app_public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM graphile_starter_photo_upload;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA app_public GRANT ALL ON FUNCTIONS  TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON SEQUENCES  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA public REVOKE ALL ON SEQUENCES  FROM graphile_starter_photo_upload;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA public GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM graphile_starter_photo_upload;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload IN SCHEMA public GRANT ALL ON FUNCTIONS  TO graphile_starter_photo_upload_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: -; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter_photo_upload REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
 
 
 --
