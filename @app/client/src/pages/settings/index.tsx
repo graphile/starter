@@ -113,8 +113,14 @@ function ProfileSettingsForm({
   return (
     <div>
       <H3>Edit Profile</H3>
-      <AvatarUpload user={user} setError={setError} setSuccess={setSuccess} />
       <Form {...formItemLayout} onSubmit={handleSubmit}>
+        <Form.Item label="Avatar">
+          <AvatarUpload
+            user={user}
+            setError={setError}
+            setSuccess={setSuccess}
+          />
+        </Form.Item>
         <Form.Item label="Name">
           {getFieldDecorator("name", {
             initialValue: user.name,
@@ -138,7 +144,7 @@ function ProfileSettingsForm({
           })(<Input />)}
         </Form.Item>
         {error ? (
-          <Form.Item>
+          <Form.Item label="Error">
             <Alert
               type="error"
               message={`Updating username`}
@@ -156,7 +162,7 @@ function ProfileSettingsForm({
             />
           </Form.Item>
         ) : success ? (
-          <Form.Item>
+          <Form.Item label="success">
             <Alert type="success" message={`Profile updated`} />
           </Form.Item>
         ) : null}
