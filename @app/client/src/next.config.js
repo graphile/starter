@@ -1,7 +1,14 @@
 require("@app/config");
 const compose = require("lodash/flowRight");
 
-const { ROOT_URL, T_AND_C_URL } = process.env;
+const {
+  ROOT_URL,
+  T_AND_C_URL,
+  BUCKET,
+  AWSACCESSKEYID,
+  AWSSECRETKEY,
+  AWS_REGION,
+} = process.env;
 if (!ROOT_URL) {
   throw new Error("ROOT_URL is a required envvar");
 }
@@ -31,6 +38,12 @@ if (!ROOT_URL) {
       withCss,
       withLess
     )({
+      serverRuntimeConfig: {
+        BUCKET: BUCKET,
+        AWSACCESSKEYID: AWSACCESSKEYID,
+        AWSSECRETKEY: AWSSECRETKEY,
+        AWS_REGION: AWS_REGION,
+      },
       poweredByHeader: false,
       distDir: `../.next`,
       exportTrailingSlash: true,
