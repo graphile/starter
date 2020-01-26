@@ -49,6 +49,38 @@ type ConfirmAccountDeletionPayload {
   success: Boolean
 }
 
+"""All input for the `createOrganization` mutation."""
+input CreateOrganizationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  name: String
+  slug: String
+}
+
+"""The output of our `createOrganization` mutation."""
+type CreateOrganizationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  organization: Organization
+
+  """An edge for our `Organization`. May be used by Relay 1."""
+  organizationEdge(
+    """The method to use when ordering `Organization`."""
+    orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the create `UserEmail` mutation."""
 input CreateUserEmailInput {
   """
@@ -85,6 +117,52 @@ type CreateUserEmailPayload {
     """The method to use when ordering `UserEmail`."""
     orderBy: [UserEmailsOrderBy!] = [PRIMARY_KEY_ASC]
   ): UserEmailsEdge
+}
+
+"""A `Int` edge in the connection."""
+type CurrentUserInvitedOrganizationIdEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Int` at the end of the edge."""
+  node: Int
+}
+
+"""A connection to a list of `Int` values."""
+type CurrentUserInvitedOrganizationIdsConnection {
+  """
+  A list of edges which contains the `Int` and cursor to aid in pagination.
+  """
+  edges: [CurrentUserInvitedOrganizationIdEdge!]!
+
+  """A list of `Int` objects."""
+  nodes: [Int]!
+
+  """The count of *all* `Int` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Int` edge in the connection."""
+type CurrentUserMemberOrganizationIdEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Int` at the end of the edge."""
+  node: Int
+}
+
+"""A connection to a list of `Int` values."""
+type CurrentUserMemberOrganizationIdsConnection {
+  """
+  A list of edges which contains the `Int` and cursor to aid in pagination.
+  """
+  edges: [CurrentUserMemberOrganizationIdEdge!]!
+
+  """A list of `Int` objects."""
+  nodes: [Int]!
+
+  """The count of *all* `Int` you could get from the connection."""
+  totalCount: Int!
 }
 
 """A location in a connection that can be used for resuming pagination."""
@@ -188,6 +266,32 @@ type ForgotPasswordPayload {
   query: Query
 }
 
+"""All input for the `inviteToOrganization` mutation."""
+input InviteToOrganizationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  email: String
+  organizationId: Int
+  userId: Int
+}
+
+"""The output of our `inviteToOrganization` mutation."""
+type InviteToOrganizationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 input LoginInput {
   password: String!
   username: String!
@@ -258,6 +362,12 @@ type Mutation {
     """
     input: ConfirmAccountDeletionInput!
   ): ConfirmAccountDeletionPayload
+  createOrganization(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateOrganizationInput!
+  ): CreateOrganizationPayload
 
   """Creates a single `UserEmail`."""
   createUserEmail(
@@ -293,6 +403,12 @@ type Mutation {
     """
     input: ForgotPasswordInput!
   ): ForgotPasswordPayload
+  inviteToOrganization(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: InviteToOrganizationInput!
+  ): InviteToOrganizationPayload
 
   """
   Use this mutation to log in to your account; this login uses sessions so you do not need to take further action.
@@ -381,6 +497,273 @@ type Mutation {
   ): VerifyEmailPayload
 }
 
+type Organization {
+  createdAt: Datetime!
+  id: Int!
+  name: String!
+
+  """
+  Reads and enables pagination through a set of `OrganizationInvitation`.
+  """
+  organizationInvitations(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationInvitationCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `OrganizationInvitation`."""
+    orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationInvitationsConnection!
+
+  """
+  Reads and enables pagination through a set of `OrganizationMembership`.
+  """
+  organizationMemberships(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationMembershipCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `OrganizationMembership`."""
+    orderBy: [OrganizationMembershipsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationMembershipsConnection!
+  slug: String!
+}
+
+"""
+A condition to be used against `Organization` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input OrganizationCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: Int
+
+  """Checks for equality with the object’s `slug` field."""
+  slug: String
+}
+
+type OrganizationInvitation {
+  code: String
+  email: String
+  id: Int!
+
+  """
+  Reads a single `Organization` that is related to this `OrganizationInvitation`.
+  """
+  organization: Organization
+  organizationId: Int!
+
+  """
+  Reads a single `User` that is related to this `OrganizationInvitation`.
+  """
+  user: User
+  userId: Int
+}
+
+"""
+A condition to be used against `OrganizationInvitation` object types. All fields
+are tested for equality and combined with a logical ‘and.’
+"""
+input OrganizationInvitationCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: Int
+
+  """Checks for equality with the object’s `organizationId` field."""
+  organizationId: Int
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: Int
+}
+
+"""A connection to a list of `OrganizationInvitation` values."""
+type OrganizationInvitationsConnection {
+  """
+  A list of edges which contains the `OrganizationInvitation` and cursor to aid in pagination.
+  """
+  edges: [OrganizationInvitationsEdge!]!
+
+  """A list of `OrganizationInvitation` objects."""
+  nodes: [OrganizationInvitation!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """
+  The count of *all* `OrganizationInvitation` you could get from the connection.
+  """
+  totalCount: Int!
+}
+
+"""A `OrganizationInvitation` edge in the connection."""
+type OrganizationInvitationsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `OrganizationInvitation` at the end of the edge."""
+  node: OrganizationInvitation!
+}
+
+"""Methods to use when ordering `OrganizationInvitation`."""
+enum OrganizationInvitationsOrderBy {
+  ID_ASC
+  ID_DESC
+  NATURAL
+  ORGANIZATION_ID_ASC
+  ORGANIZATION_ID_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  USER_ID_ASC
+  USER_ID_DESC
+}
+
+type OrganizationMembership {
+  createdAt: Datetime!
+  id: Int!
+  isBillingContact: Boolean!
+  isOwner: Boolean!
+
+  """
+  Reads a single `Organization` that is related to this `OrganizationMembership`.
+  """
+  organization: Organization
+  organizationId: Int!
+
+  """
+  Reads a single `User` that is related to this `OrganizationMembership`.
+  """
+  user: User
+  userId: Int!
+}
+
+"""
+A condition to be used against `OrganizationMembership` object types. All fields
+are tested for equality and combined with a logical ‘and.’
+"""
+input OrganizationMembershipCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: Int
+
+  """Checks for equality with the object’s `organizationId` field."""
+  organizationId: Int
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: Int
+}
+
+"""A connection to a list of `OrganizationMembership` values."""
+type OrganizationMembershipsConnection {
+  """
+  A list of edges which contains the `OrganizationMembership` and cursor to aid in pagination.
+  """
+  edges: [OrganizationMembershipsEdge!]!
+
+  """A list of `OrganizationMembership` objects."""
+  nodes: [OrganizationMembership!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """
+  The count of *all* `OrganizationMembership` you could get from the connection.
+  """
+  totalCount: Int!
+}
+
+"""A `OrganizationMembership` edge in the connection."""
+type OrganizationMembershipsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `OrganizationMembership` at the end of the edge."""
+  node: OrganizationMembership!
+}
+
+"""Methods to use when ordering `OrganizationMembership`."""
+enum OrganizationMembershipsOrderBy {
+  ID_ASC
+  ID_DESC
+  NATURAL
+  ORGANIZATION_ID_ASC
+  ORGANIZATION_ID_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  USER_ID_ASC
+  USER_ID_DESC
+}
+
+"""A connection to a list of `Organization` values."""
+type OrganizationsConnection {
+  """
+  A list of edges which contains the `Organization` and cursor to aid in pagination.
+  """
+  edges: [OrganizationsEdge!]!
+
+  """A list of `Organization` objects."""
+  nodes: [Organization!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Organization` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Organization` edge in the connection."""
+type OrganizationsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Organization` at the end of the edge."""
+  node: Organization!
+}
+
+"""Methods to use when ordering `Organization`."""
+enum OrganizationsOrderBy {
+  ID_ASC
+  ID_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  SLUG_ASC
+  SLUG_DESC
+}
+
 """Information about pagination in a connection."""
 type PageInfo {
   """When paginating forwards, the cursor to continue."""
@@ -400,6 +783,111 @@ type PageInfo {
 type Query {
   """The currently logged in user (or null if not logged in)."""
   currentUser: User
+  currentUserInvitedOrganizationIds(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+  ): CurrentUserInvitedOrganizationIdsConnection!
+  currentUserMemberOrganizationIds(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+  ): CurrentUserMemberOrganizationIdsConnection!
+  organization(id: Int!): Organization
+  organizationBySlug(slug: String!): Organization
+  organizationInvitation(id: Int!): OrganizationInvitation
+  organizationInvitationByOrganizationIdAndEmail(email: String!, organizationId: Int!): OrganizationInvitation
+  organizationInvitationByOrganizationIdAndUserId(organizationId: Int!, userId: Int!): OrganizationInvitation
+
+  """
+  Reads and enables pagination through a set of `OrganizationInvitation`.
+  """
+  organizationInvitations(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationInvitationCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `OrganizationInvitation`."""
+    orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationInvitationsConnection
+  organizationMembership(id: Int!): OrganizationMembership
+  organizationMembershipByOrganizationIdAndUserId(organizationId: Int!, userId: Int!): OrganizationMembership
+
+  """Reads and enables pagination through a set of `Organization`."""
+  organizations(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Organization`."""
+    orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationsConnection
 
   """
   Exposes the root query type nested one level down. This is helpful for Relay 1
@@ -564,6 +1052,68 @@ type User {
 
   """Public-facing name (or pseudonym) of the user."""
   name: String
+
+  """
+  Reads and enables pagination through a set of `OrganizationInvitation`.
+  """
+  organizationInvitations(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationInvitationCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `OrganizationInvitation`."""
+    orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationInvitationsConnection!
+
+  """
+  Reads and enables pagination through a set of `OrganizationMembership`.
+  """
+  organizationMemberships(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationMembershipCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `OrganizationMembership`."""
+    orderBy: [OrganizationMembershipsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationMembershipsConnection!
   updatedAt: Datetime!
 
   """Reads and enables pagination through a set of `UserAuthentication`."""
