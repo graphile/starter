@@ -121,3 +121,50 @@ it("Can accept an invitation", () =>
     expect(membership.is_owner).toEqual(false);
     expect(membership.is_billing_contact).toEqual(false);
   }));
+
+it("Can accept an invitation that was sent to an email address", () =>
+  withRootDb(async client => {
+    // Setup
+    const [organizationOwner, invitee] = await createUsers(client, 2, true);
+    await becomeUser(client, organizationOwner);
+    const [organization] = await createOrganizations(client, 1);
+    await inviteToOrganization(
+      client,
+      organization.id,
+      null,
+      "different@example.com"
+    );
+    await becomeRoot(client);
+    const {
+      rows: [invitation],
+    } = await client.query(
+      `select * from app_public.organization_invitations order by id desc limit 1`
+    );
+
+    // Action
+    await becomeUser(client, invitee);
+    await acceptInvitationToOrganization(
+      client,
+      invitation.id,
+      invitation.code
+    );
+
+    // Assertions
+    await becomeRoot(client);
+    const {
+      rows: [invitationShouldntExist],
+    } = await client.query(
+      `select * from app_public.organization_invitations where id = $1`,
+      [invitation.id]
+    );
+    expect(invitationShouldntExist).toBeFalsy();
+    const {
+      rows: [membership],
+    } = await client.query(
+      `select * from app_public.organization_memberships where organization_id = $1 and user_id = $2`,
+      [organization.id, invitee.id]
+    );
+    expect(membership).toBeTruthy();
+    expect(membership.is_owner).toEqual(false);
+    expect(membership.is_billing_contact).toEqual(false);
+  }));

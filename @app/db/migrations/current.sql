@@ -149,21 +149,19 @@ begin
     if v_invitation.user_id is distinct from app_public.current_user_id() then
       raise exception 'That invitation is not for you' using errcode = 'DNIED';
     end if;
-
-    -- Accept the user into the organization
-    insert into app_public.organization_memberships (organization_id, user_id)
-      values(v_invitation.organization_id, v_invitation.user_id)
-      on conflict do nothing;
-
-    -- Delete the invitation
-    delete from app_public.organization_invitations where id = v_invitation.id;
   else
-    -- TODO: implement this
-    raise exception 'Not implemented';
+    if v_invitation.code is distinct from code then
+      raise exception 'Incorrect invitation code' using errcode = 'DNIED';
+    end if;
   end if;
 
+  -- Accept the user into the organization
+  insert into app_public.organization_memberships (organization_id, user_id)
+    values(v_invitation.organization_id, app_public.current_user_id())
+    on conflict do nothing;
 
-
+  -- Delete the invitation
+  delete from app_public.organization_invitations where id = v_invitation.id;
 end;
 $$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
 
