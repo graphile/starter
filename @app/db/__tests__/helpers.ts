@@ -211,3 +211,11 @@ export const assertJobComplete = async (
     expect(row).toBeFalsy();
   });
 };
+
+export const clearEmails = () => {
+  global["TEST_EMAILS"] = [];
+};
+
+beforeEach(clearEmails);
+
+export const getEmails = () => global["TEST_EMAILS"];

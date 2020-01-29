@@ -7,6 +7,7 @@ import {
   becomeRoot,
   runJobs,
   assertJobComplete,
+  getEmails,
 } from "../../helpers";
 import { PoolClient } from "pg";
 import {
@@ -87,12 +88,12 @@ it("Can invite user to organization", () =>
 
     // Assert that the job can run correctly
     // Run the job
-    global["TEST_EMAILS"] = [];
     await runJobs(client);
     await assertJobComplete(client, job);
     // Check that the email was sent
-    expect(global["TEST_EMAILS"]).toHaveLength(1);
-    const [email] = global["TEST_EMAILS"];
+    const emails = getEmails();
+    expect(emails).toHaveLength(1);
+    const [email] = emails;
     expect(email.envelope.to).toEqual(["b@b.c"]);
     const message = JSON.parse(email.message);
     expect(message.subject).toEqual(
