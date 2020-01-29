@@ -1,3 +1,4 @@
+drop function if exists app_public.accept_invitation_to_organization(int, text) cascade;
 drop function if exists app_public.invite_user_to_organization(int, int) cascade;
 drop function if exists app_public.invite_to_organization(int, int) cascade;
 drop function if exists app_public.invite_to_organization(int, int, citext) cascade;
@@ -111,6 +112,14 @@ begin
     raise exception 'You''re not the owner of this organization' using errcode = 'DNIED';
   end if;
 
+  if user_id is not null and exists(
+    select 1 from app_public.organization_memberships
+      where organization_memberships.organization_id = invite_to_organization.organization_id
+      and organization_memberships.user_id = invite_to_organization.user_id
+  ) then
+    raise exception 'Cannot invite someone who is already a member' using errcode = 'ISMBR';
+  end if;
+
   if email is not null then
     v_code = encode(gen_random_bytes(7), 'hex');
   end if;
@@ -118,6 +127,43 @@ begin
   -- Invite the user
   insert into app_public.organization_invitations(organization_id, user_id, email, code)
     values (invite_to_organization.organization_id, user_id, email, v_code);
+end;
+$$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
+
+create function app_public.accept_invitation_to_organization(invitation_id int, code text = null)
+  returns void as $$
+declare
+  v_invitation app_public.organization_invitations;
+begin
+  if app_public.current_user_id() is null then
+    raise exception 'You must log in to accept an invitation' using errcode = 'LOGIN';
+  end if;
+
+  select * into v_invitation from app_public.organization_invitations where id = invitation_id;
+
+  if v_invitation is null then
+    raise exception 'We could not find that invitation' using errcode = 'NTFND';
+  end if;
+
+  if v_invitation.user_id is not null then
+    if v_invitation.user_id is distinct from app_public.current_user_id() then
+      raise exception 'That invitation is not for you' using errcode = 'DNIED';
+    end if;
+
+    -- Accept the user into the organization
+    insert into app_public.organization_memberships (organization_id, user_id)
+      values(v_invitation.organization_id, v_invitation.user_id)
+      on conflict do nothing;
+
+    -- Delete the invitation
+    delete from app_public.organization_invitations where id = v_invitation.id;
+  else
+    -- TODO: implement this
+    raise exception 'Not implemented';
+  end if;
+
+
+
 end;
 $$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
 
