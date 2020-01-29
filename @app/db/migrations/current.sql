@@ -1,4 +1,5 @@
 drop function if exists app_public.accept_invitation_to_organization(int, text) cascade;
+drop function if exists app_public.get_organization_for_invitation(int, text) cascade;
 drop function if exists app_public.invite_user_to_organization(int, int) cascade;
 drop function if exists app_public.invite_to_organization(int, int) cascade;
 drop function if exists app_public.invite_to_organization(int, int, citext) cascade;
@@ -130,10 +131,11 @@ begin
 end;
 $$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
 
-create function app_public.accept_invitation_to_organization(invitation_id int, code text = null)
-  returns void as $$
+create function app_public.get_organization_for_invitation(invitation_id int, code text = null)
+  returns app_public.organizations as $$
 declare
   v_invitation app_public.organization_invitations;
+  v_organization app_public.organizations;
 begin
   if app_public.current_user_id() is null then
     raise exception 'You must log in to accept an invitation' using errcode = 'LOGIN';
@@ -155,13 +157,26 @@ begin
     end if;
   end if;
 
+  select * into v_organization from app_public.organizations where id = v_invitation.organization_id;
+
+  return v_organization;
+end;
+$$ language plpgsql stable security definer set search_path = pg_catalog, public, pg_temp;
+
+create function app_public.accept_invitation_to_organization(invitation_id int, code text = null)
+  returns void as $$
+declare
+  v_organization app_public.organizations;
+begin
+  v_organization = app_public.get_organization_for_invitation(invitation_id, code);
+
   -- Accept the user into the organization
   insert into app_public.organization_memberships (organization_id, user_id)
-    values(v_invitation.organization_id, app_public.current_user_id())
+    values(v_organization.id, app_public.current_user_id())
     on conflict do nothing;
 
   -- Delete the invitation
-  delete from app_public.organization_invitations where id = v_invitation.id;
+  delete from app_public.organization_invitations where id = invitation_id;
 end;
 $$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
 

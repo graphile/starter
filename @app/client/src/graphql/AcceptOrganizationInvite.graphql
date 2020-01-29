@@ -1,0 +1,5 @@
+mutation AcceptOrganizationInvite($id: Int!, $code: String) {
+  acceptInvitationToOrganization(input: { invitationId: $id, code: $code }) {
+    clientMutationId
+  }
+}

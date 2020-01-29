@@ -853,6 +853,7 @@ type Query {
     """
     offset: Int
   ): CurrentUserMemberOrganizationIdsConnection!
+  getOrganizationForInvitation(code: String, invitationId: Int): Organization
   organization(id: Int!): Organization
   organizationBySlug(slug: String!): Organization
   organizationInvitation(id: Int!): OrganizationInvitation

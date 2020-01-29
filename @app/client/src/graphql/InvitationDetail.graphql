@@ -1,0 +1,7 @@
+query InvitationDetail($id: Int!, $code: String) {
+  getOrganizationForInvitation(invitationId: $id, code: $code) {
+    id
+    name
+    slug
+  }
+}
