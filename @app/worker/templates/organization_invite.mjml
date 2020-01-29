@@ -1,0 +1,50 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-class name="background" background-color="#f5faff" font-size="13px" />
+      <mj-class name="bold-text" align="center" font-size="20px" font-family="Helvetica" font-weight="bold" />
+      <mj-class name="text" align="center" font-size="16px" font-family="Helvetica" />
+      <mj-class name="small-text" align="center" font-size="13px" font-family="Helvetica" />
+      <mj-class name="blue-section" background-color="#4680b4" />
+      <mj-class name="white-section" background-color="#fff" />
+    </mj-attributes>
+  </mj-head>
+
+  <mj-body mj-class="background">
+    <mj-section padding-bottom="20px"></mj-section>
+
+    <mj-section mj-class="blue-section">
+      <mj-column width="100%">
+        <mj-text mj-class="bold-text" color="#FFF" padding-left="25px" padding-right="25px" padding-bottom="28px" padding-top="28px">
+          You have been invited to join [[organizationName]]. Please click
+          the button below to accept the invitation. If you do not wish to
+          join this organization then no action is necessary.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="white-section">
+      <mj-column width="100%">
+        <mj-button mj-class="text" background-color="#4680b4" color="#FFF" font-weight="bold" border="none" padding="15px 30px" border-radius="10px" href="[[link]]" font-family="Helvetica" padding-left="25px" padding-right="25px" padding-bottom="10px">Accept invitation</mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="blue-section">
+      <mj-column width="100%">
+        <mj-text mj-class="text" color="#FFF" padding-left="25px" padding-right="25px" padding-bottom="20px" padding-top="20px">
+          Best,<br/>
+          The [[projectName]] Team
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column width="100%">
+        <mj-text mj-class="small-text" color="#777" padding-left="25px" padding-right="25px" padding-bottom="20px" padding-top="20px">
+          [[legalText]]
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+  </mj-body>
+</mjml>

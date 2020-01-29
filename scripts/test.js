@@ -9,6 +9,7 @@ process.env.SHADOW_DATABASE_URL = process.env.TEST_DATABASE_URL;
 
 // Signal to graphile-migrate scripts that we're in the tests
 process.env.IN_TESTS = "1";
+process.env.NODE_ENV = "test";
 
 const opts = {
   stdio: "inherit",

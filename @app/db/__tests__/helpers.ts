@@ -16,6 +16,7 @@ import {
  * tracked by git, otherwise `jest --watch` won't pick up changes to it...
  */
 import { ts } from "./jest.watch.hack";
+import { getTasks, runTaskListOnce } from "graphile-worker";
 if (ts) {
   /*
    * ... but we don't want the changes showing up under git, so we throw
@@ -186,4 +187,27 @@ export const getJobs = async (
     )
   );
   return rows;
+};
+
+/******************************************************************************/
+
+export const runJobs = async (client: PoolClient) => {
+  return asRoot(client, async client => {
+    const taskList = await getTasks(`${__dirname}/../../worker/dist/tasks`);
+    await runTaskListOnce(taskList.tasks, client, {});
+  });
+};
+
+export const assertJobComplete = async (
+  client: PoolClient,
+  job: { id: number }
+) => {
+  return asRoot(client, async client => {
+    const {
+      rows: [row],
+    } = await client.query("select * from graphile_worker.jobs where id = $1", [
+      job.id,
+    ]);
+    expect(row).toBeFalsy();
+  });
 };

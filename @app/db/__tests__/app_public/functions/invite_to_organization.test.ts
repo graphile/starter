@@ -5,6 +5,8 @@ import {
   withRootDb,
   becomeUser,
   becomeRoot,
+  runJobs,
+  assertJobComplete,
 } from "../../helpers";
 import { PoolClient } from "pg";
 import {
@@ -82,6 +84,22 @@ it("Can invite user to organization", () =>
     expect(job.payload).toMatchObject({
       id: invitation.id,
     });
+
+    // Assert that the job can run correctly
+    // Run the job
+    global["TEST_EMAILS"] = [];
+    await runJobs(client);
+    await assertJobComplete(client, job);
+    // Check that the email was sent
+    expect(global["TEST_EMAILS"]).toHaveLength(1);
+    const [email] = global["TEST_EMAILS"];
+    expect(email.envelope.to).toEqual(["b@b.c"]);
+    const message = JSON.parse(email.message);
+    expect(message.subject).toEqual(
+      `You have been invited to ${organization.name}`
+    );
+    const expectedLink = `http://localhost:5678/invitations/accept?id=${invitation.id}`;
+    expect(message.html).toContain(expectedLink);
   }));
 
 it("Can accept an invitation", () =>

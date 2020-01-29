@@ -13,8 +13,15 @@ import {
 import * as nodemailer from "nodemailer";
 import chalk from "chalk";
 
+declare module global {
+  let TEST_EMAILS: any[];
+}
+
+global.TEST_EMAILS = [];
+
 const { readFile } = fsp;
 
+const isTest = process.env.NODE_ENV === "test";
 const isDev = process.env.NODE_ENV !== "production";
 
 export interface SendEmailPayload {
@@ -49,7 +56,9 @@ const task: Task = async inPayload => {
     Object.assign(options, { html, text });
   }
   const info = await transport.sendMail(options);
-  if (isDev) {
+  if (isTest) {
+    global.TEST_EMAILS.push(info);
+  } else if (isDev) {
     const url = nodemailer.getTestMessageUrl(info);
     if (url) {
       console.log(`Development email preview: ${chalk.blue.underline(url)}`);
@@ -67,7 +76,7 @@ function loadTemplate(template: string) {
         throw new Error(`Disallowed template name '${template}'`);
       }
       const templateString = await readFile(
-        `${process.cwd()}/../templates/${template}`,
+        `${__dirname}/../../templates/${template}`,
         "utf8"
       );
       const templateFn = lodashTemplate(templateString, {
