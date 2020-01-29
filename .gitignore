@@ -9,3 +9,4 @@ dist
 /@app/graphql/index.*
 .agignore
 *.tsbuildinfo
+.ethereal
