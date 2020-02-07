@@ -12,7 +12,7 @@ import { ApolloError } from "apollo-client";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { getCodeFromError, extractError } from "../../errors";
 import { formItemLayout, tailFormItemLayout } from "../../forms";
-import { Redirect, ErrorAlert, H3 } from "@app/components";
+import { Redirect, ErrorAlert, H3, AvatarUpload } from "@app/components";
 
 const Settings_Profile: NextPage = () => {
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
@@ -114,6 +114,13 @@ function ProfileSettingsForm({
     <div>
       <H3>Edit Profile</H3>
       <Form {...formItemLayout} onSubmit={handleSubmit}>
+        <Form.Item label="Avatar">
+          <AvatarUpload
+            user={user}
+            setError={setError}
+            setSuccess={setSuccess}
+          />
+        </Form.Item>
         <Form.Item label="Name">
           {getFieldDecorator("name", {
             initialValue: user.name,
@@ -137,7 +144,7 @@ function ProfileSettingsForm({
           })(<Input />)}
         </Form.Item>
         {error ? (
-          <Form.Item>
+          <Form.Item label="Error">
             <Alert
               type="error"
               message={`Updating username`}
@@ -155,7 +162,7 @@ function ProfileSettingsForm({
             />
           </Form.Item>
         ) : success ? (
-          <Form.Item>
+          <Form.Item label="success">
             <Alert type="success" message={`Profile updated`} />
           </Form.Item>
         ) : null}
