@@ -85,6 +85,7 @@ export const becomeUser = async (
   client: PoolClient,
   userOrUserId: User | number | null
 ) => {
+  await becomeRoot(client);
   const session = userOrUserId
     ? await createSession(
         client,
