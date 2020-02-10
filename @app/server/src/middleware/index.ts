@@ -8,6 +8,7 @@ import installSSR from "./installSSR";
 import installErrorHandler from "./installErrorHandler";
 import installCypressServerCommand from "./installCypressServerCommand";
 import installHelmet from "./installHelmet";
+import installUploadRouter from "./installUploadRouter";
 
 export {
   installDatabasePools,
@@ -20,4 +21,5 @@ export {
   installErrorHandler,
   installCypressServerCommand,
   installHelmet,
+  installUploadRouter,
 };

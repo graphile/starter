@@ -78,6 +78,7 @@ export async function makeApp({
   await middleware.installLogging(app);
   // These are our assets: images/etc; served out of the /@app/server/public folder (if present)
   await middleware.installSharedStatic(app);
+  await middleware.installUploadRouter(app);
   if (isTest || isDev) {
     await middleware.installCypressServerCommand(app);
   }

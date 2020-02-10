@@ -22,6 +22,7 @@
     "@types/passport-github": "^1.1.5",
     "@types/pg": "^7.14.1",
     "@types/redis": "^2.8.14",
+    "@types/uuid": "^3.4.7",
     "body-parser": "^1.19.0",
     "chalk": "^3.0.0",
     "connect-pg-simple": "^6.1.0",
@@ -41,7 +42,8 @@
     "postgraphile": "^4.5.5",
     "redis": "^2.8.0",
     "source-map-support": "^0.5.13",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "graphql": "^14.4.2",
