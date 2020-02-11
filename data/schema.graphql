@@ -300,7 +300,7 @@ input InviteToOrganizationInput {
   clientMutationId: String
   email: String
   organizationId: Int
-  userId: Int
+  username: String
 }
 
 """The output of our `inviteToOrganization` mutation."""

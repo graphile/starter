@@ -6,6 +6,7 @@ drop function if exists app_public.get_organization_for_invitation(int, text) ca
 drop function if exists app_public.invite_user_to_organization(int, int) cascade;
 drop function if exists app_public.invite_to_organization(int, int) cascade;
 drop function if exists app_public.invite_to_organization(int, int, citext) cascade;
+drop function if exists app_public.invite_to_organization(int, citext, citext) cascade;
 drop function if exists app_public.current_user_invited_organization_ids() cascade;
 drop function if exists app_public.current_user_member_organization_ids() cascade;
 drop table if exists app_public.organization_invitations;
@@ -95,16 +96,19 @@ begin
 end;
 $$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
 
-create function app_public.invite_to_organization(organization_id int, user_id int, email citext)
+create function app_public.invite_to_organization(organization_id int, username citext, email citext)
   returns void as $$
 declare
   v_code text;
+  v_user_id int;
 begin
   -- Are we allowed to add this person
   -- Are we logged in
   if app_public.current_user_id() is null then
     raise exception 'You must log in to invite a user' using errcode = 'LOGIN';
   end if;
+
+  select id into v_user_id from app_public.users where users.username = invite_to_organization.username;
 
   -- Are we the owner of this organization
   if not exists(
@@ -116,10 +120,10 @@ begin
     raise exception 'You''re not the owner of this organization' using errcode = 'DNIED';
   end if;
 
-  if user_id is not null and exists(
+  if v_user_id is not null and exists(
     select 1 from app_public.organization_memberships
       where organization_memberships.organization_id = invite_to_organization.organization_id
-      and organization_memberships.user_id = invite_to_organization.user_id
+      and organization_memberships.user_id = v_user_id
   ) then
     raise exception 'Cannot invite someone who is already a member' using errcode = 'ISMBR';
   end if;
@@ -128,9 +132,13 @@ begin
     v_code = encode(gen_random_bytes(7), 'hex');
   end if;
 
+  if v_user_id is null and email is null then
+    return;
+  end if;
+
   -- Invite the user
   insert into app_public.organization_invitations(organization_id, user_id, email, code)
-    values (invite_to_organization.organization_id, user_id, email, v_code);
+    values (invite_to_organization.organization_id, v_user_id, email, v_code);
 end;
 $$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
 

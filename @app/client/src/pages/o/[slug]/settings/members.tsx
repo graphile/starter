@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useState, ChangeEvent } from "react";
 import { NextPage } from "next";
 import {
   OrganizationPageOrganizationFragment,
@@ -6,12 +6,13 @@ import {
   OrganizationMembers_MembershipFragment,
   SharedLayout_UserFragment,
   useRemoveFromOrganizationMutation,
+  useInviteToOrganizationMutation,
 } from "@app/graphql";
 import SharedLayout from "../../../../layout/SharedLayout";
 import { H3, Redirect } from "@app/components";
 import useOrganization from "../../../../lib/useOrganization";
 import OrganizationSettingsLayout from "../../../../layout/OrganizationSettingsLayout";
-import { List, Popconfirm } from "antd";
+import { List, Popconfirm, message } from "antd";
 import Text from "antd/lib/typography/Text";
 
 const OrganizationSettingsPage: NextPage = () => {
@@ -66,6 +67,39 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
     [currentUser, organization]
   );
 
+  const [inviteToOrganization] = useInviteToOrganizationMutation();
+  const [inviteText, setInviteText] = useState("");
+  const [inviteInProgress, setInviteInProgress] = useState(false);
+  const handleInviteChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setInviteText(e.target.value);
+  }, []);
+  const handleInviteSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (inviteInProgress) {
+        return;
+      }
+      setInviteInProgress(true);
+      const isEmail = inviteText.includes("@");
+      try {
+        await inviteToOrganization({
+          variables: {
+            organizationId: organization.id,
+            email: isEmail ? inviteText : null,
+            username: isEmail ? null : inviteText,
+          },
+        });
+        setInviteText("");
+      } catch (e) {
+        // TODO: handle this through the interface
+        message.error("Could not invite to organization: " + e.message);
+      } finally {
+        setInviteInProgress(false);
+      }
+    },
+    [inviteInProgress, inviteText, inviteToOrganization, organization.id]
+  );
+
   if (
     !organization.currentUserIsBillingContact &&
     !organization.currentUserIsOwner
@@ -80,6 +114,19 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
     >
       <div>
         <H3>{organization.name} Members</H3>
+        <p>Invite member</p>
+        <form onSubmit={handleInviteSubmit}>
+          <div>
+            <input
+              type="text"
+              value={inviteText}
+              onChange={handleInviteChange}
+              placeholder="Enter username or email"
+              disabled={inviteInProgress}
+            />
+          </div>
+          <button disabled={inviteInProgress}>Invite</button>
+        </form>
         <p>Members</p>
         <List
           dataSource={

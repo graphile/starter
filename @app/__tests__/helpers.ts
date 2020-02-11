@@ -7,7 +7,12 @@ if (!process.env.TEST_DATABASE_URL) {
 }
 export const TEST_DATABASE_URL: string = process.env.TEST_DATABASE_URL;
 
-export type User = { id: number; _password?: string; _email?: string };
+export type User = {
+  id: number;
+  username: string;
+  _password?: string;
+  _email?: string;
+};
 export type Organization = { id: number; name: string };
 
 // Make sure we release those pgPools so that our tests exit!

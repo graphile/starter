@@ -18,7 +18,7 @@ import {
 async function inviteToOrganization(
   client: PoolClient,
   organizationId: number | null | void,
-  userId: number | null,
+  username: string | null,
   email?: string | null
 ) {
   const {
@@ -31,7 +31,7 @@ async function inviteToOrganization(
         $3
       )
       `,
-    [organizationId, userId, email]
+    [organizationId, username, email]
   );
   return row;
 }
@@ -63,7 +63,7 @@ it("Can invite user to organization", () =>
     const [organization] = await createOrganizations(client, 1);
 
     // Action
-    await inviteToOrganization(client, organization.id, otherUser.id);
+    await inviteToOrganization(client, organization.id, otherUser.username);
 
     // Assertions
     const { rows: invitations } = await asRoot(client, () =>
@@ -109,7 +109,7 @@ it("Can accept an invitation", () =>
     const [organizationOwner, invitee] = await createUsers(client, 2, true);
     await becomeUser(client, organizationOwner);
     const [organization] = await createOrganizations(client, 1);
-    await inviteToOrganization(client, organization.id, invitee.id);
+    await inviteToOrganization(client, organization.id, invitee.username);
     await becomeRoot(client);
     const {
       rows: [invitation],
