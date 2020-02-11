@@ -1,0 +1,14 @@
+fragment CreatedOrganization on Organization {
+  id
+  name
+  slug
+}
+
+mutation CreateOrganization($name: String!, $slug: String!) {
+  createOrganization(input: { name: $name, slug: $slug }) {
+    organization {
+      id
+      ...CreatedOrganization
+    }
+  }
+}

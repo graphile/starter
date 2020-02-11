@@ -93,7 +93,13 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
   return (
     <Layout>
       {data && data.currentUser ? <CurrentUserUpdatedSubscription /> : null}
-      <Header style={{ boxShadow: "0 2px 8px #f0f1f2", zIndex: 1 }}>
+      <Header
+        style={{
+          boxShadow: "0 2px 8px #f0f1f2",
+          zIndex: 1,
+          overflow: "hidden",
+        }}
+      >
         <Head>
           <title>
             {title} — {projectName}
@@ -105,7 +111,7 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
               <a>Home</a>
             </Link>
           </Col>
-          <Col>
+          <Col span={12}>
             <h3>{title}</h3>
           </Col>
           <Col span={6} style={{ textAlign: "right" }}>
@@ -113,6 +119,13 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
               <Dropdown
                 overlay={
                   <Menu>
+                    <Menu.Item>
+                      <Link href="/create-organization">
+                        <a data-cy="layout-link-create-organization">
+                          Create organization
+                        </a>
+                      </Link>
+                    </Menu.Item>
                     <Menu.Item>
                       <Link href="/settings">
                         <a data-cy="layout-link-settings">
