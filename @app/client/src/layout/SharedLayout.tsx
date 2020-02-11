@@ -119,6 +119,25 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
               <Dropdown
                 overlay={
                   <Menu>
+                    {data.currentUser.organizationMemberships.nodes.map(
+                      ({ organization, isOwner }) => (
+                        <Menu.Item key={organization?.id}>
+                          <Link href={`/o/${organization?.slug}`}>
+                            <a>
+                              {organization?.name}
+                              {isOwner ? (
+                                <span>
+                                  {" "}
+                                  <Icon type="crown" />
+                                </span>
+                              ) : (
+                                ""
+                              )}
+                            </a>
+                          </Link>
+                        </Menu.Item>
+                      )
+                    )}
                     <Menu.Item>
                       <Link href="/create-organization">
                         <a data-cy="layout-link-create-organization">
