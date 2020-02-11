@@ -4,15 +4,17 @@ import React, {
   useCallback,
   SyntheticEvent,
   useMemo,
+  useEffect,
 } from "react";
 import { NextPage } from "next";
 import SharedLayout from "../../layout/SharedLayout";
-import { Row, Col, Form, Input, Alert, Button } from "antd";
+import { Row, Col, Form, Input, Alert, Button, Spin } from "antd";
 import { H3, Redirect } from "@app/components";
 import {
   useCreateOrganizationMutation,
   CreateOrganizationMutation,
   CreatedOrganizationFragment,
+  useOrganizationBySlugLazyQuery,
 } from "@app/graphql";
 import { formItemLayout, tailFormItemLayout } from "../../forms";
 import { FormComponentProps } from "antd/lib/form";
@@ -21,6 +23,8 @@ import { extractError, getCodeFromError } from "../../errors";
 import slugify from "slugify";
 import { ValidateFieldsOptions } from "antd/lib/form/Form";
 import { promisify } from "util";
+import { debounce } from "lodash";
+import Text from "antd/lib/typography/Text";
 
 const CreateOrganizationPage: NextPage = () => {
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
@@ -61,6 +65,37 @@ const CreateOrganizationForm: FC<CreateOrganizationFormProps> = props => {
   const slug = slugify(getFieldValue("name") || "", {
     lower: true,
   });
+  const [
+    lookupOrganizationBySlug,
+    { data: existingOrganizationData, loading: slugLoading, error: slugError },
+  ] = useOrganizationBySlugLazyQuery();
+
+  const [slugCheckIsValid, setSlugCheckIsValid] = useState(false);
+  const checkSlug = useMemo(
+    () =>
+      debounce(async (slug: string) => {
+        try {
+          if (slug) {
+            await lookupOrganizationBySlug({
+              variables: {
+                slug,
+              },
+            });
+          }
+        } catch (e) {
+          /* NOOP */
+        } finally {
+          setSlugCheckIsValid(true);
+        }
+      }, 500),
+    [lookupOrganizationBySlug]
+  );
+
+  useEffect(() => {
+    setSlugCheckIsValid(false);
+    checkSlug(slug);
+  }, [checkSlug, slug]);
+
   const code = getCodeFromError(error);
   const [
     organization,
@@ -87,13 +122,13 @@ const CreateOrganizationForm: FC<CreateOrganizationFormProps> = props => {
         setOrganization(data?.createOrganization?.organization || null);
       } catch (e) {
         const errcode = getCodeFromError(e);
-        if (errcode === "23505") {
+        if (errcode === "NUNIQ") {
           form.setFields({
-            username: {
-              value: form.getFieldValue("username"),
+            name: {
+              value: form.getFieldValue("name"),
               errors: [
                 new Error(
-                  "This username is already in use, please pick a different name"
+                  "This organization name is already in use, please pick a different name"
                 ),
               ],
             },
@@ -130,6 +165,18 @@ const CreateOrganizationForm: FC<CreateOrganizationFormProps> = props => {
                 Your organization URL will be{" "}
                 {`${process.env.ROOT_URL}/o/${slug}`}
               </p>
+              {!slug ? null : !slugCheckIsValid || slugLoading ? (
+                <p>
+                  <Spin /> Checking organization name
+                </p>
+              ) : existingOrganizationData?.organizationBySlug ? (
+                <Text type="danger">Organization name is already in use</Text>
+              ) : slugError ? (
+                <Text type="warning">
+                  Error occurred checking for existing organization with this
+                  name (error code: ERR_{getCodeFromError(slugError)})
+                </Text>
+              ) : null}
             </div>
           )}
         </Form.Item>
