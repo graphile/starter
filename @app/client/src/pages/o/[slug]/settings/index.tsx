@@ -1,11 +1,10 @@
 import React, { FC } from "react";
 import { NextPage } from "next";
 import { OrganizationPageOrganizationFragment } from "@app/graphql";
-import SharedLayout from "../../../layout/SharedLayout";
-import { Row, Col } from "antd";
+import SharedLayout from "../../../../layout/SharedLayout";
 import { H1, Redirect } from "@app/components";
-import useOrganization from "../../../lib/useOrganization";
-import OrganizationSettingsLayout from "../../../layout/OrganizationSettingsLayout";
+import useOrganization from "../../../../lib/useOrganization";
+import OrganizationSettingsLayout from "../../../../layout/OrganizationSettingsLayout";
 
 const OrganizationSettingsPage: NextPage = () => {
   const { organization, fallbackChild, slug } = useOrganization();

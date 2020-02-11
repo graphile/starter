@@ -752,6 +752,8 @@ type OrganizationMembershipsEdge {
 enum OrganizationMembershipsOrderBy {
   ID_ASC
   ID_DESC
+  MEMBER_NAME_ASC
+  MEMBER_NAME_DESC
   NATURAL
   ORGANIZATION_ID_ASC
   ORGANIZATION_ID_DESC

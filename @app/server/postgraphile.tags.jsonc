@@ -28,6 +28,11 @@
         },
         "description": "A user who can log in to the application."
       },
+      "app_public.organizations": {
+        "tags": {
+          "omit": "create"
+        }
+      },
       "app_public.organization_memberships": {
         "tags": {
           "omit": "all"
