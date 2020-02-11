@@ -11,7 +11,7 @@ import SharedLayout from "../../../../layout/SharedLayout";
 import { H3, Redirect } from "@app/components";
 import useOrganization from "../../../../lib/useOrganization";
 import OrganizationSettingsLayout from "../../../../layout/OrganizationSettingsLayout";
-import { List } from "antd";
+import { List, Popconfirm } from "antd";
 import Text from "antd/lib/typography/Text";
 
 const OrganizationSettingsPage: NextPage = () => {
@@ -127,9 +127,15 @@ const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = props =>
     <List.Item
       actions={[
         organization.currentUserIsOwner && node.user?.id !== currentUser?.id ? (
-          <a onClick={handleRemove} key="remove">
-            Remove
-          </a>
+          <Popconfirm
+            title={`Are you sure you want to remove ${node.user?.name} from ${organization.name}?`}
+            onConfirm={handleRemove}
+            okText="Yes"
+            cancelText="No"
+            key="remove"
+          >
+            <a>Remove</a>
+          </Popconfirm>
         ) : null,
       ].filter(Boolean)}
     >
