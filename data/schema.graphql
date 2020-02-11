@@ -531,6 +531,8 @@ type Mutation {
 
 type Organization {
   createdAt: Datetime!
+  currentUserIsBillingContact: Boolean
+  currentUserIsOwner: Boolean
   id: Int!
   name: String!
 

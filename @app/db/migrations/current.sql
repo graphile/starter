@@ -1,3 +1,5 @@
+drop function if exists app_public.organizations_current_user_is_billing_contact(app_public.organizations);
+drop function if exists app_public.organizations_current_user_is_owner(app_public.organizations);
 drop function if exists app_public.accept_invitation_to_organization(int, text) cascade;
 drop function if exists app_public.get_organization_for_invitation(int, text) cascade;
 drop function if exists app_public.invite_user_to_organization(int, int) cascade;
@@ -184,3 +186,30 @@ $$ language plpgsql volatile security definer set search_path = pg_catalog, publ
 
 create trigger _500_send_email after insert on app_public.organization_invitations
   for each row execute procedure app_private.tg__add_job('organization_invitations__send_invite');
+
+
+--------------------------------------------------------------------------------
+
+create function app_public.organizations_current_user_is_owner(
+  org app_public.organizations
+) returns boolean as $$
+  select exists(
+    select 1
+    from app_public.organization_memberships
+    where organization_id = org.id
+    and user_id = app_public.current_user_id()
+    and is_owner is true
+  )
+$$ language sql stable;
+
+create function app_public.organizations_current_user_is_billing_contact(
+  org app_public.organizations
+) returns boolean as $$
+  select exists(
+    select 1
+    from app_public.organization_memberships
+    where organization_id = org.id
+    and user_id = app_public.current_user_id()
+    and is_billing_contact is true
+  )
+$$ language sql stable;

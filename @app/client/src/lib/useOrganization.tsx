@@ -1,12 +1,10 @@
 import React from "react";
-import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useOrganizationPageQuery } from "@app/graphql";
-import SharedLayout from "../../layout/SharedLayout";
-import { Spin, Row, Col } from "antd";
+import { Spin } from "antd";
 import { ErrorAlert } from "@app/components";
 
-const OrganizationPage: NextPage = () => {
+const useOrganization = () => {
   const router = useRouter();
   const { slug: rawSlug } = router.query;
   const slug = String(rawSlug);
@@ -20,7 +18,7 @@ const OrganizationPage: NextPage = () => {
   let child: JSX.Element | null = null;
   const organization = data?.organizationBySlug;
   if (organization) {
-    child = <div>This is the page for '{organization.name}'</div>;
+    //child = <OrganizationPageInner organization={organization} />;
   } else if (loading) {
     child = <Spin />;
   } else if (error) {
@@ -29,13 +27,8 @@ const OrganizationPage: NextPage = () => {
     // TODO: 404
     child = <div>404</div>;
   }
-  return (
-    <SharedLayout title={organization?.name ?? slug}>
-      <Row>
-        <Col>{child}</Col>
-      </Row>
-    </SharedLayout>
-  );
+
+  return { organization, fallbackChild: child, slug };
 };
 
-export default OrganizationPage;
+export default useOrganization;

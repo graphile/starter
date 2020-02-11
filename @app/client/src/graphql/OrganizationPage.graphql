@@ -1,7 +1,14 @@
+fragment OrganizationPageOrganization on Organization {
+  id
+  name
+  slug
+  currentUserIsOwner
+  currentUserIsBillingContact
+}
+
 query OrganizationPage($slug: String!) {
   organizationBySlug(slug: $slug) {
     id
-    name
-    slug
+    ...OrganizationPageOrganization
   }
 }
