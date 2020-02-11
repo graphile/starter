@@ -1,3 +1,4 @@
+drop function if exists app_public.remove_from_organization(int, int);
 drop function if exists app_public.organizations_current_user_is_billing_contact(app_public.organizations);
 drop function if exists app_public.organizations_current_user_is_owner(app_public.organizations);
 drop function if exists app_public.accept_invitation_to_organization(int, text) cascade;
@@ -213,3 +214,45 @@ create function app_public.organizations_current_user_is_billing_contact(
     and is_billing_contact is true
   )
 $$ language sql stable;
+
+create function app_public.remove_from_organization(
+  organization_id int,
+  user_id int
+) returns void as $$
+declare
+  v_my_membership app_public.organization_memberships;
+begin
+  select * into v_my_membership
+    from app_public.organization_memberships
+    where organization_memberships.organization_id = remove_from_organization.organization_id
+    and organization_memberships.user_id = app_public.current_user_id();
+
+  if (v_my_membership is null) then
+    -- I'm not a member of that organization
+    return;
+  elsif v_my_membership.is_owner and remove_from_organization.user_id <> app_public.current_user_id() then
+    -- Delete it
+  elsif v_my_membership.user_id = user_id then
+    -- Delete it
+  else
+    -- Not allowed to delete it
+    return;
+  end if;
+
+  if v_my_membership.is_billing_contact then
+    update app_public.organization_memberships
+      set is_billing_contact = false
+      where id = v_my_membership.id
+      returning * into v_my_membership;
+    update app_public.organization_memberships
+      set is_billing_contact = true
+      where organization_memberships.organization_id = remove_from_organization.organization_id
+      and organization_memberships.is_owner;
+  end if;
+
+  delete from app_public.organization_memberships
+    where organization_memberships.organization_id = remove_from_organization.organization_id
+    and organization_memberships.user_id = remove_from_organization.user_id;
+
+end;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;

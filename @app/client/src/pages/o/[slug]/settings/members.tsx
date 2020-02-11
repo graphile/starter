@@ -4,6 +4,8 @@ import {
   OrganizationPageOrganizationFragment,
   useOrganizationMembersQuery,
   OrganizationMembers_MembershipFragment,
+  SharedLayout_UserFragment,
+  useRemoveFromOrganizationMutation,
 } from "@app/graphql";
 import SharedLayout from "../../../../layout/SharedLayout";
 import { H3, Redirect } from "@app/components";
@@ -16,14 +18,20 @@ const OrganizationSettingsPage: NextPage = () => {
   const { organization, fallbackChild, slug } = useOrganization();
   return (
     <SharedLayout title={organization?.name ?? slug} noPad>
-      {fallbackChild || (
-        <OrganizationSettingsPageInner organization={organization!} />
-      )}
+      {({ currentUser }) =>
+        fallbackChild || (
+          <OrganizationSettingsPageInner
+            organization={organization!}
+            currentUser={currentUser}
+          />
+        )
+      }
     </SharedLayout>
   );
 };
 
 interface OrganizationSettingsPageInnerProps {
+  currentUser?: SharedLayout_UserFragment | null;
   organization: OrganizationPageOrganizationFragment;
 }
 
@@ -31,7 +39,7 @@ interface OrganizationSettingsPageInnerProps {
 const RESULTS_PER_PAGE = 10;
 
 const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = props => {
-  const { organization } = props;
+  const { organization, currentUser } = props;
   const [page, setPage] = useState(1);
   const { data } = useOrganizationMembersQuery({
     variables: {
@@ -48,33 +56,14 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
   };
 
   const renderItem = useCallback(
-    (node: OrganizationMembers_MembershipFragment) => {
-      const roles = [
-        node.isOwner ? "owner" : null,
-        node.isBillingContact ? "billing contact" : null,
-      ]
-        .filter(Boolean)
-        .join(" and ");
-      return (
-        <List.Item actions={[<span key="remove">Remove</span>]}>
-          <List.Item.Meta
-            //avatar={...}
-            title={node.user?.name}
-            description={
-              <div>
-                <Text>{node.user?.username}</Text>
-                {roles ? (
-                  <div>
-                    <Text type="secondary">({roles})</Text>
-                  </div>
-                ) : null}
-              </div>
-            }
-          />
-        </List.Item>
-      );
-    },
-    []
+    (node: OrganizationMembers_MembershipFragment) => (
+      <OrganizationMemberListItem
+        node={node}
+        organization={organization}
+        currentUser={currentUser}
+      />
+    ),
+    [currentUser, organization]
   );
 
   if (
@@ -107,6 +96,58 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
         />
       </div>
     </OrganizationSettingsLayout>
+  );
+};
+
+interface OrganizationMemberListItemProps {
+  node: OrganizationMembers_MembershipFragment;
+  organization: OrganizationPageOrganizationFragment;
+  currentUser?: SharedLayout_UserFragment | null;
+}
+
+const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = props => {
+  const { node, organization, currentUser } = props;
+  const [removeMember] = useRemoveFromOrganizationMutation();
+  const handleRemove = useCallback(() => {
+    removeMember({
+      variables: {
+        organizationId: organization.id,
+        userId: node.user?.id ?? 0,
+      },
+      refetchQueries: ["OrganizationMembers"],
+    });
+  }, [node.user, organization.id, removeMember]);
+  const roles = [
+    node.isOwner ? "owner" : null,
+    node.isBillingContact ? "billing contact" : null,
+  ]
+    .filter(Boolean)
+    .join(" and ");
+  return (
+    <List.Item
+      actions={[
+        organization.currentUserIsOwner && node.user?.id !== currentUser?.id ? (
+          <a onClick={handleRemove} key="remove">
+            Remove
+          </a>
+        ) : null,
+      ].filter(Boolean)}
+    >
+      <List.Item.Meta
+        //avatar={...}
+        title={node.user?.name}
+        description={
+          <div>
+            <Text>{node.user?.username}</Text>
+            {roles ? (
+              <div>
+                <Text type="secondary">({roles})</Text>
+              </div>
+            ) : null}
+          </div>
+        }
+      />
+    </List.Item>
   );
 };
 
