@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { useOrganizationPageQuery } from "@app/graphql";
-import { Spin } from "antd";
+import { Spin, Row, Col } from "antd";
 import { ErrorAlert } from "@app/components";
 
 const useOrganization = () => {
@@ -28,7 +28,15 @@ const useOrganization = () => {
     child = <div>404</div>;
   }
 
-  return { organization, fallbackChild: child, slug };
+  return {
+    organization,
+    fallbackChild: child ? (
+      <Row>
+        <Col>{child}</Col>
+      </Row>
+    ) : null,
+    slug,
+  };
 };
 
 export default useOrganization;

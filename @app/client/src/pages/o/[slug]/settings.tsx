@@ -5,18 +5,15 @@ import SharedLayout from "../../../layout/SharedLayout";
 import { Row, Col } from "antd";
 import { H1, Redirect } from "@app/components";
 import useOrganization from "../../../lib/useOrganization";
+import OrganizationSettingsLayout from "../../../layout/OrganizationSettingsLayout";
 
 const OrganizationSettingsPage: NextPage = () => {
   const { organization, fallbackChild, slug } = useOrganization();
   return (
-    <SharedLayout title={organization?.name ?? slug}>
-      <Row>
-        <Col>
-          {fallbackChild || (
-            <OrganizationSettingsPageInner organization={organization!} />
-          )}
-        </Col>
-      </Row>
+    <SharedLayout title={organization?.name ?? slug} noPad>
+      {fallbackChild || (
+        <OrganizationSettingsPageInner organization={organization!} />
+      )}
     </SharedLayout>
   );
 };
@@ -35,10 +32,15 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
   }
 
   return (
-    <div>
-      <H1>{organization.name} Settings</H1>
-      <p>Welcome to settings</p>
-    </div>
+    <OrganizationSettingsLayout
+      organization={organization}
+      href={`/o/${organization.slug}/settings`}
+    >
+      <div>
+        <H1>{organization.name} Settings</H1>
+        <p>Welcome to settings</p>
+      </div>
+    </OrganizationSettingsLayout>
   );
 };
 
