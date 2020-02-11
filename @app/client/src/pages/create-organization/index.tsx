@@ -140,7 +140,14 @@ const CreateOrganizationForm: FC<CreateOrganizationFormProps> = props => {
               message={`Creating organization failed`}
               description={
                 <span>
-                  {extractError(error).message}
+                  {code === "NUNIQ" ? (
+                    <span>
+                      That organization name is already in use, please choose a
+                      different organization name.
+                    </span>
+                  ) : (
+                    extractError(error).message
+                  )}
                   {code ? (
                     <span>
                       {" "}
