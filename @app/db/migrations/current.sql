@@ -25,13 +25,12 @@ alter table app_public.organizations enable row level security;
 
 grant select on app_public.organizations to :DATABASE_VISITOR;
 
-
 --------------------------------------------------------------------------------
 
 create table app_public.organization_memberships (
   id serial primary key,
-  organization_id int not null references app_public.organizations,
-  user_id int not null references app_public.users,
+  organization_id int not null references app_public.organizations on delete cascade,
+  user_id int not null references app_public.users on delete cascade,
   is_owner boolean not null default false,
   is_billing_contact boolean not null default false,
   created_at timestamptz not null default now(),
@@ -195,7 +194,6 @@ $$ language plpgsql volatile security definer set search_path = pg_catalog, publ
 
 create trigger _500_send_email after insert on app_public.organization_invitations
   for each row execute procedure app_private.tg__add_job('organization_invitations__send_invite');
-
 
 --------------------------------------------------------------------------------
 

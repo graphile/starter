@@ -33,6 +33,12 @@
           "omit": "create"
         }
       },
+      "app_public.organization_invitations": {
+        "tags": {
+          // We are not omitting this table, because we will want to see the
+          // list of invited users in future.
+        }
+      },
       "app_public.organization_memberships": {
         "tags": {
           "omit": "all"
