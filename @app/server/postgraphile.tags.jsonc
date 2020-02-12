@@ -30,7 +30,7 @@
       },
       "app_public.organizations": {
         "tags": {
-          "omit": "create"
+          "omit": "create,delete"
         }
       },
       "app_public.organization_invitations": {
