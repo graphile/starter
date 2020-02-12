@@ -1,14 +1,16 @@
-import * as React from "react";
+import React, { FC } from "react";
 import { Row, Alert, Col, Spin, Button } from "antd";
 import SharedLayout from "../../layout/SharedLayout";
 import { NextPage } from "next";
 import {
   useInvitationDetailQuery,
   useAcceptOrganizationInviteMutation,
+  SharedLayout_UserFragment,
 } from "@app/graphql";
-import { ErrorAlert } from "@app/components";
+import { ErrorAlert, Redirect } from "@app/components";
 import { getCodeFromError } from "../../errors";
-import Router from "next/router";
+import Router, { useRouter, NextRouter } from "next/router";
+import * as qs from "querystring";
 
 interface IProps {
   id: number | null;
@@ -21,6 +23,32 @@ enum Status {
 }
 
 const InvitationAccept: NextPage<IProps> = props => {
+  const router: NextRouter | null = useRouter();
+  const fullHref =
+    router.pathname +
+    (router && router.query ? `?${qs.stringify(router.query)}` : "");
+  return (
+    <SharedLayout title="Accept Invitation">
+      {({ currentUser, error, loading }) =>
+        !currentUser && !error && !loading ? (
+          <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />
+        ) : (
+          <Row>
+            <Col>
+              <InvitationAcceptInner currentUser={currentUser} {...props} />
+            </Col>
+          </Row>
+        )
+      }
+    </SharedLayout>
+  );
+};
+
+interface InvitationAcceptInnerProps extends IProps {
+  currentUser?: SharedLayout_UserFragment | null;
+}
+
+const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = props => {
   const { id: rawId, code } = props;
   const id = rawId || 0;
   const { data, loading, error } = useInvitationDetailQuery({
@@ -94,13 +122,7 @@ const InvitationAccept: NextPage<IProps> = props => {
       ></Alert>
     );
   }
-  return (
-    <SharedLayout title="Home">
-      <Row>
-        <Col>{child}</Col>
-      </Row>
-    </SharedLayout>
-  );
+  return child;
 };
 
 InvitationAccept.getInitialProps = async ({ query: { id, code } }) => ({
