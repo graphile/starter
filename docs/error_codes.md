@@ -54,3 +54,8 @@ Rewritten, the above rules state:
 ## Organization membership
 
 - ISMBR: this person is already a member
+
+## Deleting account
+
+- OWNER: you cannot delete your account because you are the owner of a non-empty
+  organization

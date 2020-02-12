@@ -30,7 +30,9 @@ const OrganizationPageInner: FC<OrganizationPageInnerProps> = props => {
           {organization.currentUserIsBillingContact ||
           organization.currentUserIsOwner ? (
             <p>
-              <Link href={`/o/${organization.slug}/settings`}>Settings</Link>
+              <Link href={`/o/${organization.slug}/settings`}>
+                <a>Settings</a>
+              </Link>
             </p>
           ) : null}
           <p>Hello</p>

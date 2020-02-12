@@ -9,6 +9,7 @@ import {
   useConfirmAccountDeletionMutation,
 } from "@app/graphql";
 import { useRouter } from "next/router";
+import { getCodeFromError } from "../../errors";
 
 const { Text } = Typography;
 
@@ -138,7 +139,31 @@ const Settings_Accounts: NextPage = () => {
           }
         />
       )}
-      {error ? <ErrorAlert error={error} /> : null}
+      {error ? (
+        getCodeFromError(error) === "OWNER" ? (
+          <Alert
+            type="error"
+            showIcon
+            message="Cannot delete account"
+            description={
+              <>
+                <P>
+                  You cannot delete your account whilst you are the owner of an
+                  organization.
+                </P>
+                <P>
+                  For each organization you are the owner of, please either
+                  assign your ownership to another user or delete the
+                  organization to continue.
+                </P>
+              </>
+            }
+          />
+        ) : (
+          <ErrorAlert error={error} />
+        )
+      ) : null}
+
       <Modal
         visible={confirmOpen}
         onCancel={closeModal}
