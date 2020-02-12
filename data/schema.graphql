@@ -1,4 +1,6 @@
-"""All input for the `acceptInvitationToOrganization` mutation."""
+"""
+All input for the `acceptInvitationToOrganization` mutation.
+"""
 input AcceptInvitationToOrganizationInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -9,7 +11,9 @@ input AcceptInvitationToOrganizationInput {
   invitationId: UUID!
 }
 
-"""The output of our `acceptInvitationToOrganization` mutation."""
+"""
+The output of our `acceptInvitationToOrganization` mutation.
+"""
 type AcceptInvitationToOrganizationPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -23,7 +27,9 @@ type AcceptInvitationToOrganizationPayload {
   query: Query
 }
 
-"""All input for the `changePassword` mutation."""
+"""
+All input for the `changePassword` mutation.
+"""
 input ChangePasswordInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -34,7 +40,9 @@ input ChangePasswordInput {
   oldPassword: String!
 }
 
-"""The output of our `changePassword` mutation."""
+"""
+The output of our `changePassword` mutation.
+"""
 type ChangePasswordPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -49,7 +57,9 @@ type ChangePasswordPayload {
   success: Boolean
 }
 
-"""All input for the `confirmAccountDeletion` mutation."""
+"""
+All input for the `confirmAccountDeletion` mutation.
+"""
 input ConfirmAccountDeletionInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -59,7 +69,9 @@ input ConfirmAccountDeletionInput {
   token: String!
 }
 
-"""The output of our `confirmAccountDeletion` mutation."""
+"""
+The output of our `confirmAccountDeletion` mutation.
+"""
 type ConfirmAccountDeletionPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -74,7 +86,9 @@ type ConfirmAccountDeletionPayload {
   success: Boolean
 }
 
-"""All input for the `createOrganization` mutation."""
+"""
+All input for the `createOrganization` mutation.
+"""
 input CreateOrganizationInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -85,7 +99,9 @@ input CreateOrganizationInput {
   slug: String!
 }
 
-"""The output of our `createOrganization` mutation."""
+"""
+The output of our `createOrganization` mutation.
+"""
 type CreateOrganizationPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -94,9 +110,13 @@ type CreateOrganizationPayload {
   clientMutationId: String
   organization: Organization
 
-  """An edge for our `Organization`. May be used by Relay 1."""
+  """
+  An edge for our `Organization`. May be used by Relay 1.
+  """
   organizationEdge(
-    """The method to use when ordering `Organization`."""
+    """
+    The method to use when ordering `Organization`.
+    """
     orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationsEdge
 
@@ -106,7 +126,9 @@ type CreateOrganizationPayload {
   query: Query
 }
 
-"""All input for the create `UserEmail` mutation."""
+"""
+All input for the create `UserEmail` mutation.
+"""
 input CreateUserEmailInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -114,11 +136,15 @@ input CreateUserEmailInput {
   """
   clientMutationId: String
 
-  """The `UserEmail` to be created by this mutation."""
+  """
+  The `UserEmail` to be created by this mutation.
+  """
   userEmail: UserEmailInput!
 }
 
-"""The output of our create `UserEmail` mutation."""
+"""
+The output of our create `UserEmail` mutation.
+"""
 type CreateUserEmailPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -131,20 +157,30 @@ type CreateUserEmailPayload {
   """
   query: Query
 
-  """Reads a single `User` that is related to this `UserEmail`."""
+  """
+  Reads a single `User` that is related to this `UserEmail`.
+  """
   user: User
 
-  """The `UserEmail` that was created by this mutation."""
+  """
+  The `UserEmail` that was created by this mutation.
+  """
   userEmail: UserEmail
 
-  """An edge for our `UserEmail`. May be used by Relay 1."""
+  """
+  An edge for our `UserEmail`. May be used by Relay 1.
+  """
   userEmailEdge(
-    """The method to use when ordering `UserEmail`."""
+    """
+    The method to use when ordering `UserEmail`.
+    """
     orderBy: [UserEmailsOrderBy!] = [PRIMARY_KEY_ASC]
   ): UserEmailsEdge
 }
 
-"""A location in a connection that can be used for resuming pagination."""
+"""
+A location in a connection that can be used for resuming pagination.
+"""
 scalar Cursor
 
 """
@@ -153,7 +189,9 @@ A point in time as described by the [ISO
 """
 scalar Datetime
 
-"""All input for the `deleteOrganization` mutation."""
+"""
+All input for the `deleteOrganization` mutation.
+"""
 input DeleteOrganizationInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -163,7 +201,9 @@ input DeleteOrganizationInput {
   organizationId: UUID!
 }
 
-"""The output of our `deleteOrganization` mutation."""
+"""
+The output of our `deleteOrganization` mutation.
+"""
 type DeleteOrganizationPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -177,7 +217,9 @@ type DeleteOrganizationPayload {
   query: Query
 }
 
-"""All input for the `deleteUserAuthentication` mutation."""
+"""
+All input for the `deleteUserAuthentication` mutation.
+"""
 input DeleteUserAuthenticationInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -187,7 +229,9 @@ input DeleteUserAuthenticationInput {
   id: UUID!
 }
 
-"""The output of our delete `UserAuthentication` mutation."""
+"""
+The output of our delete `UserAuthentication` mutation.
+"""
 type DeleteUserAuthenticationPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -201,14 +245,20 @@ type DeleteUserAuthenticationPayload {
   """
   query: Query
 
-  """Reads a single `User` that is related to this `UserAuthentication`."""
+  """
+  Reads a single `User` that is related to this `UserAuthentication`.
+  """
   user: User
 
-  """The `UserAuthentication` that was deleted by this mutation."""
+  """
+  The `UserAuthentication` that was deleted by this mutation.
+  """
   userAuthentication: UserAuthentication
 }
 
-"""All input for the `deleteUserEmail` mutation."""
+"""
+All input for the `deleteUserEmail` mutation.
+"""
 input DeleteUserEmailInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -218,7 +268,9 @@ input DeleteUserEmailInput {
   id: UUID!
 }
 
-"""The output of our delete `UserEmail` mutation."""
+"""
+The output of our delete `UserEmail` mutation.
+"""
 type DeleteUserEmailPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -232,20 +284,30 @@ type DeleteUserEmailPayload {
   """
   query: Query
 
-  """Reads a single `User` that is related to this `UserEmail`."""
+  """
+  Reads a single `User` that is related to this `UserEmail`.
+  """
   user: User
 
-  """The `UserEmail` that was deleted by this mutation."""
+  """
+  The `UserEmail` that was deleted by this mutation.
+  """
   userEmail: UserEmail
 
-  """An edge for our `UserEmail`. May be used by Relay 1."""
+  """
+  An edge for our `UserEmail`. May be used by Relay 1.
+  """
   userEmailEdge(
-    """The method to use when ordering `UserEmail`."""
+    """
+    The method to use when ordering `UserEmail`.
+    """
     orderBy: [UserEmailsOrderBy!] = [PRIMARY_KEY_ASC]
   ): UserEmailsEdge
 }
 
-"""All input for the `forgotPassword` mutation."""
+"""
+All input for the `forgotPassword` mutation.
+"""
 input ForgotPasswordInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -255,7 +317,9 @@ input ForgotPasswordInput {
   email: String!
 }
 
-"""The output of our `forgotPassword` mutation."""
+"""
+The output of our `forgotPassword` mutation.
+"""
 type ForgotPasswordPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -269,7 +333,9 @@ type ForgotPasswordPayload {
   query: Query
 }
 
-"""All input for the `inviteToOrganization` mutation."""
+"""
+All input for the `inviteToOrganization` mutation.
+"""
 input InviteToOrganizationInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -281,7 +347,9 @@ input InviteToOrganizationInput {
   username: String
 }
 
-"""The output of our `inviteToOrganization` mutation."""
+"""
+The output of our `inviteToOrganization` mutation.
+"""
 type InviteToOrganizationPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -308,7 +376,9 @@ type LogoutPayload {
   success: Boolean
 }
 
-"""All input for the `makeEmailPrimary` mutation."""
+"""
+All input for the `makeEmailPrimary` mutation.
+"""
 input MakeEmailPrimaryInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -318,7 +388,9 @@ input MakeEmailPrimaryInput {
   emailId: UUID!
 }
 
-"""The output of our `makeEmailPrimary` mutation."""
+"""
+The output of our `makeEmailPrimary` mutation.
+"""
 type MakeEmailPrimaryPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -331,13 +403,19 @@ type MakeEmailPrimaryPayload {
   """
   query: Query
 
-  """Reads a single `User` that is related to this `UserEmail`."""
+  """
+  Reads a single `User` that is related to this `UserEmail`.
+  """
   user: User
   userEmail: UserEmail
 
-  """An edge for our `UserEmail`. May be used by Relay 1."""
+  """
+  An edge for our `UserEmail`. May be used by Relay 1.
+  """
   userEmailEdge(
-    """The method to use when ordering `UserEmail`."""
+    """
+    The method to use when ordering `UserEmail`.
+    """
     orderBy: [UserEmailsOrderBy!] = [PRIMARY_KEY_ASC]
   ): UserEmailsEdge
 }
@@ -358,7 +436,9 @@ type Mutation {
     input: AcceptInvitationToOrganizationInput!
   ): AcceptInvitationToOrganizationPayload
 
-  """Enter your old password and a new password to change your password."""
+  """
+  Enter your old password and a new password to change your password.
+  """
   changePassword(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -391,7 +471,9 @@ type Mutation {
     input: CreateOrganizationInput!
   ): CreateOrganizationPayload
 
-  """Creates a single `UserEmail`."""
+  """
+  Creates a single `UserEmail`.
+  """
   createUserEmail(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -409,7 +491,9 @@ type Mutation {
     input: DeleteOrganizationInput!
   ): DeleteOrganizationPayload
 
-  """Deletes a single `UserAuthentication` using a unique key."""
+  """
+  Deletes a single `UserAuthentication` using a unique key.
+  """
   deleteUserAuthentication(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -417,7 +501,9 @@ type Mutation {
     input: DeleteUserAuthenticationInput!
   ): DeleteUserAuthenticationPayload
 
-  """Deletes a single `UserEmail` using a unique key."""
+  """
+  Deletes a single `UserEmail` using a unique key.
+  """
   deleteUserEmail(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -497,7 +583,9 @@ type Mutation {
     input: RemoveFromOrganizationInput!
   ): RemoveFromOrganizationPayload
 
-  """Begin the account deletion flow by requesting the confirmation email"""
+  """
+  Begin the account deletion flow by requesting the confirmation email
+  """
   requestAccountDeletion(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -551,7 +639,9 @@ type Mutation {
     input: TransferOrganizationOwnershipInput!
   ): TransferOrganizationOwnershipPayload
 
-  """Updates a single `Organization` using a unique key and a patch."""
+  """
+  Updates a single `Organization` using a unique key and a patch.
+  """
   updateOrganization(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -559,7 +649,9 @@ type Mutation {
     input: UpdateOrganizationInput!
   ): UpdateOrganizationPayload
 
-  """Updates a single `User` using a unique key and a patch."""
+  """
+  Updates a single `User` using a unique key and a patch.
+  """
   updateUser(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -590,10 +682,14 @@ type Organization {
   Reads and enables pagination through a set of `OrganizationInvitation`.
   """
   organizationInvitations(
-    """Read all values in the set after (below) this cursor."""
+    """
+    Read all values in the set after (below) this cursor.
+    """
     after: Cursor
 
-    """Read all values in the set before (above) this cursor."""
+    """
+    Read all values in the set before (above) this cursor.
+    """
     before: Cursor
 
     """
@@ -601,10 +697,14 @@ type Organization {
     """
     condition: OrganizationInvitationCondition
 
-    """Only read the first `n` values of the set."""
+    """
+    Only read the first `n` values of the set.
+    """
     first: Int
 
-    """Only read the last `n` values of the set."""
+    """
+    Only read the last `n` values of the set.
+    """
     last: Int
 
     """
@@ -613,7 +713,9 @@ type Organization {
     """
     offset: Int
 
-    """The method to use when ordering `OrganizationInvitation`."""
+    """
+    The method to use when ordering `OrganizationInvitation`.
+    """
     orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationInvitationsConnection!
 
@@ -621,10 +723,14 @@ type Organization {
   Reads and enables pagination through a set of `OrganizationMembership`.
   """
   organizationMemberships(
-    """Read all values in the set after (below) this cursor."""
+    """
+    Read all values in the set after (below) this cursor.
+    """
     after: Cursor
 
-    """Read all values in the set before (above) this cursor."""
+    """
+    Read all values in the set before (above) this cursor.
+    """
     before: Cursor
 
     """
@@ -632,10 +738,14 @@ type Organization {
     """
     condition: OrganizationMembershipCondition
 
-    """Only read the first `n` values of the set."""
+    """
+    Only read the first `n` values of the set.
+    """
     first: Int
 
-    """Only read the last `n` values of the set."""
+    """
+    Only read the last `n` values of the set.
+    """
     last: Int
 
     """
@@ -644,7 +754,9 @@ type Organization {
     """
     offset: Int
 
-    """The method to use when ordering `OrganizationMembership`."""
+    """
+    The method to use when ordering `OrganizationMembership`.
+    """
     orderBy: [OrganizationMembershipsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationMembershipsConnection!
   slug: String!
@@ -655,10 +767,14 @@ A condition to be used against `Organization` object types. All fields are
 tested for equality and combined with a logical ‘and.’
 """
 input OrganizationCondition {
-  """Checks for equality with the object’s `id` field."""
+  """
+  Checks for equality with the object’s `id` field.
+  """
   id: UUID
 
-  """Checks for equality with the object’s `slug` field."""
+  """
+  Checks for equality with the object’s `slug` field.
+  """
   slug: String
 }
 
@@ -685,27 +801,39 @@ A condition to be used against `OrganizationInvitation` object types. All fields
 are tested for equality and combined with a logical ‘and.’
 """
 input OrganizationInvitationCondition {
-  """Checks for equality with the object’s `id` field."""
+  """
+  Checks for equality with the object’s `id` field.
+  """
   id: UUID
 
-  """Checks for equality with the object’s `organizationId` field."""
+  """
+  Checks for equality with the object’s `organizationId` field.
+  """
   organizationId: UUID
 
-  """Checks for equality with the object’s `userId` field."""
+  """
+  Checks for equality with the object’s `userId` field.
+  """
   userId: UUID
 }
 
-"""A connection to a list of `OrganizationInvitation` values."""
+"""
+A connection to a list of `OrganizationInvitation` values.
+"""
 type OrganizationInvitationsConnection {
   """
   A list of edges which contains the `OrganizationInvitation` and cursor to aid in pagination.
   """
   edges: [OrganizationInvitationsEdge!]!
 
-  """A list of `OrganizationInvitation` objects."""
+  """
+  A list of `OrganizationInvitation` objects.
+  """
   nodes: [OrganizationInvitation!]!
 
-  """Information to aid in pagination."""
+  """
+  Information to aid in pagination.
+  """
   pageInfo: PageInfo!
 
   """
@@ -714,16 +842,24 @@ type OrganizationInvitationsConnection {
   totalCount: Int!
 }
 
-"""A `OrganizationInvitation` edge in the connection."""
+"""
+A `OrganizationInvitation` edge in the connection.
+"""
 type OrganizationInvitationsEdge {
-  """A cursor for use in pagination."""
+  """
+  A cursor for use in pagination.
+  """
   cursor: Cursor
 
-  """The `OrganizationInvitation` at the end of the edge."""
+  """
+  The `OrganizationInvitation` at the end of the edge.
+  """
   node: OrganizationInvitation!
 }
 
-"""Methods to use when ordering `OrganizationInvitation`."""
+"""
+Methods to use when ordering `OrganizationInvitation`.
+"""
 enum OrganizationInvitationsOrderBy {
   ID_ASC
   ID_DESC
@@ -760,27 +896,39 @@ A condition to be used against `OrganizationMembership` object types. All fields
 are tested for equality and combined with a logical ‘and.’
 """
 input OrganizationMembershipCondition {
-  """Checks for equality with the object’s `id` field."""
+  """
+  Checks for equality with the object’s `id` field.
+  """
   id: UUID
 
-  """Checks for equality with the object’s `organizationId` field."""
+  """
+  Checks for equality with the object’s `organizationId` field.
+  """
   organizationId: UUID
 
-  """Checks for equality with the object’s `userId` field."""
+  """
+  Checks for equality with the object’s `userId` field.
+  """
   userId: UUID
 }
 
-"""A connection to a list of `OrganizationMembership` values."""
+"""
+A connection to a list of `OrganizationMembership` values.
+"""
 type OrganizationMembershipsConnection {
   """
   A list of edges which contains the `OrganizationMembership` and cursor to aid in pagination.
   """
   edges: [OrganizationMembershipsEdge!]!
 
-  """A list of `OrganizationMembership` objects."""
+  """
+  A list of `OrganizationMembership` objects.
+  """
   nodes: [OrganizationMembership!]!
 
-  """Information to aid in pagination."""
+  """
+  Information to aid in pagination.
+  """
   pageInfo: PageInfo!
 
   """
@@ -789,16 +937,24 @@ type OrganizationMembershipsConnection {
   totalCount: Int!
 }
 
-"""A `OrganizationMembership` edge in the connection."""
+"""
+A `OrganizationMembership` edge in the connection.
+"""
 type OrganizationMembershipsEdge {
-  """A cursor for use in pagination."""
+  """
+  A cursor for use in pagination.
+  """
   cursor: Cursor
 
-  """The `OrganizationMembership` at the end of the edge."""
+  """
+  The `OrganizationMembership` at the end of the edge.
+  """
   node: OrganizationMembership!
 }
 
-"""Methods to use when ordering `OrganizationMembership`."""
+"""
+Methods to use when ordering `OrganizationMembership`.
+"""
 enum OrganizationMembershipsOrderBy {
   ID_ASC
   ID_DESC
@@ -821,33 +977,49 @@ input OrganizationPatch {
   slug: String
 }
 
-"""A connection to a list of `Organization` values."""
+"""
+A connection to a list of `Organization` values.
+"""
 type OrganizationsConnection {
   """
   A list of edges which contains the `Organization` and cursor to aid in pagination.
   """
   edges: [OrganizationsEdge!]!
 
-  """A list of `Organization` objects."""
+  """
+  A list of `Organization` objects.
+  """
   nodes: [Organization!]!
 
-  """Information to aid in pagination."""
+  """
+  Information to aid in pagination.
+  """
   pageInfo: PageInfo!
 
-  """The count of *all* `Organization` you could get from the connection."""
+  """
+  The count of *all* `Organization` you could get from the connection.
+  """
   totalCount: Int!
 }
 
-"""A `Organization` edge in the connection."""
+"""
+A `Organization` edge in the connection.
+"""
 type OrganizationsEdge {
-  """A cursor for use in pagination."""
+  """
+  A cursor for use in pagination.
+  """
   cursor: Cursor
 
-  """The `Organization` at the end of the edge."""
+  """
+  The `Organization` at the end of the edge.
+  """
   node: Organization!
 }
 
-"""Methods to use when ordering `Organization`."""
+"""
+Methods to use when ordering `Organization`.
+"""
 enum OrganizationsOrderBy {
   ID_ASC
   ID_DESC
@@ -858,24 +1030,38 @@ enum OrganizationsOrderBy {
   SLUG_DESC
 }
 
-"""Information about pagination in a connection."""
+"""
+Information about pagination in a connection.
+"""
 type PageInfo {
-  """When paginating forwards, the cursor to continue."""
+  """
+  When paginating forwards, the cursor to continue.
+  """
   endCursor: Cursor
 
-  """When paginating forwards, are there more items?"""
+  """
+  When paginating forwards, are there more items?
+  """
   hasNextPage: Boolean!
 
-  """When paginating backwards, are there more items?"""
+  """
+  When paginating backwards, are there more items?
+  """
   hasPreviousPage: Boolean!
 
-  """When paginating backwards, the cursor to continue."""
+  """
+  When paginating backwards, the cursor to continue.
+  """
   startCursor: Cursor
 }
 
-"""The root query type which gives access points into the data universe."""
+"""
+The root query type which gives access points into the data universe.
+"""
 type Query {
-  """The currently logged in user (or null if not logged in)."""
+  """
+  The currently logged in user (or null if not logged in).
+  """
   currentUser: User
   organization(id: UUID!): Organization
   organizationBySlug(slug: String!): Organization
@@ -891,10 +1077,14 @@ type Query {
   Reads and enables pagination through a set of `OrganizationInvitation`.
   """
   organizationInvitations(
-    """Read all values in the set after (below) this cursor."""
+    """
+    Read all values in the set after (below) this cursor.
+    """
     after: Cursor
 
-    """Read all values in the set before (above) this cursor."""
+    """
+    Read all values in the set before (above) this cursor.
+    """
     before: Cursor
 
     """
@@ -902,10 +1092,14 @@ type Query {
     """
     condition: OrganizationInvitationCondition
 
-    """Only read the first `n` values of the set."""
+    """
+    Only read the first `n` values of the set.
+    """
     first: Int
 
-    """Only read the last `n` values of the set."""
+    """
+    Only read the last `n` values of the set.
+    """
     last: Int
 
     """
@@ -914,17 +1108,25 @@ type Query {
     """
     offset: Int
 
-    """The method to use when ordering `OrganizationInvitation`."""
+    """
+    The method to use when ordering `OrganizationInvitation`.
+    """
     orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationInvitationsConnection
   organizationMembership(id: UUID!): OrganizationMembership
 
-  """Reads and enables pagination through a set of `Organization`."""
+  """
+  Reads and enables pagination through a set of `Organization`.
+  """
   organizations(
-    """Read all values in the set after (below) this cursor."""
+    """
+    Read all values in the set after (below) this cursor.
+    """
     after: Cursor
 
-    """Read all values in the set before (above) this cursor."""
+    """
+    Read all values in the set before (above) this cursor.
+    """
     before: Cursor
 
     """
@@ -932,10 +1134,14 @@ type Query {
     """
     condition: OrganizationCondition
 
-    """Only read the first `n` values of the set."""
+    """
+    Only read the first `n` values of the set.
+    """
     first: Int
 
-    """Only read the last `n` values of the set."""
+    """
+    Only read the last `n` values of the set.
+    """
     last: Int
 
     """
@@ -944,7 +1150,9 @@ type Query {
     """
     offset: Int
 
-    """The method to use when ordering `Organization`."""
+    """
+    The method to use when ordering `Organization`.
+    """
     orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationsConnection
   user(id: UUID!): User
@@ -965,7 +1173,9 @@ type RegisterPayload {
   user: User!
 }
 
-"""All input for the `removeFromOrganization` mutation."""
+"""
+All input for the `removeFromOrganization` mutation.
+"""
 input RemoveFromOrganizationInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -976,7 +1186,9 @@ input RemoveFromOrganizationInput {
   userId: UUID!
 }
 
-"""The output of our `removeFromOrganization` mutation."""
+"""
+The output of our `removeFromOrganization` mutation.
+"""
 type RemoveFromOrganizationPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -990,7 +1202,9 @@ type RemoveFromOrganizationPayload {
   query: Query
 }
 
-"""All input for the `requestAccountDeletion` mutation."""
+"""
+All input for the `requestAccountDeletion` mutation.
+"""
 input RequestAccountDeletionInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -999,7 +1213,9 @@ input RequestAccountDeletionInput {
   clientMutationId: String
 }
 
-"""The output of our `requestAccountDeletion` mutation."""
+"""
+The output of our `requestAccountDeletion` mutation.
+"""
 type RequestAccountDeletionPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -1014,7 +1230,9 @@ type RequestAccountDeletionPayload {
   success: Boolean
 }
 
-"""All input for the `resendEmailVerificationCode` mutation."""
+"""
+All input for the `resendEmailVerificationCode` mutation.
+"""
 input ResendEmailVerificationCodeInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -1024,7 +1242,9 @@ input ResendEmailVerificationCodeInput {
   emailId: UUID!
 }
 
-"""The output of our `resendEmailVerificationCode` mutation."""
+"""
+The output of our `resendEmailVerificationCode` mutation.
+"""
 type ResendEmailVerificationCodePayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -1039,7 +1259,9 @@ type ResendEmailVerificationCodePayload {
   success: Boolean
 }
 
-"""All input for the `resetPassword` mutation."""
+"""
+All input for the `resetPassword` mutation.
+"""
 input ResetPasswordInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -1051,7 +1273,9 @@ input ResetPasswordInput {
   userId: UUID!
 }
 
-"""The output of our `resetPassword` mutation."""
+"""
+The output of our `resetPassword` mutation.
+"""
 type ResetPasswordPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -1070,11 +1294,15 @@ type ResetPasswordPayload {
 The root subscription type: contains realtime events you can subscribe to with the `subscription` operation.
 """
 type Subscription {
-  """Triggered when the logged in user's record is updated in some way."""
+  """
+  Triggered when the logged in user's record is updated in some way.
+  """
   currentUserUpdated: UserSubscriptionPayload
 }
 
-"""All input for the `transferOrganizationBillingContact` mutation."""
+"""
+All input for the `transferOrganizationBillingContact` mutation.
+"""
 input TransferOrganizationBillingContactInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -1085,7 +1313,9 @@ input TransferOrganizationBillingContactInput {
   userId: UUID!
 }
 
-"""The output of our `transferOrganizationBillingContact` mutation."""
+"""
+The output of our `transferOrganizationBillingContact` mutation.
+"""
 type TransferOrganizationBillingContactPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -1094,9 +1324,13 @@ type TransferOrganizationBillingContactPayload {
   clientMutationId: String
   organization: Organization
 
-  """An edge for our `Organization`. May be used by Relay 1."""
+  """
+  An edge for our `Organization`. May be used by Relay 1.
+  """
   organizationEdge(
-    """The method to use when ordering `Organization`."""
+    """
+    The method to use when ordering `Organization`.
+    """
     orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationsEdge
 
@@ -1106,7 +1340,9 @@ type TransferOrganizationBillingContactPayload {
   query: Query
 }
 
-"""All input for the `transferOrganizationOwnership` mutation."""
+"""
+All input for the `transferOrganizationOwnership` mutation.
+"""
 input TransferOrganizationOwnershipInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -1117,7 +1353,9 @@ input TransferOrganizationOwnershipInput {
   userId: UUID!
 }
 
-"""The output of our `transferOrganizationOwnership` mutation."""
+"""
+The output of our `transferOrganizationOwnership` mutation.
+"""
 type TransferOrganizationOwnershipPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -1126,9 +1364,13 @@ type TransferOrganizationOwnershipPayload {
   clientMutationId: String
   organization: Organization
 
-  """An edge for our `Organization`. May be used by Relay 1."""
+  """
+  An edge for our `Organization`. May be used by Relay 1.
+  """
   organizationEdge(
-    """The method to use when ordering `Organization`."""
+    """
+    The method to use when ordering `Organization`.
+    """
     orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationsEdge
 
@@ -1138,7 +1380,9 @@ type TransferOrganizationOwnershipPayload {
   query: Query
 }
 
-"""All input for the `updateOrganization` mutation."""
+"""
+All input for the `updateOrganization` mutation.
+"""
 input UpdateOrganizationInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -1153,7 +1397,9 @@ input UpdateOrganizationInput {
   patch: OrganizationPatch!
 }
 
-"""The output of our update `Organization` mutation."""
+"""
+The output of our update `Organization` mutation.
+"""
 type UpdateOrganizationPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -1161,12 +1407,18 @@ type UpdateOrganizationPayload {
   """
   clientMutationId: String
 
-  """The `Organization` that was updated by this mutation."""
+  """
+  The `Organization` that was updated by this mutation.
+  """
   organization: Organization
 
-  """An edge for our `Organization`. May be used by Relay 1."""
+  """
+  An edge for our `Organization`. May be used by Relay 1.
+  """
   organizationEdge(
-    """The method to use when ordering `Organization`."""
+    """
+    The method to use when ordering `Organization`.
+    """
     orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationsEdge
 
@@ -1176,7 +1428,9 @@ type UpdateOrganizationPayload {
   query: Query
 }
 
-"""All input for the `updateUser` mutation."""
+"""
+All input for the `updateUser` mutation.
+"""
 input UpdateUserInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -1184,7 +1438,9 @@ input UpdateUserInput {
   """
   clientMutationId: String
 
-  """Unique identifier for the user."""
+  """
+  Unique identifier for the user.
+  """
   id: UUID!
 
   """
@@ -1193,7 +1449,9 @@ input UpdateUserInput {
   patch: UserPatch!
 }
 
-"""The output of our update `User` mutation."""
+"""
+The output of our update `User` mutation.
+"""
 type UpdateUserPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -1206,41 +1464,61 @@ type UpdateUserPayload {
   """
   query: Query
 
-  """The `User` that was updated by this mutation."""
+  """
+  The `User` that was updated by this mutation.
+  """
   user: User
 
-  """An edge for our `User`. May be used by Relay 1."""
+  """
+  An edge for our `User`. May be used by Relay 1.
+  """
   userEdge(
-    """The method to use when ordering `User`."""
+    """
+    The method to use when ordering `User`.
+    """
     orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
   ): UsersEdge
 }
 
-"""A user who can log in to the application."""
+"""
+A user who can log in to the application.
+"""
 type User {
-  """Optional avatar URL."""
+  """
+  Optional avatar URL.
+  """
   avatarUrl: String
   createdAt: Datetime!
   hasPassword: Boolean
 
-  """Unique identifier for the user."""
+  """
+  Unique identifier for the user.
+  """
   id: UUID!
 
-  """If true, the user has elevated privileges."""
+  """
+  If true, the user has elevated privileges.
+  """
   isAdmin: Boolean!
   isVerified: Boolean!
 
-  """Public-facing name (or pseudonym) of the user."""
+  """
+  Public-facing name (or pseudonym) of the user.
+  """
   name: String
 
   """
   Reads and enables pagination through a set of `OrganizationInvitation`.
   """
   organizationInvitations(
-    """Read all values in the set after (below) this cursor."""
+    """
+    Read all values in the set after (below) this cursor.
+    """
     after: Cursor
 
-    """Read all values in the set before (above) this cursor."""
+    """
+    Read all values in the set before (above) this cursor.
+    """
     before: Cursor
 
     """
@@ -1248,10 +1526,14 @@ type User {
     """
     condition: OrganizationInvitationCondition
 
-    """Only read the first `n` values of the set."""
+    """
+    Only read the first `n` values of the set.
+    """
     first: Int
 
-    """Only read the last `n` values of the set."""
+    """
+    Only read the last `n` values of the set.
+    """
     last: Int
 
     """
@@ -1260,7 +1542,9 @@ type User {
     """
     offset: Int
 
-    """The method to use when ordering `OrganizationInvitation`."""
+    """
+    The method to use when ordering `OrganizationInvitation`.
+    """
     orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationInvitationsConnection!
 
@@ -1268,10 +1552,14 @@ type User {
   Reads and enables pagination through a set of `OrganizationMembership`.
   """
   organizationMemberships(
-    """Read all values in the set after (below) this cursor."""
+    """
+    Read all values in the set after (below) this cursor.
+    """
     after: Cursor
 
-    """Read all values in the set before (above) this cursor."""
+    """
+    Read all values in the set before (above) this cursor.
+    """
     before: Cursor
 
     """
@@ -1279,10 +1567,14 @@ type User {
     """
     condition: OrganizationMembershipCondition
 
-    """Only read the first `n` values of the set."""
+    """
+    Only read the first `n` values of the set.
+    """
     first: Int
 
-    """Only read the last `n` values of the set."""
+    """
+    Only read the last `n` values of the set.
+    """
     last: Int
 
     """
@@ -1291,34 +1583,50 @@ type User {
     """
     offset: Int
 
-    """The method to use when ordering `OrganizationMembership`."""
+    """
+    The method to use when ordering `OrganizationMembership`.
+    """
     orderBy: [OrganizationMembershipsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationMembershipsConnection!
   updatedAt: Datetime!
 
-  """Reads and enables pagination through a set of `UserAuthentication`."""
+  """
+  Reads and enables pagination through a set of `UserAuthentication`.
+  """
   userAuthenticationsList(
     """
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: UserAuthenticationCondition
 
-    """Only read the first `n` values of the set."""
+    """
+    Only read the first `n` values of the set.
+    """
     first: Int
 
-    """Skip the first `n` values."""
+    """
+    Skip the first `n` values.
+    """
     offset: Int
 
-    """The method to use when ordering `UserAuthentication`."""
+    """
+    The method to use when ordering `UserAuthentication`.
+    """
     orderBy: [UserAuthenticationsOrderBy!]
   ): [UserAuthentication!]!
 
-  """Reads and enables pagination through a set of `UserEmail`."""
+  """
+  Reads and enables pagination through a set of `UserEmail`.
+  """
   userEmails(
-    """Read all values in the set after (below) this cursor."""
+    """
+    Read all values in the set after (below) this cursor.
+    """
     after: Cursor
 
-    """Read all values in the set before (above) this cursor."""
+    """
+    Read all values in the set before (above) this cursor.
+    """
     before: Cursor
 
     """
@@ -1326,10 +1634,14 @@ type User {
     """
     condition: UserEmailCondition
 
-    """Only read the first `n` values of the set."""
+    """
+    Only read the first `n` values of the set.
+    """
     first: Int
 
-    """Only read the last `n` values of the set."""
+    """
+    Only read the last `n` values of the set.
+    """
     last: Int
 
     """
@@ -1338,11 +1650,15 @@ type User {
     """
     offset: Int
 
-    """The method to use when ordering `UserEmail`."""
+    """
+    The method to use when ordering `UserEmail`.
+    """
     orderBy: [UserEmailsOrderBy!] = [PRIMARY_KEY_ASC]
   ): UserEmailsConnection!
 
-  """Public-facing username (or 'handle') of the user."""
+  """
+  Public-facing username (or 'handle') of the user.
+  """
   username: String!
 }
 
@@ -1353,14 +1669,20 @@ type UserAuthentication {
   createdAt: Datetime!
   id: UUID!
 
-  """A unique identifier for the user within the login service."""
+  """
+  A unique identifier for the user within the login service.
+  """
   identifier: String!
 
-  """The login service used, e.g. `twitter` or `github`."""
+  """
+  The login service used, e.g. `twitter` or `github`.
+  """
   service: String!
   updatedAt: Datetime!
 
-  """Reads a single `User` that is related to this `UserAuthentication`."""
+  """
+  Reads a single `User` that is related to this `UserAuthentication`.
+  """
   user: User
   userId: UUID!
 }
@@ -1370,17 +1692,25 @@ A condition to be used against `UserAuthentication` object types. All fields are
 tested for equality and combined with a logical ‘and.’
 """
 input UserAuthenticationCondition {
-  """Checks for equality with the object’s `id` field."""
+  """
+  Checks for equality with the object’s `id` field.
+  """
   id: UUID
 
-  """Checks for equality with the object’s `service` field."""
+  """
+  Checks for equality with the object’s `service` field.
+  """
   service: String
 
-  """Checks for equality with the object’s `userId` field."""
+  """
+  Checks for equality with the object’s `userId` field.
+  """
   userId: UUID
 }
 
-"""Methods to use when ordering `UserAuthentication`."""
+"""
+Methods to use when ordering `UserAuthentication`.
+"""
 enum UserAuthenticationsOrderBy {
   ID_ASC
   ID_DESC
@@ -1393,11 +1723,15 @@ enum UserAuthenticationsOrderBy {
   USER_ID_DESC
 }
 
-"""Information about a user's email address."""
+"""
+Information about a user's email address.
+"""
 type UserEmail {
   createdAt: Datetime!
 
-  """The users email address, in `a@b.c` format."""
+  """
+  The users email address, in `a@b.c` format.
+  """
   email: String!
   id: UUID!
   isPrimary: Boolean!
@@ -1409,7 +1743,9 @@ type UserEmail {
   isVerified: Boolean!
   updatedAt: Datetime!
 
-  """Reads a single `User` that is related to this `UserEmail`."""
+  """
+  Reads a single `User` that is related to this `UserEmail`.
+  """
   user: User
   userId: UUID!
 }
@@ -1419,49 +1755,75 @@ A condition to be used against `UserEmail` object types. All fields are tested
 for equality and combined with a logical ‘and.’
 """
 input UserEmailCondition {
-  """Checks for equality with the object’s `id` field."""
+  """
+  Checks for equality with the object’s `id` field.
+  """
   id: UUID
 
-  """Checks for equality with the object’s `isPrimary` field."""
+  """
+  Checks for equality with the object’s `isPrimary` field.
+  """
   isPrimary: Boolean
 
-  """Checks for equality with the object’s `userId` field."""
+  """
+  Checks for equality with the object’s `userId` field.
+  """
   userId: UUID
 }
 
-"""An input for mutations affecting `UserEmail`"""
+"""
+An input for mutations affecting `UserEmail`
+"""
 input UserEmailInput {
-  """The users email address, in `a@b.c` format."""
+  """
+  The users email address, in `a@b.c` format.
+  """
   email: String!
 }
 
-"""A connection to a list of `UserEmail` values."""
+"""
+A connection to a list of `UserEmail` values.
+"""
 type UserEmailsConnection {
   """
   A list of edges which contains the `UserEmail` and cursor to aid in pagination.
   """
   edges: [UserEmailsEdge!]!
 
-  """A list of `UserEmail` objects."""
+  """
+  A list of `UserEmail` objects.
+  """
   nodes: [UserEmail!]!
 
-  """Information to aid in pagination."""
+  """
+  Information to aid in pagination.
+  """
   pageInfo: PageInfo!
 
-  """The count of *all* `UserEmail` you could get from the connection."""
+  """
+  The count of *all* `UserEmail` you could get from the connection.
+  """
   totalCount: Int!
 }
 
-"""A `UserEmail` edge in the connection."""
+"""
+A `UserEmail` edge in the connection.
+"""
 type UserEmailsEdge {
-  """A cursor for use in pagination."""
+  """
+  A cursor for use in pagination.
+  """
   cursor: Cursor
 
-  """The `UserEmail` at the end of the edge."""
+  """
+  The `UserEmail` at the end of the edge.
+  """
   node: UserEmail!
 }
 
-"""Methods to use when ordering `UserEmail`."""
+"""
+Methods to use when ordering `UserEmail`.
+"""
 enum UserEmailsOrderBy {
   ID_ASC
   ID_DESC
@@ -1474,28 +1836,44 @@ enum UserEmailsOrderBy {
   USER_ID_DESC
 }
 
-"""Represents an update to a `User`. Fields that are set will be updated."""
+"""
+Represents an update to a `User`. Fields that are set will be updated.
+"""
 input UserPatch {
-  """Optional avatar URL."""
+  """
+  Optional avatar URL.
+  """
   avatarUrl: String
 
-  """Public-facing name (or pseudonym) of the user."""
+  """
+  Public-facing name (or pseudonym) of the user.
+  """
   name: String
 
-  """Public-facing username (or 'handle') of the user."""
+  """
+  Public-facing username (or 'handle') of the user.
+  """
   username: String
 }
 
-"""A `User` edge in the connection."""
+"""
+A `User` edge in the connection.
+"""
 type UsersEdge {
-  """A cursor for use in pagination."""
+  """
+  A cursor for use in pagination.
+  """
   cursor: Cursor
 
-  """The `User` at the end of the edge."""
+  """
+  The `User` at the end of the edge.
+  """
   node: User!
 }
 
-"""Methods to use when ordering `User`."""
+"""
+Methods to use when ordering `User`.
+"""
 enum UsersOrderBy {
   ID_ASC
   ID_DESC
@@ -1516,7 +1894,9 @@ A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/
 """
 scalar UUID
 
-"""All input for the `verifyEmail` mutation."""
+"""
+All input for the `verifyEmail` mutation.
+"""
 input VerifyEmailInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -1527,7 +1907,9 @@ input VerifyEmailInput {
   userEmailId: UUID!
 }
 
-"""The output of our `verifyEmail` mutation."""
+"""
+The output of our `verifyEmail` mutation.
+"""
 type VerifyEmailPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
