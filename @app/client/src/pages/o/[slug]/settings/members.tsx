@@ -7,6 +7,7 @@ import {
   SharedLayout_UserFragment,
   useRemoveFromOrganizationMutation,
   useInviteToOrganizationMutation,
+  useTransferOrganizationOwnershipMutation,
 } from "@app/graphql";
 import SharedLayout from "../../../../layout/SharedLayout";
 import { H3, Redirect } from "@app/components";
@@ -154,16 +155,37 @@ interface OrganizationMemberListItemProps {
 
 const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = props => {
   const { node, organization, currentUser } = props;
+
   const [removeMember] = useRemoveFromOrganizationMutation();
-  const handleRemove = useCallback(() => {
-    removeMember({
-      variables: {
-        organizationId: organization.id,
-        userId: node.user?.id ?? 0,
-      },
-      refetchQueries: ["OrganizationMembers"],
-    });
+  const handleRemove = useCallback(async () => {
+    try {
+      await removeMember({
+        variables: {
+          organizationId: organization.id,
+          userId: node.user?.id ?? 0,
+        },
+        refetchQueries: ["OrganizationMembers"],
+      });
+    } catch (e) {
+      message.error("Error occurred when removing member: " + e.message);
+    }
   }, [node.user, organization.id, removeMember]);
+
+  const [transferOwnership] = useTransferOrganizationOwnershipMutation();
+  const handleTransfer = useCallback(async () => {
+    try {
+      await transferOwnership({
+        variables: {
+          organizationId: organization.id,
+          userId: node.user?.id ?? 0,
+        },
+        refetchQueries: ["OrganizationMembers"],
+      });
+    } catch (e) {
+      message.error("Error occurred when transferring ownership: " + e.message);
+    }
+  }, [node.user, organization.id, transferOwnership]);
+
   const roles = [
     node.isOwner ? "owner" : null,
     node.isBillingContact ? "billing contact" : null,
@@ -182,6 +204,17 @@ const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = props =>
             key="remove"
           >
             <a>Remove</a>
+          </Popconfirm>
+        ) : null,
+        organization.currentUserIsOwner && node.user?.id !== currentUser?.id ? (
+          <Popconfirm
+            title={`Are you sure you want to transfer ownership of ${organization.name} to ${node.user?.name}?`}
+            onConfirm={handleTransfer}
+            okText="Yes"
+            cancelText="No"
+            key="transfer"
+          >
+            <a>Make owner</a>
           </Popconfirm>
         ) : null,
       ].filter(Boolean)}
