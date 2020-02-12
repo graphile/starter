@@ -24,31 +24,46 @@ import {
 import { formItemLayout, tailFormItemLayout } from "../forms";
 import { resetWebsocketConnection } from "../lib/withApollo";
 import { setPasswordInfo } from "../lib/passwordHelpers";
-import { PasswordStrength } from "@app/components";
+import { PasswordStrength, Redirect } from "@app/components";
+import { isSafe } from "./login";
+
+interface RegisterProps {
+  next: string | null;
+}
 
 /**
  * The registration page just renders the standard layout and embeds the
  * registration form.
  */
-const Register: NextPage = () => {
+const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
   const [strength, setStrength] = useState<number>(0);
   const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
+  const next: string = isSafe(rawNext) ? rawNext! : "/";
 
   return (
     <SharedLayout title="Register">
-      <WrappedRegistrationForm
-        passwordStrength={strength}
-        setPasswordStrength={setStrength}
-        passwordSuggestions={passwordSuggestions}
-        setPasswordSuggestions={setPasswordSuggestions}
-        onSuccessRedirectTo="/"
-        error={error}
-        setError={setError}
-      />
+      {({ currentUser }) =>
+        currentUser ? (
+          <Redirect href={next} />
+        ) : (
+          <WrappedRegistrationForm
+            passwordStrength={strength}
+            setPasswordStrength={setStrength}
+            passwordSuggestions={passwordSuggestions}
+            setPasswordSuggestions={setPasswordSuggestions}
+            onSuccessRedirectTo={next}
+            error={error}
+            setError={setError}
+          />
+        )
+      }
     </SharedLayout>
   );
 };
+Register.getInitialProps = async ({ query }) => ({
+  next: typeof query.next === "string" ? query.next : null,
+});
 
 export default Register;
 

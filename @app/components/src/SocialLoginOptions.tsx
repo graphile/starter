@@ -15,7 +15,12 @@ export function SocialLoginOptions({
   buttonTextFromService = defaultButtonTextFromService,
 }: SocialLoginOptionsProps) {
   return (
-    <Button block size="large" icon="github" href={`/auth/github?next=${next}`}>
+    <Button
+      block
+      size="large"
+      icon="github"
+      href={`/auth/github?next=${encodeURIComponent(next)}`}
+    >
       {buttonTextFromService("GitHub")}
     </Button>
   );

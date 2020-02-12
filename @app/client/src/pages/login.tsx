@@ -34,7 +34,7 @@ interface LoginProps {
   next: string | null;
 }
 
-function isSafe(nextUrl: string | null) {
+export function isSafe(nextUrl: string | null) {
   return (nextUrl && nextUrl[0] === "/") || false;
 }
 
@@ -87,7 +87,7 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
                   <Col>
                     <Paragraph>
                       No Account?{" "}
-                      <Link href="/register">
+                      <Link href={`/register?next=${encodeURIComponent(next)}`}>
                         <a data-cy="loginpage-button-register">Create One</a>
                       </Link>
                     </Paragraph>
