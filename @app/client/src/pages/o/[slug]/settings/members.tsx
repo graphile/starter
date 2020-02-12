@@ -8,6 +8,7 @@ import {
   useRemoveFromOrganizationMutation,
   useInviteToOrganizationMutation,
   useTransferOrganizationOwnershipMutation,
+  useTransferOrganizationBillingContactMutation,
 } from "@app/graphql";
 import SharedLayout from "../../../../layout/SharedLayout";
 import { H3, Redirect } from "@app/components";
@@ -186,6 +187,23 @@ const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = props =>
     }
   }, [node.user, organization.id, transferOwnership]);
 
+  const [transferBilling] = useTransferOrganizationBillingContactMutation();
+  const handleBillingTransfer = useCallback(async () => {
+    try {
+      await transferBilling({
+        variables: {
+          organizationId: organization.id,
+          userId: node.user?.id ?? 0,
+        },
+        refetchQueries: ["OrganizationMembers"],
+      });
+    } catch (e) {
+      message.error(
+        "Error occurred when transferring billing contact: " + e.message
+      );
+    }
+  }, [node.user, organization.id, transferBilling]);
+
   const roles = [
     node.isOwner ? "owner" : null,
     node.isBillingContact ? "billing contact" : null,
@@ -215,6 +233,17 @@ const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = props =>
             key="transfer"
           >
             <a>Make owner</a>
+          </Popconfirm>
+        ) : null,
+        organization.currentUserIsOwner && !node.isBillingContact ? (
+          <Popconfirm
+            title={`Are you sure you want to make ${node.user?.name} the billing contact for ${organization.name}?`}
+            onConfirm={handleBillingTransfer}
+            okText="Yes"
+            cancelText="No"
+            key="billingTransfer"
+          >
+            <a>Make billing contact</a>
           </Popconfirm>
         ) : null,
       ].filter(Boolean)}
