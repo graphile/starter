@@ -293,13 +293,6 @@ begin
       from app_public.organization_memberships
       where user_id = app_public.current_user_id()
       and is_owner is true
-      and exists(
-        -- Is there anyone else in this organization?
-        select 1
-        from app_public.organization_memberships other_members
-        where other_members.organization_id = organization_memberships.organization_id
-        and other_members.user_id <> organization_memberships.user_id
-      )
     ) then
       raise exception 'You cannot delete your account until you are not the owner of any organizations.' using errcode = 'OWNER';
     end if;

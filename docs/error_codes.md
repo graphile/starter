@@ -57,5 +57,5 @@ Rewritten, the above rules state:
 
 ## Deleting account
 
-- OWNER: you cannot delete your account because you are the owner of a non-empty
+- OWNER: you cannot delete your account because you are the owner of an
   organization
