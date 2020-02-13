@@ -413,7 +413,7 @@ type Query {
 }
 
 input RegisterInput {
-  avatarUrl: String
+  avatarUrl: URL
   email: String!
   name: String
   password: String!
@@ -548,10 +548,17 @@ type UpdateUserPayload {
   ): UsersEdge
 }
 
+"""
+A Uniform Resource Locator (URL), colloquially termed a web address. It is a
+reference to a web resource that specifies its location on a computer network
+and a mechanism for retrieving it.
+"""
+scalar URL
+
 """A user who can log in to the application."""
 type User {
   """Optional avatar URL."""
-  avatarUrl: String
+  avatarUrl: URL
   createdAt: Datetime!
   hasPassword: Boolean
 
@@ -747,7 +754,7 @@ enum UserEmailsOrderBy {
 """Represents an update to a `User`. Fields that are set will be updated."""
 input UserPatch {
   """Optional avatar URL."""
-  avatarUrl: String
+  avatarUrl: URL
 
   """Public-facing name (or pseudonym) of the user."""
   name: String

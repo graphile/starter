@@ -8,7 +8,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
       email: String!
       password: String!
       name: String
-      avatarUrl: String
+      avatarUrl: URL
     }
 
     type RegisterPayload {

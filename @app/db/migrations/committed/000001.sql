@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:4be49e527161e4b03af6630d795e00271405d754
+--! Hash: sha1:8ec6050a1402816e5d3ee8448c61759dc8788612
 
 drop schema if exists app_public cascade;
 
@@ -31,6 +31,10 @@ alter default privileges in schema public, app_public, app_hidden grant execute 
 
 drop schema if exists app_private cascade;
 create schema app_private;
+
+/**********/
+
+create domain app_public."URL" as text check(VALUE ~ '^https?://[^/]+');
 
 /**********/
 
@@ -121,7 +125,7 @@ create table app_public.users (
   id serial primary key,
   username citext not null unique check(length(username) >= 2 and length(username) <= 24 and username ~ '^[a-zA-Z]([a-zA-Z0-9][_]?)+$'),
   name text,
-  avatar_url text check(avatar_url ~ '^https?://[^/]+'),
+  avatar_url app_public."URL",
   is_admin boolean not null default false,
   is_verified boolean not null default false,
   created_at timestamptz not null default now(),
@@ -750,7 +754,7 @@ create function app_private.really_create_user(
   email text,
   email_is_verified bool,
   name text,
-  avatar_url text,
+  avatar_url app_public."URL",
   password text default null
 ) returns app_public.users as $$
 declare
@@ -787,7 +791,7 @@ begin
 end;
 $$ language plpgsql volatile set search_path to pg_catalog, public, pg_temp;
 
-comment on function app_private.really_create_user(username citext, email text, email_is_verified bool, name text, avatar_url text, password text) is
+comment on function app_private.really_create_user(username citext, email text, email_is_verified bool, name text, avatar_url app_public."URL", password text) is
   E'Creates a user account. All arguments are optional, it trusts the calling method to perform sanitisation.';
 
 /**********/
@@ -804,7 +808,7 @@ declare
   v_email citext;
   v_name text;
   v_username citext;
-  v_avatar_url text;
+  v_avatar_url app_public."URL";
   v_user_authentication_id int;
 begin
   -- Extract data from the user’s OAuth profile data.
@@ -876,7 +880,7 @@ declare
   v_matched_authentication_id int;
   v_email citext;
   v_name text;
-  v_avatar_url text;
+  v_avatar_url app_public."URL";
   v_user app_public.users;
   v_user_email app_public.user_emails;
 begin
