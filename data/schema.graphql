@@ -164,6 +164,13 @@ type DeleteUserEmailPayload {
   ): UserEmailsEdge
 }
 
+"""
+An address in the electronic mail system. Email addresses such as
+`John.Smith@example.com` are made up of a local-part, followed by an `@` symbol,
+followed by a domain.
+"""
+scalar Email
+
 """All input for the `forgotPassword` mutation."""
 input ForgotPasswordInput {
   """
@@ -171,7 +178,7 @@ input ForgotPasswordInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  email: String!
+  email: Email!
 }
 
 """The output of our `forgotPassword` mutation."""
@@ -414,7 +421,7 @@ type Query {
 
 input RegisterInput {
   avatarUrl: URL
-  email: String!
+  email: Email!
   name: String
   password: String!
   username: String!
@@ -675,7 +682,7 @@ type UserEmail {
   createdAt: Datetime!
 
   """The users email address, in `a@b.c` format."""
-  email: String!
+  email: Email!
   id: Int!
   isPrimary: Boolean!
 
@@ -709,7 +716,7 @@ input UserEmailCondition {
 """An input for mutations affecting `UserEmail`"""
 input UserEmailInput {
   """The users email address, in `a@b.c` format."""
-  email: String!
+  email: Email!
 }
 
 """A connection to a list of `UserEmail` values."""

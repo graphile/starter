@@ -88,6 +88,14 @@ CREATE DOMAIN app_public."URL" AS text
 
 
 --
+-- Name: email; Type: DOMAIN; Schema: app_public; Owner: -
+--
+
+CREATE DOMAIN app_public.email AS public.citext
+	CONSTRAINT email_check CHECK ((VALUE OPERATOR(public.~) '[^@]+@[^@]+\.[^@]+'::public.citext));
+
+
+--
 -- Name: assert_valid_password(text); Type: FUNCTION; Schema: app_private; Owner: -
 --
 
@@ -177,7 +185,7 @@ CREATE FUNCTION app_private.link_or_register_user(f_user_id integer, f_service c
 declare
   v_matched_user_id int;
   v_matched_authentication_id int;
-  v_email citext;
+  v_email app_public.email;
   v_name text;
   v_avatar_url app_public."URL";
   v_user app_public.users;
@@ -352,10 +360,10 @@ COMMENT ON FUNCTION app_private.login(username public.citext, password text) IS 
 
 
 --
--- Name: really_create_user(public.citext, text, boolean, text, app_public."URL", text); Type: FUNCTION; Schema: app_private; Owner: -
+-- Name: really_create_user(public.citext, app_public.email, boolean, text, app_public."URL", text); Type: FUNCTION; Schema: app_private; Owner: -
 --
 
-CREATE FUNCTION app_private.really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url app_public."URL", password text DEFAULT NULL::text) RETURNS app_public.users
+CREATE FUNCTION app_private.really_create_user(username public.citext, email app_public.email, email_is_verified boolean, name text, avatar_url app_public."URL", password text DEFAULT NULL::text) RETURNS app_public.users
     LANGUAGE plpgsql
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -395,10 +403,10 @@ $$;
 
 
 --
--- Name: FUNCTION really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url app_public."URL", password text); Type: COMMENT; Schema: app_private; Owner: -
+-- Name: FUNCTION really_create_user(username public.citext, email app_public.email, email_is_verified boolean, name text, avatar_url app_public."URL", password text); Type: COMMENT; Schema: app_private; Owner: -
 --
 
-COMMENT ON FUNCTION app_private.really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url app_public."URL", password text) IS 'Creates a user account. All arguments are optional, it trusts the calling method to perform sanitisation.';
+COMMENT ON FUNCTION app_private.really_create_user(username public.citext, email app_public.email, email_is_verified boolean, name text, avatar_url app_public."URL", password text) IS 'Creates a user account. All arguments are optional, it trusts the calling method to perform sanitisation.';
 
 
 --
@@ -411,7 +419,7 @@ CREATE FUNCTION app_private.register_user(f_service character varying, f_identif
     AS $$
 declare
   v_user app_public.users;
-  v_email citext;
+  v_email app_public.email;
   v_name text;
   v_username citext;
   v_avatar_url app_public."URL";
@@ -732,10 +740,10 @@ COMMENT ON FUNCTION app_public.current_user_id() IS 'Handy method to get the cur
 
 
 --
--- Name: forgot_password(public.citext); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: forgot_password(app_public.email); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.forgot_password(email public.citext) RETURNS void
+CREATE FUNCTION app_public.forgot_password(email app_public.email) RETURNS void
     LANGUAGE plpgsql STRICT SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -828,10 +836,10 @@ $$;
 
 
 --
--- Name: FUNCTION forgot_password(email public.citext); Type: COMMENT; Schema: app_public; Owner: -
+-- Name: FUNCTION forgot_password(email app_public.email); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.forgot_password(email public.citext) IS 'If you''ve forgotten your password, give us one of your email addresses and we''ll send you a reset token. Note this only works if you have added an email address!';
+COMMENT ON FUNCTION app_public.forgot_password(email app_public.email) IS 'If you''ve forgotten your password, give us one of your email addresses and we''ll send you a reset token. Note this only works if you have added an email address!';
 
 
 --
@@ -858,12 +866,11 @@ $$;
 CREATE TABLE app_public.user_emails (
     id integer NOT NULL,
     user_id integer DEFAULT app_public.current_user_id() NOT NULL,
-    email public.citext NOT NULL,
+    email app_public.email NOT NULL,
     is_verified boolean DEFAULT false NOT NULL,
     is_primary boolean DEFAULT false NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT user_emails_email_check CHECK ((email OPERATOR(public.~) '[^@]+@[^@]+\.[^@]+'::public.citext)),
     CONSTRAINT user_emails_must_be_verified_to_be_primary CHECK (((is_primary IS FALSE) OR (is_verified IS TRUE)))
 );
 
@@ -1232,7 +1239,7 @@ CREATE TABLE app_private.connect_pg_simple_sessions (
 --
 
 CREATE TABLE app_private.unregistered_email_password_resets (
-    email public.citext NOT NULL,
+    email app_public.email NOT NULL,
     attempts integer DEFAULT 1 NOT NULL,
     latest_attempt timestamp with time zone NOT NULL
 );
@@ -1864,10 +1871,10 @@ REVOKE ALL ON FUNCTION app_private.login(username public.citext, password text) 
 
 
 --
--- Name: FUNCTION really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url app_public."URL", password text); Type: ACL; Schema: app_private; Owner: -
+-- Name: FUNCTION really_create_user(username public.citext, email app_public.email, email_is_verified boolean, name text, avatar_url app_public."URL", password text); Type: ACL; Schema: app_private; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_private.really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url app_public."URL", password text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION app_private.really_create_user(username public.citext, email app_public.email, email_is_verified boolean, name text, avatar_url app_public."URL", password text) FROM PUBLIC;
 
 
 --
@@ -1953,11 +1960,11 @@ GRANT ALL ON FUNCTION app_public.current_user_id() TO graphile_starter_visitor;
 
 
 --
--- Name: FUNCTION forgot_password(email public.citext); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION forgot_password(email app_public.email); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.forgot_password(email public.citext) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.forgot_password(email app_public.email) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.forgot_password(email app_public.email) TO graphile_starter_visitor;
 
 
 --
