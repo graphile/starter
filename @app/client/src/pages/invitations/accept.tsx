@@ -6,11 +6,14 @@ import {
   useInvitationDetailQuery,
   useAcceptOrganizationInviteMutation,
   SharedLayout_UserFragment,
+  InvitationDetailQuery,
+  InvitationDetailQueryVariables,
 } from "@app/graphql";
 import { ErrorAlert, Redirect } from "@app/components";
 import { getCodeFromError } from "../../errors";
 import Router, { useRouter, NextRouter } from "next/router";
 import * as qs from "querystring";
+import { QueryResult } from "@apollo/react-common";
 
 interface IProps {
   id: number | null;
@@ -27,15 +30,29 @@ const InvitationAccept: NextPage<IProps> = props => {
   const fullHref =
     router.pathname +
     (router && router.query ? `?${qs.stringify(router.query)}` : "");
+  const { id: rawId, code } = props;
+  const id = rawId || 0;
+  const query = useInvitationDetailQuery({
+    variables: {
+      id,
+      code,
+    },
+    skip: !id,
+  });
   return (
-    <SharedLayout title="Accept Invitation">
+    <SharedLayout title="Accept Invitation" query={query}>
       {({ currentUser, error, loading }) =>
         !currentUser && !error && !loading ? (
           <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />
         ) : (
           <Row>
             <Col>
-              <InvitationAcceptInner currentUser={currentUser} {...props} />
+              <InvitationAcceptInner
+                currentUser={currentUser}
+                id={id}
+                code={code}
+                query={query}
+              />
             </Col>
           </Row>
         )
@@ -46,19 +63,13 @@ const InvitationAccept: NextPage<IProps> = props => {
 
 interface InvitationAcceptInnerProps extends IProps {
   currentUser?: SharedLayout_UserFragment | null;
+  query: QueryResult<InvitationDetailQuery, InvitationDetailQueryVariables>;
 }
 
 const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = props => {
-  const { id: rawId, code } = props;
-  const id = rawId || 0;
-  const { data, loading, error } = useInvitationDetailQuery({
-    variables: {
-      id,
-      code,
-    },
-    skip: !id,
-  });
+  const { id, code, query } = props;
 
+  const { data, loading, error } = query;
   const [acceptInvite] = useAcceptOrganizationInviteMutation();
 
   const [status, setStatus] = React.useState(Status.PENDING);

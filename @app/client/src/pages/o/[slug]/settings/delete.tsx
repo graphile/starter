@@ -1,28 +1,22 @@
-import React, { FC, useCallback, useState, ChangeEvent } from "react";
+import React, { FC, useCallback, useState } from "react";
 import { NextPage } from "next";
 import {
   OrganizationPageOrganizationFragment,
-  useOrganizationMembersQuery,
-  OrganizationMembers_MembershipFragment,
   SharedLayout_UserFragment,
-  useRemoveFromOrganizationMutation,
-  useInviteToOrganizationMutation,
   useDeleteOrganizationMutation,
 } from "@app/graphql";
 import SharedLayout from "../../../../layout/SharedLayout";
-import { H3, Redirect, P, ErrorAlert } from "@app/components";
+import { H3, P, ErrorAlert } from "@app/components";
 import useOrganization from "../../../../lib/useOrganization";
 import OrganizationSettingsLayout from "../../../../layout/OrganizationSettingsLayout";
-import { List, Popconfirm, message, Alert, Button } from "antd";
-import Text from "antd/lib/typography/Text";
-import { Z_STREAM_ERROR } from "zlib";
+import { Popconfirm, message, Alert, Button } from "antd";
 import { ApolloError } from "apollo-client";
 import { useRouter } from "next/router";
 
 const OrganizationSettingsPage: NextPage = () => {
-  const { organization, fallbackChild, slug } = useOrganization();
+  const { organization, fallbackChild, slug, query } = useOrganization();
   return (
-    <SharedLayout title={organization?.name ?? slug} noPad>
+    <SharedLayout title={organization?.name ?? slug} noPad query={query}>
       {({ currentUser }) =>
         fallbackChild || (
           <OrganizationSettingsPageInner
@@ -39,9 +33,6 @@ interface OrganizationSettingsPageInnerProps {
   currentUser?: SharedLayout_UserFragment | null;
   organization: OrganizationPageOrganizationFragment;
 }
-
-// This needs to match the `first:` used in OrganizationMembers.graphql
-const RESULTS_PER_PAGE = 10;
 
 const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = props => {
   const { organization } = props;

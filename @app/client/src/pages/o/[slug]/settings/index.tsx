@@ -7,9 +7,9 @@ import useOrganization from "../../../../lib/useOrganization";
 import OrganizationSettingsLayout from "../../../../layout/OrganizationSettingsLayout";
 
 const OrganizationSettingsPage: NextPage = () => {
-  const { organization, fallbackChild, slug } = useOrganization();
+  const { organization, fallbackChild, slug, query } = useOrganization();
   return (
-    <SharedLayout title={organization?.name ?? slug} noPad>
+    <SharedLayout title={organization?.name ?? slug} noPad query={query}>
       {fallbackChild || (
         <OrganizationSettingsPageInner organization={organization!} />
       )}

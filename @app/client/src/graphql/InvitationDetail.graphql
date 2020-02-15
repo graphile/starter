@@ -1,4 +1,5 @@
 query InvitationDetail($id: Int!, $code: String) {
+  ...SharedLayout_Query
   getOrganizationForInvitation(invitationId: $id, code: $code) {
     id
     name

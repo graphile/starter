@@ -40,9 +40,10 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
   const [strength, setStrength] = useState<number>(0);
   const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
   const next: string = isSafe(rawNext) ? rawNext! : "/";
+  const query = useSharedQuery();
 
   return (
-    <SharedLayout title="Register">
+    <SharedLayout title="Register" query={query}>
       {({ currentUser }) =>
         currentUser ? (
           <Redirect href={next} />

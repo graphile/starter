@@ -15,6 +15,7 @@ import {
   CreateOrganizationMutation,
   CreatedOrganizationFragment,
   useOrganizationBySlugLazyQuery,
+  useSharedQuery,
 } from "@app/graphql";
 import { formItemLayout, tailFormItemLayout } from "../../forms";
 import { FormComponentProps } from "antd/lib/form";
@@ -28,8 +29,9 @@ import Text from "antd/lib/typography/Text";
 
 const CreateOrganizationPage: NextPage = () => {
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
+  const query = useSharedQuery();
   return (
-    <SharedLayout title="Create Organization">
+    <SharedLayout title="Create Organization" query={query}>
       <Row>
         <Col>
           <h1>Create Organization</h1>

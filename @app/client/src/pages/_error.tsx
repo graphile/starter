@@ -4,6 +4,7 @@ import { Alert, Row, Col } from "antd";
 import Link from "next/link";
 import SharedLayout from "../layout/SharedLayout";
 import { H2, P } from "@app/components";
+import { useSharedQuery } from "@app/graphql";
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -116,8 +117,9 @@ const getDisplayForError = (props: ErrorPageProps): ErrorComponentSpec<any> => {
 
 const ErrorPage: NextPage<ErrorPageProps> = props => {
   const { Component, title, props: componentProps } = getDisplayForError(props);
+  const query = useSharedQuery();
   return (
-    <SharedLayout title={title}>
+    <SharedLayout title={title} query={query}>
       <Row>
         <Col>
           <Component {...componentProps} />

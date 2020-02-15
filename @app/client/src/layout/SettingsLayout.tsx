@@ -6,6 +6,8 @@ import { StandardWidth, Warn, Redirect } from "@app/components";
 import { TextProps } from "antd/lib/typography/Text";
 import { useRouter, NextRouter } from "next/router";
 import * as qs from "querystring";
+import { QueryResult } from "apollo-client";
+import { SharedLayout_QueryFragment } from "@app/graphql";
 
 const { Text } = Typography;
 const { Sider, Content } = Layout;
@@ -50,11 +52,13 @@ const pages = {
 };
 
 interface SettingsLayoutProps {
+  query: QueryResult<SharedLayout_QueryFragment>;
   href: keyof typeof pages;
   children: React.ReactNode;
 }
 
 export default function SettingsLayout({
+  query,
   href: inHref,
   children,
 }: SettingsLayoutProps) {
@@ -65,7 +69,7 @@ export default function SettingsLayout({
   const fullHref =
     href + (router && router.query ? `?${qs.stringify(router.query)}` : "");
   return (
-    <SharedLayout title={`Settings: ${page.title}`} noPad>
+    <SharedLayout title={`Settings: ${page.title}`} noPad query={query}>
       {({ currentUser, error, loading }: SharedLayoutChildProps) =>
         !currentUser && !error && !loading ? (
           <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />

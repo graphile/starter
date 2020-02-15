@@ -12,14 +12,15 @@ import { NextPage } from "next";
 import Link from "next/link";
 import { Form, Icon, Input, Button, Alert } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { useForgotPasswordMutation } from "@app/graphql";
+import { useForgotPasswordMutation, useSharedQuery } from "@app/graphql";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
 
 const ForgotPassword: NextPage = () => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
+  const query = useSharedQuery();
   return (
-    <SharedLayout title="Forgot Password">
+    <SharedLayout title="Forgot Password" query={query}>
       <WrappedForgotPasswordForm error={error} setError={setError} />
     </SharedLayout>
   );

@@ -7,9 +7,9 @@ import { H1 } from "@app/components";
 import useOrganization from "../../../lib/useOrganization";
 
 const OrganizationPage: NextPage = () => {
-  const { organization, fallbackChild, slug } = useOrganization();
+  const { organization, fallbackChild, slug, query } = useOrganization();
   return (
-    <SharedLayout title={organization?.name ?? slug}>
+    <SharedLayout title={organization?.name ?? slug} query={query}>
       {fallbackChild || <OrganizationPageInner organization={organization!} />}
     </SharedLayout>
   );

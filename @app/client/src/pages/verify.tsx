@@ -3,7 +3,7 @@ import get from "lodash/get";
 import { Alert } from "antd";
 import SharedLayout, { Row, Col } from "../layout/SharedLayout";
 import { NextPage } from "next";
-import { useVerifyEmailMutation } from "@app/graphql";
+import { useVerifyEmailMutation, useSharedQuery } from "@app/graphql";
 
 interface IProps {
   id: number | null;
@@ -57,8 +57,9 @@ const VerifyPage: NextPage<IProps> = props => {
       </form>
     );
   }
+  const query = useSharedQuery();
   return (
-    <SharedLayout title="Verify Email Address">
+    <SharedLayout title="Verify Email Address" query={query}>
       <Row>
         <Col>
           {state === "PENDING" ? (

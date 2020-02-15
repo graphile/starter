@@ -18,9 +18,9 @@ import { List, Popconfirm, message } from "antd";
 import Text from "antd/lib/typography/Text";
 
 const OrganizationSettingsPage: NextPage = () => {
-  const { organization, fallbackChild, slug } = useOrganization();
+  const { organization, fallbackChild, slug, query } = useOrganization();
   return (
-    <SharedLayout title={organization?.name ?? slug} noPad>
+    <SharedLayout title={organization?.name ?? slug} noPad query={query}>
       {({ currentUser }) =>
         fallbackChild || (
           <OrganizationSettingsPageInner

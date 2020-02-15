@@ -17,7 +17,7 @@ import { Form, Icon, Input, Button, Alert, Typography } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { promisify } from "util";
 import { useApolloClient } from "@apollo/react-hooks";
-import { useLoginMutation } from "@app/graphql";
+import { useLoginMutation, useSharedQuery } from "@app/graphql";
 import Router from "next/router";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
@@ -45,8 +45,9 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const next: string = isSafe(rawNext) ? rawNext! : "/";
+  const query = useSharedQuery();
   return (
-    <SharedLayout title="Sign in">
+    <SharedLayout title="Sign in" query={query}>
       {({ currentUser }: SharedLayoutChildProps) =>
         currentUser ? (
           <Redirect href={next} />

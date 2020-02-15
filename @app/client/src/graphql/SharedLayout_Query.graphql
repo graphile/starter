@@ -1,4 +1,4 @@
-query SharedLayout {
+fragment SharedLayout_Query on Query {
   currentUser {
     id
     ...SharedLayout_User

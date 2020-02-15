@@ -3,6 +3,7 @@ import { Button, Row, Col, Typography, Divider } from "antd";
 const { Text, Title, Paragraph } = Typography;
 import SharedLayout from "../layout/SharedLayout";
 import { NextPage } from "next";
+import { useSharedQuery } from "@app/graphql";
 
 // Convenience helper
 const Li = ({ children, ...props }: any) => (
@@ -12,8 +13,9 @@ const Li = ({ children, ...props }: any) => (
 );
 
 const Home: NextPage = () => {
+  const query = useSharedQuery();
   return (
-    <SharedLayout title="Home">
+    <SharedLayout title="Home" query={query}>
       <Row type="flex" justify="space-between" gutter={32}>
         <Col xs={28} sm={16}>
           <Title data-cy="homepage-header">

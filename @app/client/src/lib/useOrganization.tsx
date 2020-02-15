@@ -9,11 +9,12 @@ const useOrganization = () => {
   const { slug: rawSlug } = router.query;
   const slug = String(rawSlug);
 
-  const { data, loading, error } = useOrganizationPageQuery({
+  const query = useOrganizationPageQuery({
     variables: {
       slug,
     },
   });
+  const { data, loading, error } = query;
 
   let child: JSX.Element | null = null;
   const organization = data?.organizationBySlug;
@@ -29,6 +30,7 @@ const useOrganization = () => {
   }
 
   return {
+    query,
     organization,
     fallbackChild: child ? (
       <Row>

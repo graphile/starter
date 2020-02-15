@@ -27,8 +27,9 @@ const ResetPage: NextPage<IProps> = ({ userId, token }) => {
   const [strength, setStrength] = useState<number>(0);
   const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
   const [state, setState] = useState<State>(State.PENDING);
+  const query = useSharedQuery();
   return (
-    <SharedLayout title="Reset Password">
+    <SharedLayout title="Reset Password" query={query}>
       <Row>
         <Col>
           <WrappedResetForm

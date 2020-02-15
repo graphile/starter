@@ -12,9 +12,9 @@ import {
 import Link from "next/link";
 import { projectName, companyName } from "@app/config";
 import {
-  useSharedLayoutQuery,
   useLogoutMutation,
   useCurrentUserUpdatedSubscription,
+  SharedLayout_QueryFragment,
   SharedLayout_UserFragment,
 } from "@app/graphql";
 import Router from "next/router";
@@ -23,6 +23,7 @@ import { useCallback } from "react";
 import { StandardWidth, Warn, ErrorAlert } from "@app/components";
 import Head from "next/head";
 import { ApolloError } from "apollo-client";
+import { QueryResult } from "@apollo/react-common";
 
 const { Header, Content, Footer } = Layout;
 const { Text } = Typography;
@@ -46,6 +47,21 @@ export interface SharedLayoutChildProps {
 }
 
 interface SharedLayoutProps {
+  /*
+   * We're expecting lots of different queries to be passed through here, and
+   * for them to have this common required data we need. Methods like
+   * `subscribeToMore` are too specific (and we don't need them) so we're going
+   * to drop them from the data requirements.
+   *
+   * NOTE: we're not fetching this query internally because we want the entire
+   * page to be fetchable via a single GraphQL query, rather than multiple
+   * chained queries.
+   */
+  query: Pick<
+    QueryResult<SharedLayout_QueryFragment>,
+    "data" | "loading" | "error" | "networkStatus" | "client" | "refetch"
+  >;
+
   title: string;
   children:
     | React.ReactNode
@@ -69,7 +85,12 @@ function CurrentUserUpdatedSubscription() {
   return null;
 }
 
-function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
+function SharedLayout({
+  title,
+  noPad = false,
+  children,
+  query,
+}: SharedLayoutProps) {
   const client = useApolloClient();
   const [logout] = useLogoutMutation();
   const handleLogout = useCallback(async () => {
@@ -88,7 +109,7 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
       );
     return noPad ? inner : <StandardWidth>{inner}</StandardWidth>;
   };
-  const { data, loading, error } = useSharedLayoutQuery();
+  const { data, loading, error } = query;
 
   return (
     <Layout>
