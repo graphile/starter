@@ -1,6 +1,7 @@
 --! Previous: sha1:4be49e527161e4b03af6630d795e00271405d754
---! Hash: sha1:f7eddd26e9bde66812ce20d5a2d835b57189dad8
+--! Hash: sha1:cbb406ee082038fa3c713f4089f6c7a62055c896
 
+drop function if exists app_public.transfer_organization_billing_contact(int, int);
 drop function if exists app_public.transfer_organization_ownership(int, int);
 drop function if exists app_public.delete_organization(int);
 drop function if exists app_public.remove_from_organization(int, int);
@@ -302,6 +303,17 @@ begin
       raise exception 'You cannot delete your account until you are not the owner of any organizations.' using errcode = 'OWNER';
     end if;
 
+    -- Reassign billing contact status back to the organization owner
+    update app_public.organization_memberships
+      set is_billing_contact = true
+      where is_owner = true
+      and organization_id in (
+        select organization_id
+        from app_public.organization_memberships my_memberships
+        where my_memberships.user_id = app_public.current_user_id()
+        and is_billing_contact is true
+      );
+
     -- Delete their account :(
     delete from app_public.users where id = app_public.current_user_id();
     return true;
@@ -325,7 +337,6 @@ begin
 end;
 $$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
 
-
 create function app_public.transfer_organization_ownership(organization_id int, user_id int) returns app_public.organizations as $$
 declare
  v_org app_public.organizations;
@@ -346,6 +357,36 @@ begin
         set is_owner = false
         where organization_memberships.organization_id = transfer_organization_ownership.organization_id
         and organization_memberships.user_id = app_public.current_user_id();
+
+      select * into v_org from app_public.organizations where id = organization_id;
+      return v_org;
+    end if;
+  end if;
+  return null;
+end;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
+
+create function app_public.transfer_organization_billing_contact(organization_id int, user_id int) returns app_public.organizations as $$
+declare
+ v_org app_public.organizations;
+begin
+  if exists(
+    select 1
+    from app_public.organization_memberships
+    where organization_memberships.user_id = app_public.current_user_id()
+    and organization_memberships.organization_id = transfer_organization_billing_contact.organization_id
+    and is_owner is true
+  ) then
+    update app_public.organization_memberships
+      set is_billing_contact = true
+      where organization_memberships.organization_id = transfer_organization_billing_contact.organization_id
+      and organization_memberships.user_id = transfer_organization_billing_contact.user_id;
+    if found then
+      update app_public.organization_memberships
+        set is_billing_contact = false
+        where organization_memberships.organization_id = transfer_organization_billing_contact.organization_id
+        and organization_memberships.user_id <> transfer_organization_billing_contact.user_id
+        and is_billing_contact = true;
 
       select * into v_org from app_public.organizations where id = organization_id;
       return v_org;
