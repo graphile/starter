@@ -57,7 +57,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
   return (
     <OrganizationSettingsLayout
       organization={organization}
-      href={`/o/${organization.slug}/settings/members`}
+      href={`/o/${organization.slug}/settings/delete`}
     >
       <div>
         <H3>Delete {organization.name}?</H3>
