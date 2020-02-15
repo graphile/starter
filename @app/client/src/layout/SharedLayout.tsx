@@ -20,7 +20,7 @@ import {
 import Router from "next/router";
 import { useApolloClient } from "@apollo/react-hooks";
 import { useCallback } from "react";
-import { StandardWidth, Warn, ErrorAlert } from "@app/components";
+import { StandardWidth, Warn, ErrorAlert, H3 } from "@app/components";
 import Head from "next/head";
 import { ApolloError } from "apollo-client";
 import { QueryResult } from "@apollo/react-common";
@@ -133,7 +133,16 @@ function SharedLayout({
             </Link>
           </Col>
           <Col span={12}>
-            <h3>{title}</h3>
+            <H3
+              style={{
+                margin: 0,
+                padding: 0,
+                textAlign: "center",
+                lineHeight: "64px",
+              }}
+            >
+              {title}
+            </H3>
           </Col>
           <Col span={6} style={{ textAlign: "right" }}>
             {data && data.currentUser ? (
