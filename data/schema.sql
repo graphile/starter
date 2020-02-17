@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.4
--- Dumped by pg_dump version 10.4
+-- Dumped from database version 11.6 (Ubuntu 11.6-1.pgdg18.04+1)
+-- Dumped by pg_dump version 11.6 (Ubuntu 11.6-1.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,6 +12,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -34,20 +35,6 @@ CREATE SCHEMA app_private;
 --
 
 CREATE SCHEMA app_public;
-
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
@@ -178,7 +165,7 @@ COMMENT ON COLUMN app_public.users.is_admin IS 'If true, the user has elevated p
 
 CREATE FUNCTION app_private.link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) RETURNS app_public.users
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_matched_user_id int;
@@ -280,7 +267,7 @@ CREATE TABLE app_private.sessions (
 
 CREATE FUNCTION app_private.login(username public.citext, password text) RETURNS app_private.sessions
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user app_public.users;
@@ -363,7 +350,7 @@ COMMENT ON FUNCTION app_private.login(username public.citext, password text) IS 
 
 CREATE FUNCTION app_private.really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url text, password text DEFAULT NULL::text) RETURNS app_public.users
     LANGUAGE plpgsql
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user app_public.users;
@@ -413,7 +400,7 @@ COMMENT ON FUNCTION app_private.really_create_user(username public.citext, email
 
 CREATE FUNCTION app_private.register_user(f_service character varying, f_identifier character varying, f_profile json, f_auth_details json, f_email_is_verified boolean DEFAULT false) RETURNS app_public.users
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user app_public.users;
@@ -489,7 +476,7 @@ COMMENT ON FUNCTION app_private.register_user(f_service character varying, f_ide
 
 CREATE FUNCTION app_private.tg__add_job() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   perform graphile_worker.add_job(tg_argv[0], json_build_object('id', NEW.id), coalesce(tg_argv[1], public.gen_random_uuid()::text));
@@ -511,7 +498,7 @@ COMMENT ON FUNCTION app_private.tg__add_job() IS 'Useful shortcut to create a jo
 
 CREATE FUNCTION app_private.tg__timestamps() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   NEW.created_at = (case when TG_OP = 'INSERT' then NOW() else OLD.created_at end);
@@ -534,7 +521,7 @@ COMMENT ON FUNCTION app_private.tg__timestamps() IS 'This trigger should be call
 
 CREATE FUNCTION app_private.tg_user_email_secrets__insert_with_user_email() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_verification_token text;
@@ -561,7 +548,7 @@ COMMENT ON FUNCTION app_private.tg_user_email_secrets__insert_with_user_email() 
 
 CREATE FUNCTION app_private.tg_user_secrets__insert_with_user() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   insert into app_private.user_secrets(user_id) values(NEW.id);
@@ -583,7 +570,7 @@ COMMENT ON FUNCTION app_private.tg_user_secrets__insert_with_user() IS 'Ensures 
 
 CREATE FUNCTION app_private.tg_users__make_first_user_admin() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   NEW.is_admin = true;
@@ -598,7 +585,7 @@ $$;
 
 CREATE FUNCTION app_public.accept_invitation_to_organization(invitation_id integer, code text DEFAULT NULL::text) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_organization app_public.organizations;
@@ -622,7 +609,7 @@ $$;
 
 CREATE FUNCTION app_public.change_password(old_password text, new_password text) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user app_public.users;
@@ -668,7 +655,7 @@ COMMENT ON FUNCTION app_public.change_password(old_password text, new_password t
 
 CREATE FUNCTION app_public.confirm_account_deletion(token text) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user_secret app_private.user_secrets;
@@ -700,6 +687,17 @@ begin
     ) then
       raise exception 'You cannot delete your account until you are not the owner of any organizations.' using errcode = 'OWNER';
     end if;
+
+    -- Reassign billing contact status back to the organization owner
+    update app_public.organization_memberships
+      set is_billing_contact = true
+      where is_owner = true
+      and organization_id in (
+        select organization_id
+        from app_public.organization_memberships my_memberships
+        where my_memberships.user_id = app_public.current_user_id()
+        and is_billing_contact is true
+      );
 
     -- Delete their account :(
     delete from app_public.users where id = app_public.current_user_id();
@@ -736,7 +734,7 @@ CREATE TABLE app_public.organizations (
 
 CREATE FUNCTION app_public.create_organization(slug public.citext, name text) RETURNS app_public.organizations
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_org app_public.organizations;
@@ -791,7 +789,7 @@ COMMENT ON FUNCTION app_public."current_user"() IS 'The currently logged in user
 
 CREATE FUNCTION app_public.current_user_id() RETURNS integer
     LANGUAGE sql STABLE SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
   select user_id from app_private.sessions where uuid = app_public.current_session_id();
 $$;
@@ -810,7 +808,7 @@ COMMENT ON FUNCTION app_public.current_user_id() IS 'Handy method to get the cur
 
 CREATE FUNCTION app_public.current_user_invited_organization_ids() RETURNS SETOF integer
     LANGUAGE sql STABLE SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
   select organization_id from app_public.organization_invitations
     where user_id = app_public.current_user_id();
@@ -823,7 +821,7 @@ $$;
 
 CREATE FUNCTION app_public.current_user_member_organization_ids() RETURNS SETOF integer
     LANGUAGE sql STABLE SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
   select organization_id from app_public.organization_memberships
     where user_id = app_public.current_user_id();
@@ -836,7 +834,7 @@ $$;
 
 CREATE FUNCTION app_public.delete_organization(organization_id integer) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   if exists(
@@ -858,7 +856,7 @@ $$;
 
 CREATE FUNCTION app_public.forgot_password(email public.citext) RETURNS void
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user_email app_public.user_emails;
@@ -961,7 +959,7 @@ COMMENT ON FUNCTION app_public.forgot_password(email public.citext) IS 'If you''
 
 CREATE FUNCTION app_public.get_organization_for_invitation(invitation_id integer, code text DEFAULT NULL::text) RETURNS app_public.organizations
     LANGUAGE plpgsql STABLE SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_invitation app_public.organization_invitations;
@@ -1000,7 +998,7 @@ $$;
 
 CREATE FUNCTION app_public.invite_to_organization(organization_id integer, username public.citext, email public.citext) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_code text;
@@ -1053,7 +1051,7 @@ $$;
 
 CREATE FUNCTION app_public.logout() RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   -- Delete the session
@@ -1108,7 +1106,7 @@ COMMENT ON COLUMN app_public.user_emails.is_verified IS 'True if the user has is
 
 CREATE FUNCTION app_public.make_email_primary(email_id integer) RETURNS app_public.user_emails
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user_email app_public.user_emails;
@@ -1175,7 +1173,7 @@ $$;
 
 CREATE FUNCTION app_public.remove_from_organization(organization_id integer, user_id integer) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_my_membership app_public.organization_memberships;
@@ -1222,7 +1220,7 @@ $$;
 
 CREATE FUNCTION app_public.request_account_deletion() RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user_email app_public.user_emails;
@@ -1279,7 +1277,7 @@ COMMENT ON FUNCTION app_public.request_account_deletion() IS 'Begin the account 
 
 CREATE FUNCTION app_public.resend_email_verification_code(email_id integer) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   if exists(
@@ -1310,7 +1308,7 @@ COMMENT ON FUNCTION app_public.resend_email_verification_code(email_id integer) 
 
 CREATE FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_user app_public.users;
@@ -1441,7 +1439,7 @@ COMMENT ON FUNCTION app_public.tg__graphql_subscription() IS 'This function enab
 
 CREATE FUNCTION app_public.tg_user_emails__forbid_if_verified() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   if exists(select 1 from app_public.user_emails where email = NEW.email and is_verified is true) then
@@ -1458,11 +1456,49 @@ $$;
 
 CREATE FUNCTION app_public.tg_user_emails__verify_account_on_verified() RETURNS trigger
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   update app_public.users set is_verified = true where id = new.user_id and is_verified is false;
   return new;
+end;
+$$;
+
+
+--
+-- Name: transfer_organization_billing_contact(integer, integer); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.transfer_organization_billing_contact(organization_id integer, user_id integer) RETURNS app_public.organizations
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
+    AS $$
+declare
+ v_org app_public.organizations;
+begin
+  if exists(
+    select 1
+    from app_public.organization_memberships
+    where organization_memberships.user_id = app_public.current_user_id()
+    and organization_memberships.organization_id = transfer_organization_billing_contact.organization_id
+    and is_owner is true
+  ) then
+    update app_public.organization_memberships
+      set is_billing_contact = true
+      where organization_memberships.organization_id = transfer_organization_billing_contact.organization_id
+      and organization_memberships.user_id = transfer_organization_billing_contact.user_id;
+    if found then
+      update app_public.organization_memberships
+        set is_billing_contact = false
+        where organization_memberships.organization_id = transfer_organization_billing_contact.organization_id
+        and organization_memberships.user_id <> transfer_organization_billing_contact.user_id
+        and is_billing_contact = true;
+
+      select * into v_org from app_public.organizations where id = organization_id;
+      return v_org;
+    end if;
+  end if;
+  return null;
 end;
 $$;
 
@@ -1473,7 +1509,7 @@ $$;
 
 CREATE FUNCTION app_public.transfer_organization_ownership(organization_id integer, user_id integer) RETURNS app_public.organizations
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
  v_org app_public.organizations;
@@ -1510,7 +1546,7 @@ $$;
 
 CREATE FUNCTION app_public.users_has_password(u app_public.users) RETURNS boolean
     LANGUAGE sql STABLE SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
   select (password_hash is not null) from app_private.user_secrets where user_secrets.user_id = u.id and u.id = app_public.current_user_id();
 $$;
@@ -1522,7 +1558,7 @@ $$;
 
 CREATE FUNCTION app_public.verify_email(user_email_id integer, token text) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO pg_catalog, public, pg_temp
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   update app_public.user_emails
@@ -2088,10 +2124,10 @@ CREATE INDEX user_authentications_user_id_idx ON app_public.user_authentications
 
 
 --
--- Name: users _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
+-- Name: user_authentications _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_authentications FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
 
 
 --
@@ -2102,10 +2138,10 @@ CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_emails
 
 
 --
--- Name: user_authentications _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
+-- Name: users _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_authentications FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
 
 
 --
@@ -2130,17 +2166,17 @@ CREATE TRIGGER _500_gql_update AFTER UPDATE ON app_public.users FOR EACH ROW EXE
 
 
 --
--- Name: users _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
---
-
-CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_secrets__insert_with_user();
-
-
---
 -- Name: user_emails _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
 CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_email_secrets__insert_with_user_email();
+
+
+--
+-- Name: users _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_secrets__insert_with_user();
 
 
 --
@@ -2275,17 +2311,17 @@ ALTER TABLE app_private.user_email_secrets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE app_private.user_secrets ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: user_emails delete_own; Type: POLICY; Schema: app_public; Owner: -
---
-
-CREATE POLICY delete_own ON app_public.user_emails FOR DELETE USING ((user_id = app_public.current_user_id()));
-
-
---
 -- Name: user_authentications delete_own; Type: POLICY; Schema: app_public; Owner: -
 --
 
 CREATE POLICY delete_own ON app_public.user_authentications FOR DELETE USING ((user_id = app_public.current_user_id()));
+
+
+--
+-- Name: user_emails delete_own; Type: POLICY; Schema: app_public; Owner: -
+--
+
+CREATE POLICY delete_own ON app_public.user_emails FOR DELETE USING ((user_id = app_public.current_user_id()));
 
 
 --
@@ -2321,13 +2357,6 @@ CREATE POLICY select_all ON app_public.users FOR SELECT USING (true);
 
 
 --
--- Name: organizations select_invited; Type: POLICY; Schema: app_public; Owner: -
---
-
-CREATE POLICY select_invited ON app_public.organizations FOR SELECT USING ((id IN ( SELECT app_public.current_user_invited_organization_ids() AS current_user_invited_organization_ids)));
-
-
---
 -- Name: organization_memberships select_invited; Type: POLICY; Schema: app_public; Owner: -
 --
 
@@ -2335,10 +2364,10 @@ CREATE POLICY select_invited ON app_public.organization_memberships FOR SELECT U
 
 
 --
--- Name: organizations select_member; Type: POLICY; Schema: app_public; Owner: -
+-- Name: organizations select_invited; Type: POLICY; Schema: app_public; Owner: -
 --
 
-CREATE POLICY select_member ON app_public.organizations FOR SELECT USING ((id IN ( SELECT app_public.current_user_member_organization_ids() AS current_user_member_organization_ids)));
+CREATE POLICY select_invited ON app_public.organizations FOR SELECT USING ((id IN ( SELECT app_public.current_user_invited_organization_ids() AS current_user_invited_organization_ids)));
 
 
 --
@@ -2349,10 +2378,10 @@ CREATE POLICY select_member ON app_public.organization_memberships FOR SELECT US
 
 
 --
--- Name: user_emails select_own; Type: POLICY; Schema: app_public; Owner: -
+-- Name: organizations select_member; Type: POLICY; Schema: app_public; Owner: -
 --
 
-CREATE POLICY select_own ON app_public.user_emails FOR SELECT USING ((user_id = app_public.current_user_id()));
+CREATE POLICY select_member ON app_public.organizations FOR SELECT USING ((id IN ( SELECT app_public.current_user_member_organization_ids() AS current_user_member_organization_ids)));
 
 
 --
@@ -2360,6 +2389,13 @@ CREATE POLICY select_own ON app_public.user_emails FOR SELECT USING ((user_id = 
 --
 
 CREATE POLICY select_own ON app_public.user_authentications FOR SELECT USING ((user_id = app_public.current_user_id()));
+
+
+--
+-- Name: user_emails select_own; Type: POLICY; Schema: app_public; Owner: -
+--
+
+CREATE POLICY select_own ON app_public.user_emails FOR SELECT USING ((user_id = app_public.current_user_id()));
 
 
 --
@@ -2391,14 +2427,14 @@ ALTER TABLE app_public.users ENABLE ROW LEVEL SECURITY;
 -- Name: SCHEMA app_hidden; Type: ACL; Schema: -; Owner: -
 --
 
-GRANT USAGE ON SCHEMA app_hidden TO mysaas_visitor;
+GRANT USAGE ON SCHEMA app_hidden TO graphile_starter_visitor;
 
 
 --
 -- Name: SCHEMA app_public; Type: ACL; Schema: -; Owner: -
 --
 
-GRANT USAGE ON SCHEMA app_public TO mysaas_visitor;
+GRANT USAGE ON SCHEMA app_public TO graphile_starter_visitor;
 
 
 --
@@ -2406,8 +2442,8 @@ GRANT USAGE ON SCHEMA app_public TO mysaas_visitor;
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
-GRANT ALL ON SCHEMA public TO mysaas;
-GRANT USAGE ON SCHEMA public TO mysaas_visitor;
+GRANT ALL ON SCHEMA public TO graphile_starter;
+GRANT USAGE ON SCHEMA public TO graphile_starter_visitor;
 
 
 --
@@ -2421,28 +2457,28 @@ REVOKE ALL ON FUNCTION app_private.assert_valid_password(new_password text) FROM
 -- Name: TABLE users; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT ON TABLE app_public.users TO mysaas_visitor;
+GRANT SELECT ON TABLE app_public.users TO graphile_starter_visitor;
 
 
 --
 -- Name: COLUMN users.username; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT UPDATE(username) ON TABLE app_public.users TO mysaas_visitor;
+GRANT UPDATE(username) ON TABLE app_public.users TO graphile_starter_visitor;
 
 
 --
 -- Name: COLUMN users.name; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT UPDATE(name) ON TABLE app_public.users TO mysaas_visitor;
+GRANT UPDATE(name) ON TABLE app_public.users TO graphile_starter_visitor;
 
 
 --
 -- Name: COLUMN users.avatar_url; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT UPDATE(avatar_url) ON TABLE app_public.users TO mysaas_visitor;
+GRANT UPDATE(avatar_url) ON TABLE app_public.users TO graphile_starter_visitor;
 
 
 --
@@ -2513,7 +2549,7 @@ REVOKE ALL ON FUNCTION app_private.tg_users__make_first_user_admin() FROM PUBLIC
 --
 
 REVOKE ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id integer, code text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id integer, code text) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id integer, code text) TO graphile_starter_visitor;
 
 
 --
@@ -2521,7 +2557,7 @@ GRANT ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id
 --
 
 REVOKE ALL ON FUNCTION app_public.change_password(old_password text, new_password text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.change_password(old_password text, new_password text) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.change_password(old_password text, new_password text) TO graphile_starter_visitor;
 
 
 --
@@ -2529,14 +2565,14 @@ GRANT ALL ON FUNCTION app_public.change_password(old_password text, new_password
 --
 
 REVOKE ALL ON FUNCTION app_public.confirm_account_deletion(token text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.confirm_account_deletion(token text) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.confirm_account_deletion(token text) TO graphile_starter_visitor;
 
 
 --
 -- Name: TABLE organizations; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT ON TABLE app_public.organizations TO mysaas_visitor;
+GRANT SELECT ON TABLE app_public.organizations TO graphile_starter_visitor;
 
 
 --
@@ -2544,7 +2580,7 @@ GRANT SELECT ON TABLE app_public.organizations TO mysaas_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.create_organization(slug public.citext, name text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.create_organization(slug public.citext, name text) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.create_organization(slug public.citext, name text) TO graphile_starter_visitor;
 
 
 --
@@ -2552,7 +2588,7 @@ GRANT ALL ON FUNCTION app_public.create_organization(slug public.citext, name te
 --
 
 REVOKE ALL ON FUNCTION app_public.current_session_id() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.current_session_id() TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.current_session_id() TO graphile_starter_visitor;
 
 
 --
@@ -2560,7 +2596,7 @@ GRANT ALL ON FUNCTION app_public.current_session_id() TO mysaas_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public."current_user"() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public."current_user"() TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public."current_user"() TO graphile_starter_visitor;
 
 
 --
@@ -2568,7 +2604,7 @@ GRANT ALL ON FUNCTION app_public."current_user"() TO mysaas_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.current_user_id() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.current_user_id() TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.current_user_id() TO graphile_starter_visitor;
 
 
 --
@@ -2576,7 +2612,7 @@ GRANT ALL ON FUNCTION app_public.current_user_id() TO mysaas_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.current_user_invited_organization_ids() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.current_user_invited_organization_ids() TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.current_user_invited_organization_ids() TO graphile_starter_visitor;
 
 
 --
@@ -2584,7 +2620,7 @@ GRANT ALL ON FUNCTION app_public.current_user_invited_organization_ids() TO mysa
 --
 
 REVOKE ALL ON FUNCTION app_public.current_user_member_organization_ids() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.current_user_member_organization_ids() TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.current_user_member_organization_ids() TO graphile_starter_visitor;
 
 
 --
@@ -2592,7 +2628,7 @@ GRANT ALL ON FUNCTION app_public.current_user_member_organization_ids() TO mysaa
 --
 
 REVOKE ALL ON FUNCTION app_public.delete_organization(organization_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.delete_organization(organization_id integer) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.delete_organization(organization_id integer) TO graphile_starter_visitor;
 
 
 --
@@ -2600,7 +2636,7 @@ GRANT ALL ON FUNCTION app_public.delete_organization(organization_id integer) TO
 --
 
 REVOKE ALL ON FUNCTION app_public.forgot_password(email public.citext) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO graphile_starter_visitor;
 
 
 --
@@ -2608,7 +2644,7 @@ GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO mysaas_
 --
 
 REVOKE ALL ON FUNCTION app_public.get_organization_for_invitation(invitation_id integer, code text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.get_organization_for_invitation(invitation_id integer, code text) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.get_organization_for_invitation(invitation_id integer, code text) TO graphile_starter_visitor;
 
 
 --
@@ -2616,7 +2652,7 @@ GRANT ALL ON FUNCTION app_public.get_organization_for_invitation(invitation_id i
 --
 
 REVOKE ALL ON FUNCTION app_public.invite_to_organization(organization_id integer, username public.citext, email public.citext) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.invite_to_organization(organization_id integer, username public.citext, email public.citext) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.invite_to_organization(organization_id integer, username public.citext, email public.citext) TO graphile_starter_visitor;
 
 
 --
@@ -2624,21 +2660,21 @@ GRANT ALL ON FUNCTION app_public.invite_to_organization(organization_id integer,
 --
 
 REVOKE ALL ON FUNCTION app_public.logout() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.logout() TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.logout() TO graphile_starter_visitor;
 
 
 --
 -- Name: TABLE user_emails; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,DELETE ON TABLE app_public.user_emails TO mysaas_visitor;
+GRANT SELECT,DELETE ON TABLE app_public.user_emails TO graphile_starter_visitor;
 
 
 --
 -- Name: COLUMN user_emails.email; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT INSERT(email) ON TABLE app_public.user_emails TO mysaas_visitor;
+GRANT INSERT(email) ON TABLE app_public.user_emails TO graphile_starter_visitor;
 
 
 --
@@ -2646,7 +2682,7 @@ GRANT INSERT(email) ON TABLE app_public.user_emails TO mysaas_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.make_email_primary(email_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.make_email_primary(email_id integer) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.make_email_primary(email_id integer) TO graphile_starter_visitor;
 
 
 --
@@ -2654,7 +2690,7 @@ GRANT ALL ON FUNCTION app_public.make_email_primary(email_id integer) TO mysaas_
 --
 
 REVOKE ALL ON FUNCTION app_public.organizations_current_user_is_billing_contact(org app_public.organizations) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.organizations_current_user_is_billing_contact(org app_public.organizations) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.organizations_current_user_is_billing_contact(org app_public.organizations) TO graphile_starter_visitor;
 
 
 --
@@ -2662,7 +2698,7 @@ GRANT ALL ON FUNCTION app_public.organizations_current_user_is_billing_contact(o
 --
 
 REVOKE ALL ON FUNCTION app_public.organizations_current_user_is_owner(org app_public.organizations) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.organizations_current_user_is_owner(org app_public.organizations) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.organizations_current_user_is_owner(org app_public.organizations) TO graphile_starter_visitor;
 
 
 --
@@ -2670,7 +2706,7 @@ GRANT ALL ON FUNCTION app_public.organizations_current_user_is_owner(org app_pub
 --
 
 REVOKE ALL ON FUNCTION app_public.remove_from_organization(organization_id integer, user_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.remove_from_organization(organization_id integer, user_id integer) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.remove_from_organization(organization_id integer, user_id integer) TO graphile_starter_visitor;
 
 
 --
@@ -2678,7 +2714,7 @@ GRANT ALL ON FUNCTION app_public.remove_from_organization(organization_id intege
 --
 
 REVOKE ALL ON FUNCTION app_public.request_account_deletion() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.request_account_deletion() TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.request_account_deletion() TO graphile_starter_visitor;
 
 
 --
@@ -2686,7 +2722,7 @@ GRANT ALL ON FUNCTION app_public.request_account_deletion() TO mysaas_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer) TO graphile_starter_visitor;
 
 
 --
@@ -2694,7 +2730,7 @@ GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer
 --
 
 REVOKE ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) TO graphile_starter_visitor;
 
 
 --
@@ -2702,7 +2738,7 @@ GRANT ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token tex
 --
 
 REVOKE ALL ON FUNCTION app_public.tg__graphql_subscription() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.tg__graphql_subscription() TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.tg__graphql_subscription() TO graphile_starter_visitor;
 
 
 --
@@ -2710,7 +2746,7 @@ GRANT ALL ON FUNCTION app_public.tg__graphql_subscription() TO mysaas_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO graphile_starter_visitor;
 
 
 --
@@ -2718,7 +2754,15 @@ GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO mysaas_
 --
 
 REVOKE ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION transfer_organization_billing_contact(organization_id integer, user_id integer); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.transfer_organization_billing_contact(organization_id integer, user_id integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.transfer_organization_billing_contact(organization_id integer, user_id integer) TO graphile_starter_visitor;
 
 
 --
@@ -2726,7 +2770,7 @@ GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO
 --
 
 REVOKE ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id integer, user_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id integer, user_id integer) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id integer, user_id integer) TO graphile_starter_visitor;
 
 
 --
@@ -2734,7 +2778,7 @@ GRANT ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id
 --
 
 REVOKE ALL ON FUNCTION app_public.users_has_password(u app_public.users) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO graphile_starter_visitor;
 
 
 --
@@ -2742,128 +2786,128 @@ GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO mysaa
 --
 
 REVOKE ALL ON FUNCTION app_public.verify_email(user_email_id integer, token text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.verify_email(user_email_id integer, token text) TO mysaas_visitor;
+GRANT ALL ON FUNCTION app_public.verify_email(user_email_id integer, token text) TO graphile_starter_visitor;
 
 
 --
 -- Name: TABLE organization_invitations; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT ON TABLE app_public.organization_invitations TO mysaas_visitor;
+GRANT SELECT ON TABLE app_public.organization_invitations TO graphile_starter_visitor;
 
 
 --
 -- Name: SEQUENCE organization_invitations_id_seq; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,USAGE ON SEQUENCE app_public.organization_invitations_id_seq TO mysaas_visitor;
+GRANT SELECT,USAGE ON SEQUENCE app_public.organization_invitations_id_seq TO graphile_starter_visitor;
 
 
 --
 -- Name: TABLE organization_memberships; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT ON TABLE app_public.organization_memberships TO mysaas_visitor;
+GRANT SELECT ON TABLE app_public.organization_memberships TO graphile_starter_visitor;
 
 
 --
 -- Name: SEQUENCE organization_memberships_id_seq; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,USAGE ON SEQUENCE app_public.organization_memberships_id_seq TO mysaas_visitor;
+GRANT SELECT,USAGE ON SEQUENCE app_public.organization_memberships_id_seq TO graphile_starter_visitor;
 
 
 --
 -- Name: SEQUENCE organizations_id_seq; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,USAGE ON SEQUENCE app_public.organizations_id_seq TO mysaas_visitor;
+GRANT SELECT,USAGE ON SEQUENCE app_public.organizations_id_seq TO graphile_starter_visitor;
 
 
 --
 -- Name: TABLE user_authentications; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,DELETE ON TABLE app_public.user_authentications TO mysaas_visitor;
+GRANT SELECT,DELETE ON TABLE app_public.user_authentications TO graphile_starter_visitor;
 
 
 --
 -- Name: SEQUENCE user_authentications_id_seq; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,USAGE ON SEQUENCE app_public.user_authentications_id_seq TO mysaas_visitor;
+GRANT SELECT,USAGE ON SEQUENCE app_public.user_authentications_id_seq TO graphile_starter_visitor;
 
 
 --
 -- Name: SEQUENCE user_emails_id_seq; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,USAGE ON SEQUENCE app_public.user_emails_id_seq TO mysaas_visitor;
+GRANT SELECT,USAGE ON SEQUENCE app_public.user_emails_id_seq TO graphile_starter_visitor;
 
 
 --
 -- Name: SEQUENCE users_id_seq; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,USAGE ON SEQUENCE app_public.users_id_seq TO mysaas_visitor;
+GRANT SELECT,USAGE ON SEQUENCE app_public.users_id_seq TO graphile_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: app_hidden; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA app_hidden REVOKE ALL ON SEQUENCES  FROM mysaas;
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA app_hidden GRANT SELECT,USAGE ON SEQUENCES  TO mysaas_visitor;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: app_public; Owner: -
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA app_public REVOKE ALL ON SEQUENCES  FROM mysaas;
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA app_public GRANT SELECT,USAGE ON SEQUENCES  TO mysaas_visitor;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: -; Owner: -
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden REVOKE ALL ON SEQUENCES  FROM graphile_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: app_hidden; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM mysaas;
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA app_hidden GRANT ALL ON FUNCTIONS  TO mysaas_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: app_public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON SEQUENCES  FROM graphile_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: app_public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM mysaas;
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA app_public GRANT ALL ON FUNCTIONS  TO mysaas_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA public REVOKE ALL ON SEQUENCES  FROM mysaas;
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA public GRANT SELECT,USAGE ON SEQUENCES  TO mysaas_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON SEQUENCES  FROM graphile_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM mysaas;
-ALTER DEFAULT PRIVILEGES FOR ROLE mysaas IN SCHEMA public GRANT ALL ON FUNCTIONS  TO mysaas_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: -; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
 
 
 --
