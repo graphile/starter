@@ -1,4 +1,4 @@
-mutation TransferOrganizationOwnership($organizationId: Int!, $userId: Int!) {
+mutation TransferOrganizationOwnership($organizationId: UUID!, $userId: UUID!) {
   transferOrganizationOwnership(
     input: { organizationId: $organizationId, userId: $userId }
   ) {

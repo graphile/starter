@@ -8,12 +8,12 @@ if (!process.env.TEST_DATABASE_URL) {
 export const TEST_DATABASE_URL: string = process.env.TEST_DATABASE_URL;
 
 export type User = {
-  id: number;
+  id: string;
   username: string;
   _password?: string;
   _email?: string;
 };
-export type Organization = { id: number; name: string };
+export type Organization = { id: string; name: string };
 
 // Make sure we release those pgPools so that our tests exit!
 afterAll(() => {
@@ -165,7 +165,7 @@ export const createSession = async (
   } = await client.query(
     `
       insert into app_private.sessions (user_id)
-      values ($1::int)
+      values ($1::uuid)
       returning *
     `,
     [userId]

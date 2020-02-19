@@ -1,6 +1,6 @@
 mutation TransferOrganizationBillingContact(
-  $organizationId: Int!
-  $userId: Int!
+  $organizationId: UUID!
+  $userId: UUID!
 ) {
   transferOrganizationBillingContact(
     input: { organizationId: $organizationId, userId: $userId }

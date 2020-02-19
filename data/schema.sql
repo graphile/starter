@@ -104,7 +104,7 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE app_public.users (
-    id integer NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     username public.citext NOT NULL,
     name text,
     avatar_url text,
@@ -160,16 +160,16 @@ COMMENT ON COLUMN app_public.users.is_admin IS 'If true, the user has elevated p
 
 
 --
--- Name: link_or_register_user(integer, character varying, character varying, json, json); Type: FUNCTION; Schema: app_private; Owner: -
+-- Name: link_or_register_user(uuid, character varying, character varying, json, json); Type: FUNCTION; Schema: app_private; Owner: -
 --
 
-CREATE FUNCTION app_private.link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) RETURNS app_public.users
+CREATE FUNCTION app_private.link_or_register_user(f_user_id uuid, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) RETURNS app_public.users
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
-  v_matched_user_id int;
-  v_matched_authentication_id int;
+  v_matched_user_id uuid;
+  v_matched_authentication_id uuid;
   v_email citext;
   v_name text;
   v_avatar_url text;
@@ -243,10 +243,10 @@ $$;
 
 
 --
--- Name: FUNCTION link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json); Type: COMMENT; Schema: app_private; Owner: -
+-- Name: FUNCTION link_or_register_user(f_user_id uuid, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json); Type: COMMENT; Schema: app_private; Owner: -
 --
 
-COMMENT ON FUNCTION app_private.link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) IS 'If you''re logged in, this will link an additional OAuth login to your account if necessary. If you''re logged out it may find if an account already exists (based on OAuth details or email address) and return that, or create a new user account if necessary.';
+COMMENT ON FUNCTION app_private.link_or_register_user(f_user_id uuid, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) IS 'If you''re logged in, this will link an additional OAuth login to your account if necessary. If you''re logged out it may find if an account already exists (based on OAuth details or email address) and return that, or create a new user account if necessary.';
 
 
 --
@@ -255,7 +255,7 @@ COMMENT ON FUNCTION app_private.link_or_register_user(f_user_id integer, f_servi
 
 CREATE TABLE app_private.sessions (
     uuid uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    user_id integer NOT NULL,
+    user_id uuid NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     last_active timestamp with time zone DEFAULT now() NOT NULL
 );
@@ -408,7 +408,7 @@ declare
   v_name text;
   v_username citext;
   v_avatar_url text;
-  v_user_authentication_id int;
+  v_user_authentication_id uuid;
 begin
   -- Extract data from the user’s OAuth profile data.
   v_email := f_profile ->> 'email';
@@ -565,25 +565,10 @@ COMMENT ON FUNCTION app_private.tg_user_secrets__insert_with_user() IS 'Ensures 
 
 
 --
--- Name: tg_users__make_first_user_admin(); Type: FUNCTION; Schema: app_private; Owner: -
+-- Name: accept_invitation_to_organization(uuid, text); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_private.tg_users__make_first_user_admin() RETURNS trigger
-    LANGUAGE plpgsql
-    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
-    AS $$
-begin
-  NEW.is_admin = true;
-  return NEW;
-end;
-$$;
-
-
---
--- Name: accept_invitation_to_organization(integer, text); Type: FUNCTION; Schema: app_public; Owner: -
---
-
-CREATE FUNCTION app_public.accept_invitation_to_organization(invitation_id integer, code text DEFAULT NULL::text) RETURNS void
+CREATE FUNCTION app_public.accept_invitation_to_organization(invitation_id uuid, code text DEFAULT NULL::text) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -721,7 +706,7 @@ COMMENT ON FUNCTION app_public.confirm_account_deletion(token text) IS 'If you''
 --
 
 CREATE TABLE app_public.organizations (
-    id integer NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     slug public.citext NOT NULL,
     name text NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL
@@ -787,7 +772,7 @@ COMMENT ON FUNCTION app_public."current_user"() IS 'The currently logged in user
 -- Name: current_user_id(); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.current_user_id() RETURNS integer
+CREATE FUNCTION app_public.current_user_id() RETURNS uuid
     LANGUAGE sql STABLE SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -806,7 +791,7 @@ COMMENT ON FUNCTION app_public.current_user_id() IS 'Handy method to get the cur
 -- Name: current_user_invited_organization_ids(); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.current_user_invited_organization_ids() RETURNS SETOF integer
+CREATE FUNCTION app_public.current_user_invited_organization_ids() RETURNS SETOF uuid
     LANGUAGE sql STABLE SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -819,7 +804,7 @@ $$;
 -- Name: current_user_member_organization_ids(); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.current_user_member_organization_ids() RETURNS SETOF integer
+CREATE FUNCTION app_public.current_user_member_organization_ids() RETURNS SETOF uuid
     LANGUAGE sql STABLE SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -829,10 +814,10 @@ $$;
 
 
 --
--- Name: delete_organization(integer); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: delete_organization(uuid); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.delete_organization(organization_id integer) RETURNS void
+CREATE FUNCTION app_public.delete_organization(organization_id uuid) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -954,10 +939,10 @@ COMMENT ON FUNCTION app_public.forgot_password(email public.citext) IS 'If you''
 
 
 --
--- Name: get_organization_for_invitation(integer, text); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: get_organization_for_invitation(uuid, text); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.get_organization_for_invitation(invitation_id integer, code text DEFAULT NULL::text) RETURNS app_public.organizations
+CREATE FUNCTION app_public.get_organization_for_invitation(invitation_id uuid, code text DEFAULT NULL::text) RETURNS app_public.organizations
     LANGUAGE plpgsql STABLE SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -993,16 +978,16 @@ $$;
 
 
 --
--- Name: invite_to_organization(integer, public.citext, public.citext); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: invite_to_organization(uuid, public.citext, public.citext); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.invite_to_organization(organization_id integer, username public.citext, email public.citext) RETURNS void
+CREATE FUNCTION app_public.invite_to_organization(organization_id uuid, username public.citext, email public.citext) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 declare
   v_code text;
-  v_user_id int;
+  v_user_id uuid;
 begin
   -- Are we allowed to add this person
   -- Are we logged in
@@ -1067,8 +1052,8 @@ $$;
 --
 
 CREATE TABLE app_public.user_emails (
-    id integer NOT NULL,
-    user_id integer DEFAULT app_public.current_user_id() NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    user_id uuid DEFAULT app_public.current_user_id() NOT NULL,
     email public.citext NOT NULL,
     is_verified boolean DEFAULT false NOT NULL,
     is_primary boolean DEFAULT false NOT NULL,
@@ -1101,10 +1086,10 @@ COMMENT ON COLUMN app_public.user_emails.is_verified IS 'True if the user has is
 
 
 --
--- Name: make_email_primary(integer); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: make_email_primary(uuid); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.make_email_primary(email_id integer) RETURNS app_public.user_emails
+CREATE FUNCTION app_public.make_email_primary(email_id uuid) RETURNS app_public.user_emails
     LANGUAGE plpgsql STRICT SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -1127,10 +1112,10 @@ $$;
 
 
 --
--- Name: FUNCTION make_email_primary(email_id integer); Type: COMMENT; Schema: app_public; Owner: -
+-- Name: FUNCTION make_email_primary(email_id uuid); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.make_email_primary(email_id integer) IS 'Your primary email is where we''ll notify of account events; other emails may be used for discovery or login. Use this when you''re changing your email address.';
+COMMENT ON FUNCTION app_public.make_email_primary(email_id uuid) IS 'Your primary email is where we''ll notify of account events; other emails may be used for discovery or login. Use this when you''re changing your email address.';
 
 
 --
@@ -1168,10 +1153,10 @@ $$;
 
 
 --
--- Name: remove_from_organization(integer, integer); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: remove_from_organization(uuid, uuid); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.remove_from_organization(organization_id integer, user_id integer) RETURNS void
+CREATE FUNCTION app_public.remove_from_organization(organization_id uuid, user_id uuid) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -1272,10 +1257,10 @@ COMMENT ON FUNCTION app_public.request_account_deletion() IS 'Begin the account 
 
 
 --
--- Name: resend_email_verification_code(integer); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: resend_email_verification_code(uuid); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.resend_email_verification_code(email_id integer) RETURNS boolean
+CREATE FUNCTION app_public.resend_email_verification_code(email_id uuid) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -1296,17 +1281,17 @@ $$;
 
 
 --
--- Name: FUNCTION resend_email_verification_code(email_id integer); Type: COMMENT; Schema: app_public; Owner: -
+-- Name: FUNCTION resend_email_verification_code(email_id uuid); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.resend_email_verification_code(email_id integer) IS 'If you didn''t receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.';
+COMMENT ON FUNCTION app_public.resend_email_verification_code(email_id uuid) IS 'If you didn''t receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.';
 
 
 --
--- Name: reset_password(integer, text, text); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: reset_password(uuid, text, text); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) RETURNS boolean
+CREATE FUNCTION app_public.reset_password(user_id uuid, reset_token text, new_password text) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -1369,10 +1354,10 @@ $$;
 
 
 --
--- Name: FUNCTION reset_password(user_id integer, reset_token text, new_password text); Type: COMMENT; Schema: app_public; Owner: -
+-- Name: FUNCTION reset_password(user_id uuid, reset_token text, new_password text); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) IS 'After triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
+COMMENT ON FUNCTION app_public.reset_password(user_id uuid, reset_token text, new_password text) IS 'After triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
 
 
 --
@@ -1466,10 +1451,10 @@ $$;
 
 
 --
--- Name: transfer_organization_billing_contact(integer, integer); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: transfer_organization_billing_contact(uuid, uuid); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.transfer_organization_billing_contact(organization_id integer, user_id integer) RETURNS app_public.organizations
+CREATE FUNCTION app_public.transfer_organization_billing_contact(organization_id uuid, user_id uuid) RETURNS app_public.organizations
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -1504,10 +1489,10 @@ $$;
 
 
 --
--- Name: transfer_organization_ownership(integer, integer); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: transfer_organization_ownership(uuid, uuid); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.transfer_organization_ownership(organization_id integer, user_id integer) RETURNS app_public.organizations
+CREATE FUNCTION app_public.transfer_organization_ownership(organization_id uuid, user_id uuid) RETURNS app_public.organizations
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -1553,10 +1538,10 @@ $$;
 
 
 --
--- Name: verify_email(integer, text); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: verify_email(uuid, text); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.verify_email(user_email_id integer, token text) RETURNS boolean
+CREATE FUNCTION app_public.verify_email(user_email_id uuid, token text) RETURNS boolean
     LANGUAGE plpgsql STRICT SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -1577,10 +1562,10 @@ $$;
 
 
 --
--- Name: FUNCTION verify_email(user_email_id integer, token text); Type: COMMENT; Schema: app_public; Owner: -
+-- Name: FUNCTION verify_email(user_email_id uuid, token text); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.verify_email(user_email_id integer, token text) IS 'Once you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
+COMMENT ON FUNCTION app_public.verify_email(user_email_id uuid, token text) IS 'Once you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
 
 
 --
@@ -1631,7 +1616,7 @@ COMMENT ON COLUMN app_private.unregistered_email_password_resets.latest_attempt 
 --
 
 CREATE TABLE app_private.user_authentication_secrets (
-    user_authentication_id integer NOT NULL,
+    user_authentication_id uuid NOT NULL,
     details jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
@@ -1641,7 +1626,7 @@ CREATE TABLE app_private.user_authentication_secrets (
 --
 
 CREATE TABLE app_private.user_email_secrets (
-    user_email_id integer NOT NULL,
+    user_email_id uuid NOT NULL,
     verification_token text,
     verification_email_sent_at timestamp with time zone,
     password_reset_email_sent_at timestamp with time zone
@@ -1667,7 +1652,7 @@ COMMENT ON COLUMN app_private.user_email_secrets.password_reset_email_sent_at IS
 --
 
 CREATE TABLE app_private.user_secrets (
-    user_id integer NOT NULL,
+    user_id uuid NOT NULL,
     password_hash text,
     last_login_at timestamp with time zone DEFAULT now() NOT NULL,
     failed_password_attempts integer DEFAULT 0 NOT NULL,
@@ -1693,10 +1678,10 @@ COMMENT ON TABLE app_private.user_secrets IS 'The contents of this table should 
 --
 
 CREATE TABLE app_public.organization_invitations (
-    id integer NOT NULL,
-    organization_id integer NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    organization_id uuid NOT NULL,
     code text,
-    user_id integer,
+    user_id uuid,
     email public.citext,
     CONSTRAINT organization_invitations_check CHECK (((user_id IS NULL) <> (email IS NULL))),
     CONSTRAINT organization_invitations_check1 CHECK (((code IS NULL) = (email IS NULL)))
@@ -1704,33 +1689,13 @@ CREATE TABLE app_public.organization_invitations (
 
 
 --
--- Name: organization_invitations_id_seq; Type: SEQUENCE; Schema: app_public; Owner: -
---
-
-CREATE SEQUENCE app_public.organization_invitations_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: organization_invitations_id_seq; Type: SEQUENCE OWNED BY; Schema: app_public; Owner: -
---
-
-ALTER SEQUENCE app_public.organization_invitations_id_seq OWNED BY app_public.organization_invitations.id;
-
-
---
 -- Name: organization_memberships; Type: TABLE; Schema: app_public; Owner: -
 --
 
 CREATE TABLE app_public.organization_memberships (
-    id integer NOT NULL,
-    organization_id integer NOT NULL,
-    user_id integer NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    organization_id uuid NOT NULL,
+    user_id uuid NOT NULL,
     is_owner boolean DEFAULT false NOT NULL,
     is_billing_contact boolean DEFAULT false NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL
@@ -1738,52 +1703,12 @@ CREATE TABLE app_public.organization_memberships (
 
 
 --
--- Name: organization_memberships_id_seq; Type: SEQUENCE; Schema: app_public; Owner: -
---
-
-CREATE SEQUENCE app_public.organization_memberships_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: organization_memberships_id_seq; Type: SEQUENCE OWNED BY; Schema: app_public; Owner: -
---
-
-ALTER SEQUENCE app_public.organization_memberships_id_seq OWNED BY app_public.organization_memberships.id;
-
-
---
--- Name: organizations_id_seq; Type: SEQUENCE; Schema: app_public; Owner: -
---
-
-CREATE SEQUENCE app_public.organizations_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: organizations_id_seq; Type: SEQUENCE OWNED BY; Schema: app_public; Owner: -
---
-
-ALTER SEQUENCE app_public.organizations_id_seq OWNED BY app_public.organizations.id;
-
-
---
 -- Name: user_authentications; Type: TABLE; Schema: app_public; Owner: -
 --
 
 CREATE TABLE app_public.user_authentications (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    user_id uuid NOT NULL,
     service text NOT NULL,
     identifier text NOT NULL,
     details jsonb DEFAULT '{}'::jsonb NOT NULL,
@@ -1818,108 +1743,6 @@ COMMENT ON COLUMN app_public.user_authentications.identifier IS 'A unique identi
 --
 
 COMMENT ON COLUMN app_public.user_authentications.details IS 'Additional profile details extracted from this login method';
-
-
---
--- Name: user_authentications_id_seq; Type: SEQUENCE; Schema: app_public; Owner: -
---
-
-CREATE SEQUENCE app_public.user_authentications_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: user_authentications_id_seq; Type: SEQUENCE OWNED BY; Schema: app_public; Owner: -
---
-
-ALTER SEQUENCE app_public.user_authentications_id_seq OWNED BY app_public.user_authentications.id;
-
-
---
--- Name: user_emails_id_seq; Type: SEQUENCE; Schema: app_public; Owner: -
---
-
-CREATE SEQUENCE app_public.user_emails_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: user_emails_id_seq; Type: SEQUENCE OWNED BY; Schema: app_public; Owner: -
---
-
-ALTER SEQUENCE app_public.user_emails_id_seq OWNED BY app_public.user_emails.id;
-
-
---
--- Name: users_id_seq; Type: SEQUENCE; Schema: app_public; Owner: -
---
-
-CREATE SEQUENCE app_public.users_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: app_public; Owner: -
---
-
-ALTER SEQUENCE app_public.users_id_seq OWNED BY app_public.users.id;
-
-
---
--- Name: organization_invitations id; Type: DEFAULT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.organization_invitations ALTER COLUMN id SET DEFAULT nextval('app_public.organization_invitations_id_seq'::regclass);
-
-
---
--- Name: organization_memberships id; Type: DEFAULT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.organization_memberships ALTER COLUMN id SET DEFAULT nextval('app_public.organization_memberships_id_seq'::regclass);
-
-
---
--- Name: organizations id; Type: DEFAULT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.organizations ALTER COLUMN id SET DEFAULT nextval('app_public.organizations_id_seq'::regclass);
-
-
---
--- Name: user_authentications id; Type: DEFAULT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.user_authentications ALTER COLUMN id SET DEFAULT nextval('app_public.user_authentications_id_seq'::regclass);
-
-
---
--- Name: user_emails id; Type: DEFAULT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.user_emails ALTER COLUMN id SET DEFAULT nextval('app_public.user_emails_id_seq'::regclass);
-
-
---
--- Name: users id; Type: DEFAULT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.users ALTER COLUMN id SET DEFAULT nextval('app_public.users_id_seq'::regclass);
 
 
 --
@@ -2149,13 +1972,6 @@ CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.users FOR E
 --
 
 CREATE TRIGGER _200_forbid_existing_email BEFORE INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_public.tg_user_emails__forbid_if_verified();
-
-
---
--- Name: users _200_make_first_user_admin; Type: TRIGGER; Schema: app_public; Owner: -
---
-
-CREATE TRIGGER _200_make_first_user_admin BEFORE INSERT ON app_public.users FOR EACH ROW WHEN ((new.id = 1)) EXECUTE PROCEDURE app_private.tg_users__make_first_user_admin();
 
 
 --
@@ -2482,10 +2298,10 @@ GRANT UPDATE(avatar_url) ON TABLE app_public.users TO graphile_starter_visitor;
 
 
 --
--- Name: FUNCTION link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json); Type: ACL; Schema: app_private; Owner: -
+-- Name: FUNCTION link_or_register_user(f_user_id uuid, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json); Type: ACL; Schema: app_private; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_private.link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) FROM PUBLIC;
+REVOKE ALL ON FUNCTION app_private.link_or_register_user(f_user_id uuid, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) FROM PUBLIC;
 
 
 --
@@ -2538,18 +2354,11 @@ REVOKE ALL ON FUNCTION app_private.tg_user_secrets__insert_with_user() FROM PUBL
 
 
 --
--- Name: FUNCTION tg_users__make_first_user_admin(); Type: ACL; Schema: app_private; Owner: -
+-- Name: FUNCTION accept_invitation_to_organization(invitation_id uuid, code text); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_private.tg_users__make_first_user_admin() FROM PUBLIC;
-
-
---
--- Name: FUNCTION accept_invitation_to_organization(invitation_id integer, code text); Type: ACL; Schema: app_public; Owner: -
---
-
-REVOKE ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id integer, code text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id integer, code text) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id uuid, code text) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id uuid, code text) TO graphile_starter_visitor;
 
 
 --
@@ -2624,11 +2433,11 @@ GRANT ALL ON FUNCTION app_public.current_user_member_organization_ids() TO graph
 
 
 --
--- Name: FUNCTION delete_organization(organization_id integer); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION delete_organization(organization_id uuid); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.delete_organization(organization_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.delete_organization(organization_id integer) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.delete_organization(organization_id uuid) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.delete_organization(organization_id uuid) TO graphile_starter_visitor;
 
 
 --
@@ -2640,19 +2449,19 @@ GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO graphil
 
 
 --
--- Name: FUNCTION get_organization_for_invitation(invitation_id integer, code text); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION get_organization_for_invitation(invitation_id uuid, code text); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.get_organization_for_invitation(invitation_id integer, code text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.get_organization_for_invitation(invitation_id integer, code text) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.get_organization_for_invitation(invitation_id uuid, code text) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.get_organization_for_invitation(invitation_id uuid, code text) TO graphile_starter_visitor;
 
 
 --
--- Name: FUNCTION invite_to_organization(organization_id integer, username public.citext, email public.citext); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION invite_to_organization(organization_id uuid, username public.citext, email public.citext); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.invite_to_organization(organization_id integer, username public.citext, email public.citext) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.invite_to_organization(organization_id integer, username public.citext, email public.citext) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.invite_to_organization(organization_id uuid, username public.citext, email public.citext) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.invite_to_organization(organization_id uuid, username public.citext, email public.citext) TO graphile_starter_visitor;
 
 
 --
@@ -2678,11 +2487,11 @@ GRANT INSERT(email) ON TABLE app_public.user_emails TO graphile_starter_visitor;
 
 
 --
--- Name: FUNCTION make_email_primary(email_id integer); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION make_email_primary(email_id uuid); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.make_email_primary(email_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.make_email_primary(email_id integer) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.make_email_primary(email_id uuid) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.make_email_primary(email_id uuid) TO graphile_starter_visitor;
 
 
 --
@@ -2702,11 +2511,11 @@ GRANT ALL ON FUNCTION app_public.organizations_current_user_is_owner(org app_pub
 
 
 --
--- Name: FUNCTION remove_from_organization(organization_id integer, user_id integer); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION remove_from_organization(organization_id uuid, user_id uuid); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.remove_from_organization(organization_id integer, user_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.remove_from_organization(organization_id integer, user_id integer) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.remove_from_organization(organization_id uuid, user_id uuid) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.remove_from_organization(organization_id uuid, user_id uuid) TO graphile_starter_visitor;
 
 
 --
@@ -2718,19 +2527,19 @@ GRANT ALL ON FUNCTION app_public.request_account_deletion() TO graphile_starter_
 
 
 --
--- Name: FUNCTION resend_email_verification_code(email_id integer); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION resend_email_verification_code(email_id uuid); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id integer) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.resend_email_verification_code(email_id uuid) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id uuid) TO graphile_starter_visitor;
 
 
 --
--- Name: FUNCTION reset_password(user_id integer, reset_token text, new_password text); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION reset_password(user_id uuid, reset_token text, new_password text); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.reset_password(user_id integer, reset_token text, new_password text) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.reset_password(user_id uuid, reset_token text, new_password text) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.reset_password(user_id uuid, reset_token text, new_password text) TO graphile_starter_visitor;
 
 
 --
@@ -2758,19 +2567,19 @@ GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO
 
 
 --
--- Name: FUNCTION transfer_organization_billing_contact(organization_id integer, user_id integer); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION transfer_organization_billing_contact(organization_id uuid, user_id uuid); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.transfer_organization_billing_contact(organization_id integer, user_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.transfer_organization_billing_contact(organization_id integer, user_id integer) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.transfer_organization_billing_contact(organization_id uuid, user_id uuid) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.transfer_organization_billing_contact(organization_id uuid, user_id uuid) TO graphile_starter_visitor;
 
 
 --
--- Name: FUNCTION transfer_organization_ownership(organization_id integer, user_id integer); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION transfer_organization_ownership(organization_id uuid, user_id uuid); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id integer, user_id integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id integer, user_id integer) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id uuid, user_id uuid) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id uuid, user_id uuid) TO graphile_starter_visitor;
 
 
 --
@@ -2782,11 +2591,11 @@ GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO graph
 
 
 --
--- Name: FUNCTION verify_email(user_email_id integer, token text); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION verify_email(user_email_id uuid, token text); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.verify_email(user_email_id integer, token text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.verify_email(user_email_id integer, token text) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.verify_email(user_email_id uuid, token text) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.verify_email(user_email_id uuid, token text) TO graphile_starter_visitor;
 
 
 --
@@ -2797,13 +2606,6 @@ GRANT SELECT ON TABLE app_public.organization_invitations TO graphile_starter_vi
 
 
 --
--- Name: SEQUENCE organization_invitations_id_seq; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,USAGE ON SEQUENCE app_public.organization_invitations_id_seq TO graphile_starter_visitor;
-
-
---
 -- Name: TABLE organization_memberships; Type: ACL; Schema: app_public; Owner: -
 --
 
@@ -2811,45 +2613,10 @@ GRANT SELECT ON TABLE app_public.organization_memberships TO graphile_starter_vi
 
 
 --
--- Name: SEQUENCE organization_memberships_id_seq; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,USAGE ON SEQUENCE app_public.organization_memberships_id_seq TO graphile_starter_visitor;
-
-
---
--- Name: SEQUENCE organizations_id_seq; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,USAGE ON SEQUENCE app_public.organizations_id_seq TO graphile_starter_visitor;
-
-
---
 -- Name: TABLE user_authentications; Type: ACL; Schema: app_public; Owner: -
 --
 
 GRANT SELECT,DELETE ON TABLE app_public.user_authentications TO graphile_starter_visitor;
-
-
---
--- Name: SEQUENCE user_authentications_id_seq; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,USAGE ON SEQUENCE app_public.user_authentications_id_seq TO graphile_starter_visitor;
-
-
---
--- Name: SEQUENCE user_emails_id_seq; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,USAGE ON SEQUENCE app_public.user_emails_id_seq TO graphile_starter_visitor;
-
-
---
--- Name: SEQUENCE users_id_seq; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,USAGE ON SEQUENCE app_public.users_id_seq TO graphile_starter_visitor;
 
 
 --

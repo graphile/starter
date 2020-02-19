@@ -6,7 +6,7 @@ input AcceptInvitationToOrganizationInput {
   """
   clientMutationId: String
   code: String
-  invitationId: Int
+  invitationId: UUID
 }
 
 """The output of our `acceptInvitationToOrganization` mutation."""
@@ -144,49 +144,49 @@ type CreateUserEmailPayload {
   ): UserEmailsEdge
 }
 
-"""A `Int` edge in the connection."""
+"""A `UUID` edge in the connection."""
 type CurrentUserInvitedOrganizationIdEdge {
   """A cursor for use in pagination."""
   cursor: Cursor
 
-  """The `Int` at the end of the edge."""
-  node: Int
+  """The `UUID` at the end of the edge."""
+  node: UUID
 }
 
-"""A connection to a list of `Int` values."""
+"""A connection to a list of `UUID` values."""
 type CurrentUserInvitedOrganizationIdsConnection {
   """
-  A list of edges which contains the `Int` and cursor to aid in pagination.
+  A list of edges which contains the `UUID` and cursor to aid in pagination.
   """
   edges: [CurrentUserInvitedOrganizationIdEdge!]!
 
-  """A list of `Int` objects."""
-  nodes: [Int]!
+  """A list of `UUID` objects."""
+  nodes: [UUID]!
 
-  """The count of *all* `Int` you could get from the connection."""
+  """The count of *all* `UUID` you could get from the connection."""
   totalCount: Int!
 }
 
-"""A `Int` edge in the connection."""
+"""A `UUID` edge in the connection."""
 type CurrentUserMemberOrganizationIdEdge {
   """A cursor for use in pagination."""
   cursor: Cursor
 
-  """The `Int` at the end of the edge."""
-  node: Int
+  """The `UUID` at the end of the edge."""
+  node: UUID
 }
 
-"""A connection to a list of `Int` values."""
+"""A connection to a list of `UUID` values."""
 type CurrentUserMemberOrganizationIdsConnection {
   """
-  A list of edges which contains the `Int` and cursor to aid in pagination.
+  A list of edges which contains the `UUID` and cursor to aid in pagination.
   """
   edges: [CurrentUserMemberOrganizationIdEdge!]!
 
-  """A list of `Int` objects."""
-  nodes: [Int]!
+  """A list of `UUID` objects."""
+  nodes: [UUID]!
 
-  """The count of *all* `Int` you could get from the connection."""
+  """The count of *all* `UUID` you could get from the connection."""
   totalCount: Int!
 }
 
@@ -206,7 +206,7 @@ input DeleteOrganizationInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  organizationId: Int
+  organizationId: UUID
 }
 
 """The output of our `deleteOrganization` mutation."""
@@ -230,7 +230,7 @@ input DeleteUserAuthenticationInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  id: Int!
+  id: UUID!
 }
 
 """The output of our delete `UserAuthentication` mutation."""
@@ -261,7 +261,7 @@ input DeleteUserEmailInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  id: Int!
+  id: UUID!
 }
 
 """The output of our delete `UserEmail` mutation."""
@@ -323,7 +323,7 @@ input InviteToOrganizationInput {
   """
   clientMutationId: String
   email: String
-  organizationId: Int
+  organizationId: UUID
   username: String
 }
 
@@ -361,7 +361,7 @@ input MakeEmailPrimaryInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  emailId: Int!
+  emailId: UUID!
 }
 
 """The output of our `makeEmailPrimary` mutation."""
@@ -581,7 +581,7 @@ type Organization {
   createdAt: Datetime!
   currentUserIsBillingContact: Boolean
   currentUserIsOwner: Boolean
-  id: Int!
+  id: UUID!
   name: String!
 
   """
@@ -654,7 +654,7 @@ tested for equality and combined with a logical ‘and.’
 """
 input OrganizationCondition {
   """Checks for equality with the object’s `id` field."""
-  id: Int
+  id: UUID
 
   """Checks for equality with the object’s `slug` field."""
   slug: String
@@ -663,19 +663,19 @@ input OrganizationCondition {
 type OrganizationInvitation {
   code: String
   email: String
-  id: Int!
+  id: UUID!
 
   """
   Reads a single `Organization` that is related to this `OrganizationInvitation`.
   """
   organization: Organization
-  organizationId: Int!
+  organizationId: UUID!
 
   """
   Reads a single `User` that is related to this `OrganizationInvitation`.
   """
   user: User
-  userId: Int
+  userId: UUID
 }
 
 """
@@ -684,13 +684,13 @@ are tested for equality and combined with a logical ‘and.’
 """
 input OrganizationInvitationCondition {
   """Checks for equality with the object’s `id` field."""
-  id: Int
+  id: UUID
 
   """Checks for equality with the object’s `organizationId` field."""
-  organizationId: Int
+  organizationId: UUID
 
   """Checks for equality with the object’s `userId` field."""
-  userId: Int
+  userId: UUID
 }
 
 """A connection to a list of `OrganizationInvitation` values."""
@@ -736,7 +736,7 @@ enum OrganizationInvitationsOrderBy {
 
 type OrganizationMembership {
   createdAt: Datetime!
-  id: Int!
+  id: UUID!
   isBillingContact: Boolean!
   isOwner: Boolean!
 
@@ -744,13 +744,13 @@ type OrganizationMembership {
   Reads a single `Organization` that is related to this `OrganizationMembership`.
   """
   organization: Organization
-  organizationId: Int!
+  organizationId: UUID!
 
   """
   Reads a single `User` that is related to this `OrganizationMembership`.
   """
   user: User
-  userId: Int!
+  userId: UUID!
 }
 
 """
@@ -759,13 +759,13 @@ are tested for equality and combined with a logical ‘and.’
 """
 input OrganizationMembershipCondition {
   """Checks for equality with the object’s `id` field."""
-  id: Int
+  id: UUID
 
   """Checks for equality with the object’s `organizationId` field."""
-  organizationId: Int
+  organizationId: UUID
 
   """Checks for equality with the object’s `userId` field."""
-  userId: Int
+  userId: UUID
 }
 
 """A connection to a list of `OrganizationMembership` values."""
@@ -905,12 +905,12 @@ type Query {
     """
     offset: Int
   ): CurrentUserMemberOrganizationIdsConnection!
-  getOrganizationForInvitation(code: String, invitationId: Int): Organization
-  organization(id: Int!): Organization
+  getOrganizationForInvitation(code: String, invitationId: UUID): Organization
+  organization(id: UUID!): Organization
   organizationBySlug(slug: String!): Organization
-  organizationInvitation(id: Int!): OrganizationInvitation
-  organizationInvitationByOrganizationIdAndEmail(email: String!, organizationId: Int!): OrganizationInvitation
-  organizationInvitationByOrganizationIdAndUserId(organizationId: Int!, userId: Int!): OrganizationInvitation
+  organizationInvitation(id: UUID!): OrganizationInvitation
+  organizationInvitationByOrganizationIdAndEmail(email: String!, organizationId: UUID!): OrganizationInvitation
+  organizationInvitationByOrganizationIdAndUserId(organizationId: UUID!, userId: UUID!): OrganizationInvitation
 
   """
   Reads and enables pagination through a set of `OrganizationInvitation`.
@@ -942,8 +942,8 @@ type Query {
     """The method to use when ordering `OrganizationInvitation`."""
     orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationInvitationsConnection
-  organizationMembership(id: Int!): OrganizationMembership
-  organizationMembershipByOrganizationIdAndUserId(organizationId: Int!, userId: Int!): OrganizationMembership
+  organizationMembership(id: UUID!): OrganizationMembership
+  organizationMembershipByOrganizationIdAndUserId(organizationId: UUID!, userId: UUID!): OrganizationMembership
 
   """Reads and enables pagination through a set of `Organization`."""
   organizations(
@@ -979,10 +979,10 @@ type Query {
   which can only query top level fields if they are in a particular form.
   """
   query: Query!
-  user(id: Int!): User
-  userAuthentication(id: Int!): UserAuthentication
+  user(id: UUID!): User
+  userAuthentication(id: UUID!): UserAuthentication
   userByUsername(username: String!): User
-  userEmail(id: Int!): UserEmail
+  userEmail(id: UUID!): UserEmail
 }
 
 input RegisterInput {
@@ -1004,8 +1004,8 @@ input RemoveFromOrganizationInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  organizationId: Int
-  userId: Int
+  organizationId: UUID
+  userId: UUID
 }
 
 """The output of our `removeFromOrganization` mutation."""
@@ -1053,7 +1053,7 @@ input ResendEmailVerificationCodeInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  emailId: Int!
+  emailId: UUID!
 }
 
 """The output of our `resendEmailVerificationCode` mutation."""
@@ -1080,7 +1080,7 @@ input ResetPasswordInput {
   clientMutationId: String
   newPassword: String!
   resetToken: String!
-  userId: Int!
+  userId: UUID!
 }
 
 """The output of our `resetPassword` mutation."""
@@ -1113,8 +1113,8 @@ input TransferOrganizationBillingContactInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  organizationId: Int
-  userId: Int
+  organizationId: UUID
+  userId: UUID
 }
 
 """The output of our `transferOrganizationBillingContact` mutation."""
@@ -1145,8 +1145,8 @@ input TransferOrganizationOwnershipInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  organizationId: Int
-  userId: Int
+  organizationId: UUID
+  userId: UUID
 }
 
 """The output of our `transferOrganizationOwnership` mutation."""
@@ -1179,7 +1179,7 @@ input UpdateUserInput {
   clientMutationId: String
 
   """Unique identifier for the user."""
-  id: Int!
+  id: UUID!
 
   """
   An object where the defined keys will be set on the `User` being updated.
@@ -1218,7 +1218,7 @@ type User {
   hasPassword: Boolean
 
   """Unique identifier for the user."""
-  id: Int!
+  id: UUID!
 
   """If true, the user has elevated privileges."""
   isAdmin: Boolean!
@@ -1345,7 +1345,7 @@ Contains information about the login providers this user has used, so that they 
 """
 type UserAuthentication {
   createdAt: Datetime!
-  id: Int!
+  id: UUID!
 
   """A unique identifier for the user within the login service."""
   identifier: String!
@@ -1356,7 +1356,7 @@ type UserAuthentication {
 
   """Reads a single `User` that is related to this `UserAuthentication`."""
   user: User
-  userId: Int!
+  userId: UUID!
 }
 
 """
@@ -1365,13 +1365,13 @@ tested for equality and combined with a logical ‘and.’
 """
 input UserAuthenticationCondition {
   """Checks for equality with the object’s `id` field."""
-  id: Int
+  id: UUID
 
   """Checks for equality with the object’s `service` field."""
   service: String
 
   """Checks for equality with the object’s `userId` field."""
-  userId: Int
+  userId: UUID
 }
 
 """Methods to use when ordering `UserAuthentication`."""
@@ -1393,7 +1393,7 @@ type UserEmail {
 
   """The users email address, in `a@b.c` format."""
   email: String!
-  id: Int!
+  id: UUID!
   isPrimary: Boolean!
 
   """
@@ -1405,7 +1405,7 @@ type UserEmail {
 
   """Reads a single `User` that is related to this `UserEmail`."""
   user: User
-  userId: Int!
+  userId: UUID!
 }
 
 """
@@ -1414,13 +1414,13 @@ for equality and combined with a logical ‘and.’
 """
 input UserEmailCondition {
   """Checks for equality with the object’s `id` field."""
-  id: Int
+  id: UUID
 
   """Checks for equality with the object’s `isPrimary` field."""
   isPrimary: Boolean
 
   """Checks for equality with the object’s `userId` field."""
-  userId: Int
+  userId: UUID
 }
 
 """An input for mutations affecting `UserEmail`"""
@@ -1505,6 +1505,11 @@ type UserSubscriptionPayload {
   user: User
 }
 
+"""
+A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122).
+"""
+scalar UUID
+
 """All input for the `verifyEmail` mutation."""
 input VerifyEmailInput {
   """
@@ -1513,7 +1518,7 @@ input VerifyEmailInput {
   """
   clientMutationId: String
   token: String!
-  userEmailId: Int!
+  userEmailId: UUID!
 }
 
 """The output of our `verifyEmail` mutation."""
