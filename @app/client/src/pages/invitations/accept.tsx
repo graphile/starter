@@ -16,7 +16,7 @@ import * as qs from "querystring";
 import { QueryResult } from "@apollo/react-common";
 
 interface IProps {
-  id: number | null;
+  id: string | null;
   code: string | null;
 }
 
@@ -31,7 +31,7 @@ const InvitationAccept: NextPage<IProps> = props => {
     router.pathname +
     (router && router.query ? `?${qs.stringify(router.query)}` : "");
   const { id: rawId, code } = props;
-  const id = rawId || 0;
+  const id = rawId || "";
   const query = useInvitationDetailQuery({
     variables: {
       id,
@@ -137,7 +137,7 @@ const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = props => {
 };
 
 InvitationAccept.getInitialProps = async ({ query: { id, code } }) => ({
-  id: typeof id === "string" ? parseInt(id, 10) || null : null,
+  id: typeof id === "string" ? id : null,
   code: typeof code === "string" ? code : null,
 });
 

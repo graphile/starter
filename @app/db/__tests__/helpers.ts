@@ -84,7 +84,7 @@ export const withAnonymousDb = <T>(fn: (client: PoolClient) => Promise<T>) =>
 export const becomeRoot = (client: PoolClient) => client.query("reset role");
 export const becomeUser = async (
   client: PoolClient,
-  userOrUserId: User | number | null
+  userOrUserId: User | string | null
 ) => {
   await becomeRoot(client);
   const session = userOrUserId
@@ -99,7 +99,7 @@ export const becomeUser = async (
   );
 };
 
-export const getSessions = async (client: PoolClient, userId: number) => {
+export const getSessions = async (client: PoolClient, userId: string) => {
   const { rows } = await asRoot(client, () =>
     client.query(`select * from app_private.sessions where user_id = $1`, [
       userId,
@@ -200,7 +200,7 @@ export const runJobs = async (client: PoolClient) => {
 
 export const assertJobComplete = async (
   client: PoolClient,
-  job: { id: number }
+  job: { id: string }
 ) => {
   return asRoot(client, async client => {
     const {

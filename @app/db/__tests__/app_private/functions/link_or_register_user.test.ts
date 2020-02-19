@@ -3,7 +3,7 @@ import { PoolClient } from "pg";
 
 async function linkOrRegisterUser(
   client: PoolClient,
-  userId: number | null,
+  userId: string | null,
   service: string | null,
   identifier: string | null,
   profile: { [key: string]: any } | null,

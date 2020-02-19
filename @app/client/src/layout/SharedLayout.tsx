@@ -46,7 +46,7 @@ export interface SharedLayoutChildProps {
   currentUser?: SharedLayout_UserFragment | null;
 }
 
-interface SharedLayoutProps {
+export interface SharedLayoutProps {
   /*
    * We're expecting lots of different queries to be passed through here, and
    * for them to have this common required data we need. Methods like

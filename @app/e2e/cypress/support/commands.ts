@@ -25,7 +25,7 @@
 type Chainable<Subject = any> = Cypress.Chainable<Subject>;
 
 type User = {
-  id: number;
+  id: string;
   username: string;
   name: string;
   is_admin: boolean;
@@ -70,7 +70,7 @@ function serverCommand(
   }
 ): Chainable<{
   user: User;
-  userEmailId: number;
+  userEmailId: string;
   verificationToken: string | null;
 }>;
 
@@ -82,7 +82,7 @@ function serverCommand(
   command: "getEmailSecrets",
   payload?: { email?: string }
 ): Chainable<{
-  user_email_id: number;
+  user_email_id: string;
   verification_token: string | null;
 }>;
 

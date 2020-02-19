@@ -5,7 +5,7 @@ import { SendEmailPayload } from "./send_email";
 const MIN_INTERVAL = 1000 * 60 * 3;
 
 interface UserEmailsSendVerificationPayload {
-  id: number;
+  id: string;
 }
 
 const task: Task = async (inPayload, { addJob, withPgClient }) => {

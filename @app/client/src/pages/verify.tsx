@@ -6,13 +6,13 @@ import { NextPage } from "next";
 import { useVerifyEmailMutation, useSharedQuery } from "@app/graphql";
 
 interface IProps {
-  id: number | null;
+  id: string | null;
   token: string | null;
 }
 
 const VerifyPage: NextPage<IProps> = props => {
-  const [[id, token], setIdAndToken] = React.useState<[number, string]>([
-    props.id || 0,
+  const [[id, token], setIdAndToken] = React.useState<[string, string]>([
+    props.id || "",
     props.token || "",
   ]);
   const [state, setState] = React.useState<
@@ -83,7 +83,7 @@ const VerifyPage: NextPage<IProps> = props => {
 };
 
 VerifyPage.getInitialProps = async ({ query: { id, token } }) => ({
-  id: typeof id === "string" ? parseInt(id, 10) || null : null,
+  id: typeof id === "string" ? id : null,
   token: typeof token === "string" ? token : null,
 });
 

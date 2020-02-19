@@ -5,6 +5,7 @@ import {
   useChangePasswordMutation,
   useSettingsPasswordQuery,
   useForgotPasswordMutation,
+  useSharedQuery,
 } from "@app/graphql";
 import { promisify } from "util";
 import { Form, Input, Alert, Button } from "antd";
@@ -21,8 +22,10 @@ const Settings_Security: NextPage = () => {
   const [strength, setStrength] = useState<number>(0);
   const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
 
+  const query = useSharedQuery();
+
   return (
-    <SettingsLayout href="/settings/security">
+    <SettingsLayout href="/settings/security" query={query}>
       <WrappedChangePasswordForm
         error={error}
         setError={setError}

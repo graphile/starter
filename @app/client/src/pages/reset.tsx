@@ -3,7 +3,7 @@ import get from "lodash/get";
 import { Alert, Form, Button, Input } from "antd";
 import SharedLayout, { Row, Col } from "../layout/SharedLayout";
 import { NextPage } from "next";
-import { useResetPasswordMutation } from "@app/graphql";
+import { useResetPasswordMutation, useSharedQuery } from "@app/graphql";
 import { setPasswordInfo } from "../lib/passwordHelpers";
 import { formItemLayout, tailFormItemLayout } from "../forms";
 import { PasswordStrength } from "@app/components";
@@ -12,7 +12,7 @@ import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { promisify } from "util";
 
 interface IProps {
-  userId: number | null;
+  userId: string | null;
   token: string | null;
 }
 
@@ -68,7 +68,7 @@ interface ResetFormProps extends FormComponentProps<FormValues> {
   state: State;
   setState: (newState: State) => void;
 
-  userId: number | null;
+  userId: string | null;
   token: string | null;
 }
 
@@ -85,8 +85,8 @@ function ResetForm({
 }: ResetFormProps) {
   const { getFieldDecorator } = form;
 
-  const [[userId, token], setIdAndToken] = useState<[number, string]>([
-    rawUserId || 0,
+  const [[userId, token], setIdAndToken] = useState<[string, string]>([
+    rawUserId || "",
     rawToken || "",
   ]);
 
@@ -295,7 +295,7 @@ const WrappedResetForm = Form.create<ResetFormProps>({
 })(ResetForm);
 
 ResetPage.getInitialProps = async ({ query: { user_id, token } = {} }) => ({
-  userId: typeof user_id === "string" ? parseInt(user_id, 10) || null : null,
+  userId: typeof user_id === "string" ? user_id : null,
   token: typeof token === "string" ? token : null,
 });
 

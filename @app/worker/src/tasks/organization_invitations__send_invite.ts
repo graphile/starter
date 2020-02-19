@@ -5,7 +5,7 @@ interface OrganizationInvitationSendInvitePayload {
   /**
    * invitation id
    */
-  id: number;
+  id: string;
 }
 
 const task: Task = async (inPayload, { addJob, withPgClient }) => {

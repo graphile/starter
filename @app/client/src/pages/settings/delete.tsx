@@ -7,6 +7,7 @@ import { ApolloError } from "apollo-client";
 import {
   useRequestAccountDeletionMutation,
   useConfirmAccountDeletionMutation,
+  useSharedQuery,
 } from "@app/graphql";
 import { useRouter } from "next/router";
 import { getCodeFromError } from "../../errors";
@@ -72,8 +73,9 @@ const Settings_Accounts: NextPage = () => {
       setDeleting(false);
     })();
   }, [confirmAccountDeletion, deleting, token]);
+  const query = useSharedQuery();
   return (
-    <SettingsLayout href="/settings/delete">
+    <SettingsLayout href="/settings/delete" query={query}>
       <H3>Delete Account</H3>
       <P>
         Deleting your user account will delete all data (except that which we

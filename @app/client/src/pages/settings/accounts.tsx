@@ -5,6 +5,7 @@ import {
   useCurrentUserAuthenticationsQuery,
   useUnlinkUserAuthenticationMutation,
   UserAuthentication,
+  useSharedQuery,
 } from "@app/graphql";
 import { Spin, List, Avatar, Modal } from "antd";
 import {
@@ -34,7 +35,7 @@ function authAvatar(service: string) {
   }
 }
 
-function UnlinkAccountButton({ id }: { id: number }) {
+function UnlinkAccountButton({ id }: { id: string }) {
   const [mutate] = useUnlinkUserAuthenticationMutation();
   const [modalOpen, setModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -105,8 +106,10 @@ const Settings_Accounts: NextPage = () => {
       />
     );
 
+  const query = useSharedQuery();
+
   return (
-    <SettingsLayout href="/settings/accounts">
+    <SettingsLayout href="/settings/accounts" query={query}>
       <H3>Linked Accounts</H3>
       {error && !loading ? <ErrorAlert error={error} /> : linkedAccounts}
       <H4>Link another account</H4>

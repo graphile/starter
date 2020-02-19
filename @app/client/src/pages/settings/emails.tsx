@@ -104,7 +104,8 @@ function Email({
 const Settings_Emails: NextPage = () => {
   const [showAddEmailForm, setShowAddEmailForm] = useState(false);
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
-  const { data, loading, error } = useSettingsEmailsQuery();
+  const query = useSettingsEmailsQuery();
+  const { data, loading, error } = query;
   const user = data && data.currentUser;
   const pageContent = (() => {
     if (error && !loading) {
@@ -174,7 +175,11 @@ const Settings_Emails: NextPage = () => {
       );
     }
   })();
-  return <SettingsLayout href="/settings/emails">{pageContent}</SettingsLayout>;
+  return (
+    <SettingsLayout href="/settings/emails" query={query}>
+      {pageContent}
+    </SettingsLayout>
+  );
 };
 
 export default Settings_Emails;

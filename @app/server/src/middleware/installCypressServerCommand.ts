@@ -125,7 +125,7 @@ async function runCommand(
 
     let verificationToken: string | null = null;
     const userEmailSecrets = await getUserEmailSecrets(rootPgPool, email);
-    const userEmailId: number = userEmailSecrets.user_email_id;
+    const userEmailId: string = userEmailSecrets.user_email_id;
     if (!verified) {
       verificationToken = userEmailSecrets.verification_token;
     }
@@ -197,7 +197,7 @@ async function reallyCreateUser(
   return user;
 }
 
-async function createSession(rootPgPool: Pool, userId: number) {
+async function createSession(rootPgPool: Pool, userId: string) {
   const {
     rows: [session],
   } = await rootPgPool.query(

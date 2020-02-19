@@ -16,9 +16,10 @@ import { Redirect, ErrorAlert, H3 } from "@app/components";
 
 const Settings_Profile: NextPage = () => {
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
-  const { data, loading, error } = useSettingsProfileQuery();
+  const query = useSettingsProfileQuery();
+  const { data, loading, error } = query;
   return (
-    <SettingsLayout href="/settings">
+    <SettingsLayout href="/settings" query={query}>
       {data && data.currentUser ? (
         <WrappedProfileSettingsForm
           error={formError}

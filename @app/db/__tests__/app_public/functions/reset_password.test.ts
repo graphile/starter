@@ -5,7 +5,7 @@ import { login } from "../../app_private/functions/login.test";
 
 export async function resetPassword(
   client: PoolClient,
-  userId: number | null,
+  userId: string | null,
   resetToken: string | null,
   newPassword: string | null
 ): Promise<boolean | null> {

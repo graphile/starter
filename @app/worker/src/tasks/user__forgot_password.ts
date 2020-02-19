@@ -5,7 +5,7 @@ interface UserForgotPasswordPayload {
   /**
    * user id
    */
-  id: number;
+  id: string;
 
   /**
    * email address

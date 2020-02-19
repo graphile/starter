@@ -158,7 +158,7 @@ export const createOrganizations = async function createOrganizations(
 
 export const createSession = async (
   client: PoolClient,
-  userId: number
+  userId: string
 ): Promise<{ uuid: string }> => {
   const {
     rows: [session],

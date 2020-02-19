@@ -9,7 +9,7 @@ import React, {
 import SharedLayout from "../layout/SharedLayout";
 import { NextPage } from "next";
 import { useApolloClient } from "@apollo/react-hooks";
-import { useRegisterMutation } from "@app/graphql";
+import { useRegisterMutation, useSharedQuery } from "@app/graphql";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { Form, Input, Tooltip, Icon, Button, Alert } from "antd";
 import { SyntheticEvent } from "react";

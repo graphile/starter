@@ -17,7 +17,7 @@ import {
 
 async function inviteToOrganization(
   client: PoolClient,
-  organizationId: number | null | void,
+  organizationId: string | null | void,
   username: string | null,
   email?: string | null
 ) {
@@ -38,7 +38,7 @@ async function inviteToOrganization(
 
 async function acceptInvitationToOrganization(
   client: PoolClient,
-  invitationId: number | null | void,
+  invitationId: string | null | void,
   code: string | null = null
 ) {
   const {

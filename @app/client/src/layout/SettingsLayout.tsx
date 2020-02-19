@@ -1,13 +1,14 @@
 import React from "react";
-import SharedLayout, { SharedLayoutChildProps } from "./SharedLayout";
+import SharedLayout, {
+  SharedLayoutChildProps,
+  SharedLayoutProps,
+} from "./SharedLayout";
 import Link from "next/link";
 import { Layout, Menu, Typography } from "antd";
 import { StandardWidth, Warn, Redirect } from "@app/components";
 import { TextProps } from "antd/lib/typography/Text";
 import { useRouter, NextRouter } from "next/router";
 import * as qs from "querystring";
-import { QueryResult } from "apollo-client";
-import { SharedLayout_QueryFragment } from "@app/graphql";
 
 const { Text } = Typography;
 const { Sider, Content } = Layout;
@@ -52,7 +53,7 @@ const pages = {
 };
 
 interface SettingsLayoutProps {
-  query: QueryResult<SharedLayout_QueryFragment>;
+  query: SharedLayoutProps["query"];
   href: keyof typeof pages;
   children: React.ReactNode;
 }
