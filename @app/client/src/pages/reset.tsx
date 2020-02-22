@@ -1,7 +1,11 @@
 import React, { useCallback, useState, useMemo, FocusEvent } from "react";
 import get from "lodash/get";
 import { Alert, Form, Button, Input } from "antd";
-import SharedLayout, { Row, Col, SharedLayoutChildProps } from "../layout/SharedLayout";
+import SharedLayout, {
+  Row,
+  Col,
+  SharedLayoutChildProps,
+} from "../layout/SharedLayout";
 import { NextPage } from "next";
 import { useResetPasswordMutation } from "@app/graphql";
 import { setPasswordInfo } from "../lib/passwordHelpers";
@@ -33,23 +37,23 @@ const ResetPage: NextPage<IProps> = ({ userId, token }) => {
         currentUser ? (
           <Redirect href={"/"} />
         ) : (
-            <Row>
-              <Col>
-                <WrappedResetForm
-                  passwordStrength={strength}
-                  setPasswordStrength={setStrength}
-                  passwordSuggestions={passwordSuggestions}
-                  setPasswordSuggestions={setPasswordSuggestions}
-                  error={error}
-                  setError={setError}
-                  userId={userId}
-                  token={token}
-                  state={state}
-                  setState={setState}
-                />
-              </Col>
-            </Row>
-          )
+          <Row>
+            <Col>
+              <WrappedResetForm
+                passwordStrength={strength}
+                setPasswordStrength={setStrength}
+                passwordSuggestions={passwordSuggestions}
+                setPasswordSuggestions={setPasswordSuggestions}
+                error={error}
+                setError={setError}
+                userId={userId}
+                token={token}
+                state={state}
+                setState={setState}
+              />
+            </Col>
+          </Row>
+        )
       }
     </SharedLayout>
   );

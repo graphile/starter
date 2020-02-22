@@ -25,8 +25,8 @@ const ForgotPassword: NextPage = () => {
         currentUser ? (
           <Redirect href={"/"} />
         ) : (
-            <WrappedForgotPasswordForm error={error} setError={setError} />
-          )
+          <WrappedForgotPasswordForm error={error} setError={setError} />
+        )
       }
     </SharedLayout>
   );

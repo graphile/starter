@@ -41,16 +41,16 @@ const Register: NextPage = () => {
         currentUser ? (
           <Redirect href={"/"} />
         ) : (
-            <WrappedRegistrationForm
-              passwordStrength={strength}
-              setPasswordStrength={setStrength}
-              passwordSuggestions={passwordSuggestions}
-              setPasswordSuggestions={setPasswordSuggestions}
-              onSuccessRedirectTo="/"
-              error={error}
-              setError={setError}
-            />
-          )
+          <WrappedRegistrationForm
+            passwordStrength={strength}
+            setPasswordStrength={setStrength}
+            passwordSuggestions={passwordSuggestions}
+            setPasswordSuggestions={setPasswordSuggestions}
+            onSuccessRedirectTo="/"
+            error={error}
+            setError={setError}
+          />
+        )
       }
     </SharedLayout>
   );
