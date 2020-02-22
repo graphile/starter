@@ -5,11 +5,21 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   extends: [
     "plugin:react/recommended",
+    "plugin:import/errors",
+    "plugin:import/typescript",
     "prettier",
     "prettier/@typescript-eslint",
     "prettier/react",
   ],
-  plugins: ["jest", "@typescript-eslint", "react-hooks", "react", "graphql"],
+  plugins: [
+    "jest",
+    "@typescript-eslint",
+    "react-hooks",
+    "react",
+    "graphql",
+    "simple-import-sort",
+    "import",
+  ],
   overrides: [
     {
       files: ["@app/e2e/cypress/**"],
@@ -138,5 +148,16 @@ module.exports = {
 
     "arrow-body-style": 0,
     "no-nested-ternary": 0,
+
+    /*
+     * simple-import-sort seems to be the most stable import sorting currently,
+     * disable others
+     */
+    "simple-import-sort/sort": "error",
+    "sort-imports": "off",
+    "import/order": "off",
+
+    "import/no-deprecated": "warn",
+    "import/no-duplicates": "error",
   },
 };
