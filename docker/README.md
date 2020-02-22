@@ -46,6 +46,14 @@ and may make it harder to reproduce issues.
 run
 [docker-volume-watcher](https://github.com/merofeev/docker-windows-volume-watcher)
 
+#### DB tool:
+
+To connect to the newly created container db with psql/{db tool} you connect to it by default if not anything else specified via port 6543 on localhost with the `DATABASE_NAME` specificed as such:
+
+```bash
+$ psql postgres://$DATABASE_NAME@localhost:6543
+```
+
 #### Use Case Example:
 
 > Attach to `dev`, run `yarn db commit` to commit the latest migration, then
