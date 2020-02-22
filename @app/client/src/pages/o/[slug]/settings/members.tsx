@@ -1,8 +1,8 @@
 import React, { FC, useCallback, useState, ChangeEvent } from "react";
 import { NextPage } from "next";
 import {
-  OrganizationPageOrganizationFragment,
   useOrganizationMembersQuery,
+  OrganizationMembers_OrganizationFragment,
   OrganizationMembers_MembershipFragment,
   SharedLayout_UserFragment,
   useRemoveFromOrganizationMutation,
@@ -12,20 +12,35 @@ import {
 } from "@app/graphql";
 import SharedLayout from "../../../../layout/SharedLayout";
 import { H3, Redirect } from "@app/components";
-import useOrganization from "../../../../lib/useOrganization";
+import {
+  useOrganizationSlug,
+  useOrganizationLoading,
+} from "../../../../lib/useOrganization";
 import OrganizationSettingsLayout from "../../../../layout/OrganizationSettingsLayout";
 import { List, Popconfirm, message } from "antd";
 import Text from "antd/lib/typography/Text";
 
 const OrganizationSettingsPage: NextPage = () => {
-  const { organization, fallbackChild, slug, query } = useOrganization();
+  const slug = useOrganizationSlug();
+  const [page, setPage] = useState(1);
+  const query = useOrganizationMembersQuery({
+    variables: {
+      slug,
+      offset: (page - 1) * RESULTS_PER_PAGE,
+    },
+  });
+  const organizationLoadingElement = useOrganizationLoading(query);
+  const organization = query?.data?.organizationBySlug;
+
   return (
     <SharedLayout title={organization?.name ?? slug} noPad query={query}>
       {({ currentUser }) =>
-        fallbackChild || (
+        organizationLoadingElement || (
           <OrganizationSettingsPageInner
             organization={organization!}
             currentUser={currentUser}
+            page={page}
+            setPage={setPage}
           />
         )
       }
@@ -35,21 +50,16 @@ const OrganizationSettingsPage: NextPage = () => {
 
 interface OrganizationSettingsPageInnerProps {
   currentUser?: SharedLayout_UserFragment | null;
-  organization: OrganizationPageOrganizationFragment;
+  organization: OrganizationMembers_OrganizationFragment;
+  page: number;
+  setPage: (newPage: number) => void;
 }
 
 // This needs to match the `first:` used in OrganizationMembers.graphql
 const RESULTS_PER_PAGE = 10;
 
 const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = props => {
-  const { organization, currentUser } = props;
-  const [page, setPage] = useState(1);
-  const { data } = useOrganizationMembersQuery({
-    variables: {
-      slug: organization.slug,
-      offset: (page - 1) * RESULTS_PER_PAGE,
-    },
-  });
+  const { organization, currentUser, page, setPage } = props;
 
   const handlePaginationChange = (
     page: number
@@ -131,14 +141,11 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
         </form>
         <p>Members</p>
         <List
-          dataSource={
-            data?.organizationBySlug?.organizationMemberships?.nodes ?? []
-          }
+          dataSource={organization.organizationMemberships?.nodes ?? []}
           pagination={{
             current: page,
             pageSize: RESULTS_PER_PAGE,
-            total:
-              data?.organizationBySlug?.organizationMemberships?.totalCount,
+            total: organization.organizationMemberships?.totalCount,
             onChange: handlePaginationChange,
           }}
           renderItem={renderItem}
@@ -150,7 +157,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
 
 interface OrganizationMemberListItemProps {
   node: OrganizationMembers_MembershipFragment;
-  organization: OrganizationPageOrganizationFragment;
+  organization: OrganizationMembers_OrganizationFragment;
   currentUser?: SharedLayout_UserFragment | null;
 }
 

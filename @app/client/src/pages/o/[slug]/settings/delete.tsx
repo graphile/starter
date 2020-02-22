@@ -1,24 +1,32 @@
 import React, { FC, useCallback, useState } from "react";
 import { NextPage } from "next";
 import {
-  OrganizationPageOrganizationFragment,
+  OrganizationPage_OrganizationFragment,
   SharedLayout_UserFragment,
   useDeleteOrganizationMutation,
+  useOrganizationPageQuery,
 } from "@app/graphql";
 import SharedLayout from "../../../../layout/SharedLayout";
 import { H3, P, ErrorAlert } from "@app/components";
-import useOrganization from "../../../../lib/useOrganization";
+import {
+  useOrganizationSlug,
+  useOrganizationLoading,
+} from "../../../../lib/useOrganization";
 import OrganizationSettingsLayout from "../../../../layout/OrganizationSettingsLayout";
 import { Popconfirm, message, Alert, Button } from "antd";
 import { ApolloError } from "apollo-client";
 import { useRouter } from "next/router";
 
 const OrganizationSettingsPage: NextPage = () => {
-  const { organization, fallbackChild, slug, query } = useOrganization();
+  const slug = useOrganizationSlug();
+  const query = useOrganizationPageQuery({ variables: { slug } });
+  const organizationLoadingElement = useOrganizationLoading(query);
+  const organization = query?.data?.organizationBySlug;
+
   return (
     <SharedLayout title={organization?.name ?? slug} noPad query={query}>
       {({ currentUser }) =>
-        fallbackChild || (
+        organizationLoadingElement || (
           <OrganizationSettingsPageInner
             organization={organization!}
             currentUser={currentUser}
@@ -31,7 +39,7 @@ const OrganizationSettingsPage: NextPage = () => {
 
 interface OrganizationSettingsPageInnerProps {
   currentUser?: SharedLayout_UserFragment | null;
-  organization: OrganizationPageOrganizationFragment;
+  organization: OrganizationPage_OrganizationFragment;
 }
 
 const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = props => {

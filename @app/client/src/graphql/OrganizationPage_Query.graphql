@@ -1,4 +1,4 @@
-fragment OrganizationPageOrganization on Organization {
+fragment OrganizationPage_Organization on Organization {
   id
   name
   slug
@@ -10,6 +10,6 @@ fragment OrganizationPage_Query on Query {
   ...SharedLayout_Query
   organizationBySlug(slug: $slug) {
     id
-    ...OrganizationPageOrganization
+    ...OrganizationPage_Organization
   }
 }

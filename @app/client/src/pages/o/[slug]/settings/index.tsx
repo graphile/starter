@@ -1,16 +1,26 @@
 import React, { FC } from "react";
 import { NextPage } from "next";
-import { OrganizationPageOrganizationFragment } from "@app/graphql";
+import {
+  OrganizationPage_OrganizationFragment,
+  useOrganizationPageQuery,
+} from "@app/graphql";
 import SharedLayout from "../../../../layout/SharedLayout";
 import { H1, Redirect } from "@app/components";
-import useOrganization from "../../../../lib/useOrganization";
+import {
+  useOrganizationSlug,
+  useOrganizationLoading,
+} from "../../../../lib/useOrganization";
 import OrganizationSettingsLayout from "../../../../layout/OrganizationSettingsLayout";
 
 const OrganizationSettingsPage: NextPage = () => {
-  const { organization, fallbackChild, slug, query } = useOrganization();
+  const slug = useOrganizationSlug();
+  const query = useOrganizationPageQuery({ variables: { slug } });
+  const organizationLoadingElement = useOrganizationLoading(query);
+  const organization = query?.data?.organizationBySlug;
+
   return (
     <SharedLayout title={organization?.name ?? slug} noPad query={query}>
-      {fallbackChild || (
+      {organizationLoadingElement || (
         <OrganizationSettingsPageInner organization={organization!} />
       )}
     </SharedLayout>
@@ -18,7 +28,7 @@ const OrganizationSettingsPage: NextPage = () => {
 };
 
 interface OrganizationSettingsPageInnerProps {
-  organization: OrganizationPageOrganizationFragment;
+  organization: OrganizationPage_OrganizationFragment;
 }
 
 const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = props => {

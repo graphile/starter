@@ -1,32 +1,22 @@
 import React from "react";
 import { useRouter } from "next/router";
-import {
-  OrganizationPageQueryVariables,
-  OrganizationPageDocument,
-  OrganizationPage_QueryFragment,
-} from "@app/graphql";
+import { OrganizationPage_QueryFragment } from "@app/graphql";
 import { Spin, Row, Col } from "antd";
 import { ErrorAlert } from "@app/components";
-import { useQuery } from "@apollo/react-hooks";
-import { DocumentNode } from "graphql";
+import { QueryResult } from "@apollo/react-common";
 
-function useOrganization<
-  TData extends OrganizationPage_QueryFragment = OrganizationPage_QueryFragment,
-  TVariables extends OrganizationPageQueryVariables = OrganizationPageQueryVariables
->(
-  queryDocument: DocumentNode = OrganizationPageDocument,
-  variables?: Omit<TVariables, "slug">
-) {
+export function useOrganizationSlug() {
   const router = useRouter();
   const { slug: rawSlug } = router.query;
-  const slug = String(rawSlug);
+  return String(rawSlug);
+}
 
-  const query = useQuery<TData, any>(queryDocument, {
-    variables: {
-      ...variables,
-      slug,
-    },
-  });
+export function useOrganizationLoading(
+  query: Pick<
+    QueryResult<OrganizationPage_QueryFragment>,
+    "data" | "loading" | "error" | "networkStatus" | "client" | "refetch"
+  >
+) {
   const { data, loading, error } = query;
 
   let child: JSX.Element | null = null;
@@ -42,16 +32,9 @@ function useOrganization<
     child = <div>404</div>;
   }
 
-  return {
-    query,
-    organization,
-    fallbackChild: child ? (
-      <Row>
-        <Col>{child}</Col>
-      </Row>
-    ) : null,
-    slug,
-  };
+  return child ? (
+    <Row>
+      <Col>{child}</Col>
+    </Row>
+  ) : null;
 }
-
-export default useOrganization;

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Layout, Menu, Typography } from "antd";
 import { StandardWidth } from "@app/components";
 import { TextProps } from "antd/lib/typography/Text";
-import { OrganizationPageOrganizationFragment } from "@app/graphql";
+import { OrganizationPage_OrganizationFragment } from "@app/graphql";
 
 const { Text } = Typography;
 const { Sider, Content } = Layout;
@@ -19,7 +19,7 @@ function page(spec: PageSpec): PageSpec {
   return spec;
 }
 
-const makePages = (org: OrganizationPageOrganizationFragment) => ({
+const makePages = (org: OrganizationPage_OrganizationFragment) => ({
   [`/o/${org.slug}/settings`]: page({
     title: "Profile",
     cy: "orgsettingslayout-link-profile",
@@ -39,7 +39,7 @@ const makePages = (org: OrganizationPageOrganizationFragment) => ({
 
 interface OrganizationSettingsLayoutProps {
   href: string;
-  organization: OrganizationPageOrganizationFragment;
+  organization: OrganizationPage_OrganizationFragment;
   children: React.ReactNode;
 }
 
