@@ -48,5 +48,9 @@
   "devDependencies": {
     "graphql": "^14.4.2",
     "mock-req": "^0.2.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.1",
+    "utf-8-validate": "^5.0.2"
   }
 }
