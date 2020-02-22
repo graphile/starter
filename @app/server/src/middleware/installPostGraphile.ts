@@ -19,7 +19,7 @@ import handleErrors from "../utils/handleErrors";
 import { getWebsocketMiddlewares, getHttpServer } from "../app";
 import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
 import { resolve } from "path";
-import Orders from "../plugins/Orders";
+import OrdersPlugin from "../plugins/Orders";
 
 const TagsFilePlugin = makePgSmartTagsFromFilePlugin(
   // We're using JSONC for VSCode compatibility; also using an explicit file
@@ -168,7 +168,7 @@ export function getPostGraphileOptions({
       SubscriptionsPlugin,
 
       // Adds custom orders to our GraphQL schema
-      Orders,
+      OrdersPlugin,
     ],
 
     /*
