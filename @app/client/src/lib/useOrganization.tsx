@@ -1,16 +1,29 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { useOrganizationPageQuery } from "@app/graphql";
+import {
+  OrganizationPageQueryVariables,
+  OrganizationPageDocument,
+  OrganizationPage_QueryFragment,
+} from "@app/graphql";
 import { Spin, Row, Col } from "antd";
 import { ErrorAlert } from "@app/components";
+import { useQuery } from "@apollo/react-hooks";
+import { DocumentNode } from "graphql";
 
-const useOrganization = () => {
+function useOrganization<
+  TData extends OrganizationPage_QueryFragment = OrganizationPage_QueryFragment,
+  TVariables extends OrganizationPageQueryVariables = OrganizationPageQueryVariables
+>(
+  queryDocument: DocumentNode = OrganizationPageDocument,
+  variables?: Omit<TVariables, "slug">
+) {
   const router = useRouter();
   const { slug: rawSlug } = router.query;
   const slug = String(rawSlug);
 
-  const query = useOrganizationPageQuery({
+  const query = useQuery<TData, any>(queryDocument, {
     variables: {
+      ...variables,
       slug,
     },
   });
@@ -39,6 +52,6 @@ const useOrganization = () => {
     ) : null,
     slug,
   };
-};
+}
 
 export default useOrganization;

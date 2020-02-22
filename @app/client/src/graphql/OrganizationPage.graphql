@@ -1,15 +1,3 @@
-fragment OrganizationPageOrganization on Organization {
-  id
-  name
-  slug
-  currentUserIsOwner
-  currentUserIsBillingContact
-}
-
 query OrganizationPage($slug: String!) {
-  ...SharedLayout_Query
-  organizationBySlug(slug: $slug) {
-    id
-    ...OrganizationPageOrganization
-  }
+  ...OrganizationPage_Query
 }
