@@ -1,21 +1,30 @@
-import React, { useState, useCallback, useMemo, SyntheticEvent } from "react";
-import { SettingsLayout } from "@app/components";
-import { NextPage } from "next";
+import {
+  ErrorAlert,
+  H3,
+  P,
+  PasswordStrength,
+  SettingsLayout,
+} from "@app/components";
 import {
   useChangePasswordMutation,
-  useSettingsPasswordQuery,
   useForgotPasswordMutation,
+  useSettingsPasswordQuery,
   useSharedQuery,
 } from "@app/graphql";
-import { promisify } from "util";
-import { Form, Input, Alert, Button } from "antd";
-import { ApolloError } from "apollo-client";
+import {
+  extractError,
+  formItemLayout,
+  getCodeFromError,
+  setPasswordInfo,
+  tailFormItemLayout,
+} from "@app/lib";
+import { Alert, Button, Form, Input } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { getCodeFromError, extractError } from "@app/lib";
-import { formItemLayout, tailFormItemLayout } from "@app/lib";
-import { H3, P, ErrorAlert, PasswordStrength } from "@app/components";
+import { ApolloError } from "apollo-client";
+import { NextPage } from "next";
 import Link from "next/link";
-import { setPasswordInfo } from "@app/lib";
+import React, { SyntheticEvent, useCallback, useMemo, useState } from "react";
+import { promisify } from "util";
 
 const Settings_Security: NextPage = () => {
   const [error, setError] = useState<Error | ApolloError | null>(null);

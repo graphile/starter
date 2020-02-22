@@ -1,13 +1,13 @@
 import {
   ApolloLink,
-  Operation,
-  NextLink,
   FetchResult,
+  NextLink,
   Observable,
+  Operation,
 } from "apollo-link";
-import { HttpRequestHandler } from "postgraphile";
-import { execute, getOperationAST } from "graphql";
 import { Request, Response } from "express";
+import { execute, getOperationAST } from "graphql";
+import { HttpRequestHandler } from "postgraphile";
 
 export interface GraphileApolloLinkInterface {
   /** The request object. */

@@ -1,10 +1,11 @@
+import ConnectPgSimple from "connect-pg-simple";
+import ConnectRedis from "connect-redis";
+import { Express } from "express";
 import session from "express-session";
 import * as redis from "redis";
-import ConnectRedis from "connect-redis";
-import ConnectPgSimple from "connect-pg-simple";
-import { Express } from "express";
-import { getRootPgPool } from "./installDatabasePools";
+
 import { getWebsocketMiddlewares } from "../app";
+import { getRootPgPool } from "./installDatabasePools";
 
 const RedisStore = ConnectRedis(session);
 const PgStore = ConnectPgSimple(session);

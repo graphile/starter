@@ -1,14 +1,15 @@
 import "antd/dist/antd.less";
 import "nprogress/nprogress.css";
 import "../styles.less";
-import * as React from "react";
-import App from "next/app";
+
 import { ApolloProvider } from "@apollo/react-hooks";
 import { withApollo } from "@app/lib";
-import { ApolloClient } from "apollo-client";
-import Router from "next/router";
 import { notification } from "antd";
+import { ApolloClient } from "apollo-client";
+import App from "next/app";
+import Router from "next/router";
 import NProgress from "nprogress";
+import * as React from "react";
 
 NProgress.configure({
   showSpinner: false,

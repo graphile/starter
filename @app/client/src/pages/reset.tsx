@@ -1,14 +1,12 @@
-import React, { useCallback, useState, useMemo, FocusEvent } from "react";
-import get from "lodash/get";
-import { Alert, Form, Button, Input } from "antd";
-import { SharedLayout, Row, Col } from "@app/components";
-import { NextPage } from "next";
+import { Col, PasswordStrength, Row, SharedLayout } from "@app/components";
 import { useResetPasswordMutation, useSharedQuery } from "@app/graphql";
-import { setPasswordInfo } from "@app/lib";
-import { formItemLayout, tailFormItemLayout } from "@app/lib";
-import { PasswordStrength } from "@app/components";
-import { ApolloError } from "apollo-client";
+import { formItemLayout, setPasswordInfo, tailFormItemLayout } from "@app/lib";
+import { Alert, Button, Form, Input } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
+import { ApolloError } from "apollo-client";
+import get from "lodash/get";
+import { NextPage } from "next";
+import React, { FocusEvent, useCallback, useMemo, useState } from "react";
 import { promisify } from "util";
 
 interface IProps {

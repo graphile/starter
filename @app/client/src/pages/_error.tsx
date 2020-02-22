@@ -1,10 +1,9 @@
-import * as React from "react";
-import { NextPage } from "next";
-import { Alert, Row, Col } from "antd";
-import Link from "next/link";
-import { SharedLayout } from "@app/components";
-import { H2, P } from "@app/components";
+import { H2, P, SharedLayout } from "@app/components";
 import { useSharedQuery } from "@app/graphql";
+import { Alert, Col, Row } from "antd";
+import { NextPage } from "next";
+import Link from "next/link";
+import * as React from "react";
 
 const isDev = process.env.NODE_ENV !== "production";
 

@@ -1,9 +1,9 @@
+import { Button, Col, Divider, Row, Typography } from "antd";
 import * as React from "react";
-import { Button, Row, Col, Typography, Divider } from "antd";
 const { Text, Title, Paragraph } = Typography;
 import { SharedLayout } from "@app/components";
-import { NextPage } from "next";
 import { useSharedQuery } from "@app/graphql";
+import { NextPage } from "next";
 
 // Convenience helper
 const Li = ({ children, ...props }: any) => (

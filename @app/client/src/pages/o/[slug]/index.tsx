@@ -1,13 +1,12 @@
-import React, { FC } from "react";
-import { NextPage } from "next";
+import { H1, Link, SharedLayout } from "@app/components";
 import {
   OrganizationPage_OrganizationFragment,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { SharedLayout, Link } from "@app/components";
-import { Row, Col } from "antd";
-import { H1 } from "@app/components";
-import { useOrganizationSlug, useOrganizationLoading } from "@app/lib";
+import { useOrganizationLoading, useOrganizationSlug } from "@app/lib";
+import { Col, Row } from "antd";
+import { NextPage } from "next";
+import React, { FC } from "react";
 
 const OrganizationPage: NextPage = () => {
   const slug = useOrganizationSlug();

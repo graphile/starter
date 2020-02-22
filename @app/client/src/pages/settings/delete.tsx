@@ -1,16 +1,15 @@
-import React, { useCallback, useState } from "react";
-import { SettingsLayout } from "@app/components";
-import { NextPage } from "next";
-import { H3, P, ErrorAlert } from "@app/components";
-import { Alert, Button, Modal, Typography } from "antd";
-import { ApolloError } from "apollo-client";
+import { ErrorAlert, H3, P, SettingsLayout } from "@app/components";
 import {
-  useRequestAccountDeletionMutation,
   useConfirmAccountDeletionMutation,
+  useRequestAccountDeletionMutation,
   useSharedQuery,
 } from "@app/graphql";
-import { useRouter } from "next/router";
 import { getCodeFromError } from "@app/lib";
+import { Alert, Button, Modal, Typography } from "antd";
+import { ApolloError } from "apollo-client";
+import { NextPage } from "next";
+import { useRouter } from "next/router";
+import React, { useCallback, useState } from "react";
 
 const { Text } = Typography;
 

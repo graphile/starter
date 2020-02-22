@@ -1,29 +1,30 @@
-import * as React from "react";
+import { QueryResult } from "@apollo/react-common";
+import { useApolloClient } from "@apollo/react-hooks";
+import { companyName, projectName } from "@app/config";
 import {
-  Layout,
+  SharedLayout_QueryFragment,
+  SharedLayout_UserFragment,
+  useCurrentUserUpdatedSubscription,
+  useLogoutMutation,
+} from "@app/graphql";
+import {
   Avatar,
-  Row,
   Col,
   Dropdown,
   Icon,
+  Layout,
   Menu,
+  Row,
   Typography,
 } from "antd";
-import Link from "next/link";
-import { projectName, companyName } from "@app/config";
-import {
-  useLogoutMutation,
-  useCurrentUserUpdatedSubscription,
-  SharedLayout_QueryFragment,
-  SharedLayout_UserFragment,
-} from "@app/graphql";
-import Router from "next/router";
-import { useApolloClient } from "@apollo/react-hooks";
-import { useCallback } from "react";
-import { StandardWidth, Warn, ErrorAlert, H3 } from ".";
-import Head from "next/head";
 import { ApolloError } from "apollo-client";
-import { QueryResult } from "@apollo/react-common";
+import Head from "next/head";
+import Link from "next/link";
+import Router from "next/router";
+import * as React from "react";
+import { useCallback } from "react";
+
+import { ErrorAlert, H3, StandardWidth, Warn } from ".";
 
 const { Header, Content, Footer } = Layout;
 const { Text } = Typography;

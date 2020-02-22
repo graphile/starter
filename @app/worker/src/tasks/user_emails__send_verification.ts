@@ -1,4 +1,5 @@
 import { Task } from "graphile-worker";
+
 import { SendEmailPayload } from "./send_email";
 
 // At least 3 minutes between resending email verifications

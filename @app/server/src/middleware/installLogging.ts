@@ -1,5 +1,5 @@
-import morgan from "morgan";
 import { Express } from "express";
+import morgan from "morgan";
 
 const isDev = process.env.NODE_ENV === "development";
 

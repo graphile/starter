@@ -1,6 +1,6 @@
-import React from "react";
 import { Alert, Typography } from "antd";
 import { ApolloError } from "apollo-client";
+import React from "react";
 
 const { Paragraph } = Typography;
 

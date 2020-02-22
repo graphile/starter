@@ -1,5 +1,6 @@
-import { withRootDb, snapshotSafe } from "../../helpers";
 import { PoolClient } from "pg";
+
+import { snapshotSafe, withRootDb } from "../../helpers";
 
 async function linkOrRegisterUser(
   client: PoolClient,

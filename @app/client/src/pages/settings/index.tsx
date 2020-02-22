@@ -1,18 +1,21 @@
-import React, { useState, useCallback, useMemo, SyntheticEvent } from "react";
-import { SettingsLayout } from "@app/components";
-import { NextPage } from "next";
+import { ErrorAlert, H3, Redirect, SettingsLayout } from "@app/components";
 import {
-  useUpdateUserMutation,
-  useSettingsProfileQuery,
   ProfileSettingsForm_UserFragment,
+  useSettingsProfileQuery,
+  useUpdateUserMutation,
 } from "@app/graphql";
-import { promisify } from "util";
-import { Form, Input, Alert, Button } from "antd";
-import { ApolloError } from "apollo-client";
+import {
+  extractError,
+  formItemLayout,
+  getCodeFromError,
+  tailFormItemLayout,
+} from "@app/lib";
+import { Alert, Button, Form, Input } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { getCodeFromError, extractError } from "@app/lib";
-import { formItemLayout, tailFormItemLayout } from "@app/lib";
-import { Redirect, ErrorAlert, H3 } from "@app/components";
+import { ApolloError } from "apollo-client";
+import { NextPage } from "next";
+import React, { SyntheticEvent, useCallback, useMemo, useState } from "react";
+import { promisify } from "util";
 
 const Settings_Profile: NextPage = () => {
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);

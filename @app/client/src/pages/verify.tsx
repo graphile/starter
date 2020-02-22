@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
-import get from "lodash/get";
+import { Col, Row, SharedLayout } from "@app/components";
+import { useSharedQuery, useVerifyEmailMutation } from "@app/graphql";
 import { Alert } from "antd";
-import { SharedLayout, Row, Col } from "@app/components";
+import get from "lodash/get";
 import { NextPage } from "next";
-import { useVerifyEmailMutation, useSharedQuery } from "@app/graphql";
+import React, { useEffect } from "react";
 
 interface IProps {
   id: string | null;

@@ -1,18 +1,22 @@
-import React, { FC, useCallback, useState } from "react";
-import { NextPage } from "next";
+import {
+  ErrorAlert,
+  H3,
+  OrganizationSettingsLayout,
+  P,
+  SharedLayout,
+} from "@app/components";
 import {
   OrganizationPage_OrganizationFragment,
   SharedLayout_UserFragment,
   useDeleteOrganizationMutation,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { SharedLayout } from "@app/components";
-import { H3, P, ErrorAlert } from "@app/components";
-import { useOrganizationSlug, useOrganizationLoading } from "@app/lib";
-import { OrganizationSettingsLayout } from "@app/components";
-import { Popconfirm, message, Alert, Button } from "antd";
+import { useOrganizationLoading, useOrganizationSlug } from "@app/lib";
+import { Alert, Button, message, Popconfirm } from "antd";
 import { ApolloError } from "apollo-client";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
+import React, { FC, useCallback, useState } from "react";
 
 const OrganizationSettingsPage: NextPage = () => {
   const slug = useOrganizationSlug();

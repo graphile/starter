@@ -1,6 +1,7 @@
-import { Express, RequestHandler, Request, Response } from "express";
 import { urlencoded } from "body-parser";
+import { Express, Request, RequestHandler, Response } from "express";
 import { Pool } from "pg";
+
 import { getRootPgPool } from "./installDatabasePools";
 
 export default (app: Express) => {

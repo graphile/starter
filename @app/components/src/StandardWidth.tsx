@@ -1,5 +1,5 @@
+import { Col, Row } from "antd";
 import React, { FC } from "react";
-import { Row, Col } from "antd";
 
 export interface StandardWidthProps {
   children: React.ReactNode;

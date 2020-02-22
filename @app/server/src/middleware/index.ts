@@ -1,13 +1,13 @@
-import installDatabasePools from "./installDatabasePools";
-import installSession from "./installSession";
-import installPassport from "./installPassport";
-import installLogging from "./installLogging";
-import installSharedStatic from "./installSharedStatic";
-import installPostGraphile from "./installPostGraphile";
-import installSSR from "./installSSR";
-import installErrorHandler from "./installErrorHandler";
 import installCypressServerCommand from "./installCypressServerCommand";
+import installDatabasePools from "./installDatabasePools";
+import installErrorHandler from "./installErrorHandler";
 import installHelmet from "./installHelmet";
+import installLogging from "./installLogging";
+import installPassport from "./installPassport";
+import installPostGraphile from "./installPostGraphile";
+import installSession from "./installSession";
+import installSharedStatic from "./installSharedStatic";
+import installSSR from "./installSSR";
 
 export {
   installDatabasePools,

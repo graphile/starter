@@ -1,25 +1,26 @@
+import PgSimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
+import PgPubsub from "@graphile/pg-pubsub";
+import GraphilePro from "@graphile/pro"; // Requires license key
+import { Express, Request, Response } from "express";
+import { NodePlugin } from "graphile-build";
+import { resolve } from "path";
+import { Pool } from "pg";
 import {
-  postgraphile,
-  makePluginHook,
-  PostGraphileOptions,
-  Middleware,
   enhanceHttpServerWithSubscriptions,
+  makePluginHook,
+  Middleware,
+  postgraphile,
+  PostGraphileOptions,
 } from "postgraphile";
 import { makePgSmartTagsFromFilePlugin } from "postgraphile/plugins";
-import { NodePlugin } from "graphile-build";
-import { Pool } from "pg";
-import { Express, Request, Response } from "express";
-import PgPubsub from "@graphile/pg-pubsub";
-import PgSimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
-import GraphilePro from "@graphile/pro"; // Requires license key
+
+import { getHttpServer, getWebsocketMiddlewares } from "../app";
+import OrdersPlugin from "../plugins/Orders";
 import PassportLoginPlugin from "../plugins/PassportLoginPlugin";
 import PrimaryKeyMutationsOnlyPlugin from "../plugins/PrimaryKeyMutationsOnlyPlugin";
 import SubscriptionsPlugin from "../plugins/SubscriptionsPlugin";
 import handleErrors from "../utils/handleErrors";
-import { getWebsocketMiddlewares, getHttpServer } from "../app";
 import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
-import { resolve } from "path";
-import OrdersPlugin from "../plugins/Orders";
 
 const TagsFilePlugin = makePgSmartTagsFromFilePlugin(
   // We're using JSONC for VSCode compatibility; also using an explicit file

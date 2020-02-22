@@ -1,30 +1,33 @@
-import React, {
-  FC,
-  useState,
-  useCallback,
-  SyntheticEvent,
-  useMemo,
-  useEffect,
-} from "react";
-import { NextPage } from "next";
-import { SharedLayout } from "@app/components";
-import { Row, Col, Form, Input, Alert, Button, Spin } from "antd";
-import { H3, Redirect } from "@app/components";
+import { H3, Redirect, SharedLayout } from "@app/components";
 import {
-  useCreateOrganizationMutation,
   CreatedOrganizationFragment,
+  useCreateOrganizationMutation,
   useOrganizationBySlugLazyQuery,
   useSharedQuery,
 } from "@app/graphql";
-import { formItemLayout, tailFormItemLayout } from "@app/lib";
+import {
+  extractError,
+  formItemLayout,
+  getCodeFromError,
+  tailFormItemLayout,
+} from "@app/lib";
+import { Alert, Button, Col, Form, Input, Row, Spin } from "antd";
 import { FormComponentProps } from "antd/lib/form";
-import { ApolloError } from "apollo-client";
-import { extractError, getCodeFromError } from "@app/lib";
-import slugify from "slugify";
 import { ValidateFieldsOptions } from "antd/lib/form/Form";
-import { promisify } from "util";
-import { debounce } from "lodash";
 import Text from "antd/lib/typography/Text";
+import { ApolloError } from "apollo-client";
+import { debounce } from "lodash";
+import { NextPage } from "next";
+import React, {
+  FC,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import slugify from "slugify";
+import { promisify } from "util";
 
 const CreateOrganizationPage: NextPage = () => {
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);

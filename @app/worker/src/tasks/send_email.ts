@@ -2,16 +2,17 @@ import { Task } from "graphile-worker";
 import { template as lodashTemplate } from "lodash";
 // @ts-ignore
 import mjml2html = require("mjml");
-import * as html2text from "html-to-text";
-import getTransport from "../transport";
-import { promises as fsp } from "fs";
 import {
-  projectName,
   emailLegalText as legalText,
   fromEmail,
+  projectName,
 } from "@app/config";
-import * as nodemailer from "nodemailer";
 import chalk from "chalk";
+import { promises as fsp } from "fs";
+import * as html2text from "html-to-text";
+import * as nodemailer from "nodemailer";
+
+import getTransport from "../transport";
 
 declare module global {
   let TEST_EMAILS: any[];

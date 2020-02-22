@@ -1,12 +1,13 @@
-import {
-  withUserDb,
-  snapshotSafe,
-  asRoot,
-  withRootDb,
-  createUsers,
-  becomeUser,
-} from "../../helpers";
 import { PoolClient } from "pg";
+
+import {
+  asRoot,
+  becomeUser,
+  createUsers,
+  snapshotSafe,
+  withRootDb,
+  withUserDb,
+} from "../../helpers";
 
 async function addEmail(client: PoolClient, email: string) {
   const {

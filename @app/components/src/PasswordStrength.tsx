@@ -1,5 +1,5 @@
+import { Col, Icon, Popover, Progress, Row } from "antd";
 import React, { useEffect, useState } from "react";
-import { Progress, Popover, Icon, Col, Row } from "antd";
 
 export interface PasswordStrengthProps {
   passwordStrength: number;

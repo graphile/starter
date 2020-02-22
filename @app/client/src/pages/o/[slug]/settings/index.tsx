@@ -1,13 +1,16 @@
-import React, { FC } from "react";
-import { NextPage } from "next";
+import {
+  H1,
+  OrganizationSettingsLayout,
+  Redirect,
+  SharedLayout,
+} from "@app/components";
 import {
   OrganizationPage_OrganizationFragment,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { SharedLayout } from "@app/components";
-import { H1, Redirect } from "@app/components";
-import { useOrganizationSlug, useOrganizationLoading } from "@app/lib";
-import { OrganizationSettingsLayout } from "@app/components";
+import { useOrganizationLoading, useOrganizationSlug } from "@app/lib";
+import { NextPage } from "next";
+import React, { FC } from "react";
 
 const OrganizationSettingsPage: NextPage = () => {
   const slug = useOrganizationSlug();

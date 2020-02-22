@@ -1,29 +1,33 @@
-import React, {
-  useRef,
-  useEffect,
-  FormEvent,
-  useMemo,
-  useCallback,
-  useState,
-} from "react";
+import { useApolloClient } from "@apollo/react-hooks";
 import {
-  SharedLayout,
-  Row,
   Col,
+  Redirect,
+  Row,
+  SharedLayout,
   SharedLayoutChildProps,
+  SocialLoginOptions,
 } from "@app/components";
+import { useLoginMutation, useSharedQuery } from "@app/graphql";
+import {
+  extractError,
+  getCodeFromError,
+  resetWebsocketConnection,
+} from "@app/lib";
+import { Alert, Button, Form, Icon, Input, Typography } from "antd";
+import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
+import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import Link from "next/link";
-import { Form, Icon, Input, Button, Alert, Typography } from "antd";
-import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { promisify } from "util";
-import { useApolloClient } from "@apollo/react-hooks";
-import { useLoginMutation, useSharedQuery } from "@app/graphql";
 import Router from "next/router";
-import { ApolloError } from "apollo-client";
-import { getCodeFromError, extractError } from "@app/lib";
-import { Redirect, SocialLoginOptions } from "@app/components";
-import { resetWebsocketConnection } from "@app/lib";
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { promisify } from "util";
 
 const { Paragraph } = Typography;
 

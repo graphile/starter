@@ -1,17 +1,18 @@
+import { Layout, Menu, Typography } from "antd";
+import { TextProps } from "antd/lib/typography/Text";
+import Link from "next/link";
+import { NextRouter, useRouter } from "next/router";
+import * as qs from "querystring";
 import React from "react";
+
+import { Redirect } from "./Redirect";
 import {
   SharedLayout,
   SharedLayoutChildProps,
   SharedLayoutProps,
 } from "./SharedLayout";
-import Link from "next/link";
-import { Layout, Menu, Typography } from "antd";
 import { StandardWidth } from "./StandardWidth";
 import { Warn } from "./Warn";
-import { Redirect } from "./Redirect";
-import { TextProps } from "antd/lib/typography/Text";
-import { useRouter, NextRouter } from "next/router";
-import * as qs from "querystring";
 
 const { Text } = Typography;
 const { Sider, Content } = Layout;

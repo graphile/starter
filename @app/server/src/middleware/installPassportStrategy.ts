@@ -1,5 +1,6 @@
+import { Express, Request, RequestHandler } from "express";
 import passport from "passport";
-import { RequestHandler, Express, Request } from "express";
+
 import { getRootPgPool } from "./installDatabasePools";
 
 interface DbSession {

@@ -1,5 +1,6 @@
-import { Pool } from "pg";
 import { Express } from "express";
+import { Pool } from "pg";
+
 import { getShutdownActions } from "../app";
 
 export function getRootPgPool(app: Express): Pool {

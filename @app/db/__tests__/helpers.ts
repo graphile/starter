@@ -1,22 +1,22 @@
+import { getTasks, runTaskListOnce } from "graphile-worker";
 import { mapValues } from "lodash";
 import { PoolClient } from "pg";
-import {
-  TEST_DATABASE_URL,
-  poolFromUrl,
-  deleteTestData,
-  asRoot,
-  User,
-  createUsers,
-  createSession,
-} from "../../__tests__/helpers";
 
+import {
+  asRoot,
+  createSession,
+  createUsers,
+  deleteTestData,
+  poolFromUrl,
+  TEST_DATABASE_URL,
+  User,
+} from "../../__tests__/helpers";
 /*
  * We need to inform jest that these files depend on changes to the database,
  * so we write a dummy file after current.sql is imported. This file has to be
  * tracked by git, otherwise `jest --watch` won't pick up changes to it...
  */
 import { ts } from "./jest.watch.hack";
-import { getTasks, runTaskListOnce } from "graphile-worker";
 if (ts) {
   /*
    * ... but we don't want the changes showing up under git, so we throw

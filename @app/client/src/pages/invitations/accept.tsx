@@ -1,19 +1,18 @@
-import React, { FC } from "react";
-import { Row, Alert, Col, Spin, Button } from "antd";
-import { SharedLayout } from "@app/components";
-import { NextPage } from "next";
+import { QueryResult } from "@apollo/react-common";
+import { ErrorAlert, Redirect, SharedLayout } from "@app/components";
 import {
-  useInvitationDetailQuery,
-  useAcceptOrganizationInviteMutation,
-  SharedLayout_UserFragment,
   InvitationDetailQuery,
   InvitationDetailQueryVariables,
+  SharedLayout_UserFragment,
+  useAcceptOrganizationInviteMutation,
+  useInvitationDetailQuery,
 } from "@app/graphql";
-import { ErrorAlert, Redirect } from "@app/components";
 import { getCodeFromError } from "@app/lib";
-import Router, { useRouter, NextRouter } from "next/router";
+import { Alert, Button, Col, Row, Spin } from "antd";
+import { NextPage } from "next";
+import Router, { NextRouter, useRouter } from "next/router";
 import * as qs from "querystring";
-import { QueryResult } from "@apollo/react-common";
+import React, { FC } from "react";
 
 interface IProps {
   id: string | null;

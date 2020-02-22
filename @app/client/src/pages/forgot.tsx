@@ -1,20 +1,20 @@
-import React, {
-  useRef,
-  useEffect,
-  FormEvent,
-  useCallback,
-  useState,
-  useMemo,
-} from "react";
-import { promisify } from "util";
 import { SharedLayout } from "@app/components";
+import { useForgotPasswordMutation, useSharedQuery } from "@app/graphql";
+import { extractError, getCodeFromError } from "@app/lib";
+import { Alert, Button, Form, Icon, Input } from "antd";
+import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
+import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import Link from "next/link";
-import { Form, Icon, Input, Button, Alert } from "antd";
-import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { useForgotPasswordMutation, useSharedQuery } from "@app/graphql";
-import { ApolloError } from "apollo-client";
-import { getCodeFromError, extractError } from "@app/lib";
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { promisify } from "util";
 
 const ForgotPassword: NextPage = () => {
   const [error, setError] = useState<Error | ApolloError | null>(null);

@@ -1,30 +1,31 @@
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-  useEffect,
-  FocusEvent,
-} from "react";
-import { SharedLayout } from "@app/components";
-import { NextPage } from "next";
 import { useApolloClient } from "@apollo/react-hooks";
+import { PasswordStrength, Redirect, SharedLayout } from "@app/components";
 import { useRegisterMutation, useSharedQuery } from "@app/graphql";
-import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { Form, Input, Tooltip, Icon, Button, Alert } from "antd";
-import { SyntheticEvent } from "react";
-import { promisify } from "util";
-import Router from "next/router";
-import { ApolloError } from "apollo-client";
 import {
+  extractError,
+  formItemLayout,
   getCodeFromError,
   getExceptionFromError,
-  extractError,
+  resetWebsocketConnection,
+  setPasswordInfo,
+  tailFormItemLayout,
 } from "@app/lib";
-import { formItemLayout, tailFormItemLayout } from "@app/lib";
-import { resetWebsocketConnection } from "@app/lib";
-import { setPasswordInfo } from "@app/lib";
-import { PasswordStrength, Redirect } from "@app/components";
+import { Alert, Button, Form, Icon, Input, Tooltip } from "antd";
+import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
+import { ApolloError } from "apollo-client";
+import { NextPage } from "next";
+import Router from "next/router";
+import React, {
+  FocusEvent,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { promisify } from "util";
+
 import { isSafe } from "./login";
 
 interface RegisterProps {

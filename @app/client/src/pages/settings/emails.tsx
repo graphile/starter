@@ -1,20 +1,26 @@
-import React, { useState, useCallback, useMemo } from "react";
-import { promisify } from "util";
-import { SettingsLayout } from "@app/components";
-import { NextPage } from "next";
 import {
-  useSettingsEmailsQuery,
-  useAddEmailMutation,
+  ErrorAlert,
+  H3,
+  P,
+  Redirect,
+  SettingsLayout,
+  Strong,
+} from "@app/components";
+import {
   EmailsForm_UserEmailFragment,
-  useResendEmailVerificationMutation,
-  useMakeEmailPrimaryMutation,
+  useAddEmailMutation,
   useDeleteEmailMutation,
+  useMakeEmailPrimaryMutation,
+  useResendEmailVerificationMutation,
+  useSettingsEmailsQuery,
 } from "@app/graphql";
-import { Alert, List, Avatar, Form, Input, Button } from "antd";
+import { extractError, getCodeFromError } from "@app/lib";
+import { Alert, Avatar, Button, Form, Input, List } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { ApolloError } from "apollo-client";
-import { Redirect, ErrorAlert, H3, P, Strong } from "@app/components";
-import { getCodeFromError, extractError } from "@app/lib";
+import { NextPage } from "next";
+import React, { useCallback, useMemo, useState } from "react";
+import { promisify } from "util";
 
 function Email({
   email,

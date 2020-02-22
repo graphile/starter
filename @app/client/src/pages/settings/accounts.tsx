@@ -1,20 +1,20 @@
-import React, { useCallback, useState } from "react";
-import { SettingsLayout } from "@app/components";
-import { NextPage } from "next";
 import {
-  useCurrentUserAuthenticationsQuery,
-  useUnlinkUserAuthenticationMutation,
-  UserAuthentication,
-  useSharedQuery,
-} from "@app/graphql";
-import { Spin, List, Avatar, Modal } from "antd";
-import {
-  SocialLoginOptions,
   ErrorAlert,
   H3,
   H4,
+  SettingsLayout,
+  SocialLoginOptions,
   Strong,
 } from "@app/components";
+import {
+  useCurrentUserAuthenticationsQuery,
+  UserAuthentication,
+  useSharedQuery,
+  useUnlinkUserAuthenticationMutation,
+} from "@app/graphql";
+import { Avatar, List, Modal, Spin } from "antd";
+import { NextPage } from "next";
+import React, { useCallback, useState } from "react";
 
 const AUTH_NAME_LOOKUP = {
   github: "GitHub",
