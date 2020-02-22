@@ -70,6 +70,11 @@ if (!ROOT_URL) {
               "process.env.ROOT_URL": JSON.stringify(ROOT_URL),
               "process.env.T_AND_C_URL": JSON.stringify(T_AND_C_URL || null),
             }),
+            new webpack.IgnorePlugin(
+              // These modules are server-side only; we don't want webpack
+              // attempting to bundle them into the client.
+              /^(node-gyp-build|bufferutil|utf-8-validate)$/
+            ),
           ],
           externals: [
             ...(externals || []),
