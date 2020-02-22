@@ -10,8 +10,8 @@ import { promisify } from "util";
 import { Form, Input, Alert, Button } from "antd";
 import { ApolloError } from "apollo-client";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { getCodeFromError, extractError } from "../../errors";
-import { formItemLayout, tailFormItemLayout } from "../../forms";
+import { getCodeFromError, extractError } from "@app/lib";
+import { formItemLayout, tailFormItemLayout } from "@app/lib";
 import { Redirect, ErrorAlert, H3 } from "@app/components";
 
 const Settings_Profile: NextPage = () => {

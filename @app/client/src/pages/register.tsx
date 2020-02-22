@@ -20,8 +20,8 @@ import {
   getCodeFromError,
   getExceptionFromError,
   extractError,
-} from "../errors";
-import { formItemLayout, tailFormItemLayout } from "../forms";
+} from "@app/lib";
+import { formItemLayout, tailFormItemLayout } from "@app/lib";
 import { resetWebsocketConnection } from "@app/lib";
 import { setPasswordInfo } from "@app/lib";
 import { PasswordStrength, Redirect } from "@app/components";

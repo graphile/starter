@@ -10,7 +10,7 @@ import {
   InvitationDetailQueryVariables,
 } from "@app/graphql";
 import { ErrorAlert, Redirect } from "@app/components";
-import { getCodeFromError } from "../../errors";
+import { getCodeFromError } from "@app/lib";
 import Router, { useRouter, NextRouter } from "next/router";
 import * as qs from "querystring";
 import { QueryResult } from "@apollo/react-common";

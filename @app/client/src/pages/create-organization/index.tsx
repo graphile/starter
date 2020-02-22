@@ -16,10 +16,10 @@ import {
   useOrganizationBySlugLazyQuery,
   useSharedQuery,
 } from "@app/graphql";
-import { formItemLayout, tailFormItemLayout } from "../../forms";
+import { formItemLayout, tailFormItemLayout } from "@app/lib";
 import { FormComponentProps } from "antd/lib/form";
 import { ApolloError } from "apollo-client";
-import { extractError, getCodeFromError } from "../../errors";
+import { extractError, getCodeFromError } from "@app/lib";
 import slugify from "slugify";
 import { ValidateFieldsOptions } from "antd/lib/form/Form";
 import { promisify } from "util";

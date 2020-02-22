@@ -14,7 +14,7 @@ import { Alert, List, Avatar, Form, Input, Button } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { ApolloError } from "apollo-client";
 import { Redirect, ErrorAlert, H3, P, Strong } from "@app/components";
-import { getCodeFromError, extractError } from "../../errors";
+import { getCodeFromError, extractError } from "@app/lib";
 
 function Email({
   email,

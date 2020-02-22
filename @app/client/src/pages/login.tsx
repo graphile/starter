@@ -21,7 +21,7 @@ import { useApolloClient } from "@apollo/react-hooks";
 import { useLoginMutation, useSharedQuery } from "@app/graphql";
 import Router from "next/router";
 import { ApolloError } from "apollo-client";
-import { getCodeFromError, extractError } from "../errors";
+import { getCodeFromError, extractError } from "@app/lib";
 import { Redirect, SocialLoginOptions } from "@app/components";
 import { resetWebsocketConnection } from "@app/lib";
 

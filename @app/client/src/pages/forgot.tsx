@@ -14,7 +14,7 @@ import { Form, Icon, Input, Button, Alert } from "antd";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { useForgotPasswordMutation, useSharedQuery } from "@app/graphql";
 import { ApolloError } from "apollo-client";
-import { getCodeFromError, extractError } from "../errors";
+import { getCodeFromError, extractError } from "@app/lib";
 
 const ForgotPassword: NextPage = () => {
   const [error, setError] = useState<Error | ApolloError | null>(null);

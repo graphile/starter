@@ -10,7 +10,7 @@ import {
   useSharedQuery,
 } from "@app/graphql";
 import { useRouter } from "next/router";
-import { getCodeFromError } from "../../errors";
+import { getCodeFromError } from "@app/lib";
 
 const { Text } = Typography;
 

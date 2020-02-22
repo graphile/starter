@@ -5,7 +5,7 @@ import { SharedLayout, Row, Col } from "@app/components";
 import { NextPage } from "next";
 import { useResetPasswordMutation, useSharedQuery } from "@app/graphql";
 import { setPasswordInfo } from "@app/lib";
-import { formItemLayout, tailFormItemLayout } from "../forms";
+import { formItemLayout, tailFormItemLayout } from "@app/lib";
 import { PasswordStrength } from "@app/components";
 import { ApolloError } from "apollo-client";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
