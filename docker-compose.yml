@@ -111,7 +111,7 @@ services:
 
   # This runs the database that everything else connects to
   db:
-    image: postgres:11
+    image: postgres:11.0
 
     # Unlike above, the Postgres image cannot start as our user account
     # otherwise we get permission denied errors. So this one has to run as
