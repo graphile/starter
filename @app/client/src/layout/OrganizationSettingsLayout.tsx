@@ -26,7 +26,7 @@ const makePages = (org: OrganizationPageOrganizationFragment) => ({
   }),
   [`/o/${org.slug}/settings/members`]: page({
     title: "Members",
-    cy: "orgsettingslayout-link-password",
+    cy: "orgsettingslayout-link-members",
   }),
   [`/o/${org.slug}/settings/delete`]: page({
     title: "Delete Organization",
