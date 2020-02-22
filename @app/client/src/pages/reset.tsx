@@ -1,10 +1,10 @@
 import React, { useCallback, useState, useMemo, FocusEvent } from "react";
 import get from "lodash/get";
 import { Alert, Form, Button, Input } from "antd";
-import SharedLayout, { Row, Col } from "../layout/SharedLayout";
+import { SharedLayout, Row, Col } from "@app/components";
 import { NextPage } from "next";
 import { useResetPasswordMutation, useSharedQuery } from "@app/graphql";
-import { setPasswordInfo } from "../lib/passwordHelpers";
+import { setPasswordInfo } from "@app/lib";
 import { formItemLayout, tailFormItemLayout } from "../forms";
 import { PasswordStrength } from "@app/components";
 import { ApolloError } from "apollo-client";

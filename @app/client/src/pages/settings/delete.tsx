@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import SettingsLayout from "../../layout/SettingsLayout";
+import { SettingsLayout } from "@app/components";
 import { NextPage } from "next";
 import { H3, P, ErrorAlert } from "@app/components";
 import { Alert, Button, Modal, Typography } from "antd";

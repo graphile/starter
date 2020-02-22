@@ -2,7 +2,7 @@ import * as React from "react";
 import { NextPage } from "next";
 import { Alert, Row, Col } from "antd";
 import Link from "next/link";
-import SharedLayout from "../layout/SharedLayout";
+import { SharedLayout } from "@app/components";
 import { H2, P } from "@app/components";
 import { useSharedQuery } from "@app/graphql";
 

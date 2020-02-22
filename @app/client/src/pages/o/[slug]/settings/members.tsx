@@ -10,13 +10,10 @@ import {
   useTransferOrganizationOwnershipMutation,
   useTransferOrganizationBillingContactMutation,
 } from "@app/graphql";
-import SharedLayout from "../../../../layout/SharedLayout";
+import { SharedLayout } from "@app/components";
 import { H3, Redirect } from "@app/components";
-import {
-  useOrganizationSlug,
-  useOrganizationLoading,
-} from "../../../../lib/useOrganization";
-import OrganizationSettingsLayout from "../../../../layout/OrganizationSettingsLayout";
+import { useOrganizationSlug, useOrganizationLoading } from "@app/lib";
+import { OrganizationSettingsLayout } from "@app/components";
 import { List, Popconfirm, message } from "antd";
 import Text from "antd/lib/typography/Text";
 

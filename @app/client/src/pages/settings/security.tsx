@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, SyntheticEvent } from "react";
-import SettingsLayout from "../../layout/SettingsLayout";
+import { SettingsLayout } from "@app/components";
 import { NextPage } from "next";
 import {
   useChangePasswordMutation,
@@ -15,7 +15,7 @@ import { getCodeFromError, extractError } from "../../errors";
 import { formItemLayout, tailFormItemLayout } from "../../forms";
 import { H3, P, ErrorAlert, PasswordStrength } from "@app/components";
 import Link from "next/link";
-import { setPasswordInfo } from "../../lib/passwordHelpers";
+import { setPasswordInfo } from "@app/lib";
 
 const Settings_Security: NextPage = () => {
   const [error, setError] = useState<Error | ApolloError | null>(null);

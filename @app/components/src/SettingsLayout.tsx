@@ -1,11 +1,14 @@
 import React from "react";
-import SharedLayout, {
+import {
+  SharedLayout,
   SharedLayoutChildProps,
   SharedLayoutProps,
 } from "./SharedLayout";
 import Link from "next/link";
 import { Layout, Menu, Typography } from "antd";
-import { StandardWidth, Warn, Redirect } from "@app/components";
+import { StandardWidth } from "./StandardWidth";
+import { Warn } from "./Warn";
+import { Redirect } from "./Redirect";
 import { TextProps } from "antd/lib/typography/Text";
 import { useRouter, NextRouter } from "next/router";
 import * as qs from "querystring";
@@ -52,13 +55,13 @@ const pages = {
   }),
 };
 
-interface SettingsLayoutProps {
+export interface SettingsLayoutProps {
   query: SharedLayoutProps["query"];
   href: keyof typeof pages;
   children: React.ReactNode;
 }
 
-export default function SettingsLayout({
+export function SettingsLayout({
   query,
   href: inHref,
   children,

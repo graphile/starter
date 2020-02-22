@@ -6,7 +6,7 @@ import React, {
   useEffect,
   FocusEvent,
 } from "react";
-import SharedLayout from "../layout/SharedLayout";
+import { SharedLayout } from "@app/components";
 import { NextPage } from "next";
 import { useApolloClient } from "@apollo/react-hooks";
 import { useRegisterMutation, useSharedQuery } from "@app/graphql";
@@ -22,8 +22,8 @@ import {
   extractError,
 } from "../errors";
 import { formItemLayout, tailFormItemLayout } from "../forms";
-import { resetWebsocketConnection } from "../lib/withApollo";
-import { setPasswordInfo } from "../lib/passwordHelpers";
+import { resetWebsocketConnection } from "@app/lib";
+import { setPasswordInfo } from "@app/lib";
 import { PasswordStrength, Redirect } from "@app/components";
 import { isSafe } from "./login";
 

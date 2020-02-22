@@ -4,13 +4,10 @@ import {
   OrganizationPage_OrganizationFragment,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import SharedLayout from "../../../../layout/SharedLayout";
+import { SharedLayout } from "@app/components";
 import { H1, Redirect } from "@app/components";
-import {
-  useOrganizationSlug,
-  useOrganizationLoading,
-} from "../../../../lib/useOrganization";
-import OrganizationSettingsLayout from "../../../../layout/OrganizationSettingsLayout";
+import { useOrganizationSlug, useOrganizationLoading } from "@app/lib";
+import { OrganizationSettingsLayout } from "@app/components";
 
 const OrganizationSettingsPage: NextPage = () => {
   const slug = useOrganizationSlug();

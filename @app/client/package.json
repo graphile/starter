@@ -11,6 +11,7 @@
     "@app/components": "0.0.0",
     "@app/config": "0.0.0",
     "@app/graphql": "0.0.0",
+    "@app/lib": "0.0.0",
     "@types/lodash": "^4.14.149",
     "@types/node": "^13.1.8",
     "@types/nprogress": "^0.2.0",

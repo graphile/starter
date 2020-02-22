@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
 import { Layout, Menu, Typography } from "antd";
-import { StandardWidth } from "@app/components";
+import { StandardWidth } from "./StandardWidth";
 import { TextProps } from "antd/lib/typography/Text";
 import { OrganizationPage_OrganizationFragment } from "@app/graphql";
 
@@ -37,13 +37,13 @@ const makePages = (org: OrganizationPage_OrganizationFragment) => ({
   }),
 });
 
-interface OrganizationSettingsLayoutProps {
+export interface OrganizationSettingsLayoutProps {
   href: string;
   organization: OrganizationPage_OrganizationFragment;
   children: React.ReactNode;
 }
 
-export default function OrganizationSettingsLayout({
+export function OrganizationSettingsLayout({
   href: inHref,
   organization,
   children,

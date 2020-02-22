@@ -11,10 +11,5 @@
     "module": "commonjs",
     "jsx": "react"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "references": [
-    {
-      "path": "../lib"
-    }
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

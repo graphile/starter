@@ -6,11 +6,12 @@ import React, {
   useCallback,
   useState,
 } from "react";
-import SharedLayout, {
+import {
+  SharedLayout,
   Row,
   Col,
   SharedLayoutChildProps,
-} from "../layout/SharedLayout";
+} from "@app/components";
 import { NextPage } from "next";
 import Link from "next/link";
 import { Form, Icon, Input, Button, Alert, Typography } from "antd";
@@ -22,7 +23,7 @@ import Router from "next/router";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
 import { Redirect, SocialLoginOptions } from "@app/components";
-import { resetWebsocketConnection } from "../lib/withApollo";
+import { resetWebsocketConnection } from "@app/lib";
 
 const { Paragraph } = Typography;
 

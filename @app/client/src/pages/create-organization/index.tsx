@@ -7,12 +7,11 @@ import React, {
   useEffect,
 } from "react";
 import { NextPage } from "next";
-import SharedLayout from "../../layout/SharedLayout";
+import { SharedLayout } from "@app/components";
 import { Row, Col, Form, Input, Alert, Button, Spin } from "antd";
 import { H3, Redirect } from "@app/components";
 import {
   useCreateOrganizationMutation,
-  CreateOrganizationMutation,
   CreatedOrganizationFragment,
   useOrganizationBySlugLazyQuery,
   useSharedQuery,

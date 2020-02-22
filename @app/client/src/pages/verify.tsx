@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import get from "lodash/get";
 import { Alert } from "antd";
-import SharedLayout, { Row, Col } from "../layout/SharedLayout";
+import { SharedLayout, Row, Col } from "@app/components";
 import { NextPage } from "next";
 import { useVerifyEmailMutation, useSharedQuery } from "@app/graphql";
 

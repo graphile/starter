@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import SettingsLayout from "../../layout/SettingsLayout";
+import { SettingsLayout } from "@app/components";
 import { NextPage } from "next";
 import {
   useCurrentUserAuthenticationsQuery,

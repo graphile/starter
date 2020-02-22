@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Button, Row, Col, Typography, Divider } from "antd";
 const { Text, Title, Paragraph } = Typography;
-import SharedLayout from "../layout/SharedLayout";
+import { SharedLayout } from "@app/components";
 import { NextPage } from "next";
 import { useSharedQuery } from "@app/graphql";
 

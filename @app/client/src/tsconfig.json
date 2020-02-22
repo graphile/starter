@@ -15,6 +15,7 @@
   "references": [
     { "path": "../../config" },
     { "path": "../../graphql" },
-    { "path": "../../components" }
+    { "path": "../../components" },
+    { "path": "../../lib" }
   ]
 }

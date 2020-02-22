@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { promisify } from "util";
-import SettingsLayout from "../../layout/SettingsLayout";
+import { SettingsLayout } from "@app/components";
 import { NextPage } from "next";
 import {
   useSettingsEmailsQuery,

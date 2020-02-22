@@ -20,7 +20,7 @@ import {
 import Router from "next/router";
 import { useApolloClient } from "@apollo/react-hooks";
 import { useCallback } from "react";
-import { StandardWidth, Warn, ErrorAlert, H3 } from "@app/components";
+import { StandardWidth, Warn, ErrorAlert, H3 } from ".";
 import Head from "next/head";
 import { ApolloError } from "apollo-client";
 import { QueryResult } from "@apollo/react-common";
@@ -85,7 +85,7 @@ function CurrentUserUpdatedSubscription() {
   return null;
 }
 
-function SharedLayout({
+export function SharedLayout({
   title,
   noPad = false,
   children,
@@ -257,5 +257,3 @@ function SharedLayout({
     </Layout>
   );
 }
-
-export default SharedLayout;

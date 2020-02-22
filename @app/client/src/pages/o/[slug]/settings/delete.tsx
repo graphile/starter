@@ -6,13 +6,10 @@ import {
   useDeleteOrganizationMutation,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import SharedLayout from "../../../../layout/SharedLayout";
+import { SharedLayout } from "@app/components";
 import { H3, P, ErrorAlert } from "@app/components";
-import {
-  useOrganizationSlug,
-  useOrganizationLoading,
-} from "../../../../lib/useOrganization";
-import OrganizationSettingsLayout from "../../../../layout/OrganizationSettingsLayout";
+import { useOrganizationSlug, useOrganizationLoading } from "@app/lib";
+import { OrganizationSettingsLayout } from "@app/components";
 import { Popconfirm, message, Alert, Button } from "antd";
 import { ApolloError } from "apollo-client";
 import { useRouter } from "next/router";

@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { Row, Alert, Col, Spin, Button } from "antd";
-import SharedLayout from "../../layout/SharedLayout";
+import { SharedLayout } from "@app/components";
 import { NextPage } from "next";
 import {
   useInvitationDetailQuery,
