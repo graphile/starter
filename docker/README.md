@@ -48,7 +48,7 @@ run
 
 #### DB tool:
 
-To connect to the newly created container db with psql/{db tool} you connect to it by default if not anything else specified via port 6543 on localhost with the `DATABASE_NAME` specificed as such:
+To connect to the container database with psql or another database tool, use port 6543 on localhost and populate the `DATABASE_NAME`, `DATABASE_OWNER` and `DATABASE_OWNER_PASSWORD` from your `.env` file:
 
 ```bash
 $ psql "postgres://$DATABASE_OWNER:$DATABASE_OWNER_PASSWORD@localhost:6543/$DATABASE_NAME"
