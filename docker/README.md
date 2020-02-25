@@ -51,7 +51,7 @@ run
 To connect to the newly created container db with psql/{db tool} you connect to it by default if not anything else specified via port 6543 on localhost with the `DATABASE_NAME` specificed as such:
 
 ```bash
-$ psql postgres://$DATABASE_NAME@localhost:6543
+$ psql "postgres://$DATABASE_OWNER:$DATABASE_OWNER_PASSWORD@localhost:6543/$DATABASE_NAME"
 ```
 
 #### Use Case Example:
