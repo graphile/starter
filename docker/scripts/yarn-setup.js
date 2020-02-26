@@ -4,7 +4,7 @@ const platform = require("os").platform();
 const { safeRandomString } = require("../../scripts/lib/random");
 const fsp = require("fs").promises;
 
-const DOTENV_PATH = `${__dirname}/../../.env`;
+const DOCKER_DOTENV_PATH = `${__dirname}/../.env`;
 
 if (platform !== "win32" && !process.env.UID) {
   console.error(
@@ -28,27 +28,38 @@ function spawnSync(command, args, options = {}) {
 }
 
 async function main() {
-  // POSTGRES_PASSWORD must be set for the Docker Postgres image to boot
-  let data;
+  // Check that docker/.env exists
   try {
-    data = await fsp.readFile(DOTENV_PATH, "utf8");
+    await fsp.access(DOCKER_DOTENV_PATH, fs.constants.F_OK);
   } catch (e) {
-    data = "";
-  }
-  if (!data.includes("POSTGRES_PASSWORD=")) {
-    // We cannot use `dotenv` here because we exist outside of Docker, and we
-    // don't have the module installed yet.
+    // Does not exist, write it
     const password = safeRandomString(30);
-    data += `
+    const data = `
+# We'd like scripts ran through Docker to pretend they're in a normal
+# interactive terminal.
+FORCE_COLOR=2
+
+# \`pg_dump\` is run from inside container, which doesn't have pg tools installed
+# so it needs a way to still run it. \`docker-compose run\` would start an
+# instance inside the current running container which doesn't work with volume
+# mappings, so we must use \`docker-compose exec\`. \`-T\` is needed because our
+# \`.gmrc\` checks for interactive TTY.
+PG_DUMP=docker-compose exec -T db pg_dump
+
+# Drops tables without asking in \`yarn setup\`. Reasoning: 1) docker-compose is
+# not tty, 2) it's a dev env anyway.
+CONFIRM_DROP=y
+
 # POSTGRES_PASSWORD is the superuser password for PostgreSQL, it's required to
 # initialize the Postgres docker volume.
 POSTGRES_PASSWORD=${password}
 
-# We're accessing Postgres via Docker:
+# We're accessing Postgres via Docker, so we must use the db host and the
+# relevant password.
 DATABASE_HOST=db
 ROOT_DATABASE_URL=postgres://postgres:${password}@db/template1
 `;
-    await fsp.writeFile(DOTENV_PATH, data);
+    await fsp.writeFile(DOCKER_DOTENV_PATH, data);
   }
 
   // The `docker-compose` project name defaults to the directory name containing
