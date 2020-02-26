@@ -1,6 +1,10 @@
 const { spawnSync: baseSpawnSync } = require("child_process");
 const { basename, dirname, resolve } = require("path");
 const platform = require("os").platform();
+const { safeRandomString } = require("../../scripts/lib/random");
+const fsp = require("fs").promises;
+
+const DOTENV_PATH = `${__dirname}/../../.env`;
 
 if (platform !== "win32" && !process.env.UID) {
   console.error(
@@ -23,28 +27,65 @@ function spawnSync(command, args, options = {}) {
   }
 }
 
-// The `docker-compose` project name defaults to the directory name containing
-// `docker-compose.yml`, which is the root folder of our project. Let's call
-// that 'ROOT'. We're in ROOT/docker/scripts and we want to get the name of
-// ROOT:
-const projectName = basename(dirname(dirname(resolve(__dirname))));
+async function main() {
+  // POSTGRES_PASSWORD must be set for the Docker Postgres image to boot
+  let data;
+  try {
+    data = await fsp.readFile(DOTENV_PATH, "utf8");
+  } catch (e) {
+    data = "";
+  }
+  if (!data.includes("POSTGRES_PASSWORD=")) {
+    // We cannot use `dotenv` here because we exist outside of Docker, and we
+    // don't have the module installed yet.
+    const password = safeRandomString(30);
+    data += `
+# POSTGRES_PASSWORD is the superuser password for PostgreSQL, it's required to
+# initialize the Postgres docker volume.
+POSTGRES_PASSWORD=${password}
 
-// On Windows we must run 'yarn.cmd' rather than 'yarn'
-const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
+# We're accessing Postgres via Docker:
+DATABASE_HOST=db
+ROOT_DATABASE_URL=postgres://postgres:${password}@db/template1
+`;
+    await fsp.writeFile(DOTENV_PATH, data);
+  }
 
-spawnSync(yarnCmd, ["down"]);
-spawnSync(yarnCmd, ["db:up"]);
+  // The `docker-compose` project name defaults to the directory name containing
+  // `docker-compose.yml`, which is the root folder of our project. Let's call
+  // that 'ROOT'. We're in ROOT/docker/scripts and we want to get the name of
+  // ROOT:
+  const projectName = basename(dirname(dirname(resolve(__dirname))));
 
-// Fix permissions
-spawnSync(yarnCmd, [
-  "compose",
-  "run",
-  "server",
-  "sudo",
-  "bash",
-  "-c",
-  "chmod o+rwx /var/run/docker.sock && chown -R node /work/node_modules /work/@app/*/node_modules",
-]);
+  // On Windows we must run 'yarn.cmd' rather than 'yarn'
+  const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 
-// Run setup as normal
-spawnSync(yarnCmd, ["compose", "run", "server", "yarn", "setup", projectName]);
+  spawnSync(yarnCmd, ["down"]);
+  spawnSync(yarnCmd, ["db:up"]);
+
+  // Fix permissions
+  spawnSync(yarnCmd, [
+    "compose",
+    "run",
+    "server",
+    "sudo",
+    "bash",
+    "-c",
+    "chmod o+rwx /var/run/docker.sock && chown -R node /work/node_modules /work/@app/*/node_modules",
+  ]);
+
+  // Run setup as normal
+  spawnSync(yarnCmd, [
+    "compose",
+    "run",
+    "server",
+    "yarn",
+    "setup",
+    projectName,
+  ]);
+}
+
+main().catch(e => {
+  console.error(e);
+  process.exit(1);
+});
