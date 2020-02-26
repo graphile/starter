@@ -1,5 +1,5 @@
 import passport from "passport";
-import { Strategy as GitHubStrategy } from "passport-github";
+import { Strategy as GitHubStrategy } from "passport-github2";
 import { get } from "lodash";
 import installPassportStrategy from "./installPassportStrategy";
 import { Express } from "express";
