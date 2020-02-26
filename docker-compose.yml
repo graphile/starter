@@ -14,7 +14,7 @@ services:
     user: $UID
 
     env_file:
-      - docker/docker.env
+      - docker/.env
     volumes:
       - .:/work
       # let's us run docker & docker-compose from inside container (used for yarn setup)
@@ -52,7 +52,7 @@ services:
         SETUP_MODE: dev
 
     env_file:
-      - docker/docker.env
+      - docker/.env
 
     # On Linux, this will prevent new files getting created as root, but you
     # may need to update the USER_UID and USER_GID in `Dockerfile` to match
@@ -112,6 +112,8 @@ services:
   # This runs the database that everything else connects to
   db:
     image: postgres:11
+    env_file:
+      - docker/.env
 
     # Unlike above, the Postgres image cannot start as our user account
     # otherwise we get permission denied errors. So this one has to run as
@@ -129,7 +131,10 @@ services:
     restart: unless-stopped
     networks:
       - default
-    command: postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
+    command:
+      postgres -c logging_collector=on -c log_destination=stderr -c
+      log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c
+      log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
 
 networks:
   default:
