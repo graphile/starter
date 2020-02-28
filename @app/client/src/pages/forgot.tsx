@@ -7,7 +7,7 @@ import React, {
   useMemo,
 } from "react";
 import { promisify } from "util";
-import SharedLayout, { SharedLayoutChildProps } from "../layout/SharedLayout";
+import SharedLayout, { AuthRestrict } from "../layout/SharedLayout";
 import { NextPage } from "next";
 import Link from "next/link";
 import { Form, Icon, Input, Button, Alert } from "antd";
@@ -15,19 +15,12 @@ import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { useForgotPasswordMutation } from "@app/graphql";
 import { ApolloError } from "apollo-client";
 import { getCodeFromError, extractError } from "../errors";
-import { Redirect } from "@app/components";
 
 const ForgotPassword: NextPage = () => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
   return (
-    <SharedLayout title="Forgot Password">
-      {({ currentUser }: SharedLayoutChildProps) =>
-        currentUser ? (
-          <Redirect href={"/"} />
-        ) : (
-          <WrappedForgotPasswordForm error={error} setError={setError} />
-        )
-      }
+    <SharedLayout title="Forgot Password" forbidWhen={AuthRestrict.LOGGED_IN}>
+      <WrappedForgotPasswordForm error={error} setError={setError} />
     </SharedLayout>
   );
 };

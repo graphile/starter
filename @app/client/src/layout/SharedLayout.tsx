@@ -20,7 +20,7 @@ import {
 import Router from "next/router";
 import { useApolloClient } from "@apollo/react-hooks";
 import { useCallback } from "react";
-import { StandardWidth, Warn, ErrorAlert } from "@app/components";
+import { StandardWidth, Warn, ErrorAlert, Redirect } from "@app/components";
 import Head from "next/head";
 import { ApolloError } from "apollo-client";
 
@@ -45,12 +45,19 @@ export interface SharedLayoutChildProps {
   currentUser?: SharedLayout_UserFragment | null;
 }
 
+export enum AuthRestrict {
+  LOGGED_IN = "LOGGED_IN",
+  LOGGED_OUT = "LOGGED_OUT",
+  NEVER = "NEVER",
+}
+
 interface SharedLayoutProps {
   title: string;
   children:
     | React.ReactNode
     | ((props: SharedLayoutChildProps) => React.ReactNode);
   noPad?: boolean;
+  forbidWhen?: AuthRestrict;
 }
 
 /* The Apollo `useSubscription` hook doesn't currently allow skipping the
@@ -69,7 +76,12 @@ function CurrentUserUpdatedSubscription() {
   return null;
 }
 
-function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
+function SharedLayout({
+  title,
+  noPad = false,
+  forbidWhen = AuthRestrict.NEVER,
+  children,
+}: SharedLayoutProps) {
   const client = useApolloClient();
   const [logout] = useLogoutMutation();
   const handleLogout = useCallback(async () => {
@@ -86,6 +98,14 @@ function SharedLayout({ title, noPad = false, children }: SharedLayoutProps) {
       ) : (
         children
       );
+    if (data && data.currentUser && forbidWhen == AuthRestrict.LOGGED_IN) {
+      return (
+        <StandardWidth>
+          <Redirect href={"/"} />
+        </StandardWidth>
+      );
+    }
+
     return noPad ? inner : <StandardWidth>{inner}</StandardWidth>;
   };
   const { data, loading, error } = useSharedLayoutQuery();

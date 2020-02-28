@@ -1,16 +1,12 @@
 import React, { useCallback, useState, useMemo, FocusEvent } from "react";
 import get from "lodash/get";
 import { Alert, Form, Button, Input } from "antd";
-import SharedLayout, {
-  Row,
-  Col,
-  SharedLayoutChildProps,
-} from "../layout/SharedLayout";
+import SharedLayout, { Row, Col, AuthRestrict } from "../layout/SharedLayout";
 import { NextPage } from "next";
 import { useResetPasswordMutation } from "@app/graphql";
 import { setPasswordInfo } from "../lib/passwordHelpers";
 import { formItemLayout, tailFormItemLayout } from "../forms";
-import { PasswordStrength, Redirect } from "@app/components";
+import { PasswordStrength } from "@app/components";
 import { ApolloError } from "apollo-client";
 import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
 import { promisify } from "util";
@@ -32,29 +28,23 @@ const ResetPage: NextPage<IProps> = ({ userId, token }) => {
   const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
   const [state, setState] = useState<State>(State.PENDING);
   return (
-    <SharedLayout title="Reset Password">
-      {({ currentUser }: SharedLayoutChildProps) =>
-        currentUser ? (
-          <Redirect href={"/"} />
-        ) : (
-          <Row>
-            <Col>
-              <WrappedResetForm
-                passwordStrength={strength}
-                setPasswordStrength={setStrength}
-                passwordSuggestions={passwordSuggestions}
-                setPasswordSuggestions={setPasswordSuggestions}
-                error={error}
-                setError={setError}
-                userId={userId}
-                token={token}
-                state={state}
-                setState={setState}
-              />
-            </Col>
-          </Row>
-        )
-      }
+    <SharedLayout title="Reset Password" forbidWhen={AuthRestrict.LOGGED_IN}>
+      <Row>
+        <Col>
+          <WrappedResetForm
+            passwordStrength={strength}
+            setPasswordStrength={setStrength}
+            passwordSuggestions={passwordSuggestions}
+            setPasswordSuggestions={setPasswordSuggestions}
+            error={error}
+            setError={setError}
+            userId={userId}
+            token={token}
+            state={state}
+            setState={setState}
+          />
+        </Col>
+      </Row>
     </SharedLayout>
   );
 };

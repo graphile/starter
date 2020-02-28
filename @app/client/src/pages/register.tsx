@@ -6,7 +6,7 @@ import React, {
   useEffect,
   FocusEvent,
 } from "react";
-import SharedLayout, { SharedLayoutChildProps } from "../layout/SharedLayout";
+import SharedLayout, { AuthRestrict } from "../layout/SharedLayout";
 import { NextPage } from "next";
 import { useApolloClient } from "@apollo/react-hooks";
 import { useRegisterMutation } from "@app/graphql";
@@ -24,7 +24,7 @@ import {
 import { formItemLayout, tailFormItemLayout } from "../forms";
 import { resetWebsocketConnection } from "../lib/withApollo";
 import { setPasswordInfo } from "../lib/passwordHelpers";
-import { PasswordStrength, Redirect } from "@app/components";
+import { PasswordStrength } from "@app/components";
 
 /**
  * The registration page just renders the standard layout and embeds the
@@ -36,22 +36,16 @@ const Register: NextPage = () => {
   const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
 
   return (
-    <SharedLayout title="Register">
-      {({ currentUser }: SharedLayoutChildProps) =>
-        currentUser ? (
-          <Redirect href={"/"} />
-        ) : (
-          <WrappedRegistrationForm
-            passwordStrength={strength}
-            setPasswordStrength={setStrength}
-            passwordSuggestions={passwordSuggestions}
-            setPasswordSuggestions={setPasswordSuggestions}
-            onSuccessRedirectTo="/"
-            error={error}
-            setError={setError}
-          />
-        )
-      }
+    <SharedLayout title="Register" forbidWhen={AuthRestrict.LOGGED_IN}>
+      <WrappedRegistrationForm
+        passwordStrength={strength}
+        setPasswordStrength={setStrength}
+        passwordSuggestions={passwordSuggestions}
+        setPasswordSuggestions={setPasswordSuggestions}
+        onSuccessRedirectTo="/"
+        error={error}
+        setError={setError}
+      />
     </SharedLayout>
   );
 };
