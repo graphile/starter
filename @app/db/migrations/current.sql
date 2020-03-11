@@ -77,7 +77,7 @@ relevant operations on them. The tables will appear when you uncomment the
 --   updated_at       timestamptz not null default now()
 -- );
 -- alter table app_public.posts enable row level security;
--- create index on app_public.posts (author_id); -- Add index to post so that author can be resolved
+-- create index on app_public.posts (author_id);
 
 -- create trigger _100_timestamps before insert or update on app_public.posts for each row execute procedure app_private.tg__timestamps();
 
