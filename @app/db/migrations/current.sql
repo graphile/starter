@@ -77,6 +77,7 @@ relevant operations on them. The tables will appear when you uncomment the
 --   updated_at       timestamptz not null default now()
 -- );
 -- alter table app_public.posts enable row level security;
+-- create index on app_public.posts (author_id);
 
 -- create trigger _100_timestamps before insert or update on app_public.posts for each row execute procedure app_private.tg__timestamps();
 
@@ -107,6 +108,8 @@ relevant operations on them. The tables will appear when you uncomment the
 --   created_at       timestamptz not null default now()
 -- );
 -- alter table app_public.user_feed_posts enable row level security;
+-- create index on app_public.user_feed_posts (user_id);
+-- create index on app_public.user_feed_posts (post_id);
 
 -- grant select on app_public.user_feed_posts to :DATABASE_VISITOR;
 
