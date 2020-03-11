@@ -108,8 +108,8 @@ relevant operations on them. The tables will appear when you uncomment the
 --   created_at       timestamptz not null default now()
 -- );
 -- alter table app_public.user_feed_posts enable row level security;
--- create index on app_public.user_feed_posts (user_id); -- Add index to post so that user can be resolved
--- create index on app_public.user_feed_posts (post_id); -- Add index to post so that post can be resolved
+-- create index on app_public.user_feed_posts (user_id);
+-- create index on app_public.user_feed_posts (post_id);
 
 -- grant select on app_public.user_feed_posts to :DATABASE_VISITOR;
 
