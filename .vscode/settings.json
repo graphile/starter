@@ -26,5 +26,9 @@
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
 
-  "prettier.disableLanguages": []
+  "prettier.disableLanguages": [],
+
+  "files.associations": {
+    ".gmrc": "jsonc"
+  }
 }
