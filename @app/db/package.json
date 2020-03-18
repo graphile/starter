@@ -13,7 +13,7 @@
     "wipe-if-demo": "./scripts/wipe-if-demo"
   },
   "dependencies": {
-    "graphile-migrate": "^0.0.17"
+    "graphile-migrate": "^0.1.0"
   },
   "devDependencies": {
     "@types/pg": "^7.14.1",

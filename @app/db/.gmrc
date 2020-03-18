@@ -7,7 +7,7 @@
     ":DATABASE_VISITOR": "!ENV"
   },
   "afterReset": [
-    "afterReset.sql",
+    "!afterReset.sql",
     {
       "_": "command",
       "command": "yarn workspace @app/worker install-db-schema"
