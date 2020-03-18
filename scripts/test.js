@@ -17,7 +17,7 @@ const opts = {
 };
 
 // Reset the test database
-execSync("yarn db gm reset --shadow", opts);
+execSync("yarn db gm reset --shadow --erase", opts);
 execSync("yarn db watch --once --shadow", opts);
 
 // If we're in watch mode

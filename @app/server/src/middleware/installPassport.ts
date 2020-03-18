@@ -1,7 +1,7 @@
 import { Express } from "express";
 import { get } from "lodash";
 import passport from "passport";
-import { Strategy as GitHubStrategy } from "passport-github";
+import { Strategy as GitHubStrategy } from "passport-github2";
 
 import { getWebsocketMiddlewares } from "../app";
 import installPassportStrategy from "./installPassportStrategy";

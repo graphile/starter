@@ -108,7 +108,7 @@ use; not to mention deep integration with VSCode should you use that editor:
 plugin recommendations, pre-configured settings, ESLint and Prettier integration
 and debugging profiles
 
-**Batteries included**: full user system and OAuth, AntD design framework, jest
+**Batteries included**: full user system and OAuth, AntD design framework, Jest
 and [Cypress end-to-end](/TECHNICAL_DECISIONS.md#cypress-e2e-tests) testing,
 security, email templating and transport, pre-configured linting and code
 formatting, deployment instructions, and more
@@ -116,7 +116,7 @@ formatting, deployment instructions, and more
 **Type safety**: pre-configured type checking, strongly typed throughout with
 TypeScript
 
-**Best practices**: React, GraphQL, PostGraphile, Node, jest and Cypress best
+**Best practices**: React, GraphQL, PostGraphile, Node, Jest and Cypress best
 practices
 
 See [TECHNICAL_DECISIONS.md](TECHNICAL_DECISIONS.md) for a more detailed list of
