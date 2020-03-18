@@ -370,8 +370,8 @@ async function main() {
   }
   await pgPool.end();
 
-  spawnSync(yarnCmd, ["db", "reset"]);
-  spawnSync(yarnCmd, ["db", "reset", "--shadow"]);
+  spawnSync(yarnCmd, ["db", "reset", "--erase"]);
+  spawnSync(yarnCmd, ["db", "reset", "--shadow", "--erase"]);
 
   console.log();
   console.log();
