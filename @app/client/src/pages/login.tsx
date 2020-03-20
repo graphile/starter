@@ -13,8 +13,12 @@ import {
   getCodeFromError,
   resetWebsocketConnection,
 } from "@app/lib";
-import { Alert, Button, Form, Icon, Input, Typography } from "antd";
-import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
+import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Alert, Button, Input, Typography } from "antd";
+import { FormComponentProps } from '@ant-design/compatible/lib/form/Form';
+import { ValidateFieldsOptions } from "antd/lib/form/Form";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import Link from "next/link";
@@ -75,7 +79,7 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
                   <Col span={28}>
                     <Button
                       data-cy="loginpage-button-withusername"
-                      icon="mail"
+                      icon={<MailOutlined />}
                       size="large"
                       block
                       onClick={() => setShowLogin(true)}
@@ -201,7 +205,7 @@ function LoginForm({
         })(
           <Input
             size="large"
-            prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
+            prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
             placeholder="E-mail or Username"
             autoComplete="email username"
             ref={focusElement}
@@ -217,7 +221,7 @@ function LoginForm({
           rules: [{ required: true, message: "Please input your passphrase" }],
         })(
           <Input
-            prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
+            prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
             size="large"
             type="password"
             placeholder="Passphrase"

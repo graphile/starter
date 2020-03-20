@@ -10,8 +10,12 @@ import {
   setPasswordInfo,
   tailFormItemLayout,
 } from "@app/lib";
-import { Alert, Button, Form, Icon, Input, Tooltip } from "antd";
-import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Alert, Button, Input, Tooltip } from "antd";
+import { FormComponentProps } from '@ant-design/compatible/lib/form/Form';
+import { ValidateFieldsOptions } from "antd/lib/form/Form";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import Router from "next/router";
@@ -266,7 +270,7 @@ function RegistrationForm({
           <span data-cy="registerpage-name-label">
             Name&nbsp;
             <Tooltip title="What is your name?">
-              <Icon type="question-circle-o" />
+              <QuestionCircleOutlined />
             </Tooltip>
           </span>
         }
@@ -292,7 +296,7 @@ function RegistrationForm({
           <span>
             Username&nbsp;
             <Tooltip title="What do you want others to call you?">
-              <Icon type="question-circle-o" />
+              <QuestionCircleOutlined />
             </Tooltip>
           </span>
         }

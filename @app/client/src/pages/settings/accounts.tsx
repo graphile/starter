@@ -12,6 +12,7 @@ import {
   useSharedQuery,
   useUnlinkUserAuthenticationMutation,
 } from "@app/graphql";
+import { Icon as LegacyIcon } from '@ant-design/compatible';
 import { Avatar, List, Modal, Spin } from "antd";
 import { NextPage } from "next";
 import React, { useCallback, useState } from "react";
@@ -31,7 +32,7 @@ const AUTH_ICON_LOOKUP = {
 function authAvatar(service: string) {
   const icon = AUTH_ICON_LOOKUP[service] || null;
   if (icon) {
-    return <Avatar size="large" icon={icon} />;
+    return <Avatar size="large" icon={<LegacyIcon type={icon} />} />;
   }
 }
 

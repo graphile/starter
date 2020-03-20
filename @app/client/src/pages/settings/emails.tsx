@@ -15,8 +15,11 @@ import {
   useSettingsEmailsQuery,
 } from "@app/graphql";
 import { extractError, getCodeFromError } from "@app/lib";
-import { Alert, Avatar, Button, Form, Input, List } from "antd";
-import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Alert, Avatar, Button, Input, List } from "antd";
+import { FormComponentProps } from '@ant-design/compatible/lib/form/Form';
+import { ValidateFieldsOptions } from "antd/lib/form/Form";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import React, { useCallback, useMemo, useState } from "react";

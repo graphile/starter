@@ -11,8 +11,10 @@ import {
   getCodeFromError,
   tailFormItemLayout,
 } from "@app/lib";
-import { Alert, Button, Col, Form, Input, Row, Spin } from "antd";
-import { FormComponentProps } from "antd/lib/form";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Alert, Button, Col, Input, Row, Spin } from "antd";
+import { FormComponentProps } from '@ant-design/compatible/lib/form';
 import { ValidateFieldsOptions } from "antd/lib/form/Form";
 import Text from "antd/lib/typography/Text";
 import { ApolloError } from "apollo-client";
