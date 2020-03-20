@@ -11,63 +11,21 @@ import {
   getCodeFromError,
   tailFormItemLayout,
 } from "@app/lib";
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Alert, Button, Col, Input, Row, Spin } from "antd";
-import { FormComponentProps } from '@ant-design/compatible/lib/form';
-import { ValidateFieldsOptions } from "antd/lib/form/Form";
+import { Alert, Button, Col, Form, Input, Row, Spin } from "antd";
+import { useForm } from "antd/lib/form/util";
 import Text from "antd/lib/typography/Text";
 import { ApolloError } from "apollo-client";
 import { debounce } from "lodash";
 import { NextPage } from "next";
-import React, {
-  FC,
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { Store } from "rc-field-form/lib/interface";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import slugify from "slugify";
-import { promisify } from "util";
 
 const CreateOrganizationPage: NextPage = () => {
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
   const query = useSharedQuery();
-  return (
-    <SharedLayout title="Create Organization" query={query}>
-      <Row>
-        <Col>
-          <h1>Create Organization</h1>
-          <WrappedCreateOrganizationForm
-            error={formError}
-            setError={setFormError}
-          />
-        </Col>
-      </Row>
-    </SharedLayout>
-  );
-};
-
-interface FormValues {
-  name: string;
-}
-
-interface CreateOrganizationFormProps extends FormComponentProps<FormValues> {
-  error: Error | ApolloError | null;
-  setError: (error: Error | ApolloError | null) => void;
-}
-
-const CreateOrganizationForm: FC<CreateOrganizationFormProps> = props => {
-  const { form, error, setError } = props;
-  const { getFieldDecorator, getFieldValue } = form;
-  const validateFields: (
-    fieldNames?: Array<string>,
-    options?: ValidateFieldsOptions
-  ) => Promise<FormValues> = useMemo(
-    () => promisify((...args) => form.validateFields(...args)),
-    [form]
-  );
+  const [form] = useForm();
+  const { getFieldValue } = form;
   const slug = slugify(getFieldValue("name") || "", {
     lower: true,
   });
@@ -102,18 +60,16 @@ const CreateOrganizationForm: FC<CreateOrganizationFormProps> = props => {
     checkSlug(slug);
   }, [checkSlug, slug]);
 
-  const code = getCodeFromError(error);
+  const code = getCodeFromError(formError);
   const [
     organization,
     setOrganization,
   ] = useState<null | CreatedOrganizationFragment>(null);
   const [createOrganization] = useCreateOrganizationMutation();
   const handleSubmit = useCallback(
-    async (e: SyntheticEvent) => {
-      e.preventDefault();
-      setError(null);
+    async (values: Store) => {
+      setFormError(null);
       try {
-        const values = await validateFields();
         const { name } = values;
         const slug = slugify(name || "", {
           lower: true,
@@ -124,27 +80,26 @@ const CreateOrganizationForm: FC<CreateOrganizationFormProps> = props => {
             slug,
           },
         });
-        setError(null);
+        setFormError(null);
         setOrganization(data?.createOrganization?.organization || null);
       } catch (e) {
         const errcode = getCodeFromError(e);
         if (errcode === "NUNIQ") {
-          form.setFields({
-            name: {
+          form.setFields([
+            {
+              name: "name",
               value: form.getFieldValue("name"),
               errors: [
-                new Error(
-                  "This organization name is already in use, please pick a different name"
-                ),
+                "This organization name is already in use, please pick a different name",
               ],
             },
-          });
+          ]);
         } else {
-          setError(e);
+          setFormError(e);
         }
       }
     },
-    [createOrganization, form, setError, validateFields]
+    [createOrganization, form]
   );
 
   if (organization) {
@@ -152,79 +107,80 @@ const CreateOrganizationForm: FC<CreateOrganizationFormProps> = props => {
   }
 
   return (
-    <div>
-      <H3>Edit Profile</H3>
-      <Form {...formItemLayout} onSubmit={handleSubmit}>
-        <Form.Item label="Name">
-          {getFieldDecorator("name", {
-            initialValue: "",
-            rules: [
-              {
-                required: true,
-                message: "Please choose a name for the organization",
-              },
-            ],
-          })(
-            <div>
-              <Input />
-              <p>
-                Your organization URL will be{" "}
-                {`${process.env.ROOT_URL}/o/${slug}`}
-              </p>
-              {!slug ? null : !slugCheckIsValid || slugLoading ? (
-                <p>
-                  <Spin /> Checking organization name
-                </p>
-              ) : existingOrganizationData?.organizationBySlug ? (
-                <Text type="danger">Organization name is already in use</Text>
-              ) : slugError ? (
-                <Text type="warning">
-                  Error occurred checking for existing organization with this
-                  name (error code: ERR_{getCodeFromError(slugError)})
-                </Text>
-              ) : null}
-            </div>
-          )}
-        </Form.Item>
-        {error ? (
-          <Form.Item>
-            <Alert
-              type="error"
-              message={`Creating organization failed`}
-              description={
-                <span>
-                  {code === "NUNIQ" ? (
-                    <span>
-                      That organization name is already in use, please choose a
-                      different organization name.
-                    </span>
-                  ) : (
-                    extractError(error).message
-                  )}
-                  {code ? (
-                    <span>
-                      {" "}
-                      (Error code: <code>ERR_{code}</code>)
-                    </span>
+    <SharedLayout title="Create Organization" query={query}>
+      <Row>
+        <Col>
+          <h1>Create Organization</h1>
+          <div>
+            <H3>Edit Profile</H3>
+            <Form {...formItemLayout} onFinish={handleSubmit}>
+              <Form.Item
+                label="Name"
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please choose a name for the organization",
+                  },
+                ]}
+              >
+                <div>
+                  <Input />
+                  <p>
+                    Your organization URL will be{" "}
+                    {`${process.env.ROOT_URL}/o/${slug}`}
+                  </p>
+                  {!slug ? null : !slugCheckIsValid || slugLoading ? (
+                    <p>
+                      <Spin /> Checking organization name
+                    </p>
+                  ) : existingOrganizationData?.organizationBySlug ? (
+                    <Text type="danger">
+                      Organization name is already in use
+                    </Text>
+                  ) : slugError ? (
+                    <Text type="warning">
+                      Error occurred checking for existing organization with
+                      this name (error code: ERR_{getCodeFromError(slugError)})
+                    </Text>
                   ) : null}
-                </span>
-              }
-            />
-          </Form.Item>
-        ) : null}
-        <Form.Item {...tailFormItemLayout}>
-          <Button htmlType="submit">Create Organization</Button>
-        </Form.Item>
-      </Form>
-    </div>
+                </div>
+              </Form.Item>
+              {formError ? (
+                <Form.Item>
+                  <Alert
+                    type="error"
+                    message={`Creating organization failed`}
+                    description={
+                      <span>
+                        {code === "NUNIQ" ? (
+                          <span>
+                            That organization name is already in use, please
+                            choose a different organization name.
+                          </span>
+                        ) : (
+                          extractError(formError).message
+                        )}
+                        {code ? (
+                          <span>
+                            {" "}
+                            (Error code: <code>ERR_{code}</code>)
+                          </span>
+                        ) : null}
+                      </span>
+                    }
+                  />
+                </Form.Item>
+              ) : null}
+              <Form.Item {...tailFormItemLayout}>
+                <Button htmlType="submit">Create Organization</Button>
+              </Form.Item>
+            </Form>
+          </div>
+        </Col>
+      </Row>
+    </SharedLayout>
   );
 };
-
-const WrappedCreateOrganizationForm = Form.create<CreateOrganizationFormProps>({
-  name: "createOrganizationForm",
-  onValuesChange(props) {
-    props.setError(null);
-  },
-})(CreateOrganizationForm);
 
 export default CreateOrganizationPage;

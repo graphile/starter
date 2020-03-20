@@ -1,3 +1,4 @@
+import { GithubFill } from "@ant-design/icons";
 import {
   ErrorAlert,
   H3,
@@ -12,7 +13,6 @@ import {
   useSharedQuery,
   useUnlinkUserAuthenticationMutation,
 } from "@app/graphql";
-import { Icon as LegacyIcon } from '@ant-design/compatible';
 import { Avatar, List, Modal, Spin } from "antd";
 import { NextPage } from "next";
 import React, { useCallback, useState } from "react";
@@ -27,12 +27,12 @@ function authName(service: string) {
 }
 
 const AUTH_ICON_LOOKUP = {
-  github: "github",
+  github: <GithubFill />,
 };
 function authAvatar(service: string) {
   const icon = AUTH_ICON_LOOKUP[service] || null;
   if (icon) {
-    return <Avatar size="large" icon={<LegacyIcon type={icon} />} />;
+    return <Avatar size="large" icon={icon} />;
   }
 }
 

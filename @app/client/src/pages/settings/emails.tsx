@@ -15,15 +15,12 @@ import {
   useSettingsEmailsQuery,
 } from "@app/graphql";
 import { extractError, getCodeFromError } from "@app/lib";
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Alert, Avatar, Button, Input, List } from "antd";
-import { FormComponentProps } from '@ant-design/compatible/lib/form/Form';
-import { ValidateFieldsOptions } from "antd/lib/form/Form";
+import { Alert, Avatar, Button, Form, Input, List } from "antd";
+import { useForm } from "antd/lib/form/util";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
-import React, { useCallback, useMemo, useState } from "react";
-import { promisify } from "util";
+import { Store } from "rc-field-form/lib/interface";
+import React, { useCallback, useState } from "react";
 
 function Email({
   email,
@@ -174,7 +171,7 @@ const Settings_Emails: NextPage = () => {
               </Button>
             </div>
           ) : (
-            <WrappedAddEmailForm
+            <AddEmailForm
               onComplete={() => setShowAddEmailForm(false)}
               error={formError}
               setError={setFormError}
@@ -197,54 +194,41 @@ interface FormValues {
   email: string;
 }
 
-interface AddEmailFormProps extends FormComponentProps<FormValues> {
+interface AddEmailFormProps {
   onComplete: () => void;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
 }
 
-function AddEmailForm({
-  form,
-  error,
-  setError,
-  onComplete,
-}: AddEmailFormProps) {
+function AddEmailForm({ error, setError, onComplete }: AddEmailFormProps) {
+  const [form] = useForm();
   const [addEmail] = useAddEmailMutation();
-  const validateFields: (
-    fieldNames?: Array<string>,
-    options?: ValidateFieldsOptions
-  ) => Promise<FormValues> = useMemo(
-    () => promisify((...args) => form.validateFields(...args)),
-    [form]
-  );
   const handleSubmit = useCallback(
-    async e => {
-      e.preventDefault();
+    async (values: Store) => {
       try {
         setError(null);
-        const values = await validateFields();
         await addEmail({ variables: { email: values.email } });
         onComplete();
       } catch (e) {
         setError(e);
       }
     },
-    [addEmail, onComplete, setError, validateFields]
+    [addEmail, onComplete, setError]
   );
-  const { getFieldDecorator } = form;
   const code = getCodeFromError(error);
   return (
     <Form onSubmit={handleSubmit}>
-      <Form.Item label="New email">
-        {getFieldDecorator("email", {
-          initialValue: "",
-          rules: [
-            {
-              required: true,
-              message: "Please enter an email address",
-            },
-          ],
-        })(<Input data-cy="settingsemails-input-email" />)}
+      <Form.Item
+        label="New email"
+        name="email"
+        rules={[
+          {
+            required: true,
+            message: "Please enter an email address",
+          },
+        ]}
+      >
+        <Input data-cy="settingsemails-input-email" />
       </Form.Item>
       {error ? (
         <Form.Item>
@@ -273,10 +257,3 @@ function AddEmailForm({
     </Form>
   );
 }
-
-const WrappedAddEmailForm = Form.create<AddEmailFormProps>({
-  name: "addEmailForm",
-  onValuesChange(props) {
-    props.setError(null);
-  },
-})(AddEmailForm);

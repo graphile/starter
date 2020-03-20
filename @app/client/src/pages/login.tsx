@@ -1,3 +1,4 @@
+import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
 import { useApolloClient } from "@apollo/react-hooks";
 import {
   Col,
@@ -13,25 +14,14 @@ import {
   getCodeFromError,
   resetWebsocketConnection,
 } from "@app/lib";
-import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Alert, Button, Input, Typography } from "antd";
-import { FormComponentProps } from '@ant-design/compatible/lib/form/Form';
-import { ValidateFieldsOptions } from "antd/lib/form/Form";
+import { Alert, Button, Form, Input, Typography } from "antd";
+import { useForm } from "antd/lib/form/util";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import Link from "next/link";
 import Router from "next/router";
-import React, {
-  FormEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { promisify } from "util";
+import { Store } from "rc-field-form/lib/interface";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 const { Paragraph } = Typography;
 
@@ -65,7 +55,7 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
             {showLogin ? (
               <Col xs={24} sm={12}>
                 <Row>
-                  <WrappedLoginForm
+                  <LoginForm
                     onSuccessRedirectTo={next}
                     onCancel={() => setShowLogin(false)}
                     error={error}
@@ -118,12 +108,7 @@ Login.getInitialProps = async ({ query }) => ({
 
 export default Login;
 
-interface FormValues {
-  username: string;
-  password: string;
-}
-
-interface LoginFormProps extends FormComponentProps<FormValues> {
+interface LoginFormProps {
   onSuccessRedirectTo: string;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
@@ -131,28 +116,19 @@ interface LoginFormProps extends FormComponentProps<FormValues> {
 }
 
 function LoginForm({
-  form,
   onSuccessRedirectTo,
   onCancel,
   error,
   setError,
 }: LoginFormProps) {
+  const [form] = useForm();
   const [login] = useLoginMutation({});
   const client = useApolloClient();
-  const validateFields: (
-    fieldNames?: Array<string>,
-    options?: ValidateFieldsOptions
-  ) => Promise<FormValues> = useMemo(
-    () => promisify((...args) => form.validateFields(...args)),
-    [form]
-  );
 
   const handleSubmit = useCallback(
-    async (e: FormEvent) => {
-      e.preventDefault();
+    async (values: Store) => {
       setError(null);
       try {
-        const values = await validateFields();
         await login({
           variables: {
             username: values.username,
@@ -166,18 +142,19 @@ function LoginForm({
       } catch (e) {
         const code = getCodeFromError(e);
         if (code === "CREDS") {
-          form.setFields({
-            password: {
+          form.setFields([
+            {
+              name: "password",
               value: form.getFieldValue("password"),
-              errors: [new Error("Incorrect username or passphrase")],
+              errors: ["Incorrect username or passphrase"],
             },
-          });
+          ]);
         } else {
           setError(e);
         }
       }
     },
-    [client, form, login, onSuccessRedirectTo, setError, validateFields]
+    [client, form, login, onSuccessRedirectTo, setError]
   );
 
   const focusElement = useRef<Input>(null);
@@ -186,7 +163,7 @@ function LoginForm({
     [focusElement]
   );
 
-  const { getFieldDecorator, getFieldsError, getFieldError } = form;
+  const { getFieldsError, getFieldError } = form;
 
   // Only show error after a field is touched.
   const userNameError = getFieldError("username");
@@ -195,41 +172,38 @@ function LoginForm({
   const code = getCodeFromError(error);
 
   return (
-    <Form layout="vertical" onSubmit={handleSubmit}>
+    <Form layout="vertical" onFinish={handleSubmit}>
       <Form.Item
+        name="username"
         validateStatus={userNameError ? "error" : ""}
         help={userNameError || ""}
+        rules={[{ required: true, message: "Please input your username" }]}
       >
-        {getFieldDecorator("username", {
-          rules: [{ required: true, message: "Please input your username" }],
-        })(
-          <Input
-            size="large"
-            prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-            placeholder="E-mail or Username"
-            autoComplete="email username"
-            ref={focusElement}
-            data-cy="loginpage-input-username"
-          />
-        )}
+        <Input
+          size="large"
+          prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+          placeholder="E-mail or Username"
+          autoComplete="email username"
+          ref={focusElement}
+          data-cy="loginpage-input-username"
+        />
       </Form.Item>
       <Form.Item
         validateStatus={passwordError ? "error" : ""}
         help={passwordError || ""}
+        name="password"
+        rules={[{ required: true, message: "Please input your passphrase" }]}
       >
-        {getFieldDecorator("password", {
-          rules: [{ required: true, message: "Please input your passphrase" }],
-        })(
-          <Input
-            prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-            size="large"
-            type="password"
-            placeholder="Passphrase"
-            autoComplete="current-password"
-            data-cy="loginpage-input-password"
-          />
-        )}
-
+        <Input
+          prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+          size="large"
+          type="password"
+          placeholder="Passphrase"
+          autoComplete="current-password"
+          data-cy="loginpage-input-password"
+        />
+      </Form.Item>
+      <Form.Item>
         <Link href="/forgot">
           <a>Forgotten passphrase?</a>
         </Link>
@@ -270,10 +244,3 @@ function LoginForm({
     </Form>
   );
 }
-
-const WrappedLoginForm = Form.create<LoginFormProps>({
-  name: "login",
-  onValuesChange(props) {
-    props.setError(null);
-  },
-})(LoginForm);
