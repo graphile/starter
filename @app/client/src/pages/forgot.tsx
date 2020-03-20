@@ -45,20 +45,17 @@ const ForgotPassword: NextPage = () => {
     [focusElement]
   );
 
-  const { getFieldError, isFieldTouched } = form;
-
-  // Only show error after a field is touched.
-  const emailError = isFieldTouched("email") && getFieldError("email");
-
   const code = getCodeFromError(error);
 
   if (successfulEmail != null) {
     return (
-      <Alert
-        type="success"
-        message="You've got mail"
-        description={`We've sent an email reset link to '${successfulEmail}'; click the link and follow the instructions. If you don't receive the link, please ensure you entered the email address correctly, and check in your spam folder just in case.`}
-      />
+      <SharedLayout title="Forgot Password" query={query}>
+        <Alert
+          type="success"
+          message="You've got mail"
+          description={`We've sent an email reset link to '${successfulEmail}'; click the link and follow the instructions. If you don't receive the link, please ensure you entered the email address correctly, and check in your spam folder just in case.`}
+        />
+      </SharedLayout>
     );
   }
 
@@ -66,8 +63,6 @@ const ForgotPassword: NextPage = () => {
     <SharedLayout title="Forgot Password" query={query}>
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <Form.Item
-          validateStatus={emailError ? "error" : ""}
-          help={emailError || ""}
           name="email"
           rules={[
             {

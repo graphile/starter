@@ -156,6 +156,7 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
   );
 
   const [passwordIsFocussed, setPasswordIsFocussed] = useState(false);
+  const [passwordIsDirty, setPasswordIsDirty] = useState(false);
   const setPasswordFocussed = useCallback(() => {
     setPasswordIsFocussed(true);
   }, [setPasswordIsFocussed]);
@@ -163,12 +164,14 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
     setPasswordIsFocussed(false);
   }, [setPasswordIsFocussed]);
   const handleValuesChange = useCallback(
-    changedValues =>
+    changedValues => {
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
         changedValues
-      ),
-    []
+      );
+      setPasswordIsDirty(form.isFieldTouched("password"));
+    },
+    [form]
   );
 
   const code = getCodeFromError(error);
@@ -294,7 +297,7 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
               <PasswordStrength
                 passwordStrength={passwordStrength}
                 suggestions={passwordSuggestions}
-                isDirty={form.isFieldTouched("password")}
+                isDirty={passwordIsDirty}
                 isFocussed={passwordIsFocussed}
               />
             </Form.Item>
