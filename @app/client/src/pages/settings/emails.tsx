@@ -201,7 +201,7 @@ interface AddEmailFormProps {
 }
 
 function AddEmailForm({ error, setError, onComplete }: AddEmailFormProps) {
-  const [form] = useForm();
+  const [_form] = useForm();
   const [addEmail] = useAddEmailMutation();
   const handleSubmit = useCallback(
     async (values: Store) => {

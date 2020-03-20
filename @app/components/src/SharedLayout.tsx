@@ -1,3 +1,4 @@
+import { CrownOutlined, DownOutlined } from "@ant-design/icons";
 import { QueryResult } from "@apollo/react-common";
 import { useApolloClient } from "@apollo/react-hooks";
 import { companyName, projectName } from "@app/config";
@@ -7,16 +8,7 @@ import {
   useCurrentUserUpdatedSubscription,
   useLogoutMutation,
 } from "@app/graphql";
-import {
-  Avatar,
-  Col,
-  Dropdown,
-  Icon,
-  Layout,
-  Menu,
-  Row,
-  Typography,
-} from "antd";
+import { Avatar, Col, Dropdown, Layout, Menu, Row, Typography } from "antd";
 import { ApolloError } from "apollo-client";
 import Head from "next/head";
 import Link from "next/link";
@@ -159,7 +151,7 @@ export function SharedLayout({
                               {isOwner ? (
                                 <span>
                                   {" "}
-                                  <Icon type="crown" />
+                                  <CrownOutlined />
                                 </span>
                               ) : (
                                 ""
@@ -202,7 +194,7 @@ export function SharedLayout({
                     <span style={{ marginLeft: 8, marginRight: 8 }}>
                       {data.currentUser.name}
                     </span>
-                    <Icon type="down" />
+                    <DownOutlined />
                   </Warn>
                 </span>
               </Dropdown>
