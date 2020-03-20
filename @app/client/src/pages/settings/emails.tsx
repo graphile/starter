@@ -217,7 +217,7 @@ function AddEmailForm({ error, setError, onComplete }: AddEmailFormProps) {
   );
   const code = getCodeFromError(error);
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onFinish={handleSubmit}>
       <Form.Item
         label="New email"
         name="email"
