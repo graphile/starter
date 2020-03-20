@@ -272,7 +272,7 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
             >
               <Input data-cy="registerpage-input-email" />
             </Form.Item>
-            <Form.Item label="Passphrase" rules={[{ required: true }]}>
+            <Form.Item label="Passphrase" required>
               <Form.Item
                 noStyle
                 name="password"

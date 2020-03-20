@@ -111,14 +111,17 @@ const Settings_Security: NextPage = () => {
   const setPasswordNotFocussed = useCallback(() => {
     setPasswordIsFocussed(false);
   }, [setPasswordIsFocussed]);
+  const [passwordIsDirty, setPasswordIsDirty] = useState(false);
   const handleValuesChange = useCallback(
-    changedValues =>
+    changedValues => {
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
         changedValues,
         "newPassword"
-      ),
-    []
+      );
+      setPasswordIsDirty(form.isFieldTouched("password"));
+    },
+    [form]
   );
 
   const inner = () => {
@@ -166,25 +169,27 @@ const Settings_Security: NextPage = () => {
           >
             <Input type="password" />
           </Form.Item>
-          <Form.Item
-            label="New passphrase"
-            name="newPassword"
-            rules={[
-              {
-                required: true,
-                message: "Please confirm your passphrase",
-              },
-            ]}
-          >
-            <Input
-              type="password"
-              onFocus={setPasswordFocussed}
-              onBlur={setPasswordNotFocussed}
-            />
+          <Form.Item label="New passphrase" required>
+            <Form.Item
+              noStyle
+              name="newPassword"
+              rules={[
+                {
+                  required: true,
+                  message: "Please confirm your passphrase",
+                },
+              ]}
+            >
+              <Input
+                type="password"
+                onFocus={setPasswordFocussed}
+                onBlur={setPasswordNotFocussed}
+              />
+            </Form.Item>
             <PasswordStrength
               passwordStrength={passwordStrength}
               suggestions={passwordSuggestions}
-              isDirty={form.isFieldTouched("newPassword")}
+              isDirty={passwordIsDirty}
               isFocussed={passwordIsFocussed}
             />
           </Form.Item>

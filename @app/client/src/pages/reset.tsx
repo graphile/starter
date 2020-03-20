@@ -145,14 +145,7 @@ const ResetPage: NextPage<IProps> = ({
                   onChange={e => setIdAndToken([userId, e.target.value])}
                 />
               </Form.Item>
-              <Form.Item
-                label="Choose a new passphrase:"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
+              <Form.Item label="Choose a new passphrase:" required>
                 <Form.Item
                   noStyle
                   name="password"
