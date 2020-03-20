@@ -1,9 +1,10 @@
 import { QueryResult } from "@apollo/react-common";
-import { ErrorAlert } from "@app/components";
 import { OrganizationPage_QueryFragment } from "@app/graphql";
 import { Col, Row, Spin } from "antd";
 import { useRouter } from "next/router";
 import React from "react";
+
+import { ErrorAlert } from "./";
 
 export function useOrganizationSlug() {
   const router = useRouter();

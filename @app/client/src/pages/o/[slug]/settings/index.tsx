@@ -3,12 +3,13 @@ import {
   OrganizationSettingsLayout,
   Redirect,
   SharedLayout,
+  useOrganizationLoading,
+  useOrganizationSlug,
 } from "@app/components";
 import {
   OrganizationPage_OrganizationFragment,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { useOrganizationLoading, useOrganizationSlug } from "@app/lib";
 import { NextPage } from "next";
 import React, { FC } from "react";
 

@@ -3,6 +3,8 @@ import {
   OrganizationSettingsLayout,
   Redirect,
   SharedLayout,
+  useOrganizationLoading,
+  useOrganizationSlug,
 } from "@app/components";
 import {
   OrganizationMembers_MembershipFragment,
@@ -14,7 +16,6 @@ import {
   useTransferOrganizationBillingContactMutation,
   useTransferOrganizationOwnershipMutation,
 } from "@app/graphql";
-import { useOrganizationLoading, useOrganizationSlug } from "@app/lib";
 import { List, message, Popconfirm } from "antd";
 import Text from "antd/lib/typography/Text";
 import { NextPage } from "next";
