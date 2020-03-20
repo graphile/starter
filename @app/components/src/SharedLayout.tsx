@@ -119,7 +119,7 @@ export function SharedLayout({
             {title} — {projectName}
           </title>
         </Head>
-        <Row type="flex" justify="space-between">
+        <Row justify="space-between">
           <Col span={6}>
             <Link href="/">
               <a>Home</a>

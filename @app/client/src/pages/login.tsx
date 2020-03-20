@@ -51,7 +51,7 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
         currentUser ? (
           <Redirect href={next} />
         ) : (
-          <Row type="flex" justify="center" style={{ marginTop: 32 }}>
+          <Row justify="center" style={{ marginTop: 32 }}>
             {showLogin ? (
               <Col xs={24} sm={12}>
                 <Row>
@@ -83,7 +83,7 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
                     <SocialLoginOptions next={next} />
                   </Col>
                 </Row>
-                <Row type="flex" justify="center">
+                <Row justify="center">
                   <Col>
                     <Paragraph>
                       No Account?{" "}
