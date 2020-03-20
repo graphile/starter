@@ -64,7 +64,7 @@ const ForgotPassword: NextPage = () => {
 
   return (
     <SharedLayout title="Forgot Password" query={query}>
-      <Form layout="vertical" onFinish={handleSubmit}>
+      <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <Form.Item
           validateStatus={emailError ? "error" : ""}
           help={emailError || ""}

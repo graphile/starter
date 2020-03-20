@@ -107,6 +107,7 @@ function ProfileSettingsForm({
       <H3>Edit Profile</H3>
       <Form
         {...formItemLayout}
+        form={form}
         onFinish={handleSubmit}
         initialValues={{ name: user.name, username: user.username }}
       >

@@ -118,7 +118,7 @@ const ResetPage: NextPage<IProps> = ({
     },
     [resetPassword, token, userId]
   );
-  const handleFieldsChange = useCallback(
+  const handleValuesChange = useCallback(
     changedValues =>
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
@@ -148,9 +148,10 @@ const ResetPage: NextPage<IProps> = ({
 
             <Form
               {...formItemLayout}
+              form={form}
               onFinish={handleSubmit}
+              onValuesChange={handleValuesChange}
               style={{ display: state === State.PENDING ? "" : "none" }}
-              onFieldsChange={handleFieldsChange}
             >
               <Form.Item label="Enter your reset token:">
                 <Input

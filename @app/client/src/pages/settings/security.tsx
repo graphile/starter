@@ -111,7 +111,7 @@ const Settings_Security: NextPage = () => {
   const setPasswordNotFocussed = useCallback(() => {
     setPasswordIsFocussed(false);
   }, [setPasswordIsFocussed]);
-  const handleFieldsChange = useCallback(
+  const handleValuesChange = useCallback(
     changedValues =>
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
@@ -150,8 +150,9 @@ const Settings_Security: NextPage = () => {
         <H3>Change passphrase</H3>
         <Form
           {...formItemLayout}
+          form={form}
           onFinish={handleSubmit}
-          onFieldsChange={handleFieldsChange}
+          onValuesChange={handleValuesChange}
         >
           <Form.Item
             label="Old passphrase"

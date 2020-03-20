@@ -162,7 +162,7 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
   const setPasswordNotFocussed = useCallback(() => {
     setPasswordIsFocussed(false);
   }, [setPasswordIsFocussed]);
-  const handleFieldsChange = useCallback(
+  const handleValuesChange = useCallback(
     changedValues =>
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
@@ -180,8 +180,9 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
         ) : (
           <Form
             {...formItemLayout}
+            form={form}
             onFinish={handleSubmit}
-            onFieldsChange={handleFieldsChange}
+            onValuesChange={handleValuesChange}
           >
             <Form.Item
               label={
@@ -268,26 +269,28 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
             >
               <Input data-cy="registerpage-input-email" />
             </Form.Item>
-            <Form.Item
-              label="Passphrase"
-              name="password"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your passphrase.",
-                },
-                {
-                  validator: validateToNextPassword,
-                },
-              ]}
-            >
-              <Input
-                type="password"
-                autoComplete="new-password"
-                data-cy="registerpage-input-password"
-                onFocus={setPasswordFocussed}
-                onBlur={setPasswordNotFocussed}
-              />
+            <Form.Item label="Passphrase" rules={[{ required: true }]}>
+              <Form.Item
+                noStyle
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your passphrase.",
+                  },
+                  {
+                    validator: validateToNextPassword,
+                  },
+                ]}
+              >
+                <Input
+                  type="password"
+                  autoComplete="new-password"
+                  data-cy="registerpage-input-password"
+                  onFocus={setPasswordFocussed}
+                  onBlur={setPasswordNotFocussed}
+                />
+              </Form.Item>
               <PasswordStrength
                 passwordStrength={passwordStrength}
                 suggestions={passwordSuggestions}

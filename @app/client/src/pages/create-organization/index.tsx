@@ -113,7 +113,7 @@ const CreateOrganizationPage: NextPage = () => {
           <h1>Create Organization</h1>
           <div>
             <H3>Edit Profile</H3>
-            <Form {...formItemLayout} onFinish={handleSubmit}>
+            <Form {...formItemLayout} form={form} onFinish={handleSubmit}>
               <Form.Item
                 label="Name"
                 name="name"

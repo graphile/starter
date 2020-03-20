@@ -201,7 +201,7 @@ interface AddEmailFormProps {
 }
 
 function AddEmailForm({ error, setError, onComplete }: AddEmailFormProps) {
-  const [_form] = useForm();
+  const [form] = useForm();
   const [addEmail] = useAddEmailMutation();
   const handleSubmit = useCallback(
     async (values: Store) => {
@@ -217,7 +217,7 @@ function AddEmailForm({ error, setError, onComplete }: AddEmailFormProps) {
   );
   const code = getCodeFromError(error);
   return (
-    <Form onFinish={handleSubmit}>
+    <Form form={form} onFinish={handleSubmit}>
       <Form.Item
         label="New email"
         name="email"

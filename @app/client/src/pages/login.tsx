@@ -125,6 +125,7 @@ function LoginForm({
   const [login] = useLoginMutation({});
   const client = useApolloClient();
 
+  const [submitDisabled, setSubmitDisabled] = useState(false);
   const handleSubmit = useCallback(
     async (values: Store) => {
       setError(null);
@@ -149,6 +150,7 @@ function LoginForm({
               errors: ["Incorrect username or passphrase"],
             },
           ]);
+          setSubmitDisabled(true);
         } else {
           setError(e);
         }
@@ -163,20 +165,21 @@ function LoginForm({
     [focusElement]
   );
 
-  const { getFieldsError, getFieldError } = form;
-
-  // Only show error after a field is touched.
-  const userNameError = getFieldError("username");
-  const passwordError = getFieldError("password");
+  const handleValuesChange = useCallback(() => {
+    setSubmitDisabled(hasErrors(form.getFieldsError().length !== 0));
+  }, [form]);
 
   const code = getCodeFromError(error);
 
   return (
-    <Form layout="vertical" onFinish={handleSubmit}>
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={handleSubmit}
+      onValuesChange={handleValuesChange}
+    >
       <Form.Item
         name="username"
-        validateStatus={userNameError ? "error" : ""}
-        help={userNameError || ""}
         rules={[{ required: true, message: "Please input your username" }]}
       >
         <Input
@@ -189,8 +192,6 @@ function LoginForm({
         />
       </Form.Item>
       <Form.Item
-        validateStatus={passwordError ? "error" : ""}
-        help={passwordError || ""}
         name="password"
         rules={[{ required: true, message: "Please input your passphrase" }]}
       >
@@ -232,7 +233,7 @@ function LoginForm({
         <Button
           type="primary"
           htmlType="submit"
-          disabled={hasErrors(getFieldsError())}
+          disabled={submitDisabled}
           data-cy="loginpage-button-submit"
         >
           Sign in
