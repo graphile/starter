@@ -51,28 +51,10 @@ const ResetPage: NextPage<IProps> = ({
 
   const [confirmDirty, setConfirmDirty] = useState(false);
 
-  const validateToNextPassword = useCallback(
-    async (_rule: any, value: any, callback: any) => {
-      try {
-        if (value && confirmDirty) {
-          await form.validateFields(["confirm"]);
-        }
-      } catch (e) {
-        // Handled elsewhere
-      }
-      callback();
-    },
-    [confirmDirty, form]
-  );
-
   const compareToFirstPassword = useCallback(
-    (_rule: any, value: any, callback: any) => {
+    async (_rule: any, value: any) => {
       if (value && value !== form.getFieldValue("password")) {
-        callback(
-          "Make sure your passphrase is the same in both passphrase boxes."
-        );
-      } else {
-        callback();
+        throw "Make sure your passphrase is the same in both passphrase boxes.";
       }
     },
     [form]
@@ -118,13 +100,16 @@ const ResetPage: NextPage<IProps> = ({
     },
     [resetPassword, token, userId]
   );
+  const [passwordIsDirty, setPasswordIsDirty] = useState(false);
   const handleValuesChange = useCallback(
-    changedValues =>
+    changedValues => {
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
         changedValues
-      ),
-    []
+      );
+      setPasswordIsDirty(form.isFieldTouched("password"));
+    },
+    [form]
   );
 
   return (
@@ -162,28 +147,34 @@ const ResetPage: NextPage<IProps> = ({
               </Form.Item>
               <Form.Item
                 label="Choose a new passphrase:"
-                name="password"
                 rules={[
                   {
                     required: true,
-                    message: "Please input your passphrase.",
-                  },
-                  {
-                    validator: validateToNextPassword,
                   },
                 ]}
               >
-                <Input
-                  type="password"
-                  autoComplete="new-password"
-                  data-cy="registerpage-input-password"
-                  onFocus={setPasswordFocussed}
-                  onBlur={setPasswordNotFocussed}
-                />
+                <Form.Item
+                  noStyle
+                  name="password"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your passphrase.",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="password"
+                    autoComplete="new-password"
+                    data-cy="registerpage-input-password"
+                    onFocus={setPasswordFocussed}
+                    onBlur={setPasswordNotFocussed}
+                  />
+                </Form.Item>
                 <PasswordStrength
                   passwordStrength={passwordStrength}
                   suggestions={passwordSuggestions}
-                  isDirty={form.isFieldTouched("password")}
+                  isDirty={passwordIsDirty}
                   isFocussed={passwordIsFocussed}
                 />
               </Form.Item>
@@ -213,7 +204,9 @@ const ResetPage: NextPage<IProps> = ({
                     type="error"
                     closable
                     onClose={clearError}
-                    message={error.message || String(error)}
+                    message={
+                      error.message ? String(error.message) : String(error)
+                    }
                   />
                 </Form.Item>
               ) : null}
