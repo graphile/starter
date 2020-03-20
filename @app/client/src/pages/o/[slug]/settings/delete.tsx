@@ -4,6 +4,8 @@ import {
   OrganizationSettingsLayout,
   P,
   SharedLayout,
+  useOrganizationLoading,
+  useOrganizationSlug,
 } from "@app/components";
 import {
   OrganizationPage_OrganizationFragment,
@@ -11,7 +13,6 @@ import {
   useDeleteOrganizationMutation,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { useOrganizationLoading, useOrganizationSlug } from "@app/lib";
 import { Alert, Button, message, Popconfirm } from "antd";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";

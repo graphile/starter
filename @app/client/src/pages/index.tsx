@@ -16,7 +16,7 @@ const Home: NextPage = () => {
   const query = useSharedQuery();
   return (
     <SharedLayout title="Home" query={query}>
-      <Row type="flex" justify="space-between" gutter={32}>
+      <Row justify="space-between" gutter={32}>
         <Col xs={28} sm={16}>
           <Title data-cy="homepage-header">
             Welcome to the PostGraphile starter

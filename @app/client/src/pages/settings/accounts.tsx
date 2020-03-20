@@ -1,3 +1,4 @@
+import { GithubFilled } from "@ant-design/icons";
 import {
   ErrorAlert,
   H3,
@@ -26,7 +27,7 @@ function authName(service: string) {
 }
 
 const AUTH_ICON_LOOKUP = {
-  github: "github",
+  github: <GithubFilled />,
 };
 function authAvatar(service: string) {
   const icon = AUTH_ICON_LOOKUP[service] || null;

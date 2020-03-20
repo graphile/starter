@@ -1,9 +1,14 @@
-import { H1, Link, SharedLayout } from "@app/components";
+import {
+  H1,
+  Link,
+  SharedLayout,
+  useOrganizationLoading,
+  useOrganizationSlug,
+} from "@app/components";
 import {
   OrganizationPage_OrganizationFragment,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { useOrganizationLoading, useOrganizationSlug } from "@app/lib";
 import { Col, Row } from "antd";
 import { NextPage } from "next";
 import React, { FC } from "react";
