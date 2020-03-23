@@ -5,7 +5,7 @@ import {
   useSharedQuery,
 } from "@app/graphql";
 import { getCodeFromError } from "@app/lib";
-import { Alert, Button, Modal, Typography } from "antd";
+import { Alert, Button, Modal, PageHeader, Typography } from "antd";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -75,7 +75,7 @@ const Settings_Accounts: NextPage = () => {
   const query = useSharedQuery();
   return (
     <SettingsLayout href="/settings/delete" query={query}>
-      <H3>Delete Account</H3>
+      <PageHeader title="Delete account" />
       <P>
         Deleting your user account will delete all data (except that which we
         must retain for legal, compliance and accounting reasons) and cannot be
