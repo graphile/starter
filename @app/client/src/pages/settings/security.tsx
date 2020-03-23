@@ -18,7 +18,7 @@ import {
   setPasswordInfo,
   tailFormItemLayout,
 } from "@app/lib";
-import { Alert, Button, Form, Input } from "antd";
+import { Alert, Button, Form, Input, PageHeader } from "antd";
 import { useForm } from "antd/lib/form/util";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
@@ -132,7 +132,7 @@ const Settings_Security: NextPage = () => {
     } else if (data && data.currentUser && !data.currentUser.hasPassword) {
       return (
         <div>
-          <H3>Change passphrase</H3>
+          <PageHeader title="Change passphrase" />
           <P>
             You registered your account through social login, so you do not
             currently have a passphrase. If you would like a passphrase, press
@@ -150,7 +150,7 @@ const Settings_Security: NextPage = () => {
     const code = getCodeFromError(error);
     return (
       <div>
-        <H3>Change passphrase</H3>
+        <PageHeader title="Change passphrase" />
         <Form
           {...formItemLayout}
           form={form}

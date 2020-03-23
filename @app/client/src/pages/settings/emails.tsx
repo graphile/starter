@@ -1,6 +1,5 @@
 import {
   ErrorAlert,
-  H3,
   P,
   Redirect,
   SettingsLayout,
@@ -14,8 +13,13 @@ import {
   useResendEmailVerificationMutation,
   useSettingsEmailsQuery,
 } from "@app/graphql";
-import { extractError, getCodeFromError } from "@app/lib";
-import { Alert, Avatar, Button, Form, Input, List } from "antd";
+import {
+  extractError,
+  formItemLayout,
+  getCodeFromError,
+  tailFormItemLayout,
+} from "@app/lib";
+import { Alert, Avatar, Button, Form, Input, List, PageHeader } from "antd";
 import { useForm } from "antd/lib/form/util";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
@@ -142,7 +146,7 @@ const Settings_Emails: NextPage = () => {
               />
             </div>
           )}
-          <H3>Email addresses</H3>
+          <PageHeader title="Email addresses" />
           <P>
             <Strong>
               Account notices will be sent your your primary email address.
@@ -152,6 +156,8 @@ const Settings_Emails: NextPage = () => {
             until verified.
           </P>
           <List
+            bordered
+            size="large"
             dataSource={user.userEmails.nodes}
             renderItem={email => (
               <Email
@@ -159,24 +165,26 @@ const Settings_Emails: NextPage = () => {
                 hasOtherEmails={user.userEmails.nodes.length > 1}
               />
             )}
+            footer={
+              !showAddEmailForm ? (
+                <div>
+                  <Button
+                    type="primary"
+                    onClick={() => setShowAddEmailForm(true)}
+                    data-cy="settingsemails-button-addemail"
+                  >
+                    Add email
+                  </Button>
+                </div>
+              ) : (
+                <AddEmailForm
+                  onComplete={() => setShowAddEmailForm(false)}
+                  error={formError}
+                  setError={setFormError}
+                />
+              )
+            }
           />
-          {!showAddEmailForm ? (
-            <div>
-              <Button
-                type="primary"
-                onClick={() => setShowAddEmailForm(true)}
-                data-cy="settingsemails-button-addemail"
-              >
-                Add email
-              </Button>
-            </div>
-          ) : (
-            <AddEmailForm
-              onComplete={() => setShowAddEmailForm(false)}
-              error={formError}
-              setError={setFormError}
-            />
-          )}
         </div>
       );
     }
@@ -217,7 +225,7 @@ function AddEmailForm({ error, setError, onComplete }: AddEmailFormProps) {
   );
   const code = getCodeFromError(error);
   return (
-    <Form form={form} onFinish={handleSubmit}>
+    <Form {...formItemLayout} form={form} onFinish={handleSubmit}>
       <Form.Item
         label="New email"
         name="email"
@@ -249,7 +257,7 @@ function AddEmailForm({ error, setError, onComplete }: AddEmailFormProps) {
           />
         </Form.Item>
       ) : null}
-      <Form.Item>
+      <Form.Item {...tailFormItemLayout}>
         <Button htmlType="submit" data-cy="settingsemails-button-submit">
           Add email
         </Button>
