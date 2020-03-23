@@ -1020,7 +1020,7 @@ begin
   end if;
 
   if v_user_id is null and email is null then
-    return;
+    raise exception 'Could not find person to invite' using errcode = 'NTFND';
   end if;
 
   -- Invite the user

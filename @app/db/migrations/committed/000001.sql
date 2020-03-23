@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:916741b15b03eadeec0de7d394d53405cea715af
+--! Hash: sha1:aee884c8edea3417049f661a0c1fe19073ab2155
 
 drop schema if exists app_public cascade;
 
@@ -1190,7 +1190,7 @@ begin
   end if;
 
   if v_user_id is null and email is null then
-    return;
+    raise exception 'Could not find person to invite' using errcode = 'NTFND';
   end if;
 
   -- Invite the user
