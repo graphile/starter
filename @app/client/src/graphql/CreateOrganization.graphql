@@ -10,5 +10,11 @@ mutation CreateOrganization($name: String!, $slug: String!) {
       id
       ...CreatedOrganization
     }
+    query {
+      organizationBySlug(slug: $slug) {
+        id
+        ...CreatedOrganization
+      }
+    }
   }
 }
