@@ -11,7 +11,7 @@ import {
   getCodeFromError,
   tailFormItemLayout,
 } from "@app/lib";
-import { Alert, Button, Col, Form, Input, Row, Spin } from "antd";
+import { Alert, Button, Col, Form, Input, PageHeader, Row, Spin } from "antd";
 import { useForm } from "antd/lib/form/util";
 import Text from "antd/lib/typography/Text";
 import { ApolloError } from "apollo-client";
@@ -26,9 +26,7 @@ const CreateOrganizationPage: NextPage = () => {
   const query = useSharedQuery();
   const [form] = useForm();
   const { getFieldValue } = form;
-  const slug = slugify(getFieldValue("name") || "", {
-    lower: true,
-  });
+  const [slug, setSlug] = useState(getFieldValue("name") || "");
   const [
     lookupOrganizationBySlug,
     { data: existingOrganizationData, loading: slugLoading, error: slugError },
@@ -101,19 +99,32 @@ const CreateOrganizationPage: NextPage = () => {
     },
     [createOrganization, form]
   );
+  const handleValuesChange = useCallback((values: Store) => {
+    if ("name" in values) {
+      setSlug(
+        slugify(values.name, {
+          lower: true,
+        })
+      );
+    }
+  }, []);
 
   if (organization) {
     return <Redirect href={`/o/${organization.slug}`} />;
   }
 
   return (
-    <SharedLayout title="Create Organization" query={query}>
+    <SharedLayout title="" query={query}>
       <Row>
         <Col>
-          <h1>Create Organization</h1>
+          <PageHeader title="Create Organization" />
           <div>
-            <H3>Edit Profile</H3>
-            <Form {...formItemLayout} form={form} onFinish={handleSubmit}>
+            <Form
+              {...formItemLayout}
+              form={form}
+              onValuesChange={handleValuesChange}
+              onFinish={handleSubmit}
+            >
               <Form.Item
                 label="Name"
                 name="name"
@@ -173,7 +184,7 @@ const CreateOrganizationPage: NextPage = () => {
                 </Form.Item>
               ) : null}
               <Form.Item {...tailFormItemLayout}>
-                <Button htmlType="submit">Create Organization</Button>
+                <Button htmlType="submit">Create</Button>
               </Form.Item>
             </Form>
           </div>
