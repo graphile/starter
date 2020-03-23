@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.6 (Ubuntu 11.6-1.pgdg18.04+1)
--- Dumped by pg_dump version 11.6 (Ubuntu 11.6-1.pgdg18.04+1)
+-- Dumped from database version 11.7 (Ubuntu 11.7-2.pgdg18.04+1)
+-- Dumped by pg_dump version 11.7 (Ubuntu 11.7-2.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2215,6 +2215,15 @@ CREATE POLICY select_own ON app_public.user_emails FOR SELECT USING ((user_id = 
 
 
 --
+-- Name: organizations update_owner; Type: POLICY; Schema: app_public; Owner: -
+--
+
+CREATE POLICY update_owner ON app_public.organizations FOR UPDATE USING ((EXISTS ( SELECT 1
+   FROM app_public.organization_memberships
+  WHERE ((organization_memberships.organization_id = organizations.id) AND (organization_memberships.user_id = app_public.current_user_id()) AND (organization_memberships.is_owner IS TRUE)))));
+
+
+--
 -- Name: users update_self; Type: POLICY; Schema: app_public; Owner: -
 --
 
@@ -2382,6 +2391,20 @@ GRANT ALL ON FUNCTION app_public.confirm_account_deletion(token text) TO graphil
 --
 
 GRANT SELECT ON TABLE app_public.organizations TO graphile_starter_visitor;
+
+
+--
+-- Name: COLUMN organizations.slug; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT UPDATE(slug) ON TABLE app_public.organizations TO graphile_starter_visitor;
+
+
+--
+-- Name: COLUMN organizations.name; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT UPDATE(name) ON TABLE app_public.organizations TO graphile_starter_visitor;
 
 
 --

@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:7c1619d5d446855460712068267c686efc93019d
+--! Hash: sha1:916741b15b03eadeec0de7d394d53405cea715af
 
 drop schema if exists app_public cascade;
 
@@ -1081,6 +1081,7 @@ create table app_public.organizations (
 alter table app_public.organizations enable row level security;
 
 grant select on app_public.organizations to :DATABASE_VISITOR;
+grant update(name, slug) on app_public.organizations to :DATABASE_VISITOR;
 
 --------------------------------------------------------------------------------
 
@@ -1277,6 +1278,14 @@ create function app_public.organizations_current_user_is_billing_contact(
     and is_billing_contact is true
   )
 $$ language sql stable;
+
+create policy update_owner on app_public.organizations for update using (exists(
+  select 1
+  from app_public.organization_memberships
+  where organization_id = organizations.id
+  and user_id = app_public.current_user_id()
+  and is_owner is true
+));
 
 create function app_public.remove_from_organization(
   organization_id uuid,
