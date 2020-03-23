@@ -58,6 +58,7 @@ export interface SharedLayoutProps {
 
   title: string;
   titleHref?: string;
+  titleHrefAs?: string;
   children:
     | React.ReactNode
     | ((props: SharedLayoutChildProps) => React.ReactNode);
@@ -83,6 +84,7 @@ function CurrentUserUpdatedSubscription() {
 export function SharedLayout({
   title,
   titleHref,
+  titleHrefAs,
   noPad = false,
   children,
   query,
@@ -136,7 +138,7 @@ export function SharedLayout({
               }}
             >
               {titleHref ? (
-                <Link href={titleHref}>
+                <Link href={titleHref} as={titleHrefAs}>
                   <a>{title}</a>
                 </Link>
               ) : (
@@ -152,7 +154,10 @@ export function SharedLayout({
                     {data.currentUser.organizationMemberships.nodes.map(
                       ({ organization, isOwner }) => (
                         <Menu.Item key={organization?.id}>
-                          <Link href={`/o/${organization?.slug}`}>
+                          <Link
+                            href={`/o/[slug]`}
+                            as={`/o/${organization?.slug}`}
+                          >
                             <a>
                               {organization?.name}
                               {isOwner ? (

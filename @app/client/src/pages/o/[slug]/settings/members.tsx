@@ -29,6 +29,7 @@ import {
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import { Store } from "rc-field-form/lib/interface";
 import React, { ChangeEvent, FC, useCallback, useState } from "react";
 
@@ -47,7 +48,8 @@ const OrganizationSettingsPage: NextPage = () => {
   return (
     <SharedLayout
       title={organization?.name ?? slug}
-      titleHref={`/o/${slug}`}
+      titleHref={`/o/[slug]`}
+      titleHrefAs={`/o/${slug}`}
       noPad
       query={query}
     >
@@ -77,6 +79,7 @@ const RESULTS_PER_PAGE = 10;
 
 const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = props => {
   const { organization, currentUser, page, setPage } = props;
+  const router = useRouter();
 
   const handlePaginationChange = (
     page: number
@@ -131,14 +134,11 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
     !organization.currentUserIsBillingContact &&
     !organization.currentUserIsOwner
   ) {
-    return <Redirect href={`/o/${organization.slug}`} />;
+    return <Redirect as={`/o/${organization.slug}`} href="/o/[slug]" />;
   }
 
   return (
-    <OrganizationSettingsLayout
-      organization={organization}
-      href={`/o/${organization.slug}/settings/members`}
-    >
+    <OrganizationSettingsLayout organization={organization} href={router.route}>
       <div>
         <PageHeader title="Members" />
         <Card title="Invite new member">

@@ -7,13 +7,14 @@ import { SharedLayout } from "./SharedLayout";
 
 export interface RedirectProps {
   href: string;
+  as?: string;
 }
 
-export function Redirect({ href }: RedirectProps) {
+export function Redirect({ href, as }: RedirectProps) {
   const client = useApolloClient();
   useEffect(() => {
-    Router.push(href);
-  }, [href]);
+    Router.push(href, as);
+  }, [as, href]);
   return (
     <SharedLayout
       title="Redirecting..."

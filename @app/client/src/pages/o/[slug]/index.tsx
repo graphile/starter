@@ -21,7 +21,8 @@ const OrganizationPage: NextPage = () => {
   return (
     <SharedLayout
       title={`${organization?.name ?? slug}`}
-      titleHref={`/o/${slug}`}
+      titleHref={`/o/[slug]`}
+      titleHrefAs={`/o/${slug}`}
       query={query}
     >
       {organizationLoadingElement || (
@@ -50,7 +51,8 @@ const OrganizationPageInner: FC<OrganizationPageInnerProps> = props => {
                 ? [
                     <ButtonLink
                       key="settings"
-                      href={`/o/${organization.slug}/settings`}
+                      href={`/o/[slug]/settings`}
+                      as={`/o/${organization.slug}/settings`}
                       type="primary"
                     >
                       Settings
