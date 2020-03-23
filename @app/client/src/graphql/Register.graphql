@@ -1,7 +1,7 @@
 mutation Register(
   $username: String!
   $password: String!
-  $email: String!
+  $email: Email!
   $name: String
 ) {
   register(

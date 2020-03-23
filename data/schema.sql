@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.6 (Debian 11.6-1.pgdg90+1)
--- Dumped by pg_dump version 11.6 (Debian 11.6-1.pgdg90+1)
+-- Dumped from database version 12.1
+-- Dumped by pg_dump version 12.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -80,6 +80,22 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 
 
 --
+-- Name: URL; Type: DOMAIN; Schema: app_public; Owner: -
+--
+
+CREATE DOMAIN app_public."URL" AS text
+	CONSTRAINT "URL_check" CHECK ((VALUE ~ '^https?://[^/]+'::text));
+
+
+--
+-- Name: email; Type: DOMAIN; Schema: app_public; Owner: -
+--
+
+CREATE DOMAIN app_public.email AS public.citext
+	CONSTRAINT email_check CHECK ((VALUE OPERATOR(public.~) '[^@]+@[^@]+\.[^@]+'::public.citext));
+
+
+--
 -- Name: assert_valid_password(text); Type: FUNCTION; Schema: app_private; Owner: -
 --
 
@@ -97,7 +113,7 @@ $$;
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: users; Type: TABLE; Schema: app_public; Owner: -
@@ -107,12 +123,11 @@ CREATE TABLE app_public.users (
     id integer NOT NULL,
     username public.citext NOT NULL,
     name text,
-    avatar_url text,
+    avatar_url app_public."URL",
     is_admin boolean DEFAULT false NOT NULL,
     is_verified boolean DEFAULT false NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT users_avatar_url_check CHECK ((avatar_url ~ '^https?://[^/]+'::text)),
     CONSTRAINT users_username_check CHECK (((length((username)::text) >= 2) AND (length((username)::text) <= 24) AND (username OPERATOR(public.~) '^[a-zA-Z]([a-zA-Z0-9][_]?)+$'::public.citext)))
 );
 
@@ -170,9 +185,9 @@ CREATE FUNCTION app_private.link_or_register_user(f_user_id integer, f_service c
 declare
   v_matched_user_id int;
   v_matched_authentication_id int;
-  v_email citext;
+  v_email app_public.email;
   v_name text;
-  v_avatar_url text;
+  v_avatar_url app_public."URL";
   v_user app_public.users;
   v_user_email app_public.user_emails;
 begin
@@ -345,10 +360,10 @@ COMMENT ON FUNCTION app_private.login(username public.citext, password text) IS 
 
 
 --
--- Name: really_create_user(public.citext, text, boolean, text, text, text); Type: FUNCTION; Schema: app_private; Owner: -
+-- Name: really_create_user(public.citext, app_public.email, boolean, text, app_public."URL", text); Type: FUNCTION; Schema: app_private; Owner: -
 --
 
-CREATE FUNCTION app_private.really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url text, password text DEFAULT NULL::text) RETURNS app_public.users
+CREATE FUNCTION app_private.really_create_user(username public.citext, email app_public.email, email_is_verified boolean, name text, avatar_url app_public."URL", password text DEFAULT NULL::text) RETURNS app_public.users
     LANGUAGE plpgsql
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -388,10 +403,10 @@ $$;
 
 
 --
--- Name: FUNCTION really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url text, password text); Type: COMMENT; Schema: app_private; Owner: -
+-- Name: FUNCTION really_create_user(username public.citext, email app_public.email, email_is_verified boolean, name text, avatar_url app_public."URL", password text); Type: COMMENT; Schema: app_private; Owner: -
 --
 
-COMMENT ON FUNCTION app_private.really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url text, password text) IS 'Creates a user account. All arguments are optional, it trusts the calling method to perform sanitisation.';
+COMMENT ON FUNCTION app_private.really_create_user(username public.citext, email app_public.email, email_is_verified boolean, name text, avatar_url app_public."URL", password text) IS 'Creates a user account. All arguments are optional, it trusts the calling method to perform sanitisation.';
 
 
 --
@@ -404,10 +419,10 @@ CREATE FUNCTION app_private.register_user(f_service character varying, f_identif
     AS $$
 declare
   v_user app_public.users;
-  v_email citext;
+  v_email app_public.email;
   v_name text;
   v_username citext;
-  v_avatar_url text;
+  v_avatar_url app_public."URL";
   v_user_authentication_id int;
 begin
   -- Extract data from the user’s OAuth profile data.
@@ -725,10 +740,10 @@ COMMENT ON FUNCTION app_public.current_user_id() IS 'Handy method to get the cur
 
 
 --
--- Name: forgot_password(public.citext); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: forgot_password(app_public.email); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.forgot_password(email public.citext) RETURNS void
+CREATE FUNCTION app_public.forgot_password(email app_public.email) RETURNS void
     LANGUAGE plpgsql STRICT SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -821,10 +836,10 @@ $$;
 
 
 --
--- Name: FUNCTION forgot_password(email public.citext); Type: COMMENT; Schema: app_public; Owner: -
+-- Name: FUNCTION forgot_password(email app_public.email); Type: COMMENT; Schema: app_public; Owner: -
 --
 
-COMMENT ON FUNCTION app_public.forgot_password(email public.citext) IS 'If you''ve forgotten your password, give us one of your email addresses and we''ll send you a reset token. Note this only works if you have added an email address!';
+COMMENT ON FUNCTION app_public.forgot_password(email app_public.email) IS 'If you''ve forgotten your password, give us one of your email addresses and we''ll send you a reset token. Note this only works if you have added an email address!';
 
 
 --
@@ -851,12 +866,11 @@ $$;
 CREATE TABLE app_public.user_emails (
     id integer NOT NULL,
     user_id integer DEFAULT app_public.current_user_id() NOT NULL,
-    email public.citext NOT NULL,
+    email app_public.email NOT NULL,
     is_verified boolean DEFAULT false NOT NULL,
     is_primary boolean DEFAULT false NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT user_emails_email_check CHECK ((email OPERATOR(public.~) '[^@]+@[^@]+\.[^@]+'::public.citext)),
     CONSTRAINT user_emails_must_be_verified_to_be_primary CHECK (((is_primary IS FALSE) OR (is_verified IS TRUE)))
 );
 
@@ -1225,7 +1239,7 @@ CREATE TABLE app_private.connect_pg_simple_sessions (
 --
 
 CREATE TABLE app_private.unregistered_email_password_resets (
-    email public.citext NOT NULL,
+    email app_public.email NOT NULL,
     attempts integer DEFAULT 1 NOT NULL,
     latest_attempt timestamp with time zone NOT NULL
 );
@@ -1573,70 +1587,70 @@ CREATE INDEX user_authentications_user_id_idx ON app_public.user_authentications
 -- Name: user_authentications _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_authentications FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_authentications FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
 
 
 --
 -- Name: user_emails _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_emails FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
 
 
 --
 -- Name: users _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
 
 
 --
 -- Name: user_emails _200_forbid_existing_email; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _200_forbid_existing_email BEFORE INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_public.tg_user_emails__forbid_if_verified();
+CREATE TRIGGER _200_forbid_existing_email BEFORE INSERT ON app_public.user_emails FOR EACH ROW EXECUTE FUNCTION app_public.tg_user_emails__forbid_if_verified();
 
 
 --
 -- Name: users _200_make_first_user_admin; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _200_make_first_user_admin BEFORE INSERT ON app_public.users FOR EACH ROW WHEN ((new.id = 1)) EXECUTE PROCEDURE app_private.tg_users__make_first_user_admin();
+CREATE TRIGGER _200_make_first_user_admin BEFORE INSERT ON app_public.users FOR EACH ROW WHEN ((new.id = 1)) EXECUTE FUNCTION app_private.tg_users__make_first_user_admin();
 
 
 --
 -- Name: users _500_gql_update; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_gql_update AFTER UPDATE ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_public.tg__graphql_subscription('userChanged', 'graphql:user:$1', 'id');
+CREATE TRIGGER _500_gql_update AFTER UPDATE ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_public.tg__graphql_subscription('userChanged', 'graphql:user:$1', 'id');
 
 
 --
 -- Name: user_emails _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_email_secrets__insert_with_user_email();
+CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE FUNCTION app_private.tg_user_email_secrets__insert_with_user_email();
 
 
 --
 -- Name: users _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_secrets__insert_with_user();
+CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_private.tg_user_secrets__insert_with_user();
 
 
 --
 -- Name: user_emails _500_verify_account_on_verified; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_verify_account_on_verified AFTER INSERT OR UPDATE OF is_verified ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS TRUE)) EXECUTE PROCEDURE app_public.tg_user_emails__verify_account_on_verified();
+CREATE TRIGGER _500_verify_account_on_verified AFTER INSERT OR UPDATE OF is_verified ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS TRUE)) EXECUTE FUNCTION app_public.tg_user_emails__verify_account_on_verified();
 
 
 --
 -- Name: user_emails _900_send_verification_email; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _900_send_verification_email AFTER INSERT ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS FALSE)) EXECUTE PROCEDURE app_private.tg__add_job('user_emails__send_verification');
+CREATE TRIGGER _900_send_verification_email AFTER INSERT ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS FALSE)) EXECUTE FUNCTION app_private.tg__add_job('user_emails__send_verification');
 
 
 --
@@ -1857,10 +1871,10 @@ REVOKE ALL ON FUNCTION app_private.login(username public.citext, password text) 
 
 
 --
--- Name: FUNCTION really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url text, password text); Type: ACL; Schema: app_private; Owner: -
+-- Name: FUNCTION really_create_user(username public.citext, email app_public.email, email_is_verified boolean, name text, avatar_url app_public."URL", password text); Type: ACL; Schema: app_private; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_private.really_create_user(username public.citext, email text, email_is_verified boolean, name text, avatar_url text, password text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION app_private.really_create_user(username public.citext, email app_public.email, email_is_verified boolean, name text, avatar_url app_public."URL", password text) FROM PUBLIC;
 
 
 --
@@ -1946,11 +1960,11 @@ GRANT ALL ON FUNCTION app_public.current_user_id() TO graphile_starter_visitor;
 
 
 --
--- Name: FUNCTION forgot_password(email public.citext); Type: ACL; Schema: app_public; Owner: -
+-- Name: FUNCTION forgot_password(email app_public.email); Type: ACL; Schema: app_public; Owner: -
 --
 
-REVOKE ALL ON FUNCTION app_public.forgot_password(email public.citext) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO graphile_starter_visitor;
+REVOKE ALL ON FUNCTION app_public.forgot_password(email app_public.email) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.forgot_password(email app_public.email) TO graphile_starter_visitor;
 
 
 --

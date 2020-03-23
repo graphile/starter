@@ -12,6 +12,8 @@ import { Express, Request, Response } from "express";
 import PgPubsub from "@graphile/pg-pubsub";
 import PgSimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
 import GraphilePro from "@graphile/pro"; // Requires license key
+import PgTypeEmailPlugin from "../plugins/PgTypeEmailPlugin";
+import PgTypeUrlPlugin from "../plugins/PgTypeUrlPlugin";
 import PassportLoginPlugin from "../plugins/PassportLoginPlugin";
 import PrimaryKeyMutationsOnlyPlugin from "../plugins/PrimaryKeyMutationsOnlyPlugin";
 import SubscriptionsPlugin from "../plugins/SubscriptionsPlugin";
@@ -151,6 +153,10 @@ export function getPostGraphileOptions({
      *   https://www.graphile.org/postgraphile/extending/
      */
     appendPlugins: [
+      // Exposes `Email` and `URL` types in the GraphQL schema
+      PgTypeEmailPlugin,
+      PgTypeUrlPlugin,
+
       // Adds support for our `postgraphile.tags.json5` file
       TagsFilePlugin,
 

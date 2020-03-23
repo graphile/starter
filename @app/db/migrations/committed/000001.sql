@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:4be49e527161e4b03af6630d795e00271405d754
+--! Hash: sha1:269a8e30333545dd7d76a2591aa8637a27603ebb
 
 drop schema if exists app_public cascade;
 
@@ -31,6 +31,11 @@ alter default privileges in schema public, app_public, app_hidden grant execute 
 
 drop schema if exists app_private cascade;
 create schema app_private;
+
+/**********/
+
+create domain app_public."URL" as text check(VALUE ~ '^https?://[^/]+');
+create domain app_public.email as citext check(VALUE ~ '[^@]+@[^@]+\.[^@]+');
 
 /**********/
 
@@ -121,7 +126,7 @@ create table app_public.users (
   id serial primary key,
   username citext not null unique check(length(username) >= 2 and length(username) <= 24 and username ~ '^[a-zA-Z]([a-zA-Z0-9][_]?)+$'),
   name text,
-  avatar_url text check(avatar_url ~ '^https?://[^/]+'),
+  avatar_url app_public."URL",
   is_admin boolean not null default false,
   is_verified boolean not null default false,
   created_at timestamptz not null default now(),
@@ -220,7 +225,7 @@ $$ language sql stable security definer set search_path to pg_catalog, public, p
 create table app_public.user_emails (
   id serial primary key,
   user_id int not null default app_public.current_user_id() references app_public.users on delete cascade,
-  email citext not null check (email ~ '[^@]+@[^@]+\.[^@]+'),
+  email app_public.email not null,
   is_verified boolean not null default false,
   is_primary boolean not null default false,
   created_at timestamptz not null default now(),
@@ -457,7 +462,7 @@ $$ language plpgsql security definer volatile set search_path to pg_catalog, pub
 /**********/
 
 create table app_private.unregistered_email_password_resets (
-  email citext constraint unregistered_email_pkey primary key,
+  email app_public.email constraint unregistered_email_pkey primary key,
   attempts int not null default 1,
   latest_attempt timestamptz not null
 );
@@ -470,7 +475,7 @@ comment on column app_private.unregistered_email_password_resets.latest_attempt 
 
 /**********/
 
-create function app_public.forgot_password(email citext) returns void as $$
+create function app_public.forgot_password(email app_public.email) returns void as $$
 declare
   v_user_email app_public.user_emails;
   v_token text;
@@ -558,7 +563,7 @@ begin
 end;
 $$ language plpgsql strict security definer volatile set search_path to pg_catalog, public, pg_temp;
 
-comment on function app_public.forgot_password(email public.citext) is
+comment on function app_public.forgot_password(email app_public.email) is
   E'If you''ve forgotten your password, give us one of your email addresses and we''ll send you a reset token. Note this only works if you have added an email address!';
 
 /**********/
@@ -747,10 +752,10 @@ grant execute on function app_public.change_password(text, text) to :DATABASE_VI
 
 create function app_private.really_create_user(
   username citext,
-  email text,
+  email app_public.email,
   email_is_verified bool,
   name text,
-  avatar_url text,
+  avatar_url app_public."URL",
   password text default null
 ) returns app_public.users as $$
 declare
@@ -787,7 +792,7 @@ begin
 end;
 $$ language plpgsql volatile set search_path to pg_catalog, public, pg_temp;
 
-comment on function app_private.really_create_user(username citext, email text, email_is_verified bool, name text, avatar_url text, password text) is
+comment on function app_private.really_create_user(username citext, email app_public.email, email_is_verified bool, name text, avatar_url app_public."URL", password text) is
   E'Creates a user account. All arguments are optional, it trusts the calling method to perform sanitisation.';
 
 /**********/
@@ -801,10 +806,10 @@ create function app_private.register_user(
 ) returns app_public.users as $$
 declare
   v_user app_public.users;
-  v_email citext;
+  v_email app_public.email;
   v_name text;
   v_username citext;
-  v_avatar_url text;
+  v_avatar_url app_public."URL";
   v_user_authentication_id int;
 begin
   -- Extract data from the user’s OAuth profile data.
@@ -874,9 +879,9 @@ create function app_private.link_or_register_user(
 declare
   v_matched_user_id int;
   v_matched_authentication_id int;
-  v_email citext;
+  v_email app_public.email;
   v_name text;
-  v_avatar_url text;
+  v_avatar_url app_public."URL";
   v_user app_public.users;
   v_user_email app_public.user_emails;
 begin

@@ -5,10 +5,10 @@ const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
   typeDefs: gql`
     input RegisterInput {
       username: String!
-      email: String!
+      email: Email!
       password: String!
       name: String
-      avatarUrl: String
+      avatarUrl: URL
     }
 
     type RegisterPayload {

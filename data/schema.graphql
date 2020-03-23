@@ -164,6 +164,13 @@ type DeleteUserEmailPayload {
   ): UserEmailsEdge
 }
 
+"""
+An address in the electronic mail system. Email addresses such as
+`John.Smith@example.com` are made up of a local-part, followed by an `@` symbol,
+followed by a domain.
+"""
+scalar Email
+
 """All input for the `forgotPassword` mutation."""
 input ForgotPasswordInput {
   """
@@ -171,7 +178,7 @@ input ForgotPasswordInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  email: String!
+  email: Email!
 }
 
 """The output of our `forgotPassword` mutation."""
@@ -413,8 +420,8 @@ type Query {
 }
 
 input RegisterInput {
-  avatarUrl: String
-  email: String!
+  avatarUrl: URL
+  email: Email!
   name: String
   password: String!
   username: String!
@@ -548,10 +555,17 @@ type UpdateUserPayload {
   ): UsersEdge
 }
 
+"""
+A Uniform Resource Locator (URL), colloquially termed a web address. It is a
+reference to a web resource that specifies its location on a computer network
+and a mechanism for retrieving it.
+"""
+scalar URL
+
 """A user who can log in to the application."""
 type User {
   """Optional avatar URL."""
-  avatarUrl: String
+  avatarUrl: URL
   createdAt: Datetime!
   hasPassword: Boolean
 
@@ -668,7 +682,7 @@ type UserEmail {
   createdAt: Datetime!
 
   """The users email address, in `a@b.c` format."""
-  email: String!
+  email: Email!
   id: Int!
   isPrimary: Boolean!
 
@@ -702,7 +716,7 @@ input UserEmailCondition {
 """An input for mutations affecting `UserEmail`"""
 input UserEmailInput {
   """The users email address, in `a@b.c` format."""
-  email: String!
+  email: Email!
 }
 
 """A connection to a list of `UserEmail` values."""
@@ -747,7 +761,7 @@ enum UserEmailsOrderBy {
 """Represents an update to a `User`. Fields that are set will be updated."""
 input UserPatch {
   """Optional avatar URL."""
-  avatarUrl: String
+  avatarUrl: URL
 
   """Public-facing name (or pseudonym) of the user."""
   name: String
