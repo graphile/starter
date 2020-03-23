@@ -1,9 +1,7 @@
-import { Empty, Result } from "antd";
-import Link from "next/link";
+import { Result } from "antd";
 import React from "react";
 
 import { ButtonLink } from "./ButtonLink";
-import { H4, P } from "./Text";
 
 export function FourOhFour() {
   return (
