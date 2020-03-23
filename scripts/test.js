@@ -49,5 +49,6 @@ if (process.argv.length > 3) {
 } else {
   // Run once, so just run the tests
   const { status } = spawnSync("jest", ["-i", ...process.argv.slice(2)], opts);
+  console.log("Jest exited with status:", status);
   process.exit(status);
 }
