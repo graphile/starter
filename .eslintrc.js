@@ -1,5 +1,5 @@
 const { readFileSync } = require("fs");
-const schemaString = readFileSync("./data/schema.graphql", "utf8");
+const schemaString = readFileSync(`${__dirname}/data/schema.graphql`, "utf8");
 
 module.exports = {
   parser: "@typescript-eslint/parser",
