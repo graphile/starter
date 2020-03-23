@@ -13,7 +13,7 @@ import {
   useInvitationDetailQuery,
 } from "@app/graphql";
 import { getCodeFromError } from "@app/lib";
-import { Alert, Button, Col, Result, Row, Spin } from "antd";
+import { Alert, Button, Col, Result, Row, Skeleton, Spin } from "antd";
 import { NextPage } from "next";
 import Router, { NextRouter, useRouter } from "next/router";
 import * as qs from "querystring";
@@ -145,13 +145,18 @@ const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = props => {
     }
   } else if (organization) {
     child = (
-      <div>
-        <div>You were invited to {organization.name}</div>
-        <Button onClick={handleAccept}>Accept invitation</Button>
-      </div>
+      <Result
+        status="success"
+        title={`You were invited to ${organization.name}`}
+        extra={
+          <Button onClick={handleAccept} type="primary">
+            Accept invitation
+          </Button>
+        }
+      />
     );
   } else if (loading) {
-    child = <Spin />;
+    child = <Skeleton />;
   } else {
     child = (
       <Result
