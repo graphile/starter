@@ -1,4 +1,10 @@
-import { H2, P, SharedLayout } from "@app/components";
+import {
+  ErrorOccurred,
+  FourOhFour,
+  H2,
+  P,
+  SharedLayout,
+} from "@app/components";
 import { useSharedQuery } from "@app/graphql";
 import { Alert, Col, Row } from "antd";
 import { NextPage } from "next";
@@ -6,38 +12,6 @@ import Link from "next/link";
 import * as React from "react";
 
 const isDev = process.env.NODE_ENV !== "production";
-
-function FourOhFour() {
-  return (
-    <div>
-      <H2>Page Not Found</H2>
-      <P>
-        The page you attempted to load was not found. Please check the URL and
-        try again, or visit{" "}
-        <Link href="/">
-          <a>the homepage</a>
-        </Link>
-      </P>
-    </div>
-  );
-}
-
-function ErrorOccurred() {
-  return (
-    <div>
-      <H2>Something Went Wrong</H2>
-      <P>
-        We're not sure what happened there; how embarassing! Please try again
-        later, or if this keeps happening then let us know.
-      </P>
-      <P>
-        <Link href="/">
-          <a>Go to the homepage</a>
-        </Link>
-      </P>
-    </div>
-  );
-}
 
 interface SocialAuthErrorProps {
   provider: string;
