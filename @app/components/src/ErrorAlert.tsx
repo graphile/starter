@@ -1,8 +1,6 @@
-import { Alert, Result, Typography } from "antd";
+import { Alert, Result } from "antd";
 import { ApolloError } from "apollo-client";
 import React from "react";
-
-const { Paragraph } = Typography;
 
 export interface ErrorAlertProps {
   error: ApolloError | Error;

@@ -1,5 +1,10 @@
 import { QueryResult } from "@apollo/react-common";
-import { ErrorAlert, Redirect, SharedLayout } from "@app/components";
+import {
+  ButtonLink,
+  ErrorAlert,
+  Redirect,
+  SharedLayout,
+} from "@app/components";
 import {
   InvitationDetailQuery,
   InvitationDetailQueryVariables,
@@ -8,7 +13,7 @@ import {
   useInvitationDetailQuery,
 } from "@app/graphql";
 import { getCodeFromError } from "@app/lib";
-import { Alert, Button, Col, Row, Spin } from "antd";
+import { Alert, Button, Col, Result, Row, Spin } from "antd";
 import { NextPage } from "next";
 import Router, { NextRouter, useRouter } from "next/router";
 import * as qs from "querystring";
@@ -37,9 +42,10 @@ const InvitationAccept: NextPage<IProps> = props => {
       code,
     },
     skip: !id,
+    fetchPolicy: "network-only",
   });
   return (
-    <SharedLayout title="Accept Invitation" query={query}>
+    <SharedLayout title="Accept Invitation" query={query} noHandleErrors>
       {({ currentUser, error, loading }) =>
         !currentUser && !error && !loading ? (
           <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />
@@ -67,6 +73,7 @@ interface InvitationAcceptInnerProps extends IProps {
 
 const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = props => {
   const { id, code, query } = props;
+  const router = useRouter();
 
   const { data, loading, error } = query;
   const [acceptInvite] = useAcceptOrganizationInviteMutation();
@@ -105,11 +112,33 @@ const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = props => {
     const code = getCodeFromError(error || acceptError);
     if (code === "NTFND") {
       child = (
-        <Alert
-          message="That invitation could not be found"
-          description="Perhaps you have already accepted it?"
-          type="error"
-        ></Alert>
+        <Result
+          status="404"
+          title="That invitation could not be found"
+          subTitle="Perhaps you have already accepted it?"
+        />
+      );
+    } else if (code === "DNIED") {
+      child = (
+        <Result
+          status="403"
+          title="That invitation is not for you"
+          subTitle="Perhaps you should log out and log in with a different account?"
+        />
+      );
+    } else if (code === "LOGIN") {
+      child = (
+        <Result
+          status="403"
+          title="Log in to accept invitation"
+          extra={
+            <ButtonLink
+              href={`/login?next=${encodeURIComponent(router.asPath)}`}
+            >
+              Log in
+            </ButtonLink>
+          }
+        />
       );
     } else {
       child = <ErrorAlert error={error || acceptError!} />;
@@ -125,11 +154,11 @@ const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = props => {
     child = <Spin />;
   } else {
     child = (
-      <Alert
-        message="Something went wrong"
-        description="We couldn't find details about this invite, please try again later"
-        type="error"
-      ></Alert>
+      <Result
+        status="error"
+        title="Something went wrong"
+        subTitle="We couldn't find details about this invite, please try again later"
+      />
     );
   }
   return child;

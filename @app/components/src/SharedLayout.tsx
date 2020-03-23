@@ -73,6 +73,7 @@ export interface SharedLayoutProps {
     | React.ReactNode
     | ((props: SharedLayoutChildProps) => React.ReactNode);
   noPad?: boolean;
+  noHandleErrors?: boolean;
 }
 
 /* The Apollo `useSubscription` hook doesn't currently allow skipping the
@@ -96,6 +97,7 @@ export function SharedLayout({
   titleHref,
   titleHrefAs,
   noPad = false,
+  noHandleErrors = false,
   children,
   query,
 }: SharedLayoutProps) {
@@ -108,7 +110,7 @@ export function SharedLayout({
   }, [client, logout]);
   const renderChildren = (props: SharedLayoutChildProps) => {
     const inner =
-      props.error && !props.loading ? (
+      props.error && !props.loading && !noHandleErrors ? (
         <>
           {process.env.NODE_ENV === "development" ? (
             <ErrorAlert error={props.error} />
