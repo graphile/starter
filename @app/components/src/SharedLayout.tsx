@@ -221,14 +221,14 @@ export function SharedLayout({
             justifyContent: "space-between",
           }}
         >
-          <Text style={{ color: "#fff" }}>
+          <Text>
             Copyright &copy; {new Date().getFullYear()} {companyName}. All
             rights reserved.
             {process.env.T_AND_C_URL ? (
               <span>
                 {" "}
                 <a
-                  style={{ color: "#fff", textDecoration: "underline" }}
+                  style={{ textDecoration: "underline" }}
                   href={process.env.T_AND_C_URL}
                 >
                   Terms and conditions
@@ -236,10 +236,10 @@ export function SharedLayout({
               </span>
             ) : null}
           </Text>
-          <Text style={{ color: "#fff" }}>
+          <Text>
             Powered by{" "}
             <a
-              style={{ color: "#fff", textDecoration: "underline" }}
+              style={{ textDecoration: "underline" }}
               href="https://graphile.org/postgraphile"
             >
               PostGraphile
