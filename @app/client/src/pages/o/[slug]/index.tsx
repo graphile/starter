@@ -1,4 +1,5 @@
 import {
+  ButtonLink,
   H1,
   Link,
   SharedLayout,
@@ -9,7 +10,7 @@ import {
   OrganizationPage_OrganizationFragment,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { Col, Row } from "antd";
+import { Button, Col, Empty, PageHeader, Row } from "antd";
 import { NextPage } from "next";
 import React, { FC } from "react";
 
@@ -39,16 +40,32 @@ const OrganizationPageInner: FC<OrganizationPageInnerProps> = props => {
     <Row>
       <Col>
         <div>
-          <H1>{organization.name}</H1>
-          {organization.currentUserIsBillingContact ||
-          organization.currentUserIsOwner ? (
-            <p>
-              <Link href={`/o/${organization.slug}/settings`}>
-                <a>Settings</a>
-              </Link>
-            </p>
-          ) : null}
-          <p>Hello</p>
+          <PageHeader
+            title={organization.name + " dashboard"}
+            extra={
+              organization.currentUserIsBillingContact ||
+              organization.currentUserIsOwner
+                ? [
+                    <ButtonLink
+                      key="settings"
+                      href={`/o/${organization.slug}/settings`}
+                      type="primary"
+                    >
+                      Settings
+                    </ButtonLink>,
+                  ]
+                : null
+            }
+          />
+          <Empty
+            description={
+              <span>
+                Customize this page in
+                <br />
+                <code>@app/client/src/pages/o/[slug]/index.tsx</code>
+              </span>
+            }
+          />
         </div>
       </Col>
     </Row>
