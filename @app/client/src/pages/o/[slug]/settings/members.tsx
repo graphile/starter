@@ -122,7 +122,10 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
         form.setFieldsValue({ inviteText: "" });
       } catch (e) {
         // TODO: handle this through the interface
-        message.error("Could not invite to organization: " + e.message);
+        message.error(
+          "Could not invite to organization: " +
+            e.message.replace(/^GraphQL Error:/i, "")
+        );
       } finally {
         setInviteInProgress(false);
       }

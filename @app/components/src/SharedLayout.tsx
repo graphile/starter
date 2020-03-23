@@ -8,7 +8,17 @@ import {
   useCurrentUserUpdatedSubscription,
   useLogoutMutation,
 } from "@app/graphql";
-import { Avatar, Col, Dropdown, Layout, Menu, Row, Typography } from "antd";
+import {
+  Alert,
+  Avatar,
+  Col,
+  Dropdown,
+  Layout,
+  Menu,
+  Result,
+  Row,
+  Typography,
+} from "antd";
 import { ApolloError } from "apollo-client";
 import Head from "next/head";
 import Link from "next/link";
@@ -99,7 +109,11 @@ export function SharedLayout({
   const renderChildren = (props: SharedLayoutChildProps) => {
     const inner =
       props.error && !props.loading ? (
-        <ErrorAlert error={props.error} />
+        <>
+          {process.env.NODE_ENV === "development" ? (
+            <ErrorAlert error={props.error} />
+          ) : null}
+        </>
       ) : typeof children === "function" ? (
         children(props)
       ) : (
