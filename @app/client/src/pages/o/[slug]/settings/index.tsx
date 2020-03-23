@@ -14,7 +14,7 @@ import { extractError, formItemLayout, tailFormItemLayout } from "@app/lib";
 import { Alert, Button, Form, Input, message, PageHeader } from "antd";
 import { useForm } from "antd/lib/form/util";
 import { NextPage } from "next";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import { Store } from "rc-field-form/lib/interface";
 import React, { FC, useCallback, useState } from "react";
 
@@ -27,7 +27,8 @@ const OrganizationSettingsPage: NextPage = () => {
   return (
     <SharedLayout
       title={organization?.name ?? slug}
-      titleHref={`/o/${slug}`}
+      titleHref={`/o/[slug]`}
+      titleHrefAs={`/o/${slug}`}
       noPad
       query={query}
     >
@@ -45,6 +46,7 @@ interface OrganizationSettingsPageInnerProps {
 const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = props => {
   const { organization } = props;
   const { name, slug } = organization;
+  const router = useRouter();
 
   const [form] = useForm();
   const [updateOrganization] = useUpdateOrganizationMutation();
@@ -64,7 +66,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
         message.success("Organization updated");
         const newSlug = data?.updateOrganization?.organization?.slug;
         if (newSlug && newSlug !== organization.slug) {
-          Router.push(`/o/${newSlug}/settings`);
+          Router.push(`/o/[slug]/settings`, `/o/${newSlug}/settings`);
         }
       } catch (e) {
         setError(e);
@@ -77,14 +79,11 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
     !organization.currentUserIsBillingContact &&
     !organization.currentUserIsOwner
   ) {
-    return <Redirect href={`/o/${organization.slug}`} />;
+    return <Redirect as={`/o/${organization.slug}`} href="/o/[slug]" />;
   }
 
   return (
-    <OrganizationSettingsLayout
-      organization={organization}
-      href={`/o/${organization.slug}/settings`}
-    >
+    <OrganizationSettingsLayout organization={organization} href={router.route}>
       <div>
         <PageHeader title="Profile" />
         <Form

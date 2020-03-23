@@ -21,16 +21,16 @@ function page(spec: PageSpec): PageSpec {
   return spec;
 }
 
-const makePages = (org: OrganizationPage_OrganizationFragment) => ({
-  [`/o/${org.slug}/settings`]: page({
+const makePages = (_org: OrganizationPage_OrganizationFragment) => ({
+  [`/o/[slug]/settings`]: page({
     title: "Profile",
     cy: "orgsettingslayout-link-profile",
   }),
-  [`/o/${org.slug}/settings/members`]: page({
+  [`/o/[slug]/settings/members`]: page({
     title: "Members",
     cy: "orgsettingslayout-link-members",
   }),
-  [`/o/${org.slug}/settings/delete`]: page({
+  [`/o/[slug]/settings/delete`]: page({
     title: "Delete Organization",
     titleProps: {
       type: "danger",
@@ -65,7 +65,10 @@ export function OrganizationSettingsLayout({
         <Menu selectedKeys={[href]}>
           {Object.keys(pages).map(pageHref => (
             <Menu.Item key={pageHref}>
-              <Link href={pageHref}>
+              <Link
+                href={pageHref}
+                as={pageHref.replace("[slug]", organization.slug)}
+              >
                 <a data-cy={pages[pageHref].cy}>
                   <Text {...pages[pageHref].titleProps}>
                     {pages[pageHref].title}

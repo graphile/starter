@@ -1,4 +1,4 @@
-import { H3, Redirect, SharedLayout } from "@app/components";
+import { Redirect, SharedLayout } from "@app/components";
 import {
   CreatedOrganizationFragment,
   useCreateOrganizationMutation,
@@ -25,8 +25,7 @@ const CreateOrganizationPage: NextPage = () => {
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
   const query = useSharedQuery();
   const [form] = useForm();
-  const { getFieldValue } = form;
-  const [slug, setSlug] = useState(getFieldValue("name") || "");
+  const [slug, setSlug] = useState("");
   const [
     lookupOrganizationBySlug,
     { data: existingOrganizationData, loading: slugLoading, error: slugError },
@@ -110,7 +109,7 @@ const CreateOrganizationPage: NextPage = () => {
   }, []);
 
   if (organization) {
-    return <Redirect href={`/o/${organization.slug}`} />;
+    return <Redirect href={`/o/[slug]`} as={`/o/${organization.slug}`} />;
   }
 
   return (
@@ -142,9 +141,9 @@ const CreateOrganizationPage: NextPage = () => {
                     {`${process.env.ROOT_URL}/o/${slug}`}
                   </p>
                   {!slug ? null : !slugCheckIsValid || slugLoading ? (
-                    <p>
+                    <div>
                       <Spin /> Checking organization name
-                    </p>
+                    </div>
                   ) : existingOrganizationData?.organizationBySlug ? (
                     <Text type="danger">
                       Organization name is already in use
