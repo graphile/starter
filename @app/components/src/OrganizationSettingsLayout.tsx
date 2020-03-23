@@ -4,6 +4,7 @@ import { TextProps } from "antd/lib/typography/Text";
 import Link from "next/link";
 import React, { useMemo } from "react";
 
+import { contentMinHeight } from "./SharedLayout";
 import { StandardWidth } from "./StandardWidth";
 
 const { Text } = Typography;
@@ -59,7 +60,7 @@ export function OrganizationSettingsLayout({
     href + (router && router.query ? `?${qs.stringify(router.query)}` : "");
     */
   return (
-    <Layout style={{ minHeight: "calc(100vh - 64px - 64px)" }} hasSider>
+    <Layout style={{ minHeight: contentMinHeight }} hasSider>
       <Sider>
         <Menu selectedKeys={[href]}>
           {Object.keys(pages).map(pageHref => (
