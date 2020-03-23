@@ -1,6 +1,7 @@
-import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
+import { LockOutlined, UserAddOutlined, UserOutlined } from "@ant-design/icons";
 import { useApolloClient } from "@apollo/react-hooks";
 import {
+  ButtonLink,
   Col,
   Redirect,
   Row,
@@ -14,7 +15,7 @@ import {
   getCodeFromError,
   resetWebsocketConnection,
 } from "@app/lib";
-import { Alert, Button, Form, Input, Typography } from "antd";
+import { Alert, Button, Form, Input } from "antd";
 import { useForm } from "antd/lib/form/util";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
@@ -22,8 +23,6 @@ import Link from "next/link";
 import Router from "next/router";
 import { Store } from "rc-field-form/lib/interface";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-
-const { Paragraph } = Typography;
 
 function hasErrors(fieldsError: Object) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -69,10 +68,11 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
                   <Col span={28}>
                     <Button
                       data-cy="loginpage-button-withusername"
-                      icon={<MailOutlined />}
+                      icon={<UserOutlined />}
                       size="large"
                       block
                       onClick={() => setShowLogin(true)}
+                      type="primary"
                     >
                       Sign in with E-mail or Username
                     </Button>
@@ -85,12 +85,17 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
                 </Row>
                 <Row justify="center">
                   <Col>
-                    <Paragraph>
-                      No Account?{" "}
-                      <Link href={`/register?next=${encodeURIComponent(next)}`}>
-                        <a data-cy="loginpage-button-register">Create One</a>
-                      </Link>
-                    </Paragraph>
+                    <ButtonLink
+                      icon={<UserAddOutlined />}
+                      size="large"
+                      block
+                      type="default"
+                      href={`/register?next=${encodeURIComponent(next)}`}
+                    >
+                      <a data-cy="loginpage-button-register">
+                        Create an account
+                      </a>
+                    </ButtonLink>
                   </Col>
                 </Row>
               </Col>
@@ -177,6 +182,7 @@ function LoginForm({
       layout="vertical"
       onFinish={handleSubmit}
       onValuesChange={handleValuesChange}
+      style={{ width: "100%" }}
     >
       <Form.Item
         name="username"

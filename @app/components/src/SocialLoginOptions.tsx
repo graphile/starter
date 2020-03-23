@@ -21,6 +21,7 @@ export function SocialLoginOptions({
       size="large"
       icon={<GithubOutlined />}
       href={`/auth/github?next=${encodeURIComponent(next)}`}
+      type="primary"
     >
       {buttonTextFromService("GitHub")}
     </Button>
