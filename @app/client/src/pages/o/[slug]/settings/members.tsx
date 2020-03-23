@@ -34,7 +34,12 @@ const OrganizationSettingsPage: NextPage = () => {
   const organization = query?.data?.organizationBySlug;
 
   return (
-    <SharedLayout title={organization?.name ?? slug} noPad query={query}>
+    <SharedLayout
+      title={organization?.name ?? slug}
+      titleHref={`/o/${slug}`}
+      noPad
+      query={query}
+    >
       {({ currentUser }) =>
         organizationLoadingElement || (
           <OrganizationSettingsPageInner
@@ -126,7 +131,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
       href={`/o/${organization.slug}/settings/members`}
     >
       <div>
-        <H3>{organization.name} Members</H3>
+        <H3>Members</H3>
         <p>Invite member</p>
         <form onSubmit={handleInviteSubmit}>
           <div>

@@ -20,7 +20,12 @@ const OrganizationSettingsPage: NextPage = () => {
   const organization = query?.data?.organizationBySlug;
 
   return (
-    <SharedLayout title={organization?.name ?? slug} noPad query={query}>
+    <SharedLayout
+      title={organization?.name ?? slug}
+      titleHref={`/o/${slug}`}
+      noPad
+      query={query}
+    >
       {organizationLoadingElement || (
         <OrganizationSettingsPageInner organization={organization!} />
       )}
@@ -47,7 +52,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
       href={`/o/${organization.slug}/settings`}
     >
       <div>
-        <H1>{organization.name} Settings</H1>
+        <H1>Profile</H1>
         <p>Welcome to settings</p>
       </div>
     </OrganizationSettingsLayout>

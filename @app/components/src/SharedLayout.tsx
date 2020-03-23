@@ -57,6 +57,7 @@ export interface SharedLayoutProps {
   >;
 
   title: string;
+  titleHref?: string;
   children:
     | React.ReactNode
     | ((props: SharedLayoutChildProps) => React.ReactNode);
@@ -81,6 +82,7 @@ function CurrentUserUpdatedSubscription() {
 
 export function SharedLayout({
   title,
+  titleHref,
   noPad = false,
   children,
   query,
@@ -116,14 +118,12 @@ export function SharedLayout({
         }}
       >
         <Head>
-          <title>
-            {title} — {projectName}
-          </title>
+          <title>{title ? `${title} — ${projectName}` : projectName}</title>
         </Head>
         <Row justify="space-between">
           <Col span={6}>
             <Link href="/">
-              <a>Home</a>
+              <a>{projectName}</a>
             </Link>
           </Col>
           <Col span={12}>
@@ -135,7 +135,13 @@ export function SharedLayout({
                 lineHeight: "64px",
               }}
             >
-              {title}
+              {titleHref ? (
+                <Link href={titleHref}>
+                  <a>{title}</a>
+                </Link>
+              ) : (
+                title
+              )}
             </H3>
           </Col>
           <Col span={6} style={{ textAlign: "right" }}>
