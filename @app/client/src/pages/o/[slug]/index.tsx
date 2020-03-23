@@ -1,7 +1,5 @@
 import {
   ButtonLink,
-  H1,
-  Link,
   SharedLayout,
   useOrganizationLoading,
   useOrganizationSlug,
@@ -10,7 +8,7 @@ import {
   OrganizationPage_OrganizationFragment,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { Button, Col, Empty, PageHeader, Row } from "antd";
+import { Col, Empty, PageHeader, Row } from "antd";
 import { NextPage } from "next";
 import React, { FC } from "react";
 
@@ -21,7 +19,11 @@ const OrganizationPage: NextPage = () => {
   const organization = query?.data?.organizationBySlug;
 
   return (
-    <SharedLayout title={organization?.name ?? slug} query={query}>
+    <SharedLayout
+      title={`${organization?.name ?? slug}`}
+      titleHref={`/o/${slug}`}
+      query={query}
+    >
       {organizationLoadingElement || (
         <OrganizationPageInner organization={organization!} />
       )}
@@ -41,7 +43,7 @@ const OrganizationPageInner: FC<OrganizationPageInnerProps> = props => {
       <Col>
         <div>
           <PageHeader
-            title={organization.name + " dashboard"}
+            title={"Dashboard"}
             extra={
               organization.currentUserIsBillingContact ||
               organization.currentUserIsOwner

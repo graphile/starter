@@ -26,7 +26,12 @@ const OrganizationSettingsPage: NextPage = () => {
   const organization = query?.data?.organizationBySlug;
 
   return (
-    <SharedLayout title={organization?.name ?? slug} noPad query={query}>
+    <SharedLayout
+      title={organization?.name ?? slug}
+      titleHref={`/o/${slug}`}
+      noPad
+      query={query}
+    >
       {({ currentUser }) =>
         organizationLoadingElement || (
           <OrganizationSettingsPageInner
@@ -70,7 +75,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
       href={`/o/${organization.slug}/settings/delete`}
     >
       <div>
-        <H3>Delete {organization.name}?</H3>
+        <H3>Delete Organization?</H3>
         {organization.currentUserIsOwner ? (
           <Alert
             type="error"
