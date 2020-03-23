@@ -16,7 +16,7 @@ import {
   useTransferOrganizationBillingContactMutation,
   useTransferOrganizationOwnershipMutation,
 } from "@app/graphql";
-import { List, message, Popconfirm } from "antd";
+import { Card, List, message, PageHeader, Popconfirm, Typography } from "antd";
 import Text from "antd/lib/typography/Text";
 import { NextPage } from "next";
 import React, { ChangeEvent, FC, useCallback, useState } from "react";
@@ -131,22 +131,30 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
       href={`/o/${organization.slug}/settings/members`}
     >
       <div>
-        <H3>Members</H3>
-        <p>Invite member</p>
-        <form onSubmit={handleInviteSubmit}>
-          <div>
-            <input
-              type="text"
-              value={inviteText}
-              onChange={handleInviteChange}
-              placeholder="Enter username or email"
-              disabled={inviteInProgress}
-            />
-          </div>
-          <button disabled={inviteInProgress}>Invite</button>
-        </form>
-        <p>Members</p>
+        <PageHeader title="Members" />
+        <Card title="Invite new member">
+          <form onSubmit={handleInviteSubmit}>
+            <div>
+              <input
+                type="text"
+                value={inviteText}
+                onChange={handleInviteChange}
+                placeholder="Enter username or email"
+                disabled={inviteInProgress}
+              />
+            </div>
+            <button disabled={inviteInProgress}>Invite</button>
+          </form>
+        </Card>
         <List
+          style={{ marginTop: "2rem", borderColor: "#f0f0f0" }}
+          header={
+            <Typography.Text style={{ fontSize: "16px" }} strong>
+              Existing members
+            </Typography.Text>
+          }
+          size="large"
+          bordered
           dataSource={organization.organizationMemberships?.nodes ?? []}
           pagination={{
             current: page,
