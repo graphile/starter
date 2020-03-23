@@ -4,7 +4,7 @@ import { Col, Row, Spin } from "antd";
 import { useRouter } from "next/router";
 import React from "react";
 
-import { ErrorAlert } from "./";
+import { ErrorAlert, FourOhFour } from "./";
 
 export function useOrganizationSlug() {
   const router = useRouter();
@@ -30,7 +30,7 @@ export function useOrganizationLoading(
     child = <ErrorAlert error={error} />;
   } else {
     // TODO: 404
-    child = <div>404</div>;
+    child = <FourOhFour />;
   }
 
   return child ? (
