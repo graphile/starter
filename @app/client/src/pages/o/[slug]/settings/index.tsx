@@ -1,5 +1,4 @@
 import {
-  H1,
   OrganizationSettingsLayout,
   Redirect,
   SharedLayout,
@@ -9,9 +8,15 @@ import {
 import {
   OrganizationPage_OrganizationFragment,
   useOrganizationPageQuery,
+  useUpdateOrganizationMutation,
 } from "@app/graphql";
+import { extractError, formItemLayout, tailFormItemLayout } from "@app/lib";
+import { Alert, Button, Form, Input, message, PageHeader } from "antd";
+import { useForm } from "antd/lib/form/util";
 import { NextPage } from "next";
-import React, { FC } from "react";
+import Router from "next/router";
+import { Store } from "rc-field-form/lib/interface";
+import React, { FC, useCallback, useState } from "react";
 
 const OrganizationSettingsPage: NextPage = () => {
   const slug = useOrganizationSlug();
@@ -39,6 +44,35 @@ interface OrganizationSettingsPageInnerProps {
 
 const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = props => {
   const { organization } = props;
+  const { name, slug } = organization;
+
+  const [form] = useForm();
+  const [updateOrganization] = useUpdateOrganizationMutation();
+  const [error, setError] = useState<Error | null>(null);
+  const handleSubmit = useCallback(
+    async (values: Store) => {
+      try {
+        setError(null);
+        const { data } = await updateOrganization({
+          variables: {
+            input: {
+              id: organization.id,
+              patch: { slug: values.slug, name: values.name },
+            },
+          },
+        });
+        message.success("Organization updated");
+        const newSlug = data?.updateOrganization?.organization?.slug;
+        if (newSlug && newSlug !== organization.slug) {
+          Router.push(`/o/${newSlug}/settings`);
+        }
+      } catch (e) {
+        setError(e);
+      }
+    },
+    [organization.id, organization.slug, updateOrganization]
+  );
+
   if (
     !organization.currentUserIsBillingContact &&
     !organization.currentUserIsOwner
@@ -52,8 +86,49 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
       href={`/o/${organization.slug}/settings`}
     >
       <div>
-        <H1>Profile</H1>
-        <p>Welcome to settings</p>
+        <PageHeader title="Profile" />
+        <Form
+          {...formItemLayout}
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={{
+            slug,
+            name,
+          }}
+        >
+          <Form.Item
+            label="Organization name"
+            name="name"
+            rules={[
+              { required: true, message: "Organization name is required" },
+              { min: 1, message: "Organization name must not be empty" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Slug"
+            name="slug"
+            rules={[
+              { required: true, message: "Slug is required" },
+              { min: 2, message: "Slug must be at least 2 characters long" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          {error ? (
+            <Form.Item>
+              <Alert
+                type="error"
+                message={`Updating organization`}
+                description={<span>{extractError(error).message}</span>}
+              />
+            </Form.Item>
+          ) : null}
+          <Form.Item {...tailFormItemLayout}>
+            <Button htmlType="submit">Update organization</Button>
+          </Form.Item>
+        </Form>
       </div>
     </OrganizationSettingsLayout>
   );
