@@ -1,5 +1,4 @@
 import {
-  H3,
   OrganizationSettingsLayout,
   Redirect,
   SharedLayout,
@@ -16,9 +15,21 @@ import {
   useTransferOrganizationBillingContactMutation,
   useTransferOrganizationOwnershipMutation,
 } from "@app/graphql";
-import { Card, List, message, PageHeader, Popconfirm, Typography } from "antd";
+import { formItemLayout, tailFormItemLayout } from "@app/lib";
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  List,
+  message,
+  PageHeader,
+  Popconfirm,
+  Typography,
+} from "antd";
 import Text from "antd/lib/typography/Text";
 import { NextPage } from "next";
+import { Store } from "rc-field-form/lib/interface";
 import React, { ChangeEvent, FC, useCallback, useState } from "react";
 
 const OrganizationSettingsPage: NextPage = () => {
@@ -86,17 +97,14 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
   );
 
   const [inviteToOrganization] = useInviteToOrganizationMutation();
-  const [inviteText, setInviteText] = useState("");
   const [inviteInProgress, setInviteInProgress] = useState(false);
-  const handleInviteChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setInviteText(e.target.value);
-  }, []);
+  const [form] = Form.useForm();
   const handleInviteSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+    async (values: Store) => {
       if (inviteInProgress) {
         return;
       }
+      const { inviteText } = values;
       setInviteInProgress(true);
       const isEmail = inviteText.includes("@");
       try {
@@ -107,7 +115,8 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
             username: isEmail ? null : inviteText,
           },
         });
-        setInviteText("");
+        message.success(`'${inviteText}' invited.`);
+        form.setFieldsValue({ inviteText: "" });
       } catch (e) {
         // TODO: handle this through the interface
         message.error("Could not invite to organization: " + e.message);
@@ -115,7 +124,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
         setInviteInProgress(false);
       }
     },
-    [inviteInProgress, inviteText, inviteToOrganization, organization.id]
+    [form, inviteInProgress, inviteToOrganization, organization.id]
   );
 
   if (
@@ -133,18 +142,19 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
       <div>
         <PageHeader title="Members" />
         <Card title="Invite new member">
-          <form onSubmit={handleInviteSubmit}>
-            <div>
-              <input
-                type="text"
-                value={inviteText}
-                onChange={handleInviteChange}
+          <Form {...formItemLayout} form={form} onFinish={handleInviteSubmit}>
+            <Form.Item label="Username or email" name="inviteText">
+              <Input
                 placeholder="Enter username or email"
                 disabled={inviteInProgress}
               />
-            </div>
-            <button disabled={inviteInProgress}>Invite</button>
-          </form>
+            </Form.Item>
+            <Form.Item {...tailFormItemLayout}>
+              <Button htmlType="submit" disabled={inviteInProgress}>
+                Invite
+              </Button>
+            </Form.Item>
+          </Form>
         </Card>
         <List
           style={{ marginTop: "2rem", borderColor: "#f0f0f0" }}
