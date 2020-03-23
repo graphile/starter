@@ -13,7 +13,8 @@ import {
   useSharedQuery,
   useUnlinkUserAuthenticationMutation,
 } from "@app/graphql";
-import { Avatar, List, Modal, Spin } from "antd";
+import { Avatar, Card, List, Modal, PageHeader, Spin } from "antd";
+import Text from "antd/lib/typography/Text";
 import { NextPage } from "next";
 import React, { useCallback, useState } from "react";
 
@@ -102,6 +103,8 @@ const Settings_Accounts: NextPage = () => {
       <Spin />
     ) : (
       <List
+        bordered
+        size="large"
         dataSource={data.currentUser.authentications}
         renderItem={renderAuth}
       />
@@ -111,13 +114,14 @@ const Settings_Accounts: NextPage = () => {
 
   return (
     <SettingsLayout href="/settings/accounts" query={query}>
-      <H3>Linked Accounts</H3>
+      <PageHeader title="Linked accounts" />
       {error && !loading ? <ErrorAlert error={error} /> : linkedAccounts}
-      <H4>Link another account</H4>
-      <SocialLoginOptions
-        next="/settings/accounts"
-        buttonTextFromService={service => `Link ${service} account`}
-      />
+      <Card style={{ marginTop: "2rem" }} title="Link another account">
+        <SocialLoginOptions
+          next="/settings/accounts"
+          buttonTextFromService={service => `Link ${service} account`}
+        />
+      </Card>
     </SettingsLayout>
   );
 };

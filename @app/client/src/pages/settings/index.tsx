@@ -10,7 +10,7 @@ import {
   getCodeFromError,
   tailFormItemLayout,
 } from "@app/lib";
-import { Alert, Button, Form, Input } from "antd";
+import { Alert, Button, Form, Input, PageHeader } from "antd";
 import { useForm } from "antd/lib/form/util";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
@@ -104,7 +104,7 @@ function ProfileSettingsForm({
   const code = getCodeFromError(error);
   return (
     <div>
-      <H3>Edit Profile</H3>
+      <PageHeader title="Edit profile" />
       <Form
         {...formItemLayout}
         form={form}

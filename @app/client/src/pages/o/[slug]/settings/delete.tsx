@@ -13,7 +13,7 @@ import {
   useDeleteOrganizationMutation,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { Alert, Button, message, Popconfirm } from "antd";
+import { Alert, Button, message, PageHeader, Popconfirm } from "antd";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -73,7 +73,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = pr
   return (
     <OrganizationSettingsLayout organization={organization} href={router.route}>
       <div>
-        <H3>Delete Organization?</H3>
+        <PageHeader title="Delete Organization?" />
         {organization.currentUserIsOwner ? (
           <Alert
             type="error"
