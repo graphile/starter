@@ -7,6 +7,7 @@ import React from "react";
 
 import { Redirect } from "./Redirect";
 import {
+  contentMinHeight,
   SharedLayout,
   SharedLayoutChildProps,
   SharedLayoutProps,
@@ -79,7 +80,7 @@ export function SettingsLayout({
         !currentUser && !error && !loading ? (
           <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />
         ) : (
-          <Layout style={{ minHeight: "calc(100vh - 64px - 64px)" }} hasSider>
+          <Layout style={{ minHeight: contentMinHeight }} hasSider>
             <Sider>
               <Menu selectedKeys={[href]}>
                 {Object.keys(pages).map(pageHref => (

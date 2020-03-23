@@ -20,7 +20,6 @@ import { ErrorAlert, H3, StandardWidth, Warn } from ".";
 
 const { Header, Content, Footer } = Layout;
 const { Text } = Typography;
-
 /*
  * For some reason, possibly related to the interaction between
  * `babel-plugin-import` and https://github.com/babel/babel/pull/9766, we can't
@@ -32,6 +31,8 @@ const { Text } = Typography;
 const _babelHackRow = Row;
 const _babelHackCol = Col;
 export { _babelHackRow as Row, _babelHackCol as Col, Link };
+
+export const contentMinHeight = "calc(100vh - 64px - 70px)";
 
 export interface SharedLayoutChildProps {
   error?: ApolloError | Error;
@@ -206,7 +207,7 @@ export function SharedLayout({
           </Col>
         </Row>
       </Header>
-      <Content style={{ minHeight: "calc(100vh - 64px - 120px)" }}>
+      <Content style={{ minHeight: contentMinHeight }}>
         {renderChildren({
           error,
           loading,
