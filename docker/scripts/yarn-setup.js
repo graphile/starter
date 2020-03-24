@@ -1,4 +1,4 @@
-const { runSync } = require("../scripts/lib/run");
+const { runSync } = require("../../scripts/lib/run");
 const { basename, dirname, resolve } = require("path");
 const platform = require("os").platform();
 const { safeRandomString } = require("../../scripts/lib/random");
