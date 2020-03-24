@@ -3,19 +3,22 @@ on: [push]
 jobs:
   cypress-run:
     runs-on: ubuntu-16.04
+    env:
+      CYPRESS_ROOT_URL: http://localhost:5678
+      CI: true
+      CONFIRM_DROP: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: .env.ci
-        run: cp .env.ci .env
+      - name: Setup
+        run: |
+          cp .env.ci .env
+          yarn --frozen-lockfile
+          yarn setup
+      - name: Start server in background
+        run: yarn start &
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
-          build: yarn setup
-          start: yarn start
           wait-on: http://localhost:5678
           working-directory: "@app/e2e"
-        env:
-          CYPRESS_ROOT_URL: http://localhost:5678
-          CI: true
-          CONFIRM_DROP: 1
