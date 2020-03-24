@@ -73,6 +73,8 @@ export default (app: Express) => {
        * If anything goes wrong, let the test runner know so that it can fail
        * the test.
        */
+      console.error("cypressServerCommand failed!");
+      console.error(e);
       res.status(500).json({
         error: {
           message: e.message,
