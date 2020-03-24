@@ -1,0 +1,20 @@
+name: End-to-end tests
+on: [push]
+jobs:
+  cypress-run:
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Cypress run
+        uses: cypress-io/github-action@v1
+        with:
+          build: |
+            cp .env.ci .env
+            CONFIRM_DROP=1 yarn setup
+          start: yarn start
+          wait-on: http://localhost:5678
+          working-directory: "@app/e2e"
+        env:
+          CYPRESS_ROOT_URL: http://localhost:5678
+          CI: true
