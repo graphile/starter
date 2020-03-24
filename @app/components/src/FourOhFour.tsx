@@ -5,7 +5,7 @@ import { ButtonLink } from "./ButtonLink";
 
 export function FourOhFour() {
   return (
-    <div>
+    <div data-cy="fourohfour-div">
       <Result
         status="404"
         title="404"

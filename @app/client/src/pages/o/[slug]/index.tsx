@@ -54,6 +54,7 @@ const OrganizationPageInner: FC<OrganizationPageInnerProps> = props => {
                       href={`/o/[slug]/settings`}
                       as={`/o/${organization.slug}/settings`}
                       type="primary"
+                      data-cy="organizationpage-button-settings"
                     >
                       Settings
                     </ButtonLink>,

@@ -112,7 +112,7 @@ function login(payload?: {
   name?: string;
   verified?: boolean;
   password?: string;
-  orgs?: [[string, string]];
+  orgs?: [[string, string] | [string, string, boolean]];
 }): Chainable<Window> {
   return cy.visit(
     Cypress.env("ROOT_URL") +
