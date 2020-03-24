@@ -142,10 +142,11 @@ export function SharedLayout({
                 textAlign: "center",
                 lineHeight: "64px",
               }}
+              data-cy="layout-header-title"
             >
               {titleHref ? (
                 <Link href={titleHref} as={titleHrefAs}>
-                  <a>{title}</a>
+                  <a data-cy="layout-header-titlelink">{title}</a>
                 </Link>
               ) : (
                 title
