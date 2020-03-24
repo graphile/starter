@@ -1,4 +1,4 @@
-import { ErrorAlert, H3, P, SettingsLayout } from "@app/components";
+import { ErrorAlert, P, SettingsLayout } from "@app/components";
 import {
   useConfirmAccountDeletionMutation,
   useRequestAccountDeletionMutation,

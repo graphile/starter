@@ -31,7 +31,7 @@ import Text from "antd/lib/typography/Text";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { Store } from "rc-field-form/lib/interface";
-import React, { ChangeEvent, FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 
 const OrganizationSettingsPage: NextPage = () => {
   const slug = useOrganizationSlug();

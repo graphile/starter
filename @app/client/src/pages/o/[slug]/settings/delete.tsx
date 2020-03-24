@@ -1,6 +1,5 @@
 import {
   ErrorAlert,
-  H3,
   OrganizationSettingsLayout,
   P,
   SharedLayout,

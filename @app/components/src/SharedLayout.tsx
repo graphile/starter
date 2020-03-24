@@ -8,17 +8,7 @@ import {
   useCurrentUserUpdatedSubscription,
   useLogoutMutation,
 } from "@app/graphql";
-import {
-  Alert,
-  Avatar,
-  Col,
-  Dropdown,
-  Layout,
-  Menu,
-  Result,
-  Row,
-  Typography,
-} from "antd";
+import { Avatar, Col, Dropdown, Layout, Menu, Row, Typography } from "antd";
 import { ApolloError } from "apollo-client";
 import Head from "next/head";
 import Link from "next/link";

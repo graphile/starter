@@ -13,7 +13,7 @@ import {
   useInvitationDetailQuery,
 } from "@app/graphql";
 import { getCodeFromError } from "@app/lib";
-import { Alert, Button, Col, Result, Row, Skeleton, Spin } from "antd";
+import { Button, Col, Result, Row, Skeleton, Spin } from "antd";
 import { NextPage } from "next";
 import Router, { NextRouter, useRouter } from "next/router";
 import * as qs from "querystring";

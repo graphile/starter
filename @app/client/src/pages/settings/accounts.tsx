@@ -1,8 +1,6 @@
 import { GithubFilled } from "@ant-design/icons";
 import {
   ErrorAlert,
-  H3,
-  H4,
   SettingsLayout,
   SocialLoginOptions,
   Strong,
@@ -14,7 +12,6 @@ import {
   useUnlinkUserAuthenticationMutation,
 } from "@app/graphql";
 import { Avatar, Card, List, Modal, PageHeader, Spin } from "antd";
-import Text from "antd/lib/typography/Text";
 import { NextPage } from "next";
 import React, { useCallback, useState } from "react";
 

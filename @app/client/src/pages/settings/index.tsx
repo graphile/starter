@@ -1,4 +1,4 @@
-import { ErrorAlert, H3, Redirect, SettingsLayout } from "@app/components";
+import { ErrorAlert, Redirect, SettingsLayout } from "@app/components";
 import {
   ProfileSettingsForm_UserFragment,
   useSettingsProfileQuery,
