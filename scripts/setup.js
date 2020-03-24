@@ -4,61 +4,18 @@ if (parseInt(process.version.split(".")[0], 10) < 10) {
 }
 
 const fsp = require("fs").promises;
-const { spawnSync: rawSpawnSync } = require("child_process");
+const { runSync } = require("./lib/run");
 const dotenv = require("dotenv");
 const inquirer = require("inquirer");
 const pg = require("pg");
 const { withDotenvUpdater, readDotenv } = require("./lib/dotenv");
 const { safeRandomString } = require("./lib/random");
 
-// fixes spawnSync not throwing ENOENT on windows
+// fixes runSync not throwing ENOENT on windows
 const platform = require("os").platform();
-
-const projectName = process.argv[2];
-
 const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 
-const spawnSync = (cmd, args, options) => {
-  const result = rawSpawnSync(cmd, args, {
-    stdio: ["pipe", "inherit", "inherit"],
-    env: {
-      ...process.env,
-      YARN_SILENT: "1",
-      npm_config_loglevel: "silent",
-    },
-    ...options,
-  });
-
-  const { error, status, signal, stderr, stdout } = result;
-
-  if (error) {
-    throw error;
-  }
-
-  if (status || signal) {
-    if (stdout) {
-      console.log(stdout.toString("utf8"));
-    }
-    if (stderr) {
-      console.error(stderr.toString("utf8"));
-    }
-    if (status) {
-      throw new Error(
-        `Process exited with status '${status}' (running '${cmd} ${
-          args ? args.join(" ") : ""
-        }')`
-      );
-    } else {
-      throw new Error(
-        `Process exited due to signal '${signal}' (running '${cmd} ${
-          args ? args.join(" ") : null
-        }')`
-      );
-    }
-  }
-
-  return result;
-};
+const projectName = process.argv[2];
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -262,7 +219,7 @@ async function main() {
   );
 
   // And perform setup
-  spawnSync(yarnCmd, ["server", "build"]);
+  runSync(yarnCmd, ["server", "build"]);
 
   // FINALLY we can source our environment
   dotenv.config({ path: `${__dirname}/../.env` });
@@ -370,8 +327,8 @@ async function main() {
   }
   await pgPool.end();
 
-  spawnSync(yarnCmd, ["db", "reset", "--erase"]);
-  spawnSync(yarnCmd, ["db", "reset", "--shadow", "--erase"]);
+  runSync(yarnCmd, ["db", "reset", "--erase"]);
+  runSync(yarnCmd, ["db", "reset", "--shadow", "--erase"]);
 
   console.log();
   console.log();
