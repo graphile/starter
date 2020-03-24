@@ -215,7 +215,9 @@ async function runCommand(
     }
 
     req.login({ session_id: session.uuid }, () => {
-      res.redirect(next || "/");
+      setTimeout(() => {
+        res.redirect(next || "/");
+      }, 200);
     });
     return null;
   } else if (command === "getEmailSecrets") {
