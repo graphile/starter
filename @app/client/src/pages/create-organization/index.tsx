@@ -80,23 +80,10 @@ const CreateOrganizationPage: NextPage = () => {
         setFormError(null);
         setOrganization(data?.createOrganization?.organization || null);
       } catch (e) {
-        const errcode = getCodeFromError(e);
-        if (errcode === "NUNIQ") {
-          form.setFields([
-            {
-              name: "name",
-              value: form.getFieldValue("name"),
-              errors: [
-                "This organization name is already in use, please pick a different name",
-              ],
-            },
-          ]);
-        } else {
-          setFormError(e);
-        }
+        setFormError(e);
       }
     },
-    [createOrganization, form]
+    [createOrganization]
   );
   const handleValuesChange = useCallback((values: Store) => {
     if ("name" in values) {
@@ -145,7 +132,10 @@ const CreateOrganizationPage: NextPage = () => {
                       <Spin /> Checking organization name
                     </div>
                   ) : existingOrganizationData?.organizationBySlug ? (
-                    <Text type="danger">
+                    <Text
+                      type="danger"
+                      data-cy="createorganization-hint-nameinuse"
+                    >
                       Organization name is already in use
                     </Text>
                   ) : slugError ? (
@@ -157,14 +147,14 @@ const CreateOrganizationPage: NextPage = () => {
                 </div>
               </Form.Item>
               {formError ? (
-                <Form.Item>
+                <Form.Item {...tailFormItemLayout}>
                   <Alert
                     type="error"
                     message={`Creating organization failed`}
                     description={
                       <span>
                         {code === "NUNIQ" ? (
-                          <span>
+                          <span data-cy="createorganization-alert-nuniq">
                             That organization name is already in use, please
                             choose a different organization name.
                           </span>
