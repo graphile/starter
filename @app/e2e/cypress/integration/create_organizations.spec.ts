@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-context("Organizations", () => {
+context("Create organizations", () => {
   beforeEach(() => cy.serverCommand("clearTestUsers"));
   beforeEach(() => cy.serverCommand("clearTestOrganizations"));
 
