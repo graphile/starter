@@ -148,6 +148,7 @@ async function runCommand(
       avatarUrl = null,
       password = "TestUserPassword",
       next = "/",
+      orgs = [],
     } = payload;
     const user = await reallyCreateUser(rootPgPool, {
       username,
@@ -158,6 +159,30 @@ async function runCommand(
       password,
     });
     const session = await createSession(rootPgPool, user.id);
+
+    const client = await rootPgPool.connect();
+    try {
+      await client.query("begin");
+      try {
+        await client.query(
+          "select set_config('jwt.claims.session_id', $1, true)",
+          [session.uuid]
+        );
+        await Promise.all(
+          orgs.map(async ([name, slug]: [string, string]) => {
+            await client.query(
+              "select app_public.create_organization($1, $2)",
+              [slug, name]
+            );
+          })
+        );
+      } finally {
+        await client.query("commit");
+      }
+    } finally {
+      await client.release();
+    }
+
     req.login({ session_id: session.uuid }, () => {
       res.redirect(next || "/");
     });
