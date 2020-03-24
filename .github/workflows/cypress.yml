@@ -9,9 +9,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
-          build: |
-            cp .env.ci .env
-            CONFIRM_DROP=1 yarn setup
+          build: cp .env.ci .env && CONFIRM_DROP=1 yarn setup
           start: yarn start
           wait-on: http://localhost:5678
           working-directory: "@app/e2e"
