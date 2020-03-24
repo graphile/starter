@@ -6,13 +6,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+      - name: .env.ci
+        run: cp .env.ci .env
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
-          build: cp .env.ci .env && CONFIRM_DROP=1 yarn setup
+          build: yarn setup
           start: yarn start
           wait-on: http://localhost:5678
           working-directory: "@app/e2e"
         env:
           CYPRESS_ROOT_URL: http://localhost:5678
           CI: true
+          CONFIRM_DROP: 1
