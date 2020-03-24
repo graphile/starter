@@ -1,6 +1,6 @@
 const { spawnSync } = require("child_process");
 
-const runSync = (cmd, args, options) => {
+const runSync = (cmd, args, options = {}) => {
   const result = spawnSync(cmd, args, {
     stdio: ["pipe", "inherit", "inherit"],
     windowsHide: true,
@@ -27,6 +27,7 @@ const runSync = (cmd, args, options) => {
       console.error(stderr.toString("utf8"));
     }
     if (status) {
+      process.exitCode = status;
       throw new Error(
         `Process exited with status '${status}' (running '${cmd} ${
           args ? args.join(" ") : ""
