@@ -100,6 +100,11 @@ async function runCommand(
       "delete from app_public.users where username like 'testuser%'"
     );
     return { success: true };
+  } else if (command === "clearTestOrganizations") {
+    await rootPgPool.query(
+      "delete from app_public.organizations where slug like 'test%'"
+    );
+    return { success: true };
   } else if (command === "createUser") {
     if (!payload) {
       throw new Error("Payload required");

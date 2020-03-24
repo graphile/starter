@@ -135,10 +135,10 @@ const CreateOrganizationPage: NextPage = () => {
                 ]}
               >
                 <div>
-                  <Input />
+                  <Input data-cy="createorganization-input-name" />
                   <p>
                     Your organization URL will be{" "}
-                    {`${process.env.ROOT_URL}/o/${slug}`}
+                    <span data-cy="createorganization-slug-value">{`${process.env.ROOT_URL}/o/${slug}`}</span>
                   </p>
                   {!slug ? null : !slugCheckIsValid || slugLoading ? (
                     <div>
@@ -183,7 +183,12 @@ const CreateOrganizationPage: NextPage = () => {
                 </Form.Item>
               ) : null}
               <Form.Item {...tailFormItemLayout}>
-                <Button htmlType="submit">Create</Button>
+                <Button
+                  htmlType="submit"
+                  data-cy="createorganization-button-create"
+                >
+                  Create
+                </Button>
               </Form.Item>
             </Form>
           </div>

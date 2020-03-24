@@ -46,6 +46,15 @@ function serverCommand(
 }>;
 
 /**
+ * Deletes all organizations with slug starting 'test'.
+ */
+function serverCommand(
+  command: "clearTestOrganizations"
+): Chainable<{
+  success: true;
+}>;
+
+/**
  * Creates a verified or unverified user, bypassing all safety checks.
  * Redirects to `next`.
  *
