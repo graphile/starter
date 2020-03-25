@@ -96,7 +96,9 @@ const CreateOrganizationPage: NextPage = () => {
   }, []);
 
   if (organization) {
-    return <Redirect href={`/o/[slug]`} as={`/o/${organization.slug}`} />;
+    return (
+      <Redirect layout href={`/o/[slug]`} as={`/o/${organization.slug}`} />
+    );
   }
 
   return (
