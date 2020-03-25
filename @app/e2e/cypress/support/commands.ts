@@ -25,7 +25,7 @@
 type Chainable<Subject = any> = Cypress.Chainable<Subject>;
 
 type User = {
-  id: number;
+  id: string;
   username: string;
   name: string;
   is_admin: boolean;
@@ -41,6 +41,15 @@ function getCy(cyName: string): Chainable<JQuery<HTMLElement>> {
  */
 function serverCommand(
   command: "clearTestUsers"
+): Chainable<{
+  success: true;
+}>;
+
+/**
+ * Deletes all organizations with slug starting 'test'.
+ */
+function serverCommand(
+  command: "clearTestOrganizations"
 ): Chainable<{
   success: true;
 }>;
@@ -70,7 +79,7 @@ function serverCommand(
   }
 ): Chainable<{
   user: User;
-  userEmailId: number;
+  userEmailId: string;
   verificationToken: string | null;
 }>;
 
@@ -82,7 +91,7 @@ function serverCommand(
   command: "getEmailSecrets",
   payload?: { email?: string }
 ): Chainable<{
-  user_email_id: number;
+  user_email_id: string;
   verification_token: string | null;
 }>;
 
@@ -103,6 +112,7 @@ function login(payload?: {
   name?: string;
   verified?: boolean;
   password?: string;
+  orgs?: [[string, string] | [string, string, boolean]];
 }): Chainable<Window> {
   return cy.visit(
     Cypress.env("ROOT_URL") +

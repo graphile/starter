@@ -1,0 +1,5 @@
+mutation DeleteOrganization($organizationId: UUID!) {
+  deleteOrganization(input: { organizationId: $organizationId }) {
+    clientMutationId
+  }
+}

@@ -32,6 +32,7 @@ Rewritten, the above rules state:
 - FFFFF: unknown error
 - DNIED: permission denied
 - NUNIQ: not unique (from PostgreSQL 23505)
+- NTFND: not found
 
 ## Registration
 
@@ -48,4 +49,14 @@ Rewritten, the above rules state:
 
 ## Email management
 
-- VRIFY: you need to verify your email before you can do that
+- VRFY1: you need to verify your email before you can do that
+- VRFY2: the target user needs to verify their email before you can do that
+
+## Organization membership
+
+- ISMBR: this person is already a member
+
+## Deleting account
+
+- OWNER: you cannot delete your account because you are the owner of an
+  organization

@@ -1,11 +1,11 @@
+import { asRoot } from "../../../__tests__/helpers";
 import {
-  setup,
-  teardown,
+  deleteTestUsers,
   runGraphQLQuery,
   sanitise,
-  deleteTestUsers,
+  setup,
+  teardown,
 } from "../helpers";
-import { asRoot } from "../../../__tests__/helpers";
 
 beforeEach(deleteTestUsers);
 beforeAll(setup);

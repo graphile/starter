@@ -1,18 +1,18 @@
-import React, { useEffect } from "react";
-import get from "lodash/get";
+import { Col, Row, SharedLayout } from "@app/components";
+import { useSharedQuery, useVerifyEmailMutation } from "@app/graphql";
 import { Alert } from "antd";
-import SharedLayout, { Row, Col } from "../layout/SharedLayout";
+import get from "lodash/get";
 import { NextPage } from "next";
-import { useVerifyEmailMutation } from "@app/graphql";
+import React, { useEffect } from "react";
 
 interface IProps {
-  id: number | null;
+  id: string | null;
   token: string | null;
 }
 
 const VerifyPage: NextPage<IProps> = props => {
-  const [[id, token], setIdAndToken] = React.useState<[number, string]>([
-    props.id || 0,
+  const [[id, token], setIdAndToken] = React.useState<[string, string]>([
+    props.id || "",
     props.token || "",
   ]);
   const [state, setState] = React.useState<
@@ -57,8 +57,9 @@ const VerifyPage: NextPage<IProps> = props => {
       </form>
     );
   }
+  const query = useSharedQuery();
   return (
-    <SharedLayout title="Verify Email Address">
+    <SharedLayout title="Verify Email Address" query={query}>
       <Row>
         <Col>
           {state === "PENDING" ? (
@@ -82,7 +83,7 @@ const VerifyPage: NextPage<IProps> = props => {
 };
 
 VerifyPage.getInitialProps = async ({ query: { id, token } }) => ({
-  id: typeof id === "string" ? parseInt(id, 10) || null : null,
+  id: typeof id === "string" ? id : null,
   token: typeof token === "string" ? token : null,
 });
 

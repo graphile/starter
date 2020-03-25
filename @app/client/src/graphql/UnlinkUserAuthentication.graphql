@@ -1,4 +1,4 @@
-mutation UnlinkUserAuthentication($id: Int!) {
+mutation UnlinkUserAuthentication($id: UUID!) {
   deleteUserAuthentication(input: { id: $id }) {
     user {
       id

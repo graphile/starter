@@ -1,0 +1,3 @@
+query Shared {
+  ...SharedLayout_Query
+}

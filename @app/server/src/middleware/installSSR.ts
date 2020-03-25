@@ -1,12 +1,12 @@
 // TODO: fix to 'import next' when next fixes the bug
-import next from "next";
 import { Express } from "express";
+import next from "next";
 
 if (!process.env.NODE_ENV) {
   throw new Error("No NODE_ENV envvar! Try `export NODE_ENV=development`");
 }
 
-const isDev = process.env.NODE_ENV !== "production";
+const isDev = process.env.NODE_ENV === "development";
 
 export default async function installSSR(app: Express) {
   // @ts-ignore Next had a bad typing file, they claim `export default` but should have `export =`

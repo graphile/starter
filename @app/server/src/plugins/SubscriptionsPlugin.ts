@@ -1,9 +1,9 @@
 import { Build } from "graphile-build";
-import { SQL, QueryBuilder } from "graphile-build-pg";
+import { QueryBuilder, SQL } from "graphile-build-pg";
 import {
-  makeExtendSchemaPlugin,
-  gql,
   embed /*, AugmentedGraphQLFieldResolver */,
+  gql,
+  makeExtendSchemaPlugin,
 } from "graphile-utils";
 // graphile-utils doesn't export this yet
 import { GraphQLResolveInfo } from "graphql";

@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:4be49e527161e4b03af6630d795e00271405d754
+--! Hash: sha1:acbf6f7f09835d3e82ded26cb6ecb83b9bc50bb0
 
 drop schema if exists app_public cascade;
 
@@ -82,7 +82,7 @@ alter table app_private.connect_pg_simple_sessions
 
 create table app_private.sessions (
   uuid uuid not null default gen_random_uuid() primary key,
-  user_id int not null,
+  user_id uuid not null,
   -- You could add access restriction columns here if you want, e.g. for OAuth scopes.
   created_at timestamptz not null default now(),
   last_active timestamptz not null default now()
@@ -101,14 +101,14 @@ comment on function app_public.current_session_id() is
 /*
  * A less secure but more performant version of this function would be just:
  *
- *  select nullif(pg_catalog.current_setting('jwt.claims.user_id', true), '')::int;
+ *  select nullif(pg_catalog.current_setting('jwt.claims.user_id', true), '')::uuid;
  *
  * The increased security of this implementation is because even if someone gets
  * the ability to run SQL within this transaction they cannot impersonate
  * another user without knowing their session_id (which should be closely
  * guarded).
  */
-create function app_public.current_user_id() returns int as $$
+create function app_public.current_user_id() returns uuid as $$
   select user_id from app_private.sessions where uuid = app_public.current_session_id();
 $$ language sql stable security definer set search_path to pg_catalog, public, pg_temp;
 comment on function app_public.current_user_id() is
@@ -118,7 +118,7 @@ comment on function app_public.current_user_id() is
 /**********/
 
 create table app_public.users (
-  id serial primary key,
+  id uuid primary key default gen_random_uuid(),
   username citext not null unique check(length(username) >= 2 and length(username) <= 24 and username ~ '^[a-zA-Z]([a-zA-Z0-9][_]?)+$'),
   name text,
   avatar_url text check(avatar_url ~ '^https?://[^/]+'),
@@ -158,19 +158,6 @@ create trigger _100_timestamps
   for each row
   execute procedure app_private.tg__timestamps();
 
-create function app_private.tg_users__make_first_user_admin() returns trigger as $$
-begin
-  NEW.is_admin = true;
-  return NEW;
-end;
-$$ language plpgsql volatile set search_path to pg_catalog, public, pg_temp;
-
-create trigger _200_make_first_user_admin
-  before insert on app_public.users
-  for each row
-  when (NEW.id = 1)
-  execute procedure app_private.tg_users__make_first_user_admin();
-
 /**********/
 
 create function app_public.current_user() returns app_public.users as $$
@@ -182,7 +169,7 @@ comment on function app_public.current_user() is
 /**********/
 
 create table app_private.user_secrets (
-  user_id int not null primary key references app_public.users on delete cascade,
+  user_id uuid not null primary key references app_public.users on delete cascade,
   password_hash text,
   last_login_at timestamptz not null default now(),
   failed_password_attempts int not null default 0,
@@ -218,8 +205,8 @@ $$ language sql stable security definer set search_path to pg_catalog, public, p
 /**********/
 
 create table app_public.user_emails (
-  id serial primary key,
-  user_id int not null default app_public.current_user_id() references app_public.users on delete cascade,
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null default app_public.current_user_id() references app_public.users on delete cascade,
   email citext not null check (email ~ '[^@]+@[^@]+\.[^@]+'),
   is_verified boolean not null default false,
   is_primary boolean not null default false,
@@ -275,7 +262,7 @@ grant delete on app_public.user_emails to :DATABASE_VISITOR;
 /**********/
 
 create table app_private.user_email_secrets (
-  user_email_id int primary key references app_public.user_emails on delete cascade,
+  user_email_id uuid primary key references app_public.user_emails on delete cascade,
   verification_token text,
   verification_email_sent_at timestamptz,
   password_reset_email_sent_at timestamptz
@@ -305,7 +292,7 @@ comment on function app_private.tg_user_email_secrets__insert_with_user_email() 
 
 /**********/
 
-create function app_public.verify_email(user_email_id int, token text) returns boolean as $$
+create function app_public.verify_email(user_email_id uuid, token text) returns boolean as $$
 begin
   update app_public.user_emails
   set
@@ -320,15 +307,15 @@ begin
   return found;
 end;
 $$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
-comment on function app_public.verify_email(user_email_id int, token text) is
+comment on function app_public.verify_email(user_email_id uuid, token text) is
   E'Once you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
 
 
 /**********/
 
 create table app_public.user_authentications (
-  id serial primary key,
-  user_id int not null references app_public.users on delete cascade,
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references app_public.users on delete cascade,
   service text not null,
   identifier text not null,
   details jsonb not null default '{}'::jsonb,
@@ -362,7 +349,7 @@ grant delete on app_public.user_authentications to :DATABASE_VISITOR;
 /**********/
 
 create table app_private.user_authentication_secrets (
-  user_authentication_id int not null primary key references app_public.user_authentications on delete cascade,
+  user_authentication_id uuid not null primary key references app_public.user_authentications on delete cascade,
   details jsonb not null default '{}'::jsonb
 );
 alter table app_private.user_authentication_secrets enable row level security;
@@ -563,7 +550,7 @@ comment on function app_public.forgot_password(email public.citext) is
 
 /**********/
 
-create function app_public.reset_password(user_id int, reset_token text, new_password text) returns boolean as $$
+create function app_public.reset_password(user_id uuid, reset_token text, new_password text) returns boolean as $$
 declare
   v_user app_public.users;
   v_user_secret app_private.user_secrets;
@@ -621,7 +608,7 @@ begin
 end;
 $$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
 
-comment on function app_public.reset_password(user_id int, reset_token text, new_password text) is
+comment on function app_public.reset_password(user_id uuid, reset_token text, new_password text) is
   E'After triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
 
 /**********/
@@ -805,7 +792,7 @@ declare
   v_name text;
   v_username citext;
   v_avatar_url text;
-  v_user_authentication_id int;
+  v_user_authentication_id uuid;
 begin
   -- Extract data from the user’s OAuth profile data.
   v_email := f_profile ->> 'email';
@@ -865,15 +852,15 @@ comment on function app_private.register_user(f_service character varying, f_ide
 /**********/
 
 create function app_private.link_or_register_user(
-  f_user_id integer,
+  f_user_id uuid,
   f_service character varying,
   f_identifier character varying,
   f_profile json,
   f_auth_details json
 ) returns app_public.users as $$
 declare
-  v_matched_user_id int;
-  v_matched_authentication_id int;
+  v_matched_user_id uuid;
+  v_matched_authentication_id uuid;
   v_email citext;
   v_name text;
   v_avatar_url text;
@@ -945,13 +932,13 @@ begin
 end;
 $$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
 
-comment on function app_private.link_or_register_user(f_user_id integer, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) is
+comment on function app_private.link_or_register_user(f_user_id uuid, f_service character varying, f_identifier character varying, f_profile json, f_auth_details json) is
   E'If you''re logged in, this will link an additional OAuth login to your account if necessary. If you''re logged out it may find if an account already exists (based on OAuth details or email address) and return that, or create a new user account if necessary.';
 
 /**********/
 
 -- User may only have one primary email (and it must be verified)
-create function app_public.make_email_primary(email_id int) returns app_public.user_emails as $$
+create function app_public.make_email_primary(email_id uuid) returns app_public.user_emails as $$
 declare
   v_user_email app_public.user_emails;
 begin
@@ -961,19 +948,19 @@ begin
     return null;
   end if;
   if v_user_email.is_verified is false then
-    raise exception 'You may not make an unverified email primary' using errcode = 'VRIFY';
+    raise exception 'You may not make an unverified email primary' using errcode = 'VRFY1';
   end if;
   update app_public.user_emails set is_primary = false where user_id = app_public.current_user_id() and is_primary is true and id <> email_id;
   update app_public.user_emails set is_primary = true where user_id = app_public.current_user_id() and is_primary is not true and id = email_id returning * into v_user_email;
   return v_user_email;
 end;
 $$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
-comment on function app_public.make_email_primary(email_id int) is
+comment on function app_public.make_email_primary(email_id uuid) is
   E'Your primary email is where we''ll notify of account events; other emails may be used for discovery or login. Use this when you''re changing your email address.';
 
 /**********/
 
-create function app_public.resend_email_verification_code(email_id int) returns boolean as $$
+create function app_public.resend_email_verification_code(email_id uuid) returns boolean as $$
 begin
   if exists(
     select 1
@@ -988,7 +975,7 @@ begin
   return false;
 end;
 $$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
-comment on function app_public.resend_email_verification_code(email_id int) is
+comment on function app_public.resend_email_verification_code(email_id uuid) is
   E'If you didn''t receive the verification code for this email, we can resend it. We silently cap the rate of resends on the backend, so calls to this function may not result in another email being sent if it has been called recently.';
 
 /**********/
@@ -1062,3 +1049,413 @@ create trigger _500_gql_update
     'graphql:user:$1', -- the "topic" the event will be published to, as a template
     'id' -- If specified, `$1` above will be replaced with NEW.id or OLD.id from the trigger.
   );
+
+--------------------------------------------------------------------------------
+------                           ORGANIZATIONS                            ------
+--------------------------------------------------------------------------------
+
+drop function if exists app_public.transfer_organization_billing_contact(uuid, uuid);
+drop function if exists app_public.transfer_organization_ownership(uuid, uuid);
+drop function if exists app_public.delete_organization(uuid);
+drop function if exists app_public.remove_from_organization(uuid, uuid);
+drop function if exists app_public.organizations_current_user_is_billing_contact(app_public.organizations);
+drop function if exists app_public.organizations_current_user_is_owner(app_public.organizations);
+drop function if exists app_public.accept_invitation_to_organization(uuid, text) cascade;
+drop function if exists app_public.get_organization_for_invitation(uuid, text) cascade;
+drop function if exists app_public.invite_user_to_organization(uuid, uuid) cascade;
+drop function if exists app_public.invite_to_organization(uuid, citext, citext) cascade;
+drop function if exists app_public.current_user_invited_organization_ids() cascade;
+drop function if exists app_public.current_user_member_organization_ids() cascade;
+drop table if exists app_public.organization_invitations;
+drop table if exists app_public.organization_memberships;
+drop table if exists app_public.organizations cascade;
+
+--------------------------------------------------------------------------------
+
+create table app_public.organizations (
+  id uuid primary key default gen_random_uuid(),
+  slug citext not null unique,
+  name text not null,
+  created_at timestamptz not null default now()
+);
+alter table app_public.organizations enable row level security;
+
+grant select on app_public.organizations to :DATABASE_VISITOR;
+grant update(name, slug) on app_public.organizations to :DATABASE_VISITOR;
+
+--------------------------------------------------------------------------------
+
+create table app_public.organization_memberships (
+  id uuid primary key default gen_random_uuid(),
+  organization_id uuid not null references app_public.organizations on delete cascade,
+  user_id uuid not null references app_public.users on delete cascade,
+  is_owner boolean not null default false,
+  is_billing_contact boolean not null default false,
+  created_at timestamptz not null default now(),
+  unique (organization_id, user_id)
+);
+alter table app_public.organization_memberships enable row level security;
+
+create index on app_public.organization_memberships (user_id);
+
+grant select on app_public.organization_memberships to :DATABASE_VISITOR;
+
+--------------------------------------------------------------------------------
+
+create table app_public.organization_invitations (
+  id uuid primary key default gen_random_uuid(),
+  organization_id uuid not null references app_public.organizations,
+  code text,
+  user_id uuid references app_public.users,
+  email citext,
+  check ((user_id is null) <> (email is null)),
+  check ((code is null) = (email is null)),
+  unique (organization_id, user_id),
+  unique (organization_id, email)
+);
+alter table app_public.organization_invitations enable row level security;
+
+create index on app_public.organization_invitations(user_id);
+grant select on app_public.organization_invitations to :DATABASE_VISITOR;
+
+--------------------------------------------------------------------------------
+create function app_public.current_user_member_organization_ids() returns setof uuid as $$
+  select organization_id from app_public.organization_memberships
+    where user_id = app_public.current_user_id();
+$$ language sql stable security definer set search_path = pg_catalog, public, pg_temp;
+
+create function app_public.current_user_invited_organization_ids() returns setof uuid as $$
+  select organization_id from app_public.organization_invitations
+    where user_id = app_public.current_user_id();
+$$ language sql stable security definer set search_path = pg_catalog, public, pg_temp;
+
+create policy select_member on app_public.organizations
+  for select using (id in (select app_public.current_user_member_organization_ids()));
+
+create policy select_invited on app_public.organizations
+  for select using (id in (select app_public.current_user_invited_organization_ids()));
+
+create policy select_member on app_public.organization_memberships
+  for select using (organization_id in (select app_public.current_user_member_organization_ids()));
+
+create policy select_invited on app_public.organization_memberships
+  for select using (organization_id in (select app_public.current_user_invited_organization_ids()));
+
+--------------------------------------------------------------------------------
+create function app_public.create_organization(slug citext, name text) returns app_public.organizations as $$
+declare
+  v_org app_public.organizations;
+begin
+  insert into app_public.organizations (slug, name) values (slug, name) returning * into v_org;
+  insert into app_public.organization_memberships (organization_id, user_id, is_owner, is_billing_contact)
+    values(v_org.id, app_public.current_user_id(), true, true);
+  return v_org;
+end;
+$$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
+
+create function app_public.invite_to_organization(organization_id uuid, username citext, email citext)
+  returns void as $$
+declare
+  v_code text;
+  v_user app_public.users;
+begin
+  -- Are we allowed to add this person
+  -- Are we logged in
+  if app_public.current_user_id() is null then
+    raise exception 'You must log in to invite a user' using errcode = 'LOGIN';
+  end if;
+
+  select * into v_user from app_public.users where users.username = invite_to_organization.username;
+
+  -- Are we the owner of this organization
+  if not exists(
+    select 1 from app_public.organization_memberships
+      where organization_memberships.organization_id = invite_to_organization.organization_id
+      and organization_memberships.user_id = app_public.current_user_id()
+      and is_owner is true
+  ) then
+    raise exception 'You''re not the owner of this organization' using errcode = 'DNIED';
+  end if;
+
+  if v_user.id is not null and exists(
+    select 1 from app_public.organization_memberships
+      where organization_memberships.organization_id = invite_to_organization.organization_id
+      and organization_memberships.user_id = v_user.id
+  ) then
+    raise exception 'Cannot invite someone who is already a member' using errcode = 'ISMBR';
+  end if;
+
+  if email is not null then
+    v_code = encode(gen_random_bytes(7), 'hex');
+  end if;
+
+  if v_user.id is not null and not v_user.is_verified then
+    raise exception 'The user you attempted to invite has not verified their account' using errcode = 'VRFY2';
+  end if;
+
+  if v_user.id is null and email is null then
+    raise exception 'Could not find person to invite' using errcode = 'NTFND';
+  end if;
+
+  -- Invite the user
+  insert into app_public.organization_invitations(organization_id, user_id, email, code)
+    values (invite_to_organization.organization_id, v_user.id, email, v_code);
+end;
+$$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
+
+create function app_public.get_organization_for_invitation(invitation_id uuid, code text = null)
+  returns app_public.organizations as $$
+declare
+  v_invitation app_public.organization_invitations;
+  v_organization app_public.organizations;
+begin
+  if app_public.current_user_id() is null then
+    raise exception 'You must log in to accept an invitation' using errcode = 'LOGIN';
+  end if;
+
+  select * into v_invitation from app_public.organization_invitations where id = invitation_id;
+
+  if v_invitation is null then
+    raise exception 'We could not find that invitation' using errcode = 'NTFND';
+  end if;
+
+  if v_invitation.user_id is not null then
+    if v_invitation.user_id is distinct from app_public.current_user_id() then
+      raise exception 'That invitation is not for you' using errcode = 'DNIED';
+    end if;
+  else
+    if v_invitation.code is distinct from code then
+      raise exception 'Incorrect invitation code' using errcode = 'DNIED';
+    end if;
+  end if;
+
+  select * into v_organization from app_public.organizations where id = v_invitation.organization_id;
+
+  return v_organization;
+end;
+$$ language plpgsql stable security definer set search_path = pg_catalog, public, pg_temp;
+
+create function app_public.accept_invitation_to_organization(invitation_id uuid, code text = null)
+  returns void as $$
+declare
+  v_organization app_public.organizations;
+begin
+  v_organization = app_public.get_organization_for_invitation(invitation_id, code);
+
+  -- Accept the user into the organization
+  insert into app_public.organization_memberships (organization_id, user_id)
+    values(v_organization.id, app_public.current_user_id())
+    on conflict do nothing;
+
+  -- Delete the invitation
+  delete from app_public.organization_invitations where id = invitation_id;
+end;
+$$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
+
+--------------------------------------------------------------------------------
+
+create trigger _500_send_email after insert on app_public.organization_invitations
+  for each row execute procedure app_private.tg__add_job('organization_invitations__send_invite');
+
+--------------------------------------------------------------------------------
+
+create function app_public.organizations_current_user_is_owner(
+  org app_public.organizations
+) returns boolean as $$
+  select exists(
+    select 1
+    from app_public.organization_memberships
+    where organization_id = org.id
+    and user_id = app_public.current_user_id()
+    and is_owner is true
+  )
+$$ language sql stable;
+
+create function app_public.organizations_current_user_is_billing_contact(
+  org app_public.organizations
+) returns boolean as $$
+  select exists(
+    select 1
+    from app_public.organization_memberships
+    where organization_id = org.id
+    and user_id = app_public.current_user_id()
+    and is_billing_contact is true
+  )
+$$ language sql stable;
+
+create policy update_owner on app_public.organizations for update using (exists(
+  select 1
+  from app_public.organization_memberships
+  where organization_id = organizations.id
+  and user_id = app_public.current_user_id()
+  and is_owner is true
+));
+
+create function app_public.remove_from_organization(
+  organization_id uuid,
+  user_id uuid
+) returns void as $$
+declare
+  v_my_membership app_public.organization_memberships;
+begin
+  select * into v_my_membership
+    from app_public.organization_memberships
+    where organization_memberships.organization_id = remove_from_organization.organization_id
+    and organization_memberships.user_id = app_public.current_user_id();
+
+  if (v_my_membership is null) then
+    -- I'm not a member of that organization
+    return;
+  elsif v_my_membership.is_owner and remove_from_organization.user_id <> app_public.current_user_id() then
+    -- Delete it
+  elsif v_my_membership.user_id = user_id then
+    -- Delete it
+  else
+    -- Not allowed to delete it
+    return;
+  end if;
+
+  if v_my_membership.is_billing_contact then
+    update app_public.organization_memberships
+      set is_billing_contact = false
+      where id = v_my_membership.id
+      returning * into v_my_membership;
+    update app_public.organization_memberships
+      set is_billing_contact = true
+      where organization_memberships.organization_id = remove_from_organization.organization_id
+      and organization_memberships.is_owner;
+  end if;
+
+  delete from app_public.organization_memberships
+    where organization_memberships.organization_id = remove_from_organization.organization_id
+    and organization_memberships.user_id = remove_from_organization.user_id;
+
+end;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
+
+--------------------------------------------------------------------------------
+
+create or replace function app_public.confirm_account_deletion(token text) returns boolean as $$
+declare
+  v_user_secret app_private.user_secrets;
+  v_token_max_duration interval = interval '3 days';
+begin
+  if app_public.current_user_id() is null then
+    raise exception 'You must log in to delete your account' using errcode = 'LOGIN';
+  end if;
+
+  select * into v_user_secret
+    from app_private.user_secrets
+    where user_secrets.user_id = app_public.current_user_id();
+
+  if v_user_secret is null then
+    -- Success: they're already deleted
+    return true;
+  end if;
+
+  -- Check the token
+  if v_user_secret.delete_account_token = token then
+    -- Token passes
+
+    -- Check that they are not the owner of any organizations
+    if exists(
+      select 1
+      from app_public.organization_memberships
+      where user_id = app_public.current_user_id()
+      and is_owner is true
+    ) then
+      raise exception 'You cannot delete your account until you are not the owner of any organizations.' using errcode = 'OWNER';
+    end if;
+
+    -- Reassign billing contact status back to the organization owner
+    update app_public.organization_memberships
+      set is_billing_contact = true
+      where is_owner = true
+      and organization_id in (
+        select organization_id
+        from app_public.organization_memberships my_memberships
+        where my_memberships.user_id = app_public.current_user_id()
+        and is_billing_contact is true
+      );
+
+    -- Delete their account :(
+    delete from app_public.users where id = app_public.current_user_id();
+    return true;
+  end if;
+
+  raise exception 'The supplied token was incorrect - perhaps you''re logged in to the wrong account, or the token has expired?' using errcode = 'DNIED';
+end;
+$$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
+
+create function app_public.delete_organization(organization_id uuid) returns void as $$
+begin
+  if exists(
+    select 1
+    from app_public.organization_memberships
+    where user_id = app_public.current_user_id()
+    and organization_memberships.organization_id = delete_organization.organization_id
+    and is_owner is true
+  ) then
+    delete from app_public.organizations where id = organization_id;
+  end if;
+end;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
+
+create function app_public.transfer_organization_ownership(organization_id uuid, user_id uuid) returns app_public.organizations as $$
+declare
+ v_org app_public.organizations;
+begin
+  if exists(
+    select 1
+    from app_public.organization_memberships
+    where organization_memberships.user_id = app_public.current_user_id()
+    and organization_memberships.organization_id = transfer_organization_ownership.organization_id
+    and is_owner is true
+  ) then
+    update app_public.organization_memberships
+      set is_owner = true
+      where organization_memberships.organization_id = transfer_organization_ownership.organization_id
+      and organization_memberships.user_id = transfer_organization_ownership.user_id;
+    if found then
+      update app_public.organization_memberships
+        set is_owner = false
+        where organization_memberships.organization_id = transfer_organization_ownership.organization_id
+        and organization_memberships.user_id = app_public.current_user_id();
+
+      select * into v_org from app_public.organizations where id = organization_id;
+      return v_org;
+    end if;
+  end if;
+  return null;
+end;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
+
+create function app_public.transfer_organization_billing_contact(organization_id uuid, user_id uuid) returns app_public.organizations as $$
+declare
+ v_org app_public.organizations;
+begin
+  if exists(
+    select 1
+    from app_public.organization_memberships
+    where organization_memberships.user_id = app_public.current_user_id()
+    and organization_memberships.organization_id = transfer_organization_billing_contact.organization_id
+    and is_owner is true
+  ) then
+    update app_public.organization_memberships
+      set is_billing_contact = true
+      where organization_memberships.organization_id = transfer_organization_billing_contact.organization_id
+      and organization_memberships.user_id = transfer_organization_billing_contact.user_id;
+    if found then
+      update app_public.organization_memberships
+        set is_billing_contact = false
+        where organization_memberships.organization_id = transfer_organization_billing_contact.organization_id
+        and organization_memberships.user_id <> transfer_organization_billing_contact.user_id
+        and is_billing_contact = true;
+
+      select * into v_org from app_public.organizations where id = organization_id;
+      return v_org;
+    end if;
+  end if;
+  return null;
+end;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;

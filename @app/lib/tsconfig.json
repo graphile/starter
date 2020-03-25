@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "declarationDir": "dist",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "es5",
+    "module": "commonjs",
+    "jsx": "react"
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

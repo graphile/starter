@@ -1,9 +1,10 @@
-import { withRootDb, snapshotSafe } from "../../helpers";
 import { PoolClient } from "pg";
+
+import { snapshotSafe, withRootDb } from "../../helpers";
 
 async function linkOrRegisterUser(
   client: PoolClient,
-  userId: number | null,
+  userId: string | null,
   service: string | null,
   identifier: string | null,
   profile: { [key: string]: any } | null,

@@ -1,0 +1,10 @@
+mutation TransferOrganizationOwnership($organizationId: UUID!, $userId: UUID!) {
+  transferOrganizationOwnership(
+    input: { organizationId: $organizationId, userId: $userId }
+  ) {
+    organization {
+      id
+      currentUserIsOwner
+    }
+  }
+}

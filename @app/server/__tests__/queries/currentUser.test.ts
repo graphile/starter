@@ -1,9 +1,9 @@
 import {
+  createUserAndLogIn,
+  deleteTestUsers,
+  runGraphQLQuery,
   setup,
   teardown,
-  runGraphQLQuery,
-  deleteTestUsers,
-  createUserAndLogIn,
 } from "../helpers";
 
 beforeEach(deleteTestUsers);

@@ -1,9 +1,10 @@
+import { Express } from "express";
+import { get } from "lodash";
 import passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github2";
-import { get } from "lodash";
-import installPassportStrategy from "./installPassportStrategy";
-import { Express } from "express";
+
 import { getWebsocketMiddlewares } from "../app";
+import installPassportStrategy from "./installPassportStrategy";
 
 interface DbSession {
   session_id: string;

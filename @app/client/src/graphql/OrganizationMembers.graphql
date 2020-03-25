@@ -1,0 +1,37 @@
+fragment OrganizationMembers_Membership on OrganizationMembership {
+  id
+  createdAt
+  isOwner
+  isBillingContact
+  user {
+    id
+    username
+    name
+  }
+}
+
+fragment OrganizationMembers_Organization on Organization {
+  id
+  ...OrganizationPage_Organization
+  name
+  slug
+  organizationMemberships(
+    first: 10
+    offset: $offset
+    orderBy: [MEMBER_NAME_ASC]
+  ) {
+    nodes {
+      id
+      ...OrganizationMembers_Membership
+    }
+    totalCount
+  }
+}
+
+query OrganizationMembers($slug: String!, $offset: Int = 0) {
+  ...OrganizationPage_Query
+  organizationBySlug(slug: $slug) {
+    id
+    ...OrganizationMembers_Organization
+  }
+}

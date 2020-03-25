@@ -1,15 +1,16 @@
+import { getTasks, runTaskListOnce } from "graphile-worker";
 import { mapValues } from "lodash";
 import { PoolClient } from "pg";
-import {
-  TEST_DATABASE_URL,
-  poolFromUrl,
-  deleteTestData,
-  asRoot,
-  User,
-  createUsers,
-  createSession,
-} from "../../__tests__/helpers";
 
+import {
+  asRoot,
+  createSession,
+  createUsers,
+  deleteTestData,
+  poolFromUrl,
+  TEST_DATABASE_URL,
+  User,
+} from "../../__tests__/helpers";
 /*
  * We need to inform jest that these files depend on changes to the database,
  * so we write a dummy file after current.sql is imported. This file has to be
@@ -83,7 +84,7 @@ export const withAnonymousDb = <T>(fn: (client: PoolClient) => Promise<T>) =>
 export const becomeRoot = (client: PoolClient) => client.query("reset role");
 export const becomeUser = async (
   client: PoolClient,
-  userOrUserId: User | number | null
+  userOrUserId: User | string | null
 ) => {
   await becomeRoot(client);
   const session = userOrUserId
@@ -98,7 +99,7 @@ export const becomeUser = async (
   );
 };
 
-export const getSessions = async (client: PoolClient, userId: number) => {
+export const getSessions = async (client: PoolClient, userId: string) => {
   const { rows } = await asRoot(client, () =>
     client.query(`select * from app_private.sessions where user_id = $1`, [
       userId,
@@ -187,3 +188,34 @@ export const getJobs = async (
   );
   return rows;
 };
+
+/******************************************************************************/
+
+export const runJobs = async (client: PoolClient) => {
+  return asRoot(client, async client => {
+    const taskList = await getTasks(`${__dirname}/../../worker/dist/tasks`);
+    await runTaskListOnce(taskList.tasks, client, {});
+  });
+};
+
+export const assertJobComplete = async (
+  client: PoolClient,
+  job: { id: string }
+) => {
+  return asRoot(client, async client => {
+    const {
+      rows: [row],
+    } = await client.query("select * from graphile_worker.jobs where id = $1", [
+      job.id,
+    ]);
+    expect(row).toBeFalsy();
+  });
+};
+
+export const clearEmails = () => {
+  global["TEST_EMAILS"] = [];
+};
+
+beforeEach(clearEmails);
+
+export const getEmails = () => global["TEST_EMAILS"];

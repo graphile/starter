@@ -10,7 +10,7 @@ context("RegisterAccount", () => {
     cy.getCy("loginpage-button-register").click();
 
     // Assertions
-    cy.url().should("equal", Cypress.env("ROOT_URL") + "/register");
+    cy.url().should("equal", Cypress.env("ROOT_URL") + "/register?next=%2F");
     cy.getCy("registerpage-name-label").should("exist");
   });
 
@@ -23,7 +23,6 @@ context("RegisterAccount", () => {
 
     // Assertions
     cy.getCy("registerpage-name-label").should("exist");
-    cy.contains("Registration failed");
     cy.contains("input your name");
     cy.contains("input your passphrase");
   });

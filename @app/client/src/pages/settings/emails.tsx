@@ -1,20 +1,30 @@
-import React, { useState, useCallback, useMemo } from "react";
-import { promisify } from "util";
-import SettingsLayout from "../../layout/SettingsLayout";
-import { NextPage } from "next";
 import {
-  useSettingsEmailsQuery,
-  useAddEmailMutation,
+  ErrorAlert,
+  P,
+  Redirect,
+  SettingsLayout,
+  Strong,
+} from "@app/components";
+import {
   EmailsForm_UserEmailFragment,
-  useResendEmailVerificationMutation,
-  useMakeEmailPrimaryMutation,
+  useAddEmailMutation,
   useDeleteEmailMutation,
+  useMakeEmailPrimaryMutation,
+  useResendEmailVerificationMutation,
+  useSettingsEmailsQuery,
 } from "@app/graphql";
-import { Alert, List, Avatar, Form, Input, Button } from "antd";
-import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
+import {
+  extractError,
+  formItemLayout,
+  getCodeFromError,
+  tailFormItemLayout,
+} from "@app/lib";
+import { Alert, Avatar, Button, Form, Input, List, PageHeader } from "antd";
+import { useForm } from "antd/lib/form/util";
 import { ApolloError } from "apollo-client";
-import { Redirect, ErrorAlert, H3, P, Strong } from "@app/components";
-import { getCodeFromError, extractError } from "../../errors";
+import { NextPage } from "next";
+import { Store } from "rc-field-form/lib/interface";
+import React, { useCallback, useState } from "react";
 
 function Email({
   email,
@@ -104,7 +114,8 @@ function Email({
 const Settings_Emails: NextPage = () => {
   const [showAddEmailForm, setShowAddEmailForm] = useState(false);
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
-  const { data, loading, error } = useSettingsEmailsQuery();
+  const query = useSettingsEmailsQuery();
+  const { data, loading, error } = query;
   const user = data && data.currentUser;
   const pageContent = (() => {
     if (error && !loading) {
@@ -135,7 +146,7 @@ const Settings_Emails: NextPage = () => {
               />
             </div>
           )}
-          <H3>Email addresses</H3>
+          <PageHeader title="Email addresses" />
           <P>
             <Strong>
               Account notices will be sent your your primary email address.
@@ -145,6 +156,8 @@ const Settings_Emails: NextPage = () => {
             until verified.
           </P>
           <List
+            bordered
+            size="large"
             dataSource={user.userEmails.nodes}
             renderItem={email => (
               <Email
@@ -152,29 +165,35 @@ const Settings_Emails: NextPage = () => {
                 hasOtherEmails={user.userEmails.nodes.length > 1}
               />
             )}
+            footer={
+              !showAddEmailForm ? (
+                <div>
+                  <Button
+                    type="primary"
+                    onClick={() => setShowAddEmailForm(true)}
+                    data-cy="settingsemails-button-addemail"
+                  >
+                    Add email
+                  </Button>
+                </div>
+              ) : (
+                <AddEmailForm
+                  onComplete={() => setShowAddEmailForm(false)}
+                  error={formError}
+                  setError={setFormError}
+                />
+              )
+            }
           />
-          {!showAddEmailForm ? (
-            <div>
-              <Button
-                type="primary"
-                onClick={() => setShowAddEmailForm(true)}
-                data-cy="settingsemails-button-addemail"
-              >
-                Add email
-              </Button>
-            </div>
-          ) : (
-            <WrappedAddEmailForm
-              onComplete={() => setShowAddEmailForm(false)}
-              error={formError}
-              setError={setFormError}
-            />
-          )}
         </div>
       );
     }
   })();
-  return <SettingsLayout href="/settings/emails">{pageContent}</SettingsLayout>;
+  return (
+    <SettingsLayout href="/settings/emails" query={query}>
+      {pageContent}
+    </SettingsLayout>
+  );
 };
 
 export default Settings_Emails;
@@ -183,54 +202,41 @@ interface FormValues {
   email: string;
 }
 
-interface AddEmailFormProps extends FormComponentProps<FormValues> {
+interface AddEmailFormProps {
   onComplete: () => void;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
 }
 
-function AddEmailForm({
-  form,
-  error,
-  setError,
-  onComplete,
-}: AddEmailFormProps) {
+function AddEmailForm({ error, setError, onComplete }: AddEmailFormProps) {
+  const [form] = useForm();
   const [addEmail] = useAddEmailMutation();
-  const validateFields: (
-    fieldNames?: Array<string>,
-    options?: ValidateFieldsOptions
-  ) => Promise<FormValues> = useMemo(
-    () => promisify((...args) => form.validateFields(...args)),
-    [form]
-  );
   const handleSubmit = useCallback(
-    async e => {
-      e.preventDefault();
+    async (values: Store) => {
       try {
         setError(null);
-        const values = await validateFields();
         await addEmail({ variables: { email: values.email } });
         onComplete();
       } catch (e) {
         setError(e);
       }
     },
-    [addEmail, onComplete, setError, validateFields]
+    [addEmail, onComplete, setError]
   );
-  const { getFieldDecorator } = form;
   const code = getCodeFromError(error);
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Item label="New email">
-        {getFieldDecorator("email", {
-          initialValue: "",
-          rules: [
-            {
-              required: true,
-              message: "Please enter an email address",
-            },
-          ],
-        })(<Input data-cy="settingsemails-input-email" />)}
+    <Form {...formItemLayout} form={form} onFinish={handleSubmit}>
+      <Form.Item
+        label="New email"
+        name="email"
+        rules={[
+          {
+            required: true,
+            message: "Please enter an email address",
+          },
+        ]}
+      >
+        <Input data-cy="settingsemails-input-email" />
       </Form.Item>
       {error ? (
         <Form.Item>
@@ -251,7 +257,7 @@ function AddEmailForm({
           />
         </Form.Item>
       ) : null}
-      <Form.Item>
+      <Form.Item {...tailFormItemLayout}>
         <Button htmlType="submit" data-cy="settingsemails-button-submit">
           Add email
         </Button>
@@ -259,10 +265,3 @@ function AddEmailForm({
     </Form>
   );
 }
-
-const WrappedAddEmailForm = Form.create<AddEmailFormProps>({
-  name: "addEmailForm",
-  onValuesChange(props) {
-    props.setError(null);
-  },
-})(AddEmailForm);

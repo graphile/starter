@@ -1,4 +1,4 @@
-import { Express, ErrorRequestHandler } from "express";
+import { ErrorRequestHandler, Express } from "express";
 import * as fs from "fs";
 import { template, TemplateExecutor } from "lodash";
 import { resolve } from "path";

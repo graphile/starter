@@ -1,11 +1,12 @@
-import * as nodemailer from "nodemailer";
-import * as aws from "aws-sdk";
 import { awsRegion } from "@app/config";
-import { promises as fsp } from "fs";
+import * as aws from "aws-sdk";
 import chalk from "chalk";
+import { promises as fsp } from "fs";
+import * as nodemailer from "nodemailer";
 
 const { readFile, writeFile } = fsp;
 
+const isTest = process.env.NODE_ENV === "test";
 const isDev = process.env.NODE_ENV !== "production";
 
 let transporterPromise: Promise<nodemailer.Transporter>;
@@ -16,7 +17,11 @@ let logged = false;
 export default function getTransport(): Promise<nodemailer.Transporter> {
   if (!transporterPromise) {
     transporterPromise = (async () => {
-      if (isDev) {
+      if (isTest) {
+        return nodemailer.createTransport({
+          jsonTransport: true,
+        });
+      } else if (isDev) {
         let account;
         try {
           const testAccountJson = await readFile(etherealFilename, "utf8");

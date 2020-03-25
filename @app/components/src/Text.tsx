@@ -1,5 +1,5 @@
-import React, { FC } from "react";
 import { Typography } from "antd";
+import React, { FC } from "react";
 
 // Extract the type of a function's first argument
 // Usage: `Arg1<typeof functionHere>`

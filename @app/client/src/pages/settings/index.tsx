@@ -1,26 +1,30 @@
-import React, { useState, useCallback, useMemo, SyntheticEvent } from "react";
-import SettingsLayout from "../../layout/SettingsLayout";
-import { NextPage } from "next";
+import { ErrorAlert, Redirect, SettingsLayout } from "@app/components";
 import {
-  useUpdateUserMutation,
-  useSettingsProfileQuery,
   ProfileSettingsForm_UserFragment,
+  useSettingsProfileQuery,
+  useUpdateUserMutation,
 } from "@app/graphql";
-import { promisify } from "util";
-import { Form, Input, Alert, Button } from "antd";
+import {
+  extractError,
+  formItemLayout,
+  getCodeFromError,
+  tailFormItemLayout,
+} from "@app/lib";
+import { Alert, Button, Form, Input, PageHeader } from "antd";
+import { useForm } from "antd/lib/form/util";
 import { ApolloError } from "apollo-client";
-import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { getCodeFromError, extractError } from "../../errors";
-import { formItemLayout, tailFormItemLayout } from "../../forms";
-import { Redirect, ErrorAlert, H3 } from "@app/components";
+import { NextPage } from "next";
+import { Store } from "rc-field-form/lib/interface";
+import React, { useCallback, useState } from "react";
 
 const Settings_Profile: NextPage = () => {
   const [formError, setFormError] = useState<Error | ApolloError | null>(null);
-  const { data, loading, error } = useSettingsProfileQuery();
+  const query = useSettingsProfileQuery();
+  const { data, loading, error } = query;
   return (
-    <SettingsLayout href="/settings">
+    <SettingsLayout href="/settings" query={query}>
       {data && data.currentUser ? (
-        <WrappedProfileSettingsForm
+        <ProfileSettingsForm
           error={formError}
           setError={setFormError}
           user={data.currentUser}
@@ -46,7 +50,7 @@ interface FormValues {
   name: string;
 }
 
-interface ProfileSettingsFormProps extends FormComponentProps<FormValues> {
+interface ProfileSettingsFormProps {
   user: ProfileSettingsForm_UserFragment;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
@@ -54,27 +58,18 @@ interface ProfileSettingsFormProps extends FormComponentProps<FormValues> {
 
 function ProfileSettingsForm({
   user,
-  form,
   error,
   setError,
 }: ProfileSettingsFormProps) {
+  const [form] = useForm();
   const [updateUser] = useUpdateUserMutation();
   const [success, setSuccess] = useState(false);
-  const validateFields: (
-    fieldNames?: Array<string>,
-    options?: ValidateFieldsOptions
-  ) => Promise<FormValues> = useMemo(
-    () => promisify((...args) => form.validateFields(...args)),
-    [form]
-  );
 
   const handleSubmit = useCallback(
-    async (e: SyntheticEvent) => {
-      e.preventDefault();
+    async (values: Store) => {
       setSuccess(false);
       setError(null);
       try {
-        const values = await validateFields();
         await updateUser({
           variables: {
             id: user.id,
@@ -89,52 +84,56 @@ function ProfileSettingsForm({
       } catch (e) {
         const errcode = getCodeFromError(e);
         if (errcode === "23505") {
-          form.setFields({
-            username: {
+          form.setFields([
+            {
+              name: "username",
               value: form.getFieldValue("username"),
               errors: [
-                new Error(
-                  "This username is already in use, please pick a different name"
-                ),
+                "This username is already in use, please pick a different name",
               ],
             },
-          });
+          ]);
         } else {
           setError(e);
         }
       }
     },
-    [setError, validateFields, updateUser, user.id, form]
+    [setError, updateUser, user.id, form]
   );
-
-  const { getFieldDecorator } = form;
 
   const code = getCodeFromError(error);
   return (
     <div>
-      <H3>Edit Profile</H3>
-      <Form {...formItemLayout} onSubmit={handleSubmit}>
-        <Form.Item label="Name">
-          {getFieldDecorator("name", {
-            initialValue: user.name,
-            rules: [
-              {
-                required: true,
-                message: "Please enter your name",
-              },
-            ],
-          })(<Input />)}
+      <PageHeader title="Edit profile" />
+      <Form
+        {...formItemLayout}
+        form={form}
+        onFinish={handleSubmit}
+        initialValues={{ name: user.name, username: user.username }}
+      >
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: "Please enter your name",
+            },
+          ]}
+        >
+          <Input />
         </Form.Item>
-        <Form.Item label="Username">
-          {getFieldDecorator("username", {
-            initialValue: user.username,
-            rules: [
-              {
-                required: true,
-                message: "Please choose a username",
-              },
-            ],
-          })(<Input />)}
+        <Form.Item
+          label="Username"
+          name="username"
+          rules={[
+            {
+              required: true,
+              message: "Please choose a username",
+            },
+          ]}
+        >
+          <Input />
         </Form.Item>
         {error ? (
           <Form.Item>
@@ -166,10 +165,3 @@ function ProfileSettingsForm({
     </div>
   );
 }
-
-const WrappedProfileSettingsForm = Form.create<ProfileSettingsFormProps>({
-  name: "updateUserForm",
-  onValuesChange(props) {
-    props.setError(null);
-  },
-})(ProfileSettingsForm);

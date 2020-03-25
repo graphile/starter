@@ -1,30 +1,28 @@
-import React, {
-  useRef,
-  useEffect,
-  FormEvent,
-  useMemo,
-  useCallback,
-  useState,
-} from "react";
-import SharedLayout, {
-  Row,
+import { LockOutlined, UserAddOutlined, UserOutlined } from "@ant-design/icons";
+import { useApolloClient } from "@apollo/react-hooks";
+import {
+  ButtonLink,
   Col,
+  Redirect,
+  Row,
+  SharedLayout,
   SharedLayoutChildProps,
-} from "../layout/SharedLayout";
+  SocialLoginOptions,
+} from "@app/components";
+import { useLoginMutation, useSharedQuery } from "@app/graphql";
+import {
+  extractError,
+  getCodeFromError,
+  resetWebsocketConnection,
+} from "@app/lib";
+import { Alert, Button, Form, Input } from "antd";
+import { useForm } from "antd/lib/form/util";
+import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import Link from "next/link";
-import { Form, Icon, Input, Button, Alert, Typography } from "antd";
-import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { promisify } from "util";
-import { useApolloClient } from "@apollo/react-hooks";
-import { useLoginMutation } from "@app/graphql";
 import Router from "next/router";
-import { ApolloError } from "apollo-client";
-import { getCodeFromError, extractError } from "../errors";
-import { Redirect, SocialLoginOptions } from "@app/components";
-import { resetWebsocketConnection } from "../lib/withApollo";
-
-const { Paragraph } = Typography;
+import { Store } from "rc-field-form/lib/interface";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 function hasErrors(fieldsError: Object) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -34,7 +32,7 @@ interface LoginProps {
   next: string | null;
 }
 
-function isSafe(nextUrl: string | null) {
+export function isSafe(nextUrl: string | null) {
   return (nextUrl && nextUrl[0] === "/") || false;
 }
 
@@ -45,17 +43,18 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const next: string = isSafe(rawNext) ? rawNext! : "/";
+  const query = useSharedQuery();
   return (
-    <SharedLayout title="Sign in">
+    <SharedLayout title="Sign in" query={query}>
       {({ currentUser }: SharedLayoutChildProps) =>
         currentUser ? (
           <Redirect href={next} />
         ) : (
-          <Row type="flex" justify="center" style={{ marginTop: 32 }}>
+          <Row justify="center" style={{ marginTop: 32 }}>
             {showLogin ? (
               <Col xs={24} sm={12}>
                 <Row>
-                  <WrappedLoginForm
+                  <LoginForm
                     onSuccessRedirectTo={next}
                     onCancel={() => setShowLogin(false)}
                     error={error}
@@ -69,10 +68,11 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
                   <Col span={28}>
                     <Button
                       data-cy="loginpage-button-withusername"
-                      icon="mail"
+                      icon={<UserOutlined />}
                       size="large"
                       block
                       onClick={() => setShowLogin(true)}
+                      type="primary"
                     >
                       Sign in with E-mail or Username
                     </Button>
@@ -83,14 +83,19 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
                     <SocialLoginOptions next={next} />
                   </Col>
                 </Row>
-                <Row type="flex" justify="center">
+                <Row justify="center">
                   <Col>
-                    <Paragraph>
-                      No Account?{" "}
-                      <Link href="/register">
-                        <a data-cy="loginpage-button-register">Create One</a>
-                      </Link>
-                    </Paragraph>
+                    <ButtonLink
+                      icon={<UserAddOutlined />}
+                      size="large"
+                      block
+                      type="default"
+                      href={`/register?next=${encodeURIComponent(next)}`}
+                    >
+                      <a data-cy="loginpage-button-register">
+                        Create an account
+                      </a>
+                    </ButtonLink>
                   </Col>
                 </Row>
               </Col>
@@ -108,12 +113,7 @@ Login.getInitialProps = async ({ query }) => ({
 
 export default Login;
 
-interface FormValues {
-  username: string;
-  password: string;
-}
-
-interface LoginFormProps extends FormComponentProps<FormValues> {
+interface LoginFormProps {
   onSuccessRedirectTo: string;
   error: Error | ApolloError | null;
   setError: (error: Error | ApolloError | null) => void;
@@ -121,28 +121,20 @@ interface LoginFormProps extends FormComponentProps<FormValues> {
 }
 
 function LoginForm({
-  form,
   onSuccessRedirectTo,
   onCancel,
   error,
   setError,
 }: LoginFormProps) {
+  const [form] = useForm();
   const [login] = useLoginMutation({});
   const client = useApolloClient();
-  const validateFields: (
-    fieldNames?: Array<string>,
-    options?: ValidateFieldsOptions
-  ) => Promise<FormValues> = useMemo(
-    () => promisify((...args) => form.validateFields(...args)),
-    [form]
-  );
 
+  const [submitDisabled, setSubmitDisabled] = useState(false);
   const handleSubmit = useCallback(
-    async (e: FormEvent) => {
-      e.preventDefault();
+    async (values: Store) => {
       setError(null);
       try {
-        const values = await validateFields();
         await login({
           variables: {
             username: values.username,
@@ -156,18 +148,20 @@ function LoginForm({
       } catch (e) {
         const code = getCodeFromError(e);
         if (code === "CREDS") {
-          form.setFields({
-            password: {
+          form.setFields([
+            {
+              name: "password",
               value: form.getFieldValue("password"),
-              errors: [new Error("Incorrect username or passphrase")],
+              errors: ["Incorrect username or passphrase"],
             },
-          });
+          ]);
+          setSubmitDisabled(true);
         } else {
           setError(e);
         }
       }
     },
-    [client, form, login, onSuccessRedirectTo, setError, validateFields]
+    [client, form, login, onSuccessRedirectTo, setError]
   );
 
   const focusElement = useRef<Input>(null);
@@ -176,50 +170,47 @@ function LoginForm({
     [focusElement]
   );
 
-  const { getFieldDecorator, getFieldsError, getFieldError } = form;
-
-  // Only show error after a field is touched.
-  const userNameError = getFieldError("username");
-  const passwordError = getFieldError("password");
+  const handleValuesChange = useCallback(() => {
+    setSubmitDisabled(hasErrors(form.getFieldsError().length !== 0));
+  }, [form]);
 
   const code = getCodeFromError(error);
 
   return (
-    <Form layout="vertical" onSubmit={handleSubmit}>
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={handleSubmit}
+      onValuesChange={handleValuesChange}
+      style={{ width: "100%" }}
+    >
       <Form.Item
-        validateStatus={userNameError ? "error" : ""}
-        help={userNameError || ""}
+        name="username"
+        rules={[{ required: true, message: "Please input your username" }]}
       >
-        {getFieldDecorator("username", {
-          rules: [{ required: true, message: "Please input your username" }],
-        })(
-          <Input
-            size="large"
-            prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
-            placeholder="E-mail or Username"
-            autoComplete="email username"
-            ref={focusElement}
-            data-cy="loginpage-input-username"
-          />
-        )}
+        <Input
+          size="large"
+          prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+          placeholder="E-mail or Username"
+          autoComplete="email username"
+          ref={focusElement}
+          data-cy="loginpage-input-username"
+        />
       </Form.Item>
       <Form.Item
-        validateStatus={passwordError ? "error" : ""}
-        help={passwordError || ""}
+        name="password"
+        rules={[{ required: true, message: "Please input your passphrase" }]}
       >
-        {getFieldDecorator("password", {
-          rules: [{ required: true, message: "Please input your passphrase" }],
-        })(
-          <Input
-            prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
-            size="large"
-            type="password"
-            placeholder="Passphrase"
-            autoComplete="current-password"
-            data-cy="loginpage-input-password"
-          />
-        )}
-
+        <Input
+          prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+          size="large"
+          type="password"
+          placeholder="Passphrase"
+          autoComplete="current-password"
+          data-cy="loginpage-input-password"
+        />
+      </Form.Item>
+      <Form.Item>
         <Link href="/forgot">
           <a>Forgotten passphrase?</a>
         </Link>
@@ -248,7 +239,7 @@ function LoginForm({
         <Button
           type="primary"
           htmlType="submit"
-          disabled={hasErrors(getFieldsError())}
+          disabled={submitDisabled}
           data-cy="loginpage-button-submit"
         >
           Sign in
@@ -260,10 +251,3 @@ function LoginForm({
     </Form>
   );
 }
-
-const WrappedLoginForm = Form.create<LoginFormProps>({
-  name: "login",
-  onValuesChange(props) {
-    props.setError(null);
-  },
-})(LoginForm);

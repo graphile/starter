@@ -1,8 +1,9 @@
-import { Server } from "http";
 import express, { Express } from "express";
+import { Server } from "http";
+import { Middleware } from "postgraphile";
+
 import * as middleware from "./middleware";
 import { makeShutdownActions, ShutdownAction } from "./shutdownActions";
-import { Middleware } from "postgraphile";
 import { sanitizeEnv } from "./utils";
 
 // Server may not always be supplied, e.g. where mounting on a sub-route

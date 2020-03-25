@@ -1,5 +1,6 @@
 import { PoolClient } from "pg";
-import { withRootDb, createUsers, getJobs, clearJobs } from "../../helpers";
+
+import { clearJobs, createUsers, getJobs, withRootDb } from "../../helpers";
 
 export async function forgotPassword(
   client: PoolClient,

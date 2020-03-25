@@ -1,5 +1,6 @@
-import React from "react";
+import { GithubOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import React from "react";
 
 export interface SocialLoginOptionsProps {
   next: string;
@@ -15,7 +16,13 @@ export function SocialLoginOptions({
   buttonTextFromService = defaultButtonTextFromService,
 }: SocialLoginOptionsProps) {
   return (
-    <Button block size="large" icon="github" href={`/auth/github?next=${next}`}>
+    <Button
+      block
+      size="large"
+      icon={<GithubOutlined />}
+      href={`/auth/github?next=${encodeURIComponent(next)}`}
+      type="primary"
+    >
       {buttonTextFromService("GitHub")}
     </Button>
   );

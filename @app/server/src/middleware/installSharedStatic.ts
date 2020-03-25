@@ -1,4 +1,4 @@
-import { static as staticMiddleware, Express } from "express";
+import { Express, static as staticMiddleware } from "express";
 
 export default (app: Express) => {
   app.use(staticMiddleware(`${__dirname}/../../public`));

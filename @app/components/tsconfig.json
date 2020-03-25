@@ -6,10 +6,18 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
     "declarationDir": "dist",
-    "lib": ["es2018", "esnext.asynciterable"],
-    "target": "es2018",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "es5",
     "module": "commonjs",
     "jsx": "react"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    {
+      "path": "../graphql"
+    },
+    {
+      "path": "../lib"
+    }
+  ]
 }

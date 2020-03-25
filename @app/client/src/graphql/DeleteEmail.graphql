@@ -1,6 +1,6 @@
 #import "./EmailsForm_UserEmail.graphql"
 
-mutation DeleteEmail($emailId: Int!) {
+mutation DeleteEmail($emailId: UUID!) {
   deleteUserEmail(input: { id: $emailId }) {
     user {
       id

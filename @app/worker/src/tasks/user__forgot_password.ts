@@ -1,11 +1,12 @@
 import { Task } from "graphile-worker";
+
 import { SendEmailPayload } from "./send_email";
 
 interface UserForgotPasswordPayload {
   /**
    * user id
    */
-  id: number;
+  id: string;
 
   /**
    * email address

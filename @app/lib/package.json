@@ -1,0 +1,31 @@
+{
+  "name": "@app/lib",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "dependencies": {
+    "apollo-cache-inmemory": "^1.6.5",
+    "apollo-client": "^2.6.8",
+    "apollo-link": "^1.2.13",
+    "apollo-link-error": "^1.1.11",
+    "apollo-link-http": "^1.5.15",
+    "apollo-link-ws": "^1.0.18",
+    "graphql": "^14.4.2",
+    "next-with-apollo": "^4.3.0",
+    "rc-field-form": "^1.1.1",
+    "subscriptions-transport-ws": "^0.9.0",
+    "ws": "^7.2.0",
+    "zxcvbn": "^4.4.2",
+    "tslib": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.2",
+    "@types/ws": "^7.2.0",
+    "@types/zxcvbn": "^4.4.0",
+    "express": "^4.17.1",
+    "postgraphile": "^4.5.5",
+    "typescript": "^3.7.5"
+  }
+}
