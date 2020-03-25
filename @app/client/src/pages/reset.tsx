@@ -1,4 +1,10 @@
-import { Col, PasswordStrength, Row, SharedLayout } from "@app/components";
+import {
+  AuthRestrict,
+  Col,
+  PasswordStrength,
+  Row,
+  SharedLayout,
+} from "@app/components";
 import { useResetPasswordMutation, useSharedQuery } from "@app/graphql";
 import { formItemLayout, setPasswordInfo, tailFormItemLayout } from "@app/lib";
 import { Alert, Button, Form, Input } from "antd";
@@ -113,7 +119,11 @@ const ResetPage: NextPage<IProps> = ({
   );
 
   return (
-    <SharedLayout title="Reset Password" query={query}>
+    <SharedLayout
+      title="Reset Password"
+      query={query}
+      forbidWhen={AuthRestrict.LOGGED_IN}
+    >
       <Row>
         <Col>
           <div>

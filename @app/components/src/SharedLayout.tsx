@@ -17,6 +17,7 @@ import * as React from "react";
 import { useCallback } from "react";
 
 import { ErrorAlert, H3, StandardWidth, Warn } from ".";
+import { Redirect } from "./Redirect";
 
 const { Header, Content, Footer } = Layout;
 const { Text } = Typography;
@@ -38,6 +39,12 @@ export interface SharedLayoutChildProps {
   error?: ApolloError | Error;
   loading: boolean;
   currentUser?: SharedLayout_UserFragment | null;
+}
+
+export enum AuthRestrict {
+  LOGGED_IN = "LOGGED_IN",
+  LOGGED_OUT = "LOGGED_OUT",
+  NEVER = "NEVER",
 }
 
 export interface SharedLayoutProps {
@@ -64,6 +71,7 @@ export interface SharedLayoutProps {
     | ((props: SharedLayoutChildProps) => React.ReactNode);
   noPad?: boolean;
   noHandleErrors?: boolean;
+  forbidWhen?: AuthRestrict;
 }
 
 /* The Apollo `useSubscription` hook doesn't currently allow skipping the
@@ -88,16 +96,25 @@ export function SharedLayout({
   titleHrefAs,
   noPad = false,
   noHandleErrors = false,
-  children,
   query,
+  forbidWhen = AuthRestrict.NEVER,
+  children,
 }: SharedLayoutProps) {
   const router = useRouter();
   const currentUrl = router.asPath;
   const client = useApolloClient();
   const [logout] = useLogoutMutation();
-  const handleLogout = useCallback(async () => {
-    await logout();
-    client.resetStore();
+  const handleLogout = useCallback(() => {
+    const reset = async () => {
+      Router.events.off("routeChangeComplete", reset);
+      try {
+        await logout();
+        client.resetStore();
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    Router.events.on("routeChangeComplete", reset);
     Router.push("/");
   }, [client, logout]);
   const renderChildren = (props: SharedLayoutChildProps) => {
@@ -113,6 +130,24 @@ export function SharedLayout({
       ) : (
         children
       );
+    if (data && data.currentUser && forbidWhen === AuthRestrict.LOGGED_IN) {
+      return (
+        <StandardWidth>
+          <Redirect href={"/"} />
+        </StandardWidth>
+      );
+    } else if (
+      data &&
+      data.currentUser === null &&
+      !loading &&
+      !error &&
+      forbidWhen === AuthRestrict.LOGGED_OUT
+    ) {
+      return (
+        <Redirect href={`/login?next=${encodeURIComponent(router.asPath)}`} />
+      );
+    }
+
     return noPad ? inner : <StandardWidth>{inner}</StandardWidth>;
   };
   const { data, loading, error } = query;

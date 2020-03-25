@@ -30,7 +30,7 @@ export function useOrganizationLoading(
     child = <ErrorAlert error={error} />;
   } else {
     // TODO: 404
-    child = <FourOhFour />;
+    child = <FourOhFour currentUser={data?.currentUser} />;
   }
 
   return child ? (

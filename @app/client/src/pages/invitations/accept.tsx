@@ -1,5 +1,6 @@
 import { QueryResult } from "@apollo/react-common";
 import {
+  AuthRestrict,
   ButtonLink,
   ErrorAlert,
   Redirect,
@@ -45,7 +46,12 @@ const InvitationAccept: NextPage<IProps> = props => {
     fetchPolicy: "network-only",
   });
   return (
-    <SharedLayout title="Accept Invitation" query={query} noHandleErrors>
+    <SharedLayout
+      title="Accept Invitation"
+      query={query}
+      noHandleErrors
+      forbidWhen={AuthRestrict.LOGGED_OUT}
+    >
       {({ currentUser, error, loading }) =>
         !currentUser && !error && !loading ? (
           <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />

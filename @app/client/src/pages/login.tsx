@@ -1,6 +1,7 @@
 import { LockOutlined, UserAddOutlined, UserOutlined } from "@ant-design/icons";
 import { useApolloClient } from "@apollo/react-hooks";
 import {
+  AuthRestrict,
   ButtonLink,
   Col,
   Redirect,
@@ -45,7 +46,11 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
   const next: string = isSafe(rawNext) ? rawNext! : "/";
   const query = useSharedQuery();
   return (
-    <SharedLayout title="Sign in" query={query}>
+    <SharedLayout
+      title="Sign in"
+      query={query}
+      forbidWhen={AuthRestrict.LOGGED_IN}
+    >
       {({ currentUser }: SharedLayoutChildProps) =>
         currentUser ? (
           <Redirect href={next} />

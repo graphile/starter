@@ -7,6 +7,7 @@ import React from "react";
 
 import { Redirect } from "./Redirect";
 import {
+  AuthRestrict,
   contentMinHeight,
   SharedLayout,
   SharedLayoutChildProps,
@@ -75,7 +76,12 @@ export function SettingsLayout({
   const fullHref =
     href + (router && router.query ? `?${qs.stringify(router.query)}` : "");
   return (
-    <SharedLayout title={`Settings: ${page.title}`} noPad query={query}>
+    <SharedLayout
+      title={`Settings: ${page.title}`}
+      noPad
+      query={query}
+      forbidWhen={AuthRestrict.LOGGED_OUT}
+    >
       {({ currentUser, error, loading }: SharedLayoutChildProps) =>
         !currentUser && !error && !loading ? (
           <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />

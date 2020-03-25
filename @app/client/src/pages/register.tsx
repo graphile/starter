@@ -1,6 +1,11 @@
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { useApolloClient } from "@apollo/react-hooks";
-import { PasswordStrength, Redirect, SharedLayout } from "@app/components";
+import {
+  AuthRestrict,
+  PasswordStrength,
+  Redirect,
+  SharedLayout,
+} from "@app/components";
 import { useRegisterMutation, useSharedQuery } from "@app/graphql";
 import {
   extractError,
@@ -176,7 +181,11 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
 
   const code = getCodeFromError(error);
   return (
-    <SharedLayout title="Register" query={query}>
+    <SharedLayout
+      title="Register"
+      query={query}
+      forbidWhen={AuthRestrict.LOGGED_IN}
+    >
       {({ currentUser }) =>
         currentUser ? (
           <Redirect href={next} />

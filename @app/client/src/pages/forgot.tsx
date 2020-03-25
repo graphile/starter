@@ -1,5 +1,5 @@
 import { UserOutlined } from "@ant-design/icons";
-import { SharedLayout } from "@app/components";
+import { AuthRestrict, SharedLayout } from "@app/components";
 import { useForgotPasswordMutation, useSharedQuery } from "@app/graphql";
 import { extractError, getCodeFromError } from "@app/lib";
 import { Alert, Button, Form, Input } from "antd";
@@ -60,7 +60,11 @@ const ForgotPassword: NextPage = () => {
   }
 
   return (
-    <SharedLayout title="Forgot Password" query={query}>
+    <SharedLayout
+      title="Forgot Password"
+      query={query}
+      forbidWhen={AuthRestrict.LOGGED_IN}
+    >
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <Form.Item
           name="email"
