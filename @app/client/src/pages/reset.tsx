@@ -122,7 +122,10 @@ const ResetPage: NextPage<IProps> = ({
     <SharedLayout
       title="Reset Password"
       query={query}
-      forbidWhen={AuthRestrict.LOGGED_IN}
+      forbidWhen={
+        // reset is used to change password of OAuth-authenticated users
+        AuthRestrict.NEVER
+      }
     >
       <Row>
         <Col flex={1}>

@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:acbf6f7f09835d3e82ded26cb6ecb83b9bc50bb0
+--! Hash: sha1:af3861c450adf4a6d08a62fd910fa2b0e8f394fc
 
 drop schema if exists app_public cascade;
 
@@ -36,12 +36,69 @@ create schema app_private;
 
 create function app_private.tg__add_job() returns trigger as $$
 begin
-  perform graphile_worker.add_job(tg_argv[0], json_build_object('id', NEW.id), coalesce(tg_argv[1], public.gen_random_uuid()::text));
+  perform graphile_worker.add_job(tg_argv[0], json_build_object('id', NEW.id));
   return NEW;
 end;
 $$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
 comment on function app_private.tg__add_job() is
   E'Useful shortcut to create a job on insert/update. Pass the task name as the first trigger argument, and optionally the queue name as the second argument. The record id will automatically be available on the JSON payload.';
+
+create function app_private.tg__add_audit_job() returns trigger as $$
+declare
+  v_user_id uuid;
+  v_type text = TG_ARGV[0];
+  v_user_id_attribute text = TG_ARGV[1];
+  v_extra_attribute1 text = TG_ARGV[2];
+  v_extra_attribute2 text = TG_ARGV[3];
+  v_extra_attribute3 text = TG_ARGV[4];
+  v_extra1 text;
+  v_extra2 text;
+  v_extra3 text;
+begin
+  if v_user_id_attribute is null then
+    raise exception 'Invalid tg__add_audit_job call';
+  end if;
+
+  execute 'select ($1.' || quote_ident(v_user_id_attribute) || ')::uuid'
+    using (case when TG_OP = 'INSERT' then NEW else OLD end)
+    into v_user_id;
+
+  if v_extra_attribute1 is not null then
+    execute 'select ($1.' || quote_ident(v_extra_attribute1) || ')::text'
+      using (case when TG_OP = 'DELETE' then OLD else NEW end)
+      into v_extra1;
+  end if;
+  if v_extra_attribute2 is not null then
+    execute 'select ($1.' || quote_ident(v_extra_attribute2) || ')::text'
+      using (case when TG_OP = 'DELETE' then OLD else NEW end)
+      into v_extra2;
+  end if;
+  if v_extra_attribute3 is not null then
+    execute 'select ($1.' || quote_ident(v_extra_attribute3) || ')::text'
+      using (case when TG_OP = 'DELETE' then OLD else NEW end)
+      into v_extra3;
+  end if;
+
+  if v_user_id is not null then
+    perform graphile_worker.add_job(
+      'user__audit',
+      json_build_object(
+        'type', v_type,
+        'user_id', v_user_id,
+        'extra1', v_extra1,
+        'extra2', v_extra2,
+        'extra3', v_extra3,
+        'current_user_id', app_public.current_user_id(),
+        'schema', TG_TABLE_SCHEMA,
+        'table', TG_TABLE_NAME
+      ));
+  end if;
+
+  return NEW;
+end;
+$$ language plpgsql volatile security definer set search_path to pg_catalog, public, pg_temp;
+comment on function app_private.tg__add_audit_job() is
+  E'For notifying a user that an auditable action has taken place. Call with audit event name, user ID attribute name, and optionally another value to be included (e.g. the PK of the table, or some other relevant information). e.g. `tg__add_audit_job(''added_email'', ''user_id'', ''email'')`';
 
 /**********/
 
@@ -227,6 +284,24 @@ create trigger _100_timestamps
   before insert or update on app_public.user_emails
   for each row
   execute procedure app_private.tg__timestamps();
+create trigger _500_audit_added
+  after insert on app_public.user_emails
+  for each row
+  execute procedure app_private.tg__add_audit_job(
+    'added_email',
+    'user_id',
+    'id',
+    'email'
+  );
+create trigger _500_audit_removed
+  after delete on app_public.user_emails
+  for each row
+  execute procedure app_private.tg__add_audit_job(
+    'removed_email',
+    'user_id',
+    'id',
+    'email'
+  );
 
 create function app_public.tg_user_emails__forbid_if_verified() returns trigger as $$
 begin
@@ -342,6 +417,17 @@ comment on column app_public.user_authentications.details is
 
 create policy select_own on app_public.user_authentications for select using (user_id = app_public.current_user_id());
 create policy delete_own on app_public.user_authentications for delete using (user_id = app_public.current_user_id()); -- TODO check this isn't the last one, or that they have a verified email address
+
+create trigger _500_audit_removed
+  after delete on app_public.user_authentications
+  for each row
+  execute procedure app_private.tg__add_audit_job(
+    'unlinked_account',
+    'user_id',
+    'service',
+    'identifier'
+  );
+
 
 grant select on app_public.user_authentications to :DATABASE_VISITOR;
 grant delete on app_public.user_authentications to :DATABASE_VISITOR;
@@ -591,6 +677,13 @@ begin
         failed_reset_password_attempts = 0,
         first_failed_reset_password_attempt = null
       where user_secrets.user_id = v_user.id;
+      perform graphile_worker.add_job(
+        'user__audit',
+        json_build_object(
+          'type', 'reset_password',
+          'user_id', v_user.id,
+          'current_user_id', app_public.current_user_id()
+        ));
       return true;
     else
       -- Wrong token, bump all the attempt tracking figures
@@ -715,6 +808,13 @@ begin
       set
         password_hash = crypt(new_password, gen_salt('bf'))
       where user_secrets.user_id = v_user.id;
+      perform graphile_worker.add_job(
+        'user__audit',
+        json_build_object(
+          'type', 'change_password',
+          'user_id', v_user.id,
+          'current_user_id', app_public.current_user_id()
+        ));
       return true;
     else
       raise exception 'Incorrect password' using errcode = 'CREDS';
@@ -890,6 +990,15 @@ begin
         (f_user_id, f_service, f_identifier, f_profile) returning id, user_id into v_matched_authentication_id, v_matched_user_id;
       insert into app_private.user_authentication_secrets (user_authentication_id, details) values
         (v_matched_authentication_id, f_auth_details);
+      perform graphile_worker.add_job(
+        'user__audit',
+        json_build_object(
+          'type', 'linked_account',
+          'user_id', f_user_id,
+          'extra1', f_service,
+          'extra2', f_identifier,
+          'current_user_id', app_public.current_user_id()
+        ));
     elsif v_email is not null then
       -- See if the email is registered
       select * into v_user_email from app_public.user_emails where email = v_email and is_verified is true;
@@ -899,6 +1008,15 @@ begin
           (v_user_email.user_id, f_service, f_identifier, f_profile) returning id, user_id into v_matched_authentication_id, v_matched_user_id;
         insert into app_private.user_authentication_secrets (user_authentication_id, details) values
           (v_matched_authentication_id, f_auth_details);
+        perform graphile_worker.add_job(
+          'user__audit',
+          json_build_object(
+            'type', 'linked_account',
+            'user_id', f_user_id,
+            'extra1', f_service,
+            'extra2', f_identifier,
+            'current_user_id', app_public.current_user_id()
+          ));
       end if;
     end if;
   end if;
