@@ -22,6 +22,7 @@
     "db": "yarn workspace @app/db",
     "e2e": "yarn workspace @app/e2e",
     "graphql": "yarn workspace @app/graphql",
+    "lib": "yarn workspace @app/lib",
     "server": "yarn workspace @app/server",
     "worker": "yarn workspace @app/worker",
     "docker": "yarn --cwd ./docker",
