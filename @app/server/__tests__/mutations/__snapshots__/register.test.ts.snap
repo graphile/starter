@@ -6,13 +6,13 @@ Object {
     "register": Object {
       "user": Object {
         "avatarUrl": null,
-        "createdAt": "[timestamp]",
-        "id": "[id]",
+        "createdAt": "[timestamp-1]",
+        "id": "[id-1]",
         "isAdmin": false,
         "isVerified": false,
         "name": "Test User",
-        "updatedAt": "[timestamp]",
-        "username": "testuser",
+        "updatedAt": "[timestamp-1]",
+        "username": "[username-1]",
       },
     },
   },

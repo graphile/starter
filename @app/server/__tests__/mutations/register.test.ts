@@ -2,7 +2,7 @@ import { asRoot } from "../../../__tests__/helpers";
 import {
   deleteTestUsers,
   runGraphQLQuery,
-  sanitise,
+  sanitize,
   setup,
   teardown,
 } from "../helpers";
@@ -56,16 +56,16 @@ test("Register", async () => {
       expect(json.data).toBeTruthy();
       expect(json.data!.register).toBeTruthy();
       expect(json.data!.register.user).toBeTruthy();
-      expect(sanitise(json.data!.register.user)).toMatchInlineSnapshot(`
+      expect(sanitize(json.data!.register.user)).toMatchInlineSnapshot(`
         Object {
           "avatarUrl": null,
-          "createdAt": "[timestamp]",
-          "id": "[id]",
+          "createdAt": "[timestamp-1]",
+          "id": "[id-1]",
           "isAdmin": false,
           "isVerified": false,
           "name": "Test User",
-          "updatedAt": "[timestamp]",
-          "username": "testuser",
+          "updatedAt": "[timestamp-1]",
+          "username": "[username-1]",
         }
       `);
       const id = json.data!.register.user.id;

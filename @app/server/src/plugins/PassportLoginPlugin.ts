@@ -117,7 +117,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({
             throw e;
           } else {
             console.error(
-              "Unrecognised error in PassportLoginPlugin; replacing with sanitised version"
+              "Unrecognised error in PassportLoginPlugin; replacing with sanitized version"
             );
             console.error(e);
             const error = new Error("Registration failed");

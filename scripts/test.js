@@ -87,8 +87,6 @@ if (process.argv.length > 3) {
       killOthers: ["failure"],
     }
   );
-} else if (arg) {
-  throw new Error(`Argument '${arg}' not understood`);
 } else {
   // Run once, so just run the tests
   spawnSync("jest", ["-i", ...process.argv.slice(2)], opts);
