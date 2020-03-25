@@ -1,12 +1,29 @@
 # Graphile Starter
 
+## Take it for a spin!
+
+We're running the starter at:
+
+https://graphile-starter.herokuapp.com
+
+Feel free to register an account and have a poke around as you see fit.
+
+**NOTE**: emails are sent from Graphile Starter, so please only enter email
+addresses you control.
+
+**NOTE**: every time we merge to master, we ship a new version of Graphile
+Starter to Heroku and entirely wipe the database, so your data may not persist.
+If you wish to delete your data before this time you can do so via the delete
+account feature baked into the starter.
+
 ## Purpose
 
 Graphile Starter is an opinionated quick-start project for full-stack
 application development in React, Node.js, GraphQL and PostgreSQL. It includes
 the foundations of a modern web application, with a full user registration
-system, session management, optimized job queue, a significant amount of
-pre-configured tooling, tests (both end-to-end and more granular) and much more.
+system, organizations (e.g. teams/companies/etc), session management, optimized
+job queue, a significant amount of pre-configured tooling, tests (both
+end-to-end and more granular) and much more.
 
 It is suitable for building projects both large and small, with a focus on
 productivity. You might use it:
@@ -14,7 +31,7 @@ productivity. You might use it:
 - to go from conception to launch of a web app during a hack day
 - as the foundation for client projects at your web agency
 - to build your side-hustle without spending lots of time on boilerplate
-- to build a SaaS project to help fund your open source work
+- to build a SaaS project to help fund your open source work 😉
 
 However you use it, the project can be deployed to many platforms, and can be
 scaled to larger audiences both horizontally and vertically with very few
@@ -61,7 +78,6 @@ And please give some love to our featured sponsors 🤩:
 <table><tr>
 <td align="center"><a href="http://chads.website/"><img src="https://www.graphile.org/images/sponsors/chadf.png" width="90" height="90" alt="Chad Furman" /><br />Chad Furman</a></td>
 <td align="center"><a href="https://storyscript.io/?utm_source=postgraphile"><img src="https://www.graphile.org/images/sponsors/storyscript.png" width="90" height="90" alt="Storyscript" /><br />Storyscript</a></td>
-<td align="center"><a href="http://p72.vc/"><img src="https://www.graphile.org/images/sponsors/p72.png" width="90" height="90" alt="Point72 Ventures" /><br />Point72 Ventures</a></td>
 </tr></table>
 
 <!-- SPONSORS_END -->
