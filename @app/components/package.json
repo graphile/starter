@@ -10,13 +10,13 @@
     "@apollo/react-common": "^3.1.3",
     "@apollo/react-hooks": "^3.1.3",
     "@app/graphql": "0.0.0",
-    "antd": "^4.0.3",
+    "antd": "^4.0.4",
     "apollo-client": "^2.6.8",
     "next": "^9.3.1",
-    "react": "^16.9.0",
-    "tslib": "^1.10.0"
+    "react": "^16.13.1",
+    "tslib": "^1.11.1"
   },
   "devDependencies": {
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3"
   }
 }
