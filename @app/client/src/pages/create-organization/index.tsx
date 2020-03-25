@@ -104,7 +104,7 @@ const CreateOrganizationPage: NextPage = () => {
   return (
     <SharedLayout title="" query={query} forbidWhen={AuthRestrict.LOGGED_OUT}>
       <Row>
-        <Col>
+        <Col flex={1}>
           <PageHeader title="Create Organization" />
           <div>
             <Form

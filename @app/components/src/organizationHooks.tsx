@@ -35,7 +35,7 @@ export function useOrganizationLoading(
 
   return child ? (
     <Row>
-      <Col>{child}</Col>
+      <Col flex={1}>{child}</Col>
     </Row>
   ) : null;
 }

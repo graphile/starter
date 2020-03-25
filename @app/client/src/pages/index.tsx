@@ -17,7 +17,7 @@ const Home: NextPage = () => {
   return (
     <SharedLayout title="" query={query}>
       <Row justify="space-between" gutter={32}>
-        <Col xs={28} sm={16}>
+        <Col xs={24} sm={16}>
           <Title data-cy="homepage-header">
             Welcome to the PostGraphile starter
           </Title>
@@ -270,7 +270,7 @@ const Home: NextPage = () => {
             project without breaking your project.
           </Paragraph>
         </Col>
-        <Col xs={28} sm={8}>
+        <Col xs={24} sm={8}>
           <Title level={4}>PostGraphile relies on your support</Title>
           <Paragraph strong>A message from Benjie</Paragraph>
           <Paragraph>

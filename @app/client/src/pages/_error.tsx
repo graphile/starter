@@ -94,7 +94,7 @@ const ErrorPage: NextPage<ErrorPageProps> = (props) => {
   return (
     <SharedLayout title={title} query={query}>
       <Row>
-        <Col>
+        <Col flex={1}>
           <Component {...componentProps} />
         </Col>
       </Row>

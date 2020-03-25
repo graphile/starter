@@ -61,7 +61,7 @@ const VerifyPage: NextPage<IProps> = (props) => {
   return (
     <SharedLayout title="Verify Email Address" query={query}>
       <Row>
-        <Col>
+        <Col flex={1}>
           {state === "PENDING" ? (
             form()
           ) : state === "SUBMITTING" ? (

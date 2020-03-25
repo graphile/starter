@@ -7,6 +7,6 @@ export interface StandardWidthProps {
 
 export const StandardWidth: FC<StandardWidthProps> = ({ children }) => (
   <Row style={{ padding: "1rem", maxWidth: "48rem", margin: "0 auto" }}>
-    <Col>{children}</Col>
+    <Col flex={1}>{children}</Col>
   </Row>
 );

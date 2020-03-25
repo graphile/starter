@@ -57,7 +57,7 @@ const InvitationAccept: NextPage<IProps> = (props) => {
           <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />
         ) : (
           <Row>
-            <Col>
+            <Col flex={1}>
               <InvitationAcceptInner
                 currentUser={currentUser}
                 id={id}

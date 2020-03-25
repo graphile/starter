@@ -41,7 +41,7 @@ const OrganizationPageInner: FC<OrganizationPageInnerProps> = (props) => {
 
   return (
     <Row>
-      <Col>
+      <Col flex={1}>
         <div>
           <PageHeader
             title={"Dashboard"}

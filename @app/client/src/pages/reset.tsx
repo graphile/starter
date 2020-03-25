@@ -125,7 +125,7 @@ const ResetPage: NextPage<IProps> = ({
       forbidWhen={AuthRestrict.LOGGED_IN}
     >
       <Row>
-        <Col>
+        <Col flex={1}>
           <div>
             {state === "SUBMITTING" ? (
               <Alert
