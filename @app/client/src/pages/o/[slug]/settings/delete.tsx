@@ -1,4 +1,5 @@
 import {
+  AuthRestrict,
   ErrorAlert,
   OrganizationSettingsLayout,
   P,
@@ -31,6 +32,7 @@ const OrganizationSettingsPage: NextPage = () => {
       titleHrefAs={`/o/${slug}`}
       noPad
       query={query}
+      forbidWhen={AuthRestrict.LOGGED_OUT}
     >
       {({ currentUser }) =>
         organizationLoadingElement || (

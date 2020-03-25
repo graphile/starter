@@ -1,4 +1,5 @@
 import {
+  AuthRestrict,
   OrganizationSettingsLayout,
   Redirect,
   SharedLayout,
@@ -31,6 +32,7 @@ const OrganizationSettingsPage: NextPage = () => {
       titleHrefAs={`/o/${slug}`}
       noPad
       query={query}
+      forbidWhen={AuthRestrict.LOGGED_OUT}
     >
       {organizationLoadingElement || (
         <OrganizationSettingsPageInner organization={organization!} />

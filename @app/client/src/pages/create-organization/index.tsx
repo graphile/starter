@@ -1,4 +1,4 @@
-import { Redirect, SharedLayout } from "@app/components";
+import { AuthRestrict, Redirect, SharedLayout } from "@app/components";
 import {
   CreatedOrganizationFragment,
   useCreateOrganizationMutation,
@@ -100,7 +100,7 @@ const CreateOrganizationPage: NextPage = () => {
   }
 
   return (
-    <SharedLayout title="" query={query}>
+    <SharedLayout title="" query={query} forbidWhen={AuthRestrict.LOGGED_OUT}>
       <Row>
         <Col>
           <PageHeader title="Create Organization" />

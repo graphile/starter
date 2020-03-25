@@ -49,11 +49,7 @@ const ForgotPassword: NextPage = () => {
 
   if (successfulEmail != null) {
     return (
-      <SharedLayout
-        title="Forgot Password"
-        query={query}
-        forbidWhen={AuthRestrict.LOGGED_IN}
-      >
+      <SharedLayout title="Forgot Password" query={query}>
         <Alert
           type="success"
           message="You've got mail"
@@ -64,7 +60,11 @@ const ForgotPassword: NextPage = () => {
   }
 
   return (
-    <SharedLayout title="Forgot Password" query={query}>
+    <SharedLayout
+      title="Forgot Password"
+      query={query}
+      forbidWhen={AuthRestrict.LOGGED_IN}
+    >
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <Form.Item
           name="email"
