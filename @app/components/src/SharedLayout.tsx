@@ -12,7 +12,7 @@ import { Avatar, Col, Dropdown, Layout, Menu, Row, Typography } from "antd";
 import { ApolloError } from "apollo-client";
 import Head from "next/head";
 import Link from "next/link";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import * as React from "react";
 import { useCallback } from "react";
 
@@ -91,6 +91,8 @@ export function SharedLayout({
   children,
   query,
 }: SharedLayoutProps) {
+  const router = useRouter();
+  const currentUrl = router.asPath;
   const client = useApolloClient();
   const [logout] = useLogoutMutation();
   const handleLogout = useCallback(async () => {
@@ -218,7 +220,7 @@ export function SharedLayout({
                 </span>
               </Dropdown>
             ) : (
-              <Link href="/login">
+              <Link href={`/login?next=${encodeURIComponent(currentUrl)}`}>
                 <a data-cy="header-login-button">Sign in</a>
               </Link>
             )}
