@@ -75,7 +75,7 @@ function Email({
             Make primary
           </a>
         ),
-      ].filter(_ => _)}
+      ].filter((_) => _)}
     >
       <List.Item.Meta
         avatar={
@@ -159,7 +159,7 @@ const Settings_Emails: NextPage = () => {
             bordered
             size="large"
             dataSource={user.userEmails.nodes}
-            renderItem={email => (
+            renderItem={(email) => (
               <Email
                 email={email}
                 hasOtherEmails={user.userEmails.nodes.length > 1}

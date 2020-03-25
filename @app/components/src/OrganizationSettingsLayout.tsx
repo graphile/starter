@@ -63,7 +63,7 @@ export function OrganizationSettingsLayout({
     <Layout style={{ minHeight: contentMinHeight }} hasSider>
       <Sider>
         <Menu selectedKeys={[href]}>
-          {Object.keys(pages).map(pageHref => (
+          {Object.keys(pages).map((pageHref) => (
             <Menu.Item key={pageHref}>
               <Link
                 href={pageHref}

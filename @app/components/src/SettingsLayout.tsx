@@ -89,7 +89,7 @@ export function SettingsLayout({
           <Layout style={{ minHeight: contentMinHeight }} hasSider>
             <Sider>
               <Menu selectedKeys={[href]}>
-                {Object.keys(pages).map(pageHref => (
+                {Object.keys(pages).map((pageHref) => (
                   <Menu.Item key={pageHref}>
                     <Link href={pageHref}>
                       <a data-cy={pages[pageHref].cy}>

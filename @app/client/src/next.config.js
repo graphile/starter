@@ -7,7 +7,7 @@ if (!ROOT_URL) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-(function(process = null) {
+(function (process = null) {
   // You *must not* use `process.env` in here, because we need to check we have
   // those variables. To enforce this, we've deliberately shadowed process.
   module.exports = () => {
@@ -41,9 +41,9 @@ if (!ROOT_URL) {
       webpack(config, { webpack, dev, isServer }) {
         if (dev) config.devtool = "cheap-module-source-map";
 
-        const makeSafe = externals => {
+        const makeSafe = (externals) => {
           if (Array.isArray(externals)) {
-            return externals.map(ext => {
+            return externals.map((ext) => {
               if (typeof ext === "function") {
                 return (context, request, callback) => {
                   if (/^@app\//.test(request)) {
@@ -79,7 +79,7 @@ if (!ROOT_URL) {
           externals: [
             ...(externals || []),
             isServer ? { "pg-native": "pg/lib/client" } : null,
-          ].filter(_ => _),
+          ].filter((_) => _),
         };
       },
     });

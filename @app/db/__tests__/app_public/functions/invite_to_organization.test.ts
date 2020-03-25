@@ -58,7 +58,7 @@ async function acceptInvitationToOrganization(
 
 it("Can invite user to organization", () =>
   withUserDb(async (client, _user) => {
-    const [otherUser] = await asRoot(client, client =>
+    const [otherUser] = await asRoot(client, (client) =>
       createUsers(client, 1, true)
     );
     const [organization] = await createOrganizations(client, 1);
@@ -105,7 +105,7 @@ it("Can invite user to organization", () =>
   }));
 
 it("Can accept an invitation", () =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     // Setup
     const [organizationOwner, invitee] = await createUsers(client, 2, true);
     await becomeUser(client, organizationOwner);
@@ -143,7 +143,7 @@ it("Can accept an invitation", () =>
   }));
 
 it("Can accept an invitation that was sent to an email address", () =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     // Setup
     const [organizationOwner, invitee] = await createUsers(client, 2, true);
     await becomeUser(client, organizationOwner);

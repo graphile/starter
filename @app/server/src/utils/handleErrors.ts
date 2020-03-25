@@ -48,11 +48,11 @@ const pluck = (err: any): { [key: string]: any } => {
  * list of error codes that PostgreSQL produces.
  */
 export const ERROR_MESSAGE_OVERRIDES: { [code: string]: typeof pluck } = {
-  "42501": err => ({
+  "42501": (err) => ({
     ...pluck(err),
     message: "Permission denied (by RLS)",
   }),
-  "23505": err => ({
+  "23505": (err) => ({
     ...pluck(err),
     message: "Conflict occurred",
     fields: conflictFieldsFromError(err),
@@ -80,7 +80,7 @@ function conflictFieldsFromError(err: any) {
 export default function handleErrors(
   errors: readonly GraphQLError[]
 ): Array<any> {
-  return errors.map(error => {
+  return errors.map((error) => {
     const { message: rawMessage, locations, path, originalError } = error;
     const code = originalError ? originalError["code"] : null;
     const localPluck = ERROR_MESSAGE_OVERRIDES[code] || pluck;

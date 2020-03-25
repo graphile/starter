@@ -17,7 +17,7 @@ const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 
 const projectName = process.argv[2];
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function updateDotenv(add, answers) {
   add(
@@ -171,14 +171,14 @@ async function main() {
     process.exit(1);
   }
   const config = (await readDotenv()) || {};
-  const mergeAnswers = cb => answers => cb({ ...config, ...answers });
+  const mergeAnswers = (cb) => (answers) => cb({ ...config, ...answers });
   const questions = [
     {
       type: "input",
       name: "DATABASE_NAME",
       message: "What would you like to call your database?",
       default: "graphile_starter",
-      validate: name =>
+      validate: (name) =>
         /^[a-z][a-z0-9_]+$/.test(name)
           ? true
           : "That doesn't look like a good name for a database, try something simpler - just lowercase alphanumeric and underscores",
@@ -197,11 +197,11 @@ async function main() {
       type: "input",
       name: "ROOT_DATABASE_URL",
       message: mergeAnswers(
-        answers =>
+        (answers) =>
           `Please enter a superuser connection string to the database server (so we can drop/create the '${answers.DATABASE_NAME}' and '${answers.DATABASE_NAME}_shadow' databases) - IMPORTANT: it must not be a connection to the '${answers.DATABASE_NAME}' database itself, instead try 'template1'.`
       ),
       default: mergeAnswers(
-        answers =>
+        (answers) =>
           `postgres://${
             answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
           }/template1`
@@ -211,7 +211,7 @@ async function main() {
   ];
   const answers = await inquirer.prompt(questions);
 
-  await withDotenvUpdater(answers, add =>
+  await withDotenvUpdater(answers, (add) =>
     updateDotenv(add, {
       ...config,
       ...answers,
@@ -261,7 +261,7 @@ async function main() {
     connectionString: ROOT_DATABASE_URL,
   });
 
-  pgPool.on("error", err => {
+  pgPool.on("error", (err) => {
     // Ignore
     console.log(
       "An error occurred whilst trying to talk to the database: " + err.message
@@ -356,7 +356,7 @@ async function main() {
   console.log();
 }
 
-main().catch(e => {
+main().catch((e) => {
   console.error(e);
   process.exit(1);
 });

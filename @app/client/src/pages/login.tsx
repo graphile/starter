@@ -26,7 +26,7 @@ import { Store } from "rc-field-form/lib/interface";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 function hasErrors(fieldsError: Object) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
+  return Object.keys(fieldsError).some((field) => fieldsError[field]);
 }
 
 interface LoginProps {

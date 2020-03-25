@@ -36,7 +36,7 @@ interface OrganizationPageInnerProps {
   organization: OrganizationPage_OrganizationFragment;
 }
 
-const OrganizationPageInner: FC<OrganizationPageInnerProps> = props => {
+const OrganizationPageInner: FC<OrganizationPageInnerProps> = (props) => {
   const { organization } = props;
 
   return (

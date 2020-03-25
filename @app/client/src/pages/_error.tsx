@@ -88,7 +88,7 @@ const getDisplayForError = (props: ErrorPageProps): ErrorComponentSpec<any> => {
   }
 };
 
-const ErrorPage: NextPage<ErrorPageProps> = props => {
+const ErrorPage: NextPage<ErrorPageProps> = (props) => {
   const { Component, title, props: componentProps } = getDisplayForError(props);
   const query = useSharedQuery();
   return (

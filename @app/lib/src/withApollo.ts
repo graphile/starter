@@ -85,7 +85,7 @@ export const withApollo = withApolloBase(
     const client = new ApolloClient({
       link: ApolloLink.from([onErrorLink, mainLink]),
       cache: new InMemoryCache({
-        dataIdFromObject: o =>
+        dataIdFromObject: (o) =>
           o.__typename === "Query"
             ? "ROOT_QUERY"
             : o.id

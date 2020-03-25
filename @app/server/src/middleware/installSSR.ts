@@ -22,7 +22,7 @@ export default async function installSSR(app: Express) {
     return nextApp.getRequestHandler();
   })();
   // Foo
-  handlerPromise.catch(e => {
+  handlerPromise.catch((e) => {
     console.error("Error occurred starting Next.js; aborting process");
     console.error(e);
     process.exit(1);

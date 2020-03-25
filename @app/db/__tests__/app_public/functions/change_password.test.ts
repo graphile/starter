@@ -42,7 +42,7 @@ it("can change password", () =>
   }));
 
 it("cannot change password if password is wrong (CREDS)", () =>
-  withUserDb(async client => {
+  withUserDb(async (client) => {
     const newPassword = "SECURE_PASSWORD_1!";
 
     // Action
@@ -71,7 +71,7 @@ it("cannot set a 'weak' password (WEAKP)", () =>
   }));
 
 it("gives error if not logged in (LOGIN)", () =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     // Setup
     await becomeUser(client, null);
     const newPassword = "SECURE_PASSWORD_1!";

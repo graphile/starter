@@ -16,7 +16,7 @@ export function makeShutdownActions(): ShutdownAction[] {
       return [];
     }
     shutdownActionsCalled = true;
-    return shutdownActions.map(fn => {
+    return shutdownActions.map((fn) => {
       // Ensure that all actions are called, even if a previous action throws an error
       try {
         return fn();

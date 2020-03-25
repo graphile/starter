@@ -37,7 +37,7 @@ export interface SendEmailPayload {
   };
 }
 
-const task: Task = async inPayload => {
+const task: Task = async (inPayload) => {
   const payload: SendEmailPayload = inPayload as any;
   const transport = await getTransport();
   const { options: inOptions, template, variables } = payload;

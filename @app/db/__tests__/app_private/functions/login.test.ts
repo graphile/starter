@@ -28,7 +28,7 @@ async function setupTestUser(client: PoolClient) {
 }
 
 it("can login with username+password", () =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     const testUser = await setupTestUser(client);
     const session = await login(client, USERNAME, PASSWORD);
     expect(session).toBeTruthy();
@@ -44,7 +44,7 @@ it("can login with username+password", () =>
   }));
 
 it("can login with uSeRnAmE+password", () =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     const testUser = await setupTestUser(client);
     const session = await login(client, UsErNaMe, PASSWORD);
     expect(session).toBeTruthy();
@@ -60,7 +60,7 @@ it("can login with uSeRnAmE+password", () =>
   }));
 
 it("can login with email+password", () =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     const testUser = await setupTestUser(client);
     const session = await login(client, EMAIL, PASSWORD);
     expect(session).toBeTruthy();
@@ -76,7 +76,7 @@ it("can login with email+password", () =>
   }));
 
 it("can login with EmAiL+password", () =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     const testUser = await setupTestUser(client);
     const session = await login(client, EmAiL, PASSWORD);
     expect(session).toBeTruthy();
@@ -92,7 +92,7 @@ it("can login with EmAiL+password", () =>
   }));
 
 it("cannot login with wrong password", () =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     await setupTestUser(client);
     const session = await login(client, EMAIL, "WRONG" + PASSWORD);
     // Don't care if the session is null or just the user_id is null
@@ -101,7 +101,7 @@ it("cannot login with wrong password", () =>
   }));
 
 it("prevents too many login attempts", () =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     await setupTestUser(client);
     await login(client, USERNAME, "WRONG" + PASSWORD).catch(() => {});
     await login(client, USERNAME, "WRONG" + PASSWORD).catch(() => {});
@@ -114,7 +114,7 @@ it("prevents too many login attempts", () =>
   }));
 
 it("too many login attempts resets after 5 minutes", () =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     const testUser = await setupTestUser(client);
     await login(client, USERNAME, "WRONG" + PASSWORD).catch(() => {});
     await login(client, USERNAME, "WRONG" + PASSWORD).catch(() => {});

@@ -61,7 +61,7 @@ const currentUserTopicFromContext = async (
  *
  * And see the database trigger function `app_public.tg__graphql_subscription()`.
  */
-const SubscriptionsPlugin = makeExtendSchemaPlugin(build => {
+const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
   const { pgSql: sql } = build;
   return {
     typeDefs: gql`

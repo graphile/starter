@@ -79,7 +79,9 @@ interface OrganizationSettingsPageInnerProps {
 // This needs to match the `first:` used in OrganizationMembers.graphql
 const RESULTS_PER_PAGE = 10;
 
-const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = props => {
+const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = (
+  props
+) => {
   const { organization, currentUser, page, setPage } = props;
   const router = useRouter();
 
@@ -190,7 +192,9 @@ interface OrganizationMemberListItemProps {
   currentUser?: SharedLayout_UserFragment | null;
 }
 
-const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = props => {
+const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = (
+  props
+) => {
   const { node, organization, currentUser } = props;
 
   const [removeMember] = useRemoveFromOrganizationMutation();

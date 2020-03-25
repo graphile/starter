@@ -10,7 +10,7 @@ interface IProps {
   token: string | null;
 }
 
-const VerifyPage: NextPage<IProps> = props => {
+const VerifyPage: NextPage<IProps> = (props) => {
   const [[id, token], setIdAndToken] = React.useState<[string, string]>([
     props.id || "",
     props.token || "",
@@ -29,7 +29,7 @@ const VerifyPage: NextPage<IProps> = props => {
           token,
         },
       })
-        .then(result => {
+        .then((result) => {
           if (get(result, "data.verifyEmail.success")) {
             setState("SUCCESS");
           } else {
@@ -50,7 +50,7 @@ const VerifyPage: NextPage<IProps> = props => {
         <input
           type="text"
           value={token}
-          onChange={e => setIdAndToken([id, e.target.value])}
+          onChange={(e) => setIdAndToken([id, e.target.value])}
         />
         {error ? <p>{error.message || error}</p> : null}
         <button>Submit</button>
