@@ -28,7 +28,7 @@ const isDev = process.env.NODE_ENV !== "production";
 export interface SendEmailPayload {
   options: {
     from?: string;
-    to: string;
+    to: string | string[];
     subject: string;
   };
   template: string;

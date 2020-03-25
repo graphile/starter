@@ -498,10 +498,11 @@ CREATE FUNCTION app_private.tg__add_audit_job() RETURNS trigger
     AS $_$
 declare
   v_user_id uuid;
+  v_type text = TG_ARGV[0];
   v_user_id_attribute text = TG_ARGV[1];
   v_extra_attribute1 text = TG_ARGV[2];
-  v_extra_attribute2 text = TG_ARGV[2];
-  v_extra_attribute3 text = TG_ARGV[2];
+  v_extra_attribute2 text = TG_ARGV[3];
+  v_extra_attribute3 text = TG_ARGV[4];
   v_extra1 text;
   v_extra2 text;
   v_extra3 text;
@@ -534,7 +535,7 @@ begin
     perform graphile_worker.add_job(
       'user__audit',
       json_build_object(
-        'type', tg_argv[0],
+        'type', v_type,
         'user_id', v_user_id,
         'extra1', v_extra1,
         'extra2', v_extra2,

@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:76d7519b0aa7d6eeb883c47cb33585c91ea776f7
+--! Hash: sha1:af3861c450adf4a6d08a62fd910fa2b0e8f394fc
 
 drop schema if exists app_public cascade;
 
@@ -46,10 +46,11 @@ comment on function app_private.tg__add_job() is
 create function app_private.tg__add_audit_job() returns trigger as $$
 declare
   v_user_id uuid;
+  v_type text = TG_ARGV[0];
   v_user_id_attribute text = TG_ARGV[1];
   v_extra_attribute1 text = TG_ARGV[2];
-  v_extra_attribute2 text = TG_ARGV[2];
-  v_extra_attribute3 text = TG_ARGV[2];
+  v_extra_attribute2 text = TG_ARGV[3];
+  v_extra_attribute3 text = TG_ARGV[4];
   v_extra1 text;
   v_extra2 text;
   v_extra3 text;
@@ -82,7 +83,7 @@ begin
     perform graphile_worker.add_job(
       'user__audit',
       json_build_object(
-        'type', tg_argv[0],
+        'type', v_type,
         'user_id', v_user_id,
         'extra1', v_extra1,
         'extra2', v_extra2,
