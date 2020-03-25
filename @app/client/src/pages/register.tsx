@@ -169,7 +169,7 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
     setPasswordIsFocussed(false);
   }, [setPasswordIsFocussed]);
   const handleValuesChange = useCallback(
-    changedValues => {
+    (changedValues) => {
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
         changedValues

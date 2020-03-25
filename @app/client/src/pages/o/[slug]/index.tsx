@@ -36,12 +36,12 @@ interface OrganizationPageInnerProps {
   organization: OrganizationPage_OrganizationFragment;
 }
 
-const OrganizationPageInner: FC<OrganizationPageInnerProps> = props => {
+const OrganizationPageInner: FC<OrganizationPageInnerProps> = (props) => {
   const { organization } = props;
 
   return (
     <Row>
-      <Col>
+      <Col flex={1}>
         <div>
           <PageHeader
             title={"Dashboard"}

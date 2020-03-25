@@ -10,6 +10,6 @@
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^4.1.3",
     "cypress": "^4.2.0",
-    "webpack": "^4.41.5"
+    "webpack": "^4.42.1"
   }
 }

@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "@types/pg": "^7.14.1",
-    "graphile-worker": "^0.2.0",
+    "graphile-worker": "^0.5.0",
     "lodash": "^4.17.15",
-    "pg": "^7.17.1"
+    "pg": "^7.18.2"
   }
 }

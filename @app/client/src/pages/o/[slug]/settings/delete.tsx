@@ -51,7 +51,9 @@ interface OrganizationSettingsPageInnerProps {
   organization: OrganizationPage_OrganizationFragment;
 }
 
-const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = props => {
+const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = (
+  props
+) => {
   const { organization } = props;
   const router = useRouter();
   const [deleteOrganization] = useDeleteOrganizationMutation();

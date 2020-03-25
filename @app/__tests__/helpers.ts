@@ -19,7 +19,7 @@ export type Organization = { id: string; name: string };
 afterAll(() => {
   const keys = Object.keys(pools);
   return Promise.all(
-    keys.map(async key => {
+    keys.map(async (key) => {
       try {
         const pool = pools[key];
         delete pools[key];

@@ -75,7 +75,7 @@ ROOT_DATABASE_URL=postgres://postgres:${password}@db/template1
   runSync(yarnCmd, ["compose", "run", "server", "yarn", "setup", projectName]);
 }
 
-main().catch(e => {
+main().catch((e) => {
   console.error(e);
   process.exit(1);
 });

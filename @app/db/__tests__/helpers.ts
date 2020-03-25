@@ -1,4 +1,4 @@
-import { getTasks, runTaskListOnce } from "graphile-worker";
+import { getTasks, runTaskListOnce, SharedOptions } from "graphile-worker";
 import { mapValues } from "lodash";
 import { PoolClient } from "pg";
 
@@ -69,14 +69,14 @@ export const withRootDb = <T>(fn: ClientCallback<T>) =>
 export const withUserDb = <T>(
   fn: (client: PoolClient, user: User) => Promise<T>
 ) =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     const [user] = await createUsers(client, 1);
     await becomeUser(client, user.id);
     await fn(client, user);
   });
 
 export const withAnonymousDb = <T>(fn: (client: PoolClient) => Promise<T>) =>
-  withRootDb(async client => {
+  withRootDb(async (client) => {
     await becomeUser(client, null);
     await fn(client);
   });
@@ -192,9 +192,13 @@ export const getJobs = async (
 /******************************************************************************/
 
 export const runJobs = async (client: PoolClient) => {
-  return asRoot(client, async client => {
-    const taskList = await getTasks(`${__dirname}/../../worker/dist/tasks`);
-    await runTaskListOnce(taskList.tasks, client, {});
+  return asRoot(client, async (client) => {
+    const sharedOptions: SharedOptions = {};
+    const taskList = await getTasks(
+      sharedOptions,
+      `${__dirname}/../../worker/dist/tasks`
+    );
+    await runTaskListOnce(sharedOptions, taskList.tasks, client);
   });
 };
 
@@ -202,7 +206,7 @@ export const assertJobComplete = async (
   client: PoolClient,
   job: { id: string }
 ) => {
-  return asRoot(client, async client => {
+  return asRoot(client, async (client) => {
     const {
       rows: [row],
     } = await client.query("select * from graphile_worker.jobs where id = $1", [

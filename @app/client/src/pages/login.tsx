@@ -26,7 +26,7 @@ import { Store } from "rc-field-form/lib/interface";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 function hasErrors(fieldsError: Object) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
+  return Object.keys(fieldsError).some((field) => fieldsError[field]);
 }
 
 interface LoginProps {
@@ -70,7 +70,7 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
             ) : (
               <Col xs={24} sm={12}>
                 <Row style={{ marginBottom: 8 }}>
-                  <Col span={28}>
+                  <Col span={24}>
                     <Button
                       data-cy="loginpage-button-withusername"
                       icon={<UserOutlined />}
@@ -84,12 +84,12 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
                   </Col>
                 </Row>
                 <Row style={{ marginBottom: 8 }}>
-                  <Col span={28}>
+                  <Col span={24}>
                     <SocialLoginOptions next={next} />
                   </Col>
                 </Row>
                 <Row justify="center">
-                  <Col>
+                  <Col flex={1}>
                     <ButtonLink
                       icon={<UserAddOutlined />}
                       size="large"

@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const AbortController = require("abort-controller");
 const { execSync } = require("child_process");
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function main() {
   let attempts = 0;
@@ -48,7 +48,7 @@ async function main() {
   console.log("Docker tests passed.");
 }
 
-main().catch(e => {
+main().catch((e) => {
   console.error(e);
   process.exit(1);
 });

@@ -37,7 +37,7 @@ export class GraphileApolloLink extends ApolloLink {
     _forward?: NextLink
   ): Observable<FetchResult> | null {
     const { postgraphileMiddleware, req, res, rootValue } = this.options;
-    return new Observable(observer => {
+    return new Observable((observer) => {
       (async () => {
         try {
           const op = getOperationAST(operation.query, operation.operationName);
@@ -53,7 +53,7 @@ export class GraphileApolloLink extends ApolloLink {
             req,
             res,
             {},
-            context =>
+            (context) =>
               execute(
                 schema,
                 operation.query,

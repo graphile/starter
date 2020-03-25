@@ -37,7 +37,7 @@ context("Manage emails", () => {
     });
 
     // Action: verify the email
-    cy.serverCommand("getEmailSecrets", { email }).then(secrets => {
+    cy.serverCommand("getEmailSecrets", { email }).then((secrets) => {
       const { user_email_id, verification_token } = secrets;
       const url = `${Cypress.env("ROOT_URL")}/verify?id=${encodeURIComponent(
         user_email_id

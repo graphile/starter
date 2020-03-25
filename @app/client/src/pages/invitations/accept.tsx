@@ -30,7 +30,7 @@ enum Status {
   ACCEPTING = "ACCEPTING",
 }
 
-const InvitationAccept: NextPage<IProps> = props => {
+const InvitationAccept: NextPage<IProps> = (props) => {
   const router: NextRouter | null = useRouter();
   const fullHref =
     router.pathname +
@@ -57,7 +57,7 @@ const InvitationAccept: NextPage<IProps> = props => {
           <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />
         ) : (
           <Row>
-            <Col>
+            <Col flex={1}>
               <InvitationAcceptInner
                 currentUser={currentUser}
                 id={id}
@@ -77,7 +77,7 @@ interface InvitationAcceptInnerProps extends IProps {
   query: QueryResult<InvitationDetailQuery, InvitationDetailQueryVariables>;
 }
 
-const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = props => {
+const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = (props) => {
   const { id, code, query } = props;
   const router = useRouter();
 
@@ -104,7 +104,7 @@ const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = props => {
         // Redirect
         Router.push(`/o/[slug]`, `/o/${organization.slug}`);
       },
-      e => {
+      (e) => {
         setStatus(Status.PENDING);
         setAcceptError(e);
       }

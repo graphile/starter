@@ -42,7 +42,7 @@ function getErrorPage({ message }: ParsedError) {
   return errorPageTemplate({ message });
 }
 
-export default function(app: Express) {
+export default function (app: Express) {
   const errorRequestHandler: ErrorRequestHandler = (error, _req, res, next) => {
     try {
       const parsedError = parseError(error);
@@ -54,19 +54,19 @@ export default function(app: Express) {
       }
       res.status(parsedError.status);
       res.format({
-        "text/plain": function() {
+        "text/plain": function () {
           res.send(errorMessageString);
         },
 
-        "text/html": function() {
+        "text/html": function () {
           res.send(getErrorPage(parsedError));
         },
 
-        "application/json": function() {
+        "application/json": function () {
           res.send({ errors: [{ message: errorMessageString }] });
         },
 
-        default: function() {
+        default: function () {
           // log the request and respond with 406
           res.status(406).send("Not Acceptable");
         },

@@ -45,7 +45,9 @@ interface OrganizationSettingsPageInnerProps {
   organization: OrganizationPage_OrganizationFragment;
 }
 
-const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = props => {
+const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = (
+  props
+) => {
   const { organization } = props;
   const { name, slug } = organization;
   const router = useRouter();

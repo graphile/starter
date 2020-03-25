@@ -3,11 +3,15 @@ const compose = require("lodash/flowRight");
 
 const { ROOT_URL, T_AND_C_URL } = process.env;
 if (!ROOT_URL) {
-  throw new Error("ROOT_URL is a required envvar");
+  if (process.argv[1].endsWith("/depcheck")) {
+    /* NOOP */
+  } else {
+    throw new Error("ROOT_URL is a required envvar");
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-(function(process = null) {
+(function (process = null) {
   // You *must not* use `process.env` in here, because we need to check we have
   // those variables. To enforce this, we've deliberately shadowed process.
   module.exports = () => {
@@ -41,9 +45,9 @@ if (!ROOT_URL) {
       webpack(config, { webpack, dev, isServer }) {
         if (dev) config.devtool = "cheap-module-source-map";
 
-        const makeSafe = externals => {
+        const makeSafe = (externals) => {
           if (Array.isArray(externals)) {
-            return externals.map(ext => {
+            return externals.map((ext) => {
               if (typeof ext === "function") {
                 return (context, request, callback) => {
                   if (/^@app\//.test(request)) {
@@ -67,7 +71,9 @@ if (!ROOT_URL) {
           plugins: [
             ...config.plugins,
             new webpack.DefinePlugin({
-              "process.env.ROOT_URL": JSON.stringify(ROOT_URL),
+              "process.env.ROOT_URL": JSON.stringify(
+                ROOT_URL || "http://localhost:5678"
+              ),
               "process.env.T_AND_C_URL": JSON.stringify(T_AND_C_URL || null),
             }),
             new webpack.IgnorePlugin(
@@ -79,7 +85,7 @@ if (!ROOT_URL) {
           externals: [
             ...(externals || []),
             isServer ? { "pg-native": "pg/lib/client" } : null,
-          ].filter(_ => _),
+          ].filter((_) => _),
         };
       },
     });

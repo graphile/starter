@@ -58,7 +58,7 @@ export function sanitize(json: any): any {
   }
 
   if (Array.isArray(json)) {
-    return json.map(val => sanitize(val));
+    return json.map((val) => sanitize(val));
   } else if (json && typeof json === "object") {
     const result = { ...json };
     for (const k in result) {
@@ -184,7 +184,7 @@ export const runGraphQLQuery = async function runGraphQLQuery(
       pgSettings,
       pgForceTransaction: true,
     },
-    async context => {
+    async (context) => {
       let checkResult;
       const { pgClient } = context;
       try {
@@ -210,7 +210,7 @@ export const runGraphQLQuery = async function runGraphQLQuery(
           } else {
             // This does a similar transform that PostGraphile does to errors.
             // It's not the same. Sorry.
-            result.errors = result.errors.map(rawErr => {
+            result.errors = result.errors.map((rawErr) => {
               const e = Object.create(rawErr);
               Object.defineProperty(e, "originalError", {
                 value: rawErr.originalError,
@@ -218,7 +218,7 @@ export const runGraphQLQuery = async function runGraphQLQuery(
               });
 
               if (e.originalError) {
-                Object.keys(e.originalError).forEach(k => {
+                Object.keys(e.originalError).forEach((k) => {
                   try {
                     e[k] = e.originalError[k];
                   } catch (err) {

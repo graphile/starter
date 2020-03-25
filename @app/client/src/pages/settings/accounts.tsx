@@ -116,7 +116,7 @@ const Settings_Accounts: NextPage = () => {
       <Card style={{ marginTop: "2rem" }} title="Link another account">
         <SocialLoginOptions
           next="/settings/accounts"
-          buttonTextFromService={service => `Link ${service} account`}
+          buttonTextFromService={(service) => `Link ${service} account`}
         />
       </Card>
     </SettingsLayout>

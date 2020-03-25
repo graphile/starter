@@ -1,3 +1,4 @@
+import { getDataFromTree } from "@apollo/react-ssr";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { ApolloClient } from "apollo-client";
 import { ApolloLink, split } from "apollo-link";
@@ -84,7 +85,7 @@ export const withApollo = withApolloBase(
     const client = new ApolloClient({
       link: ApolloLink.from([onErrorLink, mainLink]),
       cache: new InMemoryCache({
-        dataIdFromObject: o =>
+        dataIdFromObject: (o) =>
           o.__typename === "Query"
             ? "ROOT_QUERY"
             : o.id
@@ -96,6 +97,6 @@ export const withApollo = withApolloBase(
     return client;
   },
   {
-    getDataFromTree: "ssr",
+    getDataFromTree,
   }
 );

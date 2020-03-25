@@ -108,7 +108,7 @@ const ResetPage: NextPage<IProps> = ({
   );
   const [passwordIsDirty, setPasswordIsDirty] = useState(false);
   const handleValuesChange = useCallback(
-    changedValues => {
+    (changedValues) => {
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
         changedValues
@@ -125,7 +125,7 @@ const ResetPage: NextPage<IProps> = ({
       forbidWhen={AuthRestrict.LOGGED_IN}
     >
       <Row>
-        <Col>
+        <Col flex={1}>
           <div>
             {state === "SUBMITTING" ? (
               <Alert
@@ -152,7 +152,7 @@ const ResetPage: NextPage<IProps> = ({
                 <Input
                   type="text"
                   value={token}
-                  onChange={e => setIdAndToken([userId, e.target.value])}
+                  onChange={(e) => setIdAndToken([userId, e.target.value])}
                 />
               </Form.Item>
               <Form.Item label="Choose a new passphrase:" required>
