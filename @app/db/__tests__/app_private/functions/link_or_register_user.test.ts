@@ -48,17 +48,17 @@ describe("when account doesn't already exist", () => {
       expect(user.is_admin).toEqual(false);
       expect(user.is_verified).toEqual(true);
       expect(snapshotSafe(user)).toMatchInlineSnapshot(`
-      Object {
-        "avatar_url": "http://example.com/avatar.jpg",
-        "created_at": "[DATE]",
-        "id": "[ID]",
-        "is_admin": false,
-        "is_verified": true,
-        "name": "GitHub User123456",
-        "updated_at": "[DATE]",
-        "username": "GHU123",
-      }
-    `);
+        Object {
+          "avatar_url": "http://example.com/avatar.jpg",
+          "created_at": "[DATE]",
+          "id": "[ID]",
+          "is_admin": false,
+          "is_verified": true,
+          "name": "GitHub User123456",
+          "updated_at": "[DATE]",
+          "username": "GHU123",
+        }
+      `);
     }));
 
   it("can login with minimal oauth details", () =>

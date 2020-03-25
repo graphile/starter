@@ -4,7 +4,7 @@ exports[`currentUser when logged in 1`] = `
 Object {
   "data": Object {
     "currentUser": Object {
-      "id": "[id]",
+      "id": "[id-1]",
     },
   },
 }
