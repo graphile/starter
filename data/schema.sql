@@ -199,6 +199,15 @@ begin
         (f_user_id, f_service, f_identifier, f_profile) returning id, user_id into v_matched_authentication_id, v_matched_user_id;
       insert into app_private.user_authentication_secrets (user_authentication_id, details) values
         (v_matched_authentication_id, f_auth_details);
+      perform graphile_worker.add_job(
+        'user__audit',
+        json_build_object(
+          'type', 'linked_account',
+          'user_id', f_user_id,
+          'extra1', f_service,
+          'extra2', f_identifier,
+          'current_user_id', app_public.current_user_id()
+        ));
     elsif v_email is not null then
       -- See if the email is registered
       select * into v_user_email from app_public.user_emails where email = v_email and is_verified is true;
@@ -208,6 +217,15 @@ begin
           (v_user_email.user_id, f_service, f_identifier, f_profile) returning id, user_id into v_matched_authentication_id, v_matched_user_id;
         insert into app_private.user_authentication_secrets (user_authentication_id, details) values
           (v_matched_authentication_id, f_auth_details);
+        perform graphile_worker.add_job(
+          'user__audit',
+          json_build_object(
+            'type', 'linked_account',
+            'user_id', f_user_id,
+            'extra1', f_service,
+            'extra2', f_identifier,
+            'current_user_id', app_public.current_user_id()
+          ));
       end if;
     end if;
   end if;
@@ -471,6 +489,75 @@ COMMENT ON FUNCTION app_private.register_user(f_service character varying, f_ide
 
 
 --
+-- Name: tg__add_audit_job(); Type: FUNCTION; Schema: app_private; Owner: -
+--
+
+CREATE FUNCTION app_private.tg__add_audit_job() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
+    AS $_$
+declare
+  v_user_id uuid;
+  v_user_id_attribute text = TG_ARGV[1];
+  v_extra_attribute1 text = TG_ARGV[2];
+  v_extra_attribute2 text = TG_ARGV[2];
+  v_extra_attribute3 text = TG_ARGV[2];
+  v_extra1 text;
+  v_extra2 text;
+  v_extra3 text;
+begin
+  if v_user_id_attribute is null then
+    raise exception 'Invalid tg__add_audit_job call';
+  end if;
+
+  execute 'select ($1.' || quote_ident(v_user_id_attribute) || ')::uuid'
+    using (case when TG_OP = 'INSERT' then NEW else OLD end)
+    into v_user_id;
+
+  if v_extra_attribute1 is not null then
+    execute 'select ($1.' || quote_ident(v_extra_attribute1) || ')::text'
+      using (case when TG_OP = 'DELETE' then OLD else NEW end)
+      into v_extra1;
+  end if;
+  if v_extra_attribute2 is not null then
+    execute 'select ($1.' || quote_ident(v_extra_attribute2) || ')::text'
+      using (case when TG_OP = 'DELETE' then OLD else NEW end)
+      into v_extra2;
+  end if;
+  if v_extra_attribute3 is not null then
+    execute 'select ($1.' || quote_ident(v_extra_attribute3) || ')::text'
+      using (case when TG_OP = 'DELETE' then OLD else NEW end)
+      into v_extra3;
+  end if;
+
+  if v_user_id is not null then
+    perform graphile_worker.add_job(
+      'user__audit',
+      json_build_object(
+        'type', tg_argv[0],
+        'user_id', v_user_id,
+        'extra1', v_extra1,
+        'extra2', v_extra2,
+        'extra3', v_extra3,
+        'current_user_id', app_public.current_user_id(),
+        'schema', TG_TABLE_SCHEMA,
+        'table', TG_TABLE_NAME
+      ));
+  end if;
+
+  return NEW;
+end;
+$_$;
+
+
+--
+-- Name: FUNCTION tg__add_audit_job(); Type: COMMENT; Schema: app_private; Owner: -
+--
+
+COMMENT ON FUNCTION app_private.tg__add_audit_job() IS 'For notifying a user that an auditable action has taken place. Call with audit event name, user ID attribute name, and optionally another value to be included (e.g. the PK of the table, or some other relevant information). e.g. `tg__add_audit_job(''added_email'', ''user_id'', ''email'')`';
+
+
+--
 -- Name: tg__add_job(); Type: FUNCTION; Schema: app_private; Owner: -
 --
 
@@ -479,7 +566,7 @@ CREATE FUNCTION app_private.tg__add_job() RETURNS trigger
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
-  perform graphile_worker.add_job(tg_argv[0], json_build_object('id', NEW.id), coalesce(tg_argv[1], public.gen_random_uuid()::text));
+  perform graphile_worker.add_job(tg_argv[0], json_build_object('id', NEW.id));
   return NEW;
 end;
 $$;
@@ -616,6 +703,13 @@ begin
       set
         password_hash = crypt(new_password, gen_salt('bf'))
       where user_secrets.user_id = v_user.id;
+      perform graphile_worker.add_job(
+        'user__audit',
+        json_build_object(
+          'type', 'change_password',
+          'user_id', v_user.id,
+          'current_user_id', app_public.current_user_id()
+        ));
       return true;
     else
       raise exception 'Incorrect password' using errcode = 'CREDS';
@@ -1339,6 +1433,13 @@ begin
         failed_reset_password_attempts = 0,
         first_failed_reset_password_attempt = null
       where user_secrets.user_id = v_user.id;
+      perform graphile_worker.add_job(
+        'user__audit',
+        json_build_object(
+          'type', 'reset_password',
+          'user_id', v_user.id,
+          'current_user_id', app_public.current_user_id()
+        ));
       return true;
     else
       -- Wrong token, bump all the attempt tracking figures
@@ -1979,6 +2080,27 @@ CREATE TRIGGER _200_forbid_existing_email BEFORE INSERT ON app_public.user_email
 
 
 --
+-- Name: user_emails _500_audit_added; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _500_audit_added AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg__add_audit_job('added_email', 'user_id', 'id', 'email');
+
+
+--
+-- Name: user_authentications _500_audit_removed; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _500_audit_removed AFTER DELETE ON app_public.user_authentications FOR EACH ROW EXECUTE PROCEDURE app_private.tg__add_audit_job('unlinked_account', 'user_id', 'service', 'identifier');
+
+
+--
+-- Name: user_emails _500_audit_removed; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _500_audit_removed AFTER DELETE ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg__add_audit_job('removed_email', 'user_id', 'id', 'email');
+
+
+--
 -- Name: users _500_gql_update; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
@@ -2336,6 +2458,13 @@ REVOKE ALL ON FUNCTION app_private.really_create_user(username public.citext, em
 --
 
 REVOKE ALL ON FUNCTION app_private.register_user(f_service character varying, f_identifier character varying, f_profile json, f_auth_details json, f_email_is_verified boolean) FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION tg__add_audit_job(); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.tg__add_audit_job() FROM PUBLIC;
 
 
 --
