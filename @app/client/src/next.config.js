@@ -3,7 +3,11 @@ const compose = require("lodash/flowRight");
 
 const { ROOT_URL, T_AND_C_URL } = process.env;
 if (!ROOT_URL) {
-  throw new Error("ROOT_URL is a required envvar");
+  if (process.argv[1].endsWith("/depcheck")) {
+    /* NOOP */
+  } else {
+    throw new Error("ROOT_URL is a required envvar");
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -67,7 +71,9 @@ if (!ROOT_URL) {
           plugins: [
             ...config.plugins,
             new webpack.DefinePlugin({
-              "process.env.ROOT_URL": JSON.stringify(ROOT_URL),
+              "process.env.ROOT_URL": JSON.stringify(
+                ROOT_URL || "http://localhost:5678"
+              ),
               "process.env.T_AND_C_URL": JSON.stringify(T_AND_C_URL || null),
             }),
             new webpack.IgnorePlugin(
