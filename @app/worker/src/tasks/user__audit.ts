@@ -69,7 +69,7 @@ type UserAuditPayload =
       current_user_id: string;
     };
 
-const task: Task = async (rawPayload, { addJob, withPgClient }) => {
+const task: Task = async (rawPayload, { addJob, withPgClient, job }) => {
   const payload: UserAuditPayload = rawPayload as any;
   let subject: string;
   let actionDescription: string;
@@ -114,6 +114,27 @@ const task: Task = async (rawPayload, { addJob, withPgClient }) => {
     }
   }
 
+  const {
+    rows: [user],
+  } = await withPgClient((client) =>
+    client.query<{
+      id: string;
+      created_at: Date;
+    }>("select * from app_public.users where id = $1", [payload.user_id])
+  );
+
+  if (!user) {
+    console.error(
+      `User '${payload.user_id}' no longer exists. (Tried to audit: ${actionDescription})`
+    );
+    return;
+  }
+  if (Math.abs(+user.created_at - +job.created_at) < 5) {
+    console.error(
+      `Not sending audit announcement for user '${payload.user_id}' because it occurred immediately after account creation. (Tried to audit: ${actionDescription})`
+    );
+    return;
+  }
   const { rows: userEmails } = await withPgClient((client) =>
     client.query<{
       id: string;
