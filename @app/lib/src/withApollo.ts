@@ -1,14 +1,15 @@
-import withApollo from "next-with-apollo";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { ApolloClient } from "apollo-client";
 import { ApolloLink, split } from "apollo-link";
+import { onError } from "apollo-link-error";
 import { HttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { onError } from "apollo-link-error";
-import ws from "ws";
-import GraphileLink from "./GraphileLink";
 import { getOperationAST } from "graphql";
+import withApolloBase from "next-with-apollo";
 import { SubscriptionClient } from "subscriptions-transport-ws";
+import ws from "ws";
+
+import { GraphileApolloLink } from "./GraphileApolloLink";
 
 let wsClient: SubscriptionClient | null = null;
 
@@ -19,7 +20,7 @@ export function resetWebsocketConnection(): void {
 }
 
 function makeServerSideLink(req: any, res: any) {
-  return new GraphileLink({
+  return new GraphileApolloLink({
     req,
     res,
     postgraphileMiddleware: req.app.get("postgraphileMiddleware"),
@@ -54,7 +55,7 @@ function makeClientSideLink(ROOT_URL: string) {
   return mainLink;
 }
 
-export default withApollo(
+export const withApollo = withApolloBase(
   ({ initialState, ctx }) => {
     const ROOT_URL = process.env.ROOT_URL;
     if (!ROOT_URL) {
@@ -82,7 +83,14 @@ export default withApollo(
 
     const client = new ApolloClient({
       link: ApolloLink.from([onErrorLink, mainLink]),
-      cache: new InMemoryCache().restore(initialState || {}),
+      cache: new InMemoryCache({
+        dataIdFromObject: o =>
+          o.__typename === "Query"
+            ? "ROOT_QUERY"
+            : o.id
+            ? `${o.__typename}:${o.id}`
+            : null,
+      }).restore(initialState || {}),
     });
 
     return client;

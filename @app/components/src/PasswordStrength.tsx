@@ -1,5 +1,6 @@
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { Col, Popover, Progress, Row } from "antd";
 import React, { useEffect, useState } from "react";
-import { Progress, Popover, Icon, Col, Row } from "antd";
 
 export interface PasswordStrengthProps {
   passwordStrength: number;
@@ -80,8 +81,7 @@ export function PasswordStrength({
               padding: "0 13px",
             }}
           >
-            <Icon
-              type="info-circle"
+            <InfoCircleOutlined
               style={suggestions.length > 0 ? {} : { visibility: "hidden" }}
             />
           </div>

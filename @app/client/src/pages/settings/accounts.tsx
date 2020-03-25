@@ -1,19 +1,19 @@
-import React, { useCallback, useState } from "react";
-import SettingsLayout from "../../layout/SettingsLayout";
-import { NextPage } from "next";
+import { GithubFilled } from "@ant-design/icons";
 import {
-  useCurrentUserAuthenticationsQuery,
-  useUnlinkUserAuthenticationMutation,
-  UserAuthentication,
-} from "@app/graphql";
-import { Spin, List, Avatar, Modal } from "antd";
-import {
-  SocialLoginOptions,
   ErrorAlert,
-  H3,
-  H4,
+  SettingsLayout,
+  SocialLoginOptions,
   Strong,
 } from "@app/components";
+import {
+  useCurrentUserAuthenticationsQuery,
+  UserAuthentication,
+  useSharedQuery,
+  useUnlinkUserAuthenticationMutation,
+} from "@app/graphql";
+import { Avatar, Card, List, Modal, PageHeader, Spin } from "antd";
+import { NextPage } from "next";
+import React, { useCallback, useState } from "react";
 
 const AUTH_NAME_LOOKUP = {
   github: "GitHub",
@@ -25,7 +25,7 @@ function authName(service: string) {
 }
 
 const AUTH_ICON_LOOKUP = {
-  github: "github",
+  github: <GithubFilled />,
 };
 function authAvatar(service: string) {
   const icon = AUTH_ICON_LOOKUP[service] || null;
@@ -34,7 +34,7 @@ function authAvatar(service: string) {
   }
 }
 
-function UnlinkAccountButton({ id }: { id: number }) {
+function UnlinkAccountButton({ id }: { id: string }) {
   const [mutate] = useUnlinkUserAuthenticationMutation();
   const [modalOpen, setModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -100,20 +100,25 @@ const Settings_Accounts: NextPage = () => {
       <Spin />
     ) : (
       <List
+        bordered
+        size="large"
         dataSource={data.currentUser.authentications}
         renderItem={renderAuth}
       />
     );
 
+  const query = useSharedQuery();
+
   return (
-    <SettingsLayout href="/settings/accounts">
-      <H3>Linked Accounts</H3>
+    <SettingsLayout href="/settings/accounts" query={query}>
+      <PageHeader title="Linked accounts" />
       {error && !loading ? <ErrorAlert error={error} /> : linkedAccounts}
-      <H4>Link another account</H4>
-      <SocialLoginOptions
-        next="/settings/accounts"
-        buttonTextFromService={service => `Link ${service} account`}
-      />
+      <Card style={{ marginTop: "2rem" }} title="Link another account">
+        <SocialLoginOptions
+          next="/settings/accounts"
+          buttonTextFromService={service => `Link ${service} account`}
+        />
+      </Card>
     </SettingsLayout>
   );
 };

@@ -1,7 +1,8 @@
+import { Button, Col, Divider, Row, Typography } from "antd";
 import * as React from "react";
-import { Button, Row, Col, Typography, Divider } from "antd";
 const { Text, Title, Paragraph } = Typography;
-import SharedLayout from "../layout/SharedLayout";
+import { SharedLayout } from "@app/components";
+import { useSharedQuery } from "@app/graphql";
 import { NextPage } from "next";
 
 // Convenience helper
@@ -12,9 +13,10 @@ const Li = ({ children, ...props }: any) => (
 );
 
 const Home: NextPage = () => {
+  const query = useSharedQuery();
   return (
-    <SharedLayout title="Home">
-      <Row type="flex" justify="space-between" gutter={32}>
+    <SharedLayout title="" query={query}>
+      <Row justify="space-between" gutter={32}>
         <Col xs={28} sm={16}>
           <Title data-cy="homepage-header">
             Welcome to the PostGraphile starter
@@ -31,14 +33,6 @@ const Home: NextPage = () => {
             </Text>{" "}
           </Paragraph>
 
-          <Title level={4}>First user to register becomes admin</Title>
-          <Paragraph>
-            Admin doesn't do anything in this starter, but you can use it in
-            your own applications. To disable this, delete the database function{" "}
-            <Text code>app_private.tg_users__make_first_user_admin()</Text> and
-            related triggers.
-          </Paragraph>
-
           <Title level={4}>Next.js and page load delays: dev only</Title>
           <Paragraph>
             We use Next.js to serve the React app. This gives us server-side
@@ -48,7 +42,7 @@ const Home: NextPage = () => {
             server, served to the client, and then executed. This means there
             can be a small delay when loading a web page for the first time in
             development. In production, this delay should be vastly smaller, and
-            can be eliminated with prefetching. You can read more about this in
+            can be eliminated with pre-fetching. You can read more about this in
             the{" "}
             <a href="https://nextjs.org/docs#prefetching-pages">Next.js docs</a>
           </Paragraph>
@@ -117,7 +111,7 @@ const Home: NextPage = () => {
           </Paragraph>
           <Paragraph>
             We've committed the first migration for you (which builds the user
-            system), but should you wish to customise this user system the
+            system), but should you wish to customize this user system the
             easiest way is to run <code>yarn db uncommit</code> which will undo
             this initial migration and move its content back to current.sql for
             you to modify. Please see{" "}
@@ -131,6 +125,12 @@ const Home: NextPage = () => {
             experimental, you may want to find a different migration solution
             before putting it into production (your sponsorship will help make
             this project stable faster).
+          </Paragraph>
+
+          <Title level={4}>isAdmin</Title>
+          <Paragraph>
+            The <code>isAdmin</code> flag doesn't do anything in this starter,
+            but you can use it in your own applications should you need it.
           </Paragraph>
 
           <Title level={4}>What now?</Title>

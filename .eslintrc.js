@@ -1,15 +1,25 @@
 const { readFileSync } = require("fs");
-const schemaString = readFileSync("./data/schema.graphql", "utf8");
+const schemaString = readFileSync(`${__dirname}/data/schema.graphql`, "utf8");
 
 module.exports = {
   parser: "@typescript-eslint/parser",
   extends: [
     "plugin:react/recommended",
+    "plugin:import/errors",
+    "plugin:import/typescript",
     "prettier",
     "prettier/@typescript-eslint",
     "prettier/react",
   ],
-  plugins: ["jest", "@typescript-eslint", "react-hooks", "react", "graphql"],
+  plugins: [
+    "jest",
+    "@typescript-eslint",
+    "react-hooks",
+    "react",
+    "graphql",
+    "simple-import-sort",
+    "import",
+  ],
   overrides: [
     {
       files: ["@app/e2e/cypress/**"],
@@ -89,6 +99,35 @@ module.exports = {
       {
         env: "literal",
         schemaString,
+        validators: [
+          "ExecutableDefinitions",
+          "FieldsOnCorrectType",
+          "FragmentsOnCompositeTypes",
+          "KnownArgumentNames",
+          "KnownDirectives", // disabled by default in relay
+          // 'KnownFragmentNames', // disabled by default in all envs
+          "KnownTypeNames",
+          "LoneAnonymousOperation",
+          "NoFragmentCycles",
+          "NoUndefinedVariables", //disabled by default in relay
+          // 'NoUnusedFragments' // disabled by default in all envs
+          // 'NoUnusedVariables' throws even when fragments use the variable
+          "OverlappingFieldsCanBeMerged",
+          "PossibleFragmentSpreads",
+          "ProvidedRequiredArguments", // disabled by default in relay
+          "ScalarLeafs", // disabled by default in relay
+          "SingleFieldSubscriptions",
+          "UniqueArgumentNames",
+          "UniqueDirectivesPerLocation",
+          "UniqueFragmentNames",
+          "UniqueInputFieldNames",
+          "UniqueOperationNames",
+          "UniqueVariableNames",
+          "ValuesOfCorrectType",
+          "VariablesAreInputTypes",
+          // "VariablesDefaultValueAllowed",
+          "VariablesInAllowedPosition",
+        ],
       },
     ],
     "graphql/named-operations": [
@@ -109,5 +148,16 @@ module.exports = {
 
     "arrow-body-style": 0,
     "no-nested-ternary": 0,
+
+    /*
+     * simple-import-sort seems to be the most stable import sorting currently,
+     * disable others
+     */
+    "simple-import-sort/sort": "error",
+    "sort-imports": "off",
+    "import/order": "off",
+
+    "import/no-deprecated": "warn",
+    "import/no-duplicates": "error",
   },
 };

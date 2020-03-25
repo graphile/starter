@@ -1,0 +1,15 @@
+fragment OrganizationPage_Organization on Organization {
+  id
+  name
+  slug
+  currentUserIsOwner
+  currentUserIsBillingContact
+}
+
+fragment OrganizationPage_Query on Query {
+  ...SharedLayout_Query
+  organizationBySlug(slug: $slug) {
+    id
+    ...OrganizationPage_Organization
+  }
+}

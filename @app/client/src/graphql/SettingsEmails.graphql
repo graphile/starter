@@ -1,6 +1,7 @@
 #import "./EmailsForm_User.graphql"
 
 query SettingsEmails {
+  ...SharedLayout_Query
   currentUser {
     id
     isVerified

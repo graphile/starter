@@ -1,0 +1,7 @@
+mutation RemoveFromOrganization($organizationId: UUID!, $userId: UUID!) {
+  removeFromOrganization(
+    input: { organizationId: $organizationId, userId: $userId }
+  ) {
+    clientMutationId
+  }
+}

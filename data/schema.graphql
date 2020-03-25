@@ -1,3 +1,28 @@
+"""All input for the `acceptInvitationToOrganization` mutation."""
+input AcceptInvitationToOrganizationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  code: String
+  invitationId: UUID
+}
+
+"""The output of our `acceptInvitationToOrganization` mutation."""
+type AcceptInvitationToOrganizationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the `changePassword` mutation."""
 input ChangePasswordInput {
   """
@@ -49,6 +74,38 @@ type ConfirmAccountDeletionPayload {
   success: Boolean
 }
 
+"""All input for the `createOrganization` mutation."""
+input CreateOrganizationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  name: String
+  slug: String
+}
+
+"""The output of our `createOrganization` mutation."""
+type CreateOrganizationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  organization: Organization
+
+  """An edge for our `Organization`. May be used by Relay 1."""
+  organizationEdge(
+    """The method to use when ordering `Organization`."""
+    orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the create `UserEmail` mutation."""
 input CreateUserEmailInput {
   """
@@ -87,6 +144,52 @@ type CreateUserEmailPayload {
   ): UserEmailsEdge
 }
 
+"""A `UUID` edge in the connection."""
+type CurrentUserInvitedOrganizationIdEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `UUID` at the end of the edge."""
+  node: UUID
+}
+
+"""A connection to a list of `UUID` values."""
+type CurrentUserInvitedOrganizationIdsConnection {
+  """
+  A list of edges which contains the `UUID` and cursor to aid in pagination.
+  """
+  edges: [CurrentUserInvitedOrganizationIdEdge!]!
+
+  """A list of `UUID` objects."""
+  nodes: [UUID]!
+
+  """The count of *all* `UUID` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `UUID` edge in the connection."""
+type CurrentUserMemberOrganizationIdEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `UUID` at the end of the edge."""
+  node: UUID
+}
+
+"""A connection to a list of `UUID` values."""
+type CurrentUserMemberOrganizationIdsConnection {
+  """
+  A list of edges which contains the `UUID` and cursor to aid in pagination.
+  """
+  edges: [CurrentUserMemberOrganizationIdEdge!]!
+
+  """A list of `UUID` objects."""
+  nodes: [UUID]!
+
+  """The count of *all* `UUID` you could get from the connection."""
+  totalCount: Int!
+}
+
 """A location in a connection that can be used for resuming pagination."""
 scalar Cursor
 
@@ -96,6 +199,30 @@ A point in time as described by the [ISO
 """
 scalar Datetime
 
+"""All input for the `deleteOrganization` mutation."""
+input DeleteOrganizationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  organizationId: UUID
+}
+
+"""The output of our `deleteOrganization` mutation."""
+type DeleteOrganizationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the `deleteUserAuthentication` mutation."""
 input DeleteUserAuthenticationInput {
   """
@@ -103,7 +230,7 @@ input DeleteUserAuthenticationInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  id: Int!
+  id: UUID!
 }
 
 """The output of our delete `UserAuthentication` mutation."""
@@ -134,7 +261,7 @@ input DeleteUserEmailInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  id: Int!
+  id: UUID!
 }
 
 """The output of our delete `UserEmail` mutation."""
@@ -188,6 +315,32 @@ type ForgotPasswordPayload {
   query: Query
 }
 
+"""All input for the `inviteToOrganization` mutation."""
+input InviteToOrganizationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  email: String
+  organizationId: UUID
+  username: String
+}
+
+"""The output of our `inviteToOrganization` mutation."""
+type InviteToOrganizationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 input LoginInput {
   password: String!
   username: String!
@@ -208,7 +361,7 @@ input MakeEmailPrimaryInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  emailId: Int!
+  emailId: UUID!
 }
 
 """The output of our `makeEmailPrimary` mutation."""
@@ -239,6 +392,13 @@ type MakeEmailPrimaryPayload {
 The root mutation type which contains root level fields which mutate data.
 """
 type Mutation {
+  acceptInvitationToOrganization(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: AcceptInvitationToOrganizationInput!
+  ): AcceptInvitationToOrganizationPayload
+
   """Enter your old password and a new password to change your password."""
   changePassword(
     """
@@ -258,6 +418,12 @@ type Mutation {
     """
     input: ConfirmAccountDeletionInput!
   ): ConfirmAccountDeletionPayload
+  createOrganization(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateOrganizationInput!
+  ): CreateOrganizationPayload
 
   """Creates a single `UserEmail`."""
   createUserEmail(
@@ -266,6 +432,12 @@ type Mutation {
     """
     input: CreateUserEmailInput!
   ): CreateUserEmailPayload
+  deleteOrganization(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteOrganizationInput!
+  ): DeleteOrganizationPayload
 
   """Deletes a single `UserAuthentication` using a unique key."""
   deleteUserAuthentication(
@@ -293,6 +465,12 @@ type Mutation {
     """
     input: ForgotPasswordInput!
   ): ForgotPasswordPayload
+  inviteToOrganization(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: InviteToOrganizationInput!
+  ): InviteToOrganizationPayload
 
   """
   Use this mutation to log in to your account; this login uses sessions so you do not need to take further action.
@@ -329,6 +507,12 @@ type Mutation {
     """
     input: RegisterInput!
   ): RegisterPayload
+  removeFromOrganization(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: RemoveFromOrganizationInput!
+  ): RemoveFromOrganizationPayload
 
   """Begin the account deletion flow by requesting the confirmation email"""
   requestAccountDeletion(
@@ -360,6 +544,26 @@ type Mutation {
     """
     input: ResetPasswordInput!
   ): ResetPasswordPayload
+  transferOrganizationBillingContact(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: TransferOrganizationBillingContactInput!
+  ): TransferOrganizationBillingContactPayload
+  transferOrganizationOwnership(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: TransferOrganizationOwnershipInput!
+  ): TransferOrganizationOwnershipPayload
+
+  """Updates a single `Organization` using a unique key and a patch."""
+  updateOrganization(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateOrganizationInput!
+  ): UpdateOrganizationPayload
 
   """Updates a single `User` using a unique key and a patch."""
   updateUser(
@@ -381,6 +585,285 @@ type Mutation {
   ): VerifyEmailPayload
 }
 
+type Organization {
+  createdAt: Datetime!
+  currentUserIsBillingContact: Boolean
+  currentUserIsOwner: Boolean
+  id: UUID!
+  name: String!
+
+  """
+  Reads and enables pagination through a set of `OrganizationInvitation`.
+  """
+  organizationInvitations(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationInvitationCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `OrganizationInvitation`."""
+    orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationInvitationsConnection!
+
+  """
+  Reads and enables pagination through a set of `OrganizationMembership`.
+  """
+  organizationMemberships(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationMembershipCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `OrganizationMembership`."""
+    orderBy: [OrganizationMembershipsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationMembershipsConnection!
+  slug: String!
+}
+
+"""
+A condition to be used against `Organization` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input OrganizationCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `slug` field."""
+  slug: String
+}
+
+type OrganizationInvitation {
+  code: String
+  email: String
+  id: UUID!
+
+  """
+  Reads a single `Organization` that is related to this `OrganizationInvitation`.
+  """
+  organization: Organization
+  organizationId: UUID!
+
+  """
+  Reads a single `User` that is related to this `OrganizationInvitation`.
+  """
+  user: User
+  userId: UUID
+}
+
+"""
+A condition to be used against `OrganizationInvitation` object types. All fields
+are tested for equality and combined with a logical ‘and.’
+"""
+input OrganizationInvitationCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `organizationId` field."""
+  organizationId: UUID
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: UUID
+}
+
+"""A connection to a list of `OrganizationInvitation` values."""
+type OrganizationInvitationsConnection {
+  """
+  A list of edges which contains the `OrganizationInvitation` and cursor to aid in pagination.
+  """
+  edges: [OrganizationInvitationsEdge!]!
+
+  """A list of `OrganizationInvitation` objects."""
+  nodes: [OrganizationInvitation!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """
+  The count of *all* `OrganizationInvitation` you could get from the connection.
+  """
+  totalCount: Int!
+}
+
+"""A `OrganizationInvitation` edge in the connection."""
+type OrganizationInvitationsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `OrganizationInvitation` at the end of the edge."""
+  node: OrganizationInvitation!
+}
+
+"""Methods to use when ordering `OrganizationInvitation`."""
+enum OrganizationInvitationsOrderBy {
+  ID_ASC
+  ID_DESC
+  NATURAL
+  ORGANIZATION_ID_ASC
+  ORGANIZATION_ID_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  USER_ID_ASC
+  USER_ID_DESC
+}
+
+type OrganizationMembership {
+  createdAt: Datetime!
+  id: UUID!
+  isBillingContact: Boolean!
+  isOwner: Boolean!
+
+  """
+  Reads a single `Organization` that is related to this `OrganizationMembership`.
+  """
+  organization: Organization
+  organizationId: UUID!
+
+  """
+  Reads a single `User` that is related to this `OrganizationMembership`.
+  """
+  user: User
+  userId: UUID!
+}
+
+"""
+A condition to be used against `OrganizationMembership` object types. All fields
+are tested for equality and combined with a logical ‘and.’
+"""
+input OrganizationMembershipCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `organizationId` field."""
+  organizationId: UUID
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: UUID
+}
+
+"""A connection to a list of `OrganizationMembership` values."""
+type OrganizationMembershipsConnection {
+  """
+  A list of edges which contains the `OrganizationMembership` and cursor to aid in pagination.
+  """
+  edges: [OrganizationMembershipsEdge!]!
+
+  """A list of `OrganizationMembership` objects."""
+  nodes: [OrganizationMembership!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """
+  The count of *all* `OrganizationMembership` you could get from the connection.
+  """
+  totalCount: Int!
+}
+
+"""A `OrganizationMembership` edge in the connection."""
+type OrganizationMembershipsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `OrganizationMembership` at the end of the edge."""
+  node: OrganizationMembership!
+}
+
+"""Methods to use when ordering `OrganizationMembership`."""
+enum OrganizationMembershipsOrderBy {
+  ID_ASC
+  ID_DESC
+  MEMBER_NAME_ASC
+  MEMBER_NAME_DESC
+  NATURAL
+  ORGANIZATION_ID_ASC
+  ORGANIZATION_ID_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  USER_ID_ASC
+  USER_ID_DESC
+}
+
+"""
+Represents an update to a `Organization`. Fields that are set will be updated.
+"""
+input OrganizationPatch {
+  name: String
+  slug: String
+}
+
+"""A connection to a list of `Organization` values."""
+type OrganizationsConnection {
+  """
+  A list of edges which contains the `Organization` and cursor to aid in pagination.
+  """
+  edges: [OrganizationsEdge!]!
+
+  """A list of `Organization` objects."""
+  nodes: [Organization!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Organization` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Organization` edge in the connection."""
+type OrganizationsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Organization` at the end of the edge."""
+  node: Organization!
+}
+
+"""Methods to use when ordering `Organization`."""
+enum OrganizationsOrderBy {
+  ID_ASC
+  ID_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  SLUG_ASC
+  SLUG_DESC
+}
+
 """Information about pagination in a connection."""
 type PageInfo {
   """When paginating forwards, the cursor to continue."""
@@ -400,16 +883,122 @@ type PageInfo {
 type Query {
   """The currently logged in user (or null if not logged in)."""
   currentUser: User
+  currentUserInvitedOrganizationIds(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+  ): CurrentUserInvitedOrganizationIdsConnection!
+  currentUserMemberOrganizationIds(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+  ): CurrentUserMemberOrganizationIdsConnection!
+  getOrganizationForInvitation(code: String, invitationId: UUID): Organization
+  organization(id: UUID!): Organization
+  organizationBySlug(slug: String!): Organization
+  organizationInvitation(id: UUID!): OrganizationInvitation
+  organizationInvitationByOrganizationIdAndEmail(email: String!, organizationId: UUID!): OrganizationInvitation
+  organizationInvitationByOrganizationIdAndUserId(organizationId: UUID!, userId: UUID!): OrganizationInvitation
+
+  """
+  Reads and enables pagination through a set of `OrganizationInvitation`.
+  """
+  organizationInvitations(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationInvitationCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `OrganizationInvitation`."""
+    orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationInvitationsConnection
+  organizationMembership(id: UUID!): OrganizationMembership
+  organizationMembershipByOrganizationIdAndUserId(organizationId: UUID!, userId: UUID!): OrganizationMembership
+
+  """Reads and enables pagination through a set of `Organization`."""
+  organizations(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Organization`."""
+    orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationsConnection
 
   """
   Exposes the root query type nested one level down. This is helpful for Relay 1
   which can only query top level fields if they are in a particular form.
   """
   query: Query!
-  user(id: Int!): User
-  userAuthentication(id: Int!): UserAuthentication
+  user(id: UUID!): User
+  userAuthentication(id: UUID!): UserAuthentication
   userByUsername(username: String!): User
-  userEmail(id: Int!): UserEmail
+  userEmail(id: UUID!): UserEmail
 }
 
 input RegisterInput {
@@ -422,6 +1011,31 @@ input RegisterInput {
 
 type RegisterPayload {
   user: User!
+}
+
+"""All input for the `removeFromOrganization` mutation."""
+input RemoveFromOrganizationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  organizationId: UUID
+  userId: UUID
+}
+
+"""The output of our `removeFromOrganization` mutation."""
+type RemoveFromOrganizationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
 }
 
 """All input for the `requestAccountDeletion` mutation."""
@@ -455,7 +1069,7 @@ input ResendEmailVerificationCodeInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  emailId: Int!
+  emailId: UUID!
 }
 
 """The output of our `resendEmailVerificationCode` mutation."""
@@ -482,7 +1096,7 @@ input ResetPasswordInput {
   clientMutationId: String
   newPassword: String!
   resetToken: String!
-  userId: Int!
+  userId: UUID!
 }
 
 """The output of our `resetPassword` mutation."""
@@ -508,6 +1122,108 @@ type Subscription {
   currentUserUpdated: UserSubscriptionPayload
 }
 
+"""All input for the `transferOrganizationBillingContact` mutation."""
+input TransferOrganizationBillingContactInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  organizationId: UUID
+  userId: UUID
+}
+
+"""The output of our `transferOrganizationBillingContact` mutation."""
+type TransferOrganizationBillingContactPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  organization: Organization
+
+  """An edge for our `Organization`. May be used by Relay 1."""
+  organizationEdge(
+    """The method to use when ordering `Organization`."""
+    orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `transferOrganizationOwnership` mutation."""
+input TransferOrganizationOwnershipInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  organizationId: UUID
+  userId: UUID
+}
+
+"""The output of our `transferOrganizationOwnership` mutation."""
+type TransferOrganizationOwnershipPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  organization: Organization
+
+  """An edge for our `Organization`. May be used by Relay 1."""
+  organizationEdge(
+    """The method to use when ordering `Organization`."""
+    orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `updateOrganization` mutation."""
+input UpdateOrganizationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `Organization` being updated.
+  """
+  patch: OrganizationPatch!
+}
+
+"""The output of our update `Organization` mutation."""
+type UpdateOrganizationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Organization` that was updated by this mutation."""
+  organization: Organization
+
+  """An edge for our `Organization`. May be used by Relay 1."""
+  organizationEdge(
+    """The method to use when ordering `Organization`."""
+    orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the `updateUser` mutation."""
 input UpdateUserInput {
   """
@@ -517,7 +1233,7 @@ input UpdateUserInput {
   clientMutationId: String
 
   """Unique identifier for the user."""
-  id: Int!
+  id: UUID!
 
   """
   An object where the defined keys will be set on the `User` being updated.
@@ -556,7 +1272,7 @@ type User {
   hasPassword: Boolean
 
   """Unique identifier for the user."""
-  id: Int!
+  id: UUID!
 
   """If true, the user has elevated privileges."""
   isAdmin: Boolean!
@@ -564,6 +1280,68 @@ type User {
 
   """Public-facing name (or pseudonym) of the user."""
   name: String
+
+  """
+  Reads and enables pagination through a set of `OrganizationInvitation`.
+  """
+  organizationInvitations(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationInvitationCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `OrganizationInvitation`."""
+    orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationInvitationsConnection!
+
+  """
+  Reads and enables pagination through a set of `OrganizationMembership`.
+  """
+  organizationMemberships(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: OrganizationMembershipCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `OrganizationMembership`."""
+    orderBy: [OrganizationMembershipsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): OrganizationMembershipsConnection!
   updatedAt: Datetime!
 
   """Reads and enables pagination through a set of `UserAuthentication`."""
@@ -621,7 +1399,7 @@ Contains information about the login providers this user has used, so that they 
 """
 type UserAuthentication {
   createdAt: Datetime!
-  id: Int!
+  id: UUID!
 
   """A unique identifier for the user within the login service."""
   identifier: String!
@@ -632,7 +1410,7 @@ type UserAuthentication {
 
   """Reads a single `User` that is related to this `UserAuthentication`."""
   user: User
-  userId: Int!
+  userId: UUID!
 }
 
 """
@@ -641,13 +1419,13 @@ tested for equality and combined with a logical ‘and.’
 """
 input UserAuthenticationCondition {
   """Checks for equality with the object’s `id` field."""
-  id: Int
+  id: UUID
 
   """Checks for equality with the object’s `service` field."""
   service: String
 
   """Checks for equality with the object’s `userId` field."""
-  userId: Int
+  userId: UUID
 }
 
 """Methods to use when ordering `UserAuthentication`."""
@@ -669,7 +1447,7 @@ type UserEmail {
 
   """The users email address, in `a@b.c` format."""
   email: String!
-  id: Int!
+  id: UUID!
   isPrimary: Boolean!
 
   """
@@ -681,7 +1459,7 @@ type UserEmail {
 
   """Reads a single `User` that is related to this `UserEmail`."""
   user: User
-  userId: Int!
+  userId: UUID!
 }
 
 """
@@ -690,13 +1468,13 @@ for equality and combined with a logical ‘and.’
 """
 input UserEmailCondition {
   """Checks for equality with the object’s `id` field."""
-  id: Int
+  id: UUID
 
   """Checks for equality with the object’s `isPrimary` field."""
   isPrimary: Boolean
 
   """Checks for equality with the object’s `userId` field."""
-  userId: Int
+  userId: UUID
 }
 
 """An input for mutations affecting `UserEmail`"""
@@ -781,6 +1559,11 @@ type UserSubscriptionPayload {
   user: User
 }
 
+"""
+A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122).
+"""
+scalar UUID
+
 """All input for the `verifyEmail` mutation."""
 input VerifyEmailInput {
   """
@@ -789,7 +1572,7 @@ input VerifyEmailInput {
   """
   clientMutationId: String
   token: String!
-  userEmailId: Int!
+  userEmailId: UUID!
 }
 
 """The output of our `verifyEmail` mutation."""

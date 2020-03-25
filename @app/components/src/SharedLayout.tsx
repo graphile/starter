@@ -1,32 +1,26 @@
-import * as React from "react";
-import {
-  Layout,
-  Avatar,
-  Row,
-  Col,
-  Dropdown,
-  Icon,
-  Menu,
-  Typography,
-} from "antd";
-import Link from "next/link";
-import { projectName, companyName } from "@app/config";
-import {
-  useSharedLayoutQuery,
-  useLogoutMutation,
-  useCurrentUserUpdatedSubscription,
-  SharedLayout_UserFragment,
-} from "@app/graphql";
-import Router from "next/router";
+import { CrownOutlined, DownOutlined } from "@ant-design/icons";
+import { QueryResult } from "@apollo/react-common";
 import { useApolloClient } from "@apollo/react-hooks";
-import { useCallback } from "react";
-import { StandardWidth, Warn, ErrorAlert, Redirect } from "@app/components";
-import Head from "next/head";
+import { companyName, projectName } from "@app/config";
+import {
+  SharedLayout_QueryFragment,
+  SharedLayout_UserFragment,
+  useCurrentUserUpdatedSubscription,
+  useLogoutMutation,
+} from "@app/graphql";
+import { Avatar, Col, Dropdown, Layout, Menu, Row, Typography } from "antd";
 import { ApolloError } from "apollo-client";
+import Head from "next/head";
+import Link from "next/link";
+import Router, { useRouter } from "next/router";
+import * as React from "react";
+import { useCallback } from "react";
+
+import { ErrorAlert, H3, StandardWidth, Warn } from ".";
+import { Redirect } from "./Redirect";
 
 const { Header, Content, Footer } = Layout;
 const { Text } = Typography;
-
 /*
  * For some reason, possibly related to the interaction between
  * `babel-plugin-import` and https://github.com/babel/babel/pull/9766, we can't
@@ -38,6 +32,8 @@ const { Text } = Typography;
 const _babelHackRow = Row;
 const _babelHackCol = Col;
 export { _babelHackRow as Row, _babelHackCol as Col, Link };
+
+export const contentMinHeight = "calc(100vh - 64px - 70px)";
 
 export interface SharedLayoutChildProps {
   error?: ApolloError | Error;
@@ -51,12 +47,30 @@ export enum AuthRestrict {
   NEVER = "NEVER",
 }
 
-interface SharedLayoutProps {
+export interface SharedLayoutProps {
+  /*
+   * We're expecting lots of different queries to be passed through here, and
+   * for them to have this common required data we need. Methods like
+   * `subscribeToMore` are too specific (and we don't need them) so we're going
+   * to drop them from the data requirements.
+   *
+   * NOTE: we're not fetching this query internally because we want the entire
+   * page to be fetchable via a single GraphQL query, rather than multiple
+   * chained queries.
+   */
+  query: Pick<
+    QueryResult<SharedLayout_QueryFragment>,
+    "data" | "loading" | "error" | "networkStatus" | "client" | "refetch"
+  >;
+
   title: string;
+  titleHref?: string;
+  titleHrefAs?: string;
   children:
     | React.ReactNode
     | ((props: SharedLayoutChildProps) => React.ReactNode);
   noPad?: boolean;
+  noHandleErrors?: boolean;
   forbidWhen?: AuthRestrict;
 }
 
@@ -76,12 +90,18 @@ function CurrentUserUpdatedSubscription() {
   return null;
 }
 
-function SharedLayout({
+export function SharedLayout({
   title,
+  titleHref,
+  titleHrefAs,
   noPad = false,
+  noHandleErrors = false,
+  query,
   forbidWhen = AuthRestrict.NEVER,
   children,
 }: SharedLayoutProps) {
+  const router = useRouter();
+  const currentUrl = router.asPath;
   const client = useApolloClient();
   const [logout] = useLogoutMutation();
   const handleLogout = useCallback(async () => {
@@ -91,8 +111,12 @@ function SharedLayout({
   }, [client, logout]);
   const renderChildren = (props: SharedLayoutChildProps) => {
     const inner =
-      props.error && !props.loading ? (
-        <ErrorAlert error={props.error} />
+      props.error && !props.loading && !noHandleErrors ? (
+        <>
+          {process.env.NODE_ENV === "development" ? (
+            <ErrorAlert error={props.error} />
+          ) : null}
+        </>
       ) : typeof children === "function" ? (
         children(props)
       ) : (
@@ -104,35 +128,94 @@ function SharedLayout({
           <Redirect href={"/"} />
         </StandardWidth>
       );
+    } else if (
+      data &&
+      data.currentUser === null &&
+      !loading &&
+      !error &&
+      forbidWhen === AuthRestrict.LOGGED_OUT
+    ) {
+      return (
+        <Redirect href={`/login?next=${encodeURIComponent(router.asPath)}`} />
+      );
     }
 
     return noPad ? inner : <StandardWidth>{inner}</StandardWidth>;
   };
-  const { data, loading, error } = useSharedLayoutQuery();
+  const { data, loading, error } = query;
 
   return (
     <Layout>
       {data && data.currentUser ? <CurrentUserUpdatedSubscription /> : null}
-      <Header style={{ boxShadow: "0 2px 8px #f0f1f2", zIndex: 1 }}>
+      <Header
+        style={{
+          boxShadow: "0 2px 8px #f0f1f2",
+          zIndex: 1,
+          overflow: "hidden",
+        }}
+      >
         <Head>
-          <title>
-            {title} — {projectName}
-          </title>
+          <title>{title ? `${title} — ${projectName}` : projectName}</title>
         </Head>
-        <Row type="flex" justify="space-between">
+        <Row justify="space-between">
           <Col span={6}>
             <Link href="/">
-              <a>Home</a>
+              <a>{projectName}</a>
             </Link>
           </Col>
-          <Col>
-            <h3>{title}</h3>
+          <Col span={12}>
+            <H3
+              style={{
+                margin: 0,
+                padding: 0,
+                textAlign: "center",
+                lineHeight: "64px",
+              }}
+              data-cy="layout-header-title"
+            >
+              {titleHref ? (
+                <Link href={titleHref} as={titleHrefAs}>
+                  <a data-cy="layout-header-titlelink">{title}</a>
+                </Link>
+              ) : (
+                title
+              )}
+            </H3>
           </Col>
           <Col span={6} style={{ textAlign: "right" }}>
             {data && data.currentUser ? (
               <Dropdown
                 overlay={
                   <Menu>
+                    {data.currentUser.organizationMemberships.nodes.map(
+                      ({ organization, isOwner }) => (
+                        <Menu.Item key={organization?.id}>
+                          <Link
+                            href={`/o/[slug]`}
+                            as={`/o/${organization?.slug}`}
+                          >
+                            <a>
+                              {organization?.name}
+                              {isOwner ? (
+                                <span>
+                                  {" "}
+                                  <CrownOutlined />
+                                </span>
+                              ) : (
+                                ""
+                              )}
+                            </a>
+                          </Link>
+                        </Menu.Item>
+                      )
+                    )}
+                    <Menu.Item>
+                      <Link href="/create-organization">
+                        <a data-cy="layout-link-create-organization">
+                          Create organization
+                        </a>
+                      </Link>
+                    </Menu.Item>
                     <Menu.Item>
                       <Link href="/settings">
                         <a data-cy="layout-link-settings">
@@ -159,19 +242,19 @@ function SharedLayout({
                     <span style={{ marginLeft: 8, marginRight: 8 }}>
                       {data.currentUser.name}
                     </span>
-                    <Icon type="down" />
+                    <DownOutlined />
                   </Warn>
                 </span>
               </Dropdown>
             ) : (
-              <Link href="/login">
+              <Link href={`/login?next=${encodeURIComponent(currentUrl)}`}>
                 <a data-cy="header-login-button">Sign in</a>
               </Link>
             )}
           </Col>
         </Row>
       </Header>
-      <Content style={{ minHeight: "calc(100vh - 64px - 120px)" }}>
+      <Content style={{ minHeight: contentMinHeight }}>
         {renderChildren({
           error,
           loading,
@@ -186,14 +269,14 @@ function SharedLayout({
             justifyContent: "space-between",
           }}
         >
-          <Text style={{ color: "#fff" }}>
+          <Text>
             Copyright &copy; {new Date().getFullYear()} {companyName}. All
             rights reserved.
             {process.env.T_AND_C_URL ? (
               <span>
                 {" "}
                 <a
-                  style={{ color: "#fff", textDecoration: "underline" }}
+                  style={{ textDecoration: "underline" }}
                   href={process.env.T_AND_C_URL}
                 >
                   Terms and conditions
@@ -201,10 +284,10 @@ function SharedLayout({
               </span>
             ) : null}
           </Text>
-          <Text style={{ color: "#fff" }}>
+          <Text>
             Powered by{" "}
             <a
-              style={{ color: "#fff", textDecoration: "underline" }}
+              style={{ textDecoration: "underline" }}
               href="https://graphile.org/postgraphile"
             >
               PostGraphile
@@ -215,5 +298,3 @@ function SharedLayout({
     </Layout>
   );
 }
-
-export default SharedLayout;

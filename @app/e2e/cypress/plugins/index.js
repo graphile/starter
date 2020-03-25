@@ -1,6 +1,6 @@
 const wp = require("@cypress/webpack-preprocessor");
 
-module.exports = on => {
+module.exports = (on, config) => {
   const options = {
     webpackOptions: {
       resolve: {
@@ -23,4 +23,11 @@ module.exports = on => {
     },
   };
   on("file:preprocessor", wp(options));
+
+  if (process.env.CI) {
+    // CI seems to be pretty slow, lets be more forgiving
+    config.defaultCommandTimeout = 20000; // default 4000
+    config.requestTimeout = 10000; // default 5000
+  }
+  return config;
 };

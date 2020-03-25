@@ -1,120 +1,60 @@
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-  useEffect,
-  FocusEvent,
-} from "react";
-import SharedLayout, { AuthRestrict } from "../layout/SharedLayout";
-import { NextPage } from "next";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { useApolloClient } from "@apollo/react-hooks";
-import { useRegisterMutation } from "@app/graphql";
-import { FormComponentProps, ValidateFieldsOptions } from "antd/lib/form/Form";
-import { Form, Input, Tooltip, Icon, Button, Alert } from "antd";
-import { SyntheticEvent } from "react";
-import { promisify } from "util";
-import Router from "next/router";
-import { ApolloError } from "apollo-client";
 import {
+  AuthRestrict,
+  PasswordStrength,
+  Redirect,
+  SharedLayout,
+} from "@app/components";
+import { useRegisterMutation, useSharedQuery } from "@app/graphql";
+import {
+  extractError,
+  formItemLayout,
   getCodeFromError,
   getExceptionFromError,
-  extractError,
-} from "../errors";
-import { formItemLayout, tailFormItemLayout } from "../forms";
-import { resetWebsocketConnection } from "../lib/withApollo";
-import { setPasswordInfo } from "../lib/passwordHelpers";
-import { PasswordStrength } from "@app/components";
+  resetWebsocketConnection,
+  setPasswordInfo,
+  tailFormItemLayout,
+} from "@app/lib";
+import { Alert, Button, Form, Input, Tooltip } from "antd";
+import { useForm } from "antd/lib/form/util";
+import { ApolloError } from "apollo-client";
+import { NextPage } from "next";
+import Router from "next/router";
+import { Store } from "rc-field-form/lib/interface";
+import React, {
+  FocusEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import { isSafe } from "./login";
+
+interface RegisterProps {
+  next: string | null;
+}
 
 /**
  * The registration page just renders the standard layout and embeds the
  * registration form.
  */
-const Register: NextPage = () => {
+const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
   const [error, setError] = useState<Error | ApolloError | null>(null);
-  const [strength, setStrength] = useState<number>(0);
+  const [passwordStrength, setPasswordStrength] = useState<number>(0);
   const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
+  const next: string = isSafe(rawNext) ? rawNext! : "/";
+  const query = useSharedQuery();
 
-  return (
-    <SharedLayout title="Register" forbidWhen={AuthRestrict.LOGGED_IN}>
-      <WrappedRegistrationForm
-        passwordStrength={strength}
-        setPasswordStrength={setStrength}
-        passwordSuggestions={passwordSuggestions}
-        setPasswordSuggestions={setPasswordSuggestions}
-        onSuccessRedirectTo="/"
-        error={error}
-        setError={setError}
-      />
-    </SharedLayout>
-  );
-};
-
-export default Register;
-
-/**
- * These are the values in our form
- */
-interface FormValues {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
-  confirm: string;
-}
-
-/**
- * Our registration form receives our `register` mutation (see
- * `withRegisterMutation` below), and all the Form.create enhancements from
- * Antd.
- */
-interface RegistrationFormProps extends FormComponentProps<FormValues> {
-  onSuccessRedirectTo: string;
-  error: Error | ApolloError | null;
-  setError: (error: Error | ApolloError | null) => void;
-  passwordStrength: number;
-  setPasswordStrength: (strength: number) => void;
-  passwordSuggestions: string[];
-  setPasswordSuggestions: (suggestions: string[]) => void;
-}
-
-/**
- * This component is responsible for rendering the registration form, and
- * handling all the related events (e.g. form submit).
- *
- * On successful registration it will redirect to the path specified in
- * 'onSuccessRedirectTo'.
- */
-function RegistrationForm({
-  form,
-  onSuccessRedirectTo,
-  error,
-  setError,
-  passwordStrength,
-  passwordSuggestions,
-}: RegistrationFormProps) {
   const [register] = useRegisterMutation({});
   const client = useApolloClient();
   const [confirmDirty, setConfirmDirty] = useState(false);
-
-  const validateFields: (
-    fieldNames?: Array<string>,
-    options?: ValidateFieldsOptions
-  ) => Promise<FormValues> = useMemo(
-    () => promisify((...args) => form.validateFields(...args)),
-    [form]
-  );
-
-  const validateFieldsAndScroll: () => Promise<FormValues> = useMemo(
-    () => promisify((...args) => form.validateFieldsAndScroll(...args)),
-    [form]
-  );
+  const [form] = useForm();
 
   const handleSubmit = useCallback(
-    async (e: SyntheticEvent) => {
-      e.preventDefault();
+    async (values: Store) => {
       try {
-        const values = await validateFieldsAndScroll();
         await register({
           variables: {
             username: values.username,
@@ -126,68 +66,57 @@ function RegistrationForm({
         // Success: refetch
         resetWebsocketConnection();
         client.resetStore();
-        Router.push(onSuccessRedirectTo);
+        Router.push(next);
       } catch (e) {
         const code = getCodeFromError(e);
         const exception = getExceptionFromError(e);
         const fields: any = exception && exception["fields"];
         if (code === "WEAKP") {
-          form.setFields({
-            password: {
+          form.setFields([
+            {
+              name: "password",
               value: form.getFieldValue("password"),
               errors: [
-                new Error(
-                  "The server believes this passphrase is too weak, please make it stronger"
-                ),
+                "The server believes this passphrase is too weak, please make it stronger",
               ],
             },
-          });
+          ]);
         } else if (code === "EMTKN") {
-          form.setFields({
-            email: {
+          form.setFields([
+            {
+              name: "email",
               value: form.getFieldValue("email"),
               errors: [
-                new Error(
-                  "An account with this email address has already been registered, consider using the 'Forgot passphrase' function."
-                ),
+                "An account with this email address has already been registered, consider using the 'Forgot passphrase' function.",
               ],
             },
-          });
+          ]);
         } else if (code === "NUNIQ" && fields && fields[0] === "username") {
-          form.setFields({
-            username: {
+          form.setFields([
+            {
+              name: "username",
               value: form.getFieldValue("username"),
               errors: [
-                new Error(
-                  "An account with this username has already been registered, please try a different username."
-                ),
+                "An account with this username has already been registered, please try a different username.",
               ],
             },
-          });
+          ]);
         } else if (code === "23514") {
-          form.setFields({
-            username: {
+          form.setFields([
+            {
+              name: "username",
               value: form.getFieldValue("username"),
               errors: [
-                new Error(
-                  "This username is not allowed; usernames must be between 2 and 24 characters long (inclusive), must start with a letter, and must contain only alphanumeric characters and underscores."
-                ),
+                "This username is not allowed; usernames must be between 2 and 24 characters long (inclusive), must start with a letter, and must contain only alphanumeric characters and underscores.",
               ],
             },
-          });
+          ]);
         } else {
           setError(e);
         }
       }
     },
-    [
-      validateFieldsAndScroll,
-      register,
-      client,
-      onSuccessRedirectTo,
-      form,
-      setError,
-    ]
+    [form, register, client, next]
   );
 
   const handleConfirmBlur = useCallback(
@@ -202,14 +131,14 @@ function RegistrationForm({
     async (_rule: any, value: any, callback: any) => {
       try {
         if (value && confirmDirty) {
-          await validateFields(["confirm"], { force: true });
+          await form.validateFields(["confirm"]);
         }
       } catch (e) {
         // Handled elsewhere
       }
       callback();
     },
-    [confirmDirty, validateFields]
+    [confirmDirty, form]
   );
 
   const compareToFirstPassword = useCallback(
@@ -232,186 +161,207 @@ function RegistrationForm({
   );
 
   const [passwordIsFocussed, setPasswordIsFocussed] = useState(false);
+  const [passwordIsDirty, setPasswordIsDirty] = useState(false);
   const setPasswordFocussed = useCallback(() => {
     setPasswordIsFocussed(true);
   }, [setPasswordIsFocussed]);
   const setPasswordNotFocussed = useCallback(() => {
     setPasswordIsFocussed(false);
   }, [setPasswordIsFocussed]);
-
-  const { getFieldDecorator } = form;
+  const handleValuesChange = useCallback(
+    changedValues => {
+      setPasswordInfo(
+        { setPasswordStrength, setPasswordSuggestions },
+        changedValues
+      );
+      setPasswordIsDirty(form.isFieldTouched("password"));
+    },
+    [form]
+  );
 
   const code = getCodeFromError(error);
   return (
-    <Form {...formItemLayout} onSubmit={handleSubmit}>
-      <Form.Item
-        label={
-          <span data-cy="registerpage-name-label">
-            Name&nbsp;
-            <Tooltip title="What is your name?">
-              <Icon type="question-circle-o" />
-            </Tooltip>
-          </span>
-        }
-      >
-        {getFieldDecorator("name", {
-          rules: [
-            {
-              required: true,
-              message: "Please input your name.",
-              whitespace: true,
-            },
-          ],
-        })(
-          <Input
-            ref={focusElement}
-            autoComplete="name"
-            data-cy="registerpage-input-name"
-          />
-        )}
-      </Form.Item>
-      <Form.Item
-        label={
-          <span>
-            Username&nbsp;
-            <Tooltip title="What do you want others to call you?">
-              <Icon type="question-circle-o" />
-            </Tooltip>
-          </span>
-        }
-      >
-        {getFieldDecorator("username", {
-          rules: [
-            {
-              required: true,
-              message: "Please input your username.",
-              whitespace: true,
-            },
-            {
-              min: 2,
-              message: "Username must be at least 2 characters long.",
-            },
-            {
-              max: 24,
-              message: "Username must be no more than 24 characters long.",
-            },
-            {
-              pattern: /^([a-zA-Z]|$)/,
-              message: "Username must start with a letter.",
-            },
-            {
-              pattern: /^([^_]|_[^_]|_$)*$/,
-              message:
-                "Username must not contain two underscores next to each other.",
-            },
-            {
-              pattern: /^[a-zA-Z0-9_]*$/,
-              message:
-                "Username must contain only alphanumeric characters and underscores.",
-            },
-          ],
-        })(
-          <Input
-            autoComplete="username"
-            data-cy="registerpage-input-username"
-          />
-        )}
-      </Form.Item>
-      <Form.Item label="E-mail">
-        {getFieldDecorator("email", {
-          rules: [
-            {
-              type: "email",
-              message: "The input is not valid E-mail.",
-            },
-            {
-              required: true,
-              message: "Please input your E-mail.",
-            },
-          ],
-        })(<Input data-cy="registerpage-input-email" />)}
-      </Form.Item>
-      <Form.Item label="Passphrase">
-        {getFieldDecorator("password", {
-          rules: [
-            {
-              required: true,
-              message: "Please input your passphrase.",
-            },
-            {
-              validator: validateToNextPassword,
-            },
-          ],
-        })(
-          <Input
-            type="password"
-            autoComplete="new-password"
-            data-cy="registerpage-input-password"
-            onFocus={setPasswordFocussed}
-            onBlur={setPasswordNotFocussed}
-          />
-        )}
-        <PasswordStrength
-          passwordStrength={passwordStrength}
-          suggestions={passwordSuggestions}
-          isDirty={form.isFieldTouched("password")}
-          isFocussed={passwordIsFocussed}
-        />
-      </Form.Item>
-      <Form.Item label="Confirm passphrase">
-        {getFieldDecorator("confirm", {
-          rules: [
-            {
-              required: true,
-              message: "Please confirm your passphrase.",
-            },
-            {
-              validator: compareToFirstPassword,
-            },
-          ],
-        })(
-          <Input
-            type="password"
-            autoComplete="new-password"
-            onBlur={handleConfirmBlur}
-            data-cy="registerpage-input-password2"
-          />
-        )}
-      </Form.Item>
-      {error ? (
-        <Form.Item label="Error">
-          <Alert
-            type="error"
-            message={`Registration failed`}
-            description={
-              <span>
-                {extractError(error).message}
-                {code ? (
-                  <span>
-                    {" "}
-                    (Error code: <code>ERR_{code}</code>)
-                  </span>
-                ) : null}
-              </span>
-            }
-          />
-        </Form.Item>
-      ) : null}
-      <Form.Item {...tailFormItemLayout}>
-        <Button htmlType="submit" data-cy="registerpage-submit-button">
-          Register
-        </Button>
-      </Form.Item>
-    </Form>
+    <SharedLayout
+      title="Register"
+      query={query}
+      forbidWhen={AuthRestrict.LOGGED_IN}
+    >
+      {({ currentUser }) =>
+        currentUser ? (
+          <Redirect href={next} />
+        ) : (
+          <Form
+            {...formItemLayout}
+            form={form}
+            onFinish={handleSubmit}
+            onValuesChange={handleValuesChange}
+          >
+            <Form.Item
+              label={
+                <span data-cy="registerpage-name-label">
+                  Name&nbsp;
+                  <Tooltip title="What is your name?">
+                    <QuestionCircleOutlined />
+                  </Tooltip>
+                </span>
+              }
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your name.",
+                  whitespace: true,
+                },
+              ]}
+            >
+              <Input
+                ref={focusElement}
+                autoComplete="name"
+                data-cy="registerpage-input-name"
+              />
+            </Form.Item>
+            <Form.Item
+              label={
+                <span>
+                  Username&nbsp;
+                  <Tooltip title="What do you want others to call you?">
+                    <QuestionCircleOutlined />
+                  </Tooltip>
+                </span>
+              }
+              name="username"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your username.",
+                  whitespace: true,
+                },
+                {
+                  min: 2,
+                  message: "Username must be at least 2 characters long.",
+                },
+                {
+                  max: 24,
+                  message: "Username must be no more than 24 characters long.",
+                },
+                {
+                  pattern: /^([a-zA-Z]|$)/,
+                  message: "Username must start with a letter.",
+                },
+                {
+                  pattern: /^([^_]|_[^_]|_$)*$/,
+                  message:
+                    "Username must not contain two underscores next to each other.",
+                },
+                {
+                  pattern: /^[a-zA-Z0-9_]*$/,
+                  message:
+                    "Username must contain only alphanumeric characters and underscores.",
+                },
+              ]}
+            >
+              <Input
+                autoComplete="username"
+                data-cy="registerpage-input-username"
+              />
+            </Form.Item>
+            <Form.Item
+              label="E-mail"
+              name="email"
+              rules={[
+                {
+                  type: "email",
+                  message: "The input is not valid E-mail.",
+                },
+                {
+                  required: true,
+                  message: "Please input your E-mail.",
+                },
+              ]}
+            >
+              <Input data-cy="registerpage-input-email" />
+            </Form.Item>
+            <Form.Item label="Passphrase" required>
+              <Form.Item
+                noStyle
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your passphrase.",
+                  },
+                  {
+                    validator: validateToNextPassword,
+                  },
+                ]}
+              >
+                <Input
+                  type="password"
+                  autoComplete="new-password"
+                  data-cy="registerpage-input-password"
+                  onFocus={setPasswordFocussed}
+                  onBlur={setPasswordNotFocussed}
+                />
+              </Form.Item>
+              <PasswordStrength
+                passwordStrength={passwordStrength}
+                suggestions={passwordSuggestions}
+                isDirty={passwordIsDirty}
+                isFocussed={passwordIsFocussed}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Confirm passphrase"
+              name="confirm"
+              rules={[
+                {
+                  required: true,
+                  message: "Please confirm your passphrase.",
+                },
+                {
+                  validator: compareToFirstPassword,
+                },
+              ]}
+            >
+              <Input
+                type="password"
+                autoComplete="new-password"
+                onBlur={handleConfirmBlur}
+                data-cy="registerpage-input-password2"
+              />
+            </Form.Item>
+            {error ? (
+              <Form.Item label="Error">
+                <Alert
+                  type="error"
+                  message={`Registration failed`}
+                  description={
+                    <span>
+                      {extractError(error).message}
+                      {code ? (
+                        <span>
+                          {" "}
+                          (Error code: <code>ERR_{code}</code>)
+                        </span>
+                      ) : null}
+                    </span>
+                  }
+                />
+              </Form.Item>
+            ) : null}
+            <Form.Item {...tailFormItemLayout}>
+              <Button htmlType="submit" data-cy="registerpage-submit-button">
+                Register
+              </Button>
+            </Form.Item>
+          </Form>
+        )
+      }
+    </SharedLayout>
   );
-}
+};
+Register.getInitialProps = async ({ query }) => ({
+  next: typeof query.next === "string" ? query.next : null,
+});
 
-const WrappedRegistrationForm = Form.create<RegistrationFormProps>({
-  name: "registerform",
-  onValuesChange(props) {
-    props.setError(null);
-  },
-  onFieldsChange(props, changedValues) {
-    setPasswordInfo(props, changedValues);
-  },
-})(RegistrationForm);
+export default Register;

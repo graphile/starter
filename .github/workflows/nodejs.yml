@@ -6,6 +6,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      CI: true
+
     strategy:
       matrix:
         node-version: [10.x, 12.x]
@@ -25,7 +28,8 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout
+        uses: actions/checkout@v1
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -41,5 +45,3 @@ jobs:
           yarn lint
           yarn test
           yarn depcheck
-        env:
-          CI: true

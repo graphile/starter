@@ -1,11 +1,19 @@
-import React from "react";
-import SharedLayout, { SharedLayoutChildProps } from "./SharedLayout";
-import Link from "next/link";
 import { Layout, Menu, Typography } from "antd";
-import { StandardWidth, Warn, Redirect } from "@app/components";
 import { TextProps } from "antd/lib/typography/Text";
-import { useRouter, NextRouter } from "next/router";
+import Link from "next/link";
+import { NextRouter, useRouter } from "next/router";
 import * as qs from "querystring";
+import React from "react";
+
+import { Redirect } from "./Redirect";
+import {
+  contentMinHeight,
+  SharedLayout,
+  SharedLayoutChildProps,
+  SharedLayoutProps,
+} from "./SharedLayout";
+import { StandardWidth } from "./StandardWidth";
+import { Warn } from "./Warn";
 
 const { Text } = Typography;
 const { Sider, Content } = Layout;
@@ -49,12 +57,14 @@ const pages = {
   }),
 };
 
-interface SettingsLayoutProps {
+export interface SettingsLayoutProps {
+  query: SharedLayoutProps["query"];
   href: keyof typeof pages;
   children: React.ReactNode;
 }
 
-export default function SettingsLayout({
+export function SettingsLayout({
+  query,
   href: inHref,
   children,
 }: SettingsLayoutProps) {
@@ -65,12 +75,12 @@ export default function SettingsLayout({
   const fullHref =
     href + (router && router.query ? `?${qs.stringify(router.query)}` : "");
   return (
-    <SharedLayout title={`Settings: ${page.title}`} noPad>
+    <SharedLayout title={`Settings: ${page.title}`} noPad query={query}>
       {({ currentUser, error, loading }: SharedLayoutChildProps) =>
         !currentUser && !error && !loading ? (
           <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />
         ) : (
-          <Layout style={{ minHeight: "calc(100vh - 64px - 64px)" }} hasSider>
+          <Layout style={{ minHeight: contentMinHeight }} hasSider>
             <Sider>
               <Menu selectedKeys={[href]}>
                 {Object.keys(pages).map(pageHref => (

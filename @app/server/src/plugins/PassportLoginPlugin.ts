@@ -1,4 +1,5 @@
-import { makeExtendSchemaPlugin, gql } from "graphile-utils";
+import { gql, makeExtendSchemaPlugin } from "graphile-utils";
+
 import { ERROR_MESSAGE_OVERRIDES } from "../utils/handleErrors";
 
 const PassportLoginPlugin = makeExtendSchemaPlugin(build => ({

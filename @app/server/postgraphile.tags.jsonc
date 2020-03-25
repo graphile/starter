@@ -28,6 +28,22 @@
         },
         "description": "A user who can log in to the application."
       },
+      "app_public.organizations": {
+        "tags": {
+          "omit": "create,delete"
+        }
+      },
+      "app_public.organization_invitations": {
+        "tags": {
+          // We are not omitting this table, because we will want to see the
+          // list of invited users in future.
+        }
+      },
+      "app_public.organization_memberships": {
+        "tags": {
+          "omit": "all"
+        }
+      },
       "app_public.user_emails": {
         "tags": {
           /*

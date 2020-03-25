@@ -1,5 +1,6 @@
-import { withRootDb, snapshotSafe } from "../../helpers";
 import { PoolClient } from "pg";
+
+import { snapshotSafe, withRootDb } from "../../helpers";
 
 export async function reallyCreateUser(
   client: PoolClient,

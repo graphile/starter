@@ -1,5 +1,6 @@
-import { Task } from "graphile-worker";
 import { projectName } from "@app/config";
+import { Task } from "graphile-worker";
+
 import { SendEmailPayload } from "./send_email";
 
 interface UserForgotPasswordUnregisteredEmailPayload {

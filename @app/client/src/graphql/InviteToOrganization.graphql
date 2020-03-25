@@ -1,0 +1,15 @@
+mutation InviteToOrganization(
+  $organizationId: UUID!
+  $email: String
+  $username: String
+) {
+  inviteToOrganization(
+    input: {
+      organizationId: $organizationId
+      email: $email
+      username: $username
+    }
+  ) {
+    clientMutationId
+  }
+}

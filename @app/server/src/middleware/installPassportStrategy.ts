@@ -1,16 +1,17 @@
+import { Express, Request, RequestHandler } from "express";
 import passport from "passport";
-import { RequestHandler, Express, Request } from "express";
+
 import { getRootPgPool } from "./installDatabasePools";
 
 interface DbSession {
   uuid: string;
-  user_id: number;
+  user_id: string;
   created_at: Date;
   last_active: Date;
 }
 
 export interface UserSpec {
-  id: number;
+  id: string;
   displayName: string;
   username: string;
   avatarUrl?: string;

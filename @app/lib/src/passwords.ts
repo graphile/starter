@@ -1,3 +1,4 @@
+import { Store } from "rc-field-form/lib/interface";
 import zxcvbn from "zxcvbn";
 
 interface ExpectedProps {
@@ -5,25 +6,18 @@ interface ExpectedProps {
   setPasswordSuggestions: (message: string[]) => void;
 }
 
-interface ChangedValues {
-  [key: string]: {
-    value: string;
-  };
-}
-
 export const setPasswordInfo = (
   props: ExpectedProps,
-  changedValues: ChangedValues,
+  changedValues: Store,
   fieldName = "password"
 ): void => {
-  const { [fieldName]: field } = changedValues;
-
   // On field change check to see if password changed
-  if (!field) {
+  if (!(fieldName in changedValues)) {
     return;
   }
 
-  const { score, feedback } = zxcvbn(field.value || "");
+  const value = changedValues[fieldName];
+  const { score, feedback } = zxcvbn(value || "");
   props.setPasswordStrength(score);
 
   const messages = [...feedback.suggestions];

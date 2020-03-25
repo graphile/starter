@@ -1,6 +1,7 @@
-import { Express, RequestHandler, Request, Response } from "express";
 import { urlencoded } from "body-parser";
+import { Express, Request, RequestHandler, Response } from "express";
 import { Pool } from "pg";
+
 import { getRootPgPool } from "./installDatabasePools";
 
 export default (app: Express) => {
@@ -72,6 +73,8 @@ export default (app: Express) => {
        * If anything goes wrong, let the test runner know so that it can fail
        * the test.
        */
+      console.error("cypressServerCommand failed!");
+      console.error(e);
       res.status(500).json({
         error: {
           message: e.message,
@@ -97,6 +100,11 @@ async function runCommand(
   if (command === "clearTestUsers") {
     await rootPgPool.query(
       "delete from app_public.users where username like 'testuser%'"
+    );
+    return { success: true };
+  } else if (command === "clearTestOrganizations") {
+    await rootPgPool.query(
+      "delete from app_public.organizations where slug like 'test%'"
     );
     return { success: true };
   } else if (command === "createUser") {
@@ -125,7 +133,7 @@ async function runCommand(
 
     let verificationToken: string | null = null;
     const userEmailSecrets = await getUserEmailSecrets(rootPgPool, email);
-    const userEmailId: number = userEmailSecrets.user_email_id;
+    const userEmailId: string = userEmailSecrets.user_email_id;
     if (!verified) {
       verificationToken = userEmailSecrets.verification_token;
     }
@@ -140,6 +148,7 @@ async function runCommand(
       avatarUrl = null,
       password = "TestUserPassword",
       next = "/",
+      orgs = [],
     } = payload;
     const user = await reallyCreateUser(rootPgPool, {
       username,
@@ -149,9 +158,67 @@ async function runCommand(
       avatarUrl,
       password,
     });
+    const otherUser = await reallyCreateUser(rootPgPool, {
+      username: "testuser_other",
+      email: "testuser_other@example.com",
+      name: "testuser_other",
+      verified: true,
+      password: "DOESNT MATTER",
+    });
     const session = await createSession(rootPgPool, user.id);
+    const otherSession = await createSession(rootPgPool, otherUser.id);
+
+    const client = await rootPgPool.connect();
+    try {
+      await client.query("begin");
+      async function setSession(sess: any) {
+        await client.query(
+          "select set_config('jwt.claims.session_id', $1, true)",
+          [sess.uuid]
+        );
+      }
+      try {
+        await setSession(session);
+        await Promise.all(
+          orgs.map(
+            async ([name, slug, owner = true]: [string, string, boolean?]) => {
+              if (!owner) {
+                await setSession(otherSession);
+              }
+              const {
+                rows: [organization],
+              } = await client.query(
+                "select * from app_public.create_organization($1, $2)",
+                [slug, name]
+              );
+              if (!owner) {
+                await client.query(
+                  "select app_public.invite_to_organization($1::uuid, $2::citext, null::citext)",
+                  [organization.id, user.username]
+                );
+                await setSession(session);
+                await client.query(
+                  `select app_public.accept_invitation_to_organization(organization_invitations.id)
+                   from app_public.organization_invitations
+                   where user_id = $1`,
+                  [user.id]
+                );
+              }
+            }
+          )
+        );
+      } finally {
+        await client.query("commit");
+      }
+    } finally {
+      await client.release();
+    }
+
     req.login({ session_id: session.uuid }, () => {
-      res.redirect(next || "/");
+      setTimeout(() => {
+        // This 500ms delay is required to keep GitHub actions happy. 200ms wasn't enough.
+        res.redirect(next || "/");
+      }, 500);
     });
     return null;
   } else if (command === "getEmailSecrets") {
@@ -197,7 +264,7 @@ async function reallyCreateUser(
   return user;
 }
 
-async function createSession(rootPgPool: Pool, userId: number) {
+async function createSession(rootPgPool: Pool, userId: string) {
   const {
     rows: [session],
   } = await rootPgPool.query(

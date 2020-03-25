@@ -46,6 +46,16 @@ and may make it harder to reproduce issues.
 run
 [docker-volume-watcher](https://github.com/merofeev/docker-windows-volume-watcher)
 
+#### DB tool:
+
+To connect to the container database with psql or another database tool, use
+port 6543 on localhost and populate the `DATABASE_NAME`, `DATABASE_OWNER` and
+`DATABASE_OWNER_PASSWORD` from your `.env` file:
+
+```bash
+$ psql "postgres://$DATABASE_OWNER:$DATABASE_OWNER_PASSWORD@localhost:6543/$DATABASE_NAME"
+```
+
 #### Use Case Example:
 
 > Attach to `dev`, run `yarn db commit` to commit the latest migration, then

@@ -1,5 +1,6 @@
-import { withUserDb, asRoot, withRootDb, becomeUser } from "../../helpers";
 import { PoolClient } from "pg";
+
+import { asRoot, becomeUser, withRootDb, withUserDb } from "../../helpers";
 
 async function changePassword(
   client: PoolClient,
