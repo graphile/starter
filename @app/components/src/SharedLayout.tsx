@@ -122,7 +122,7 @@ export function SharedLayout({
       ) : (
         children
       );
-    if (data && data.currentUser && forbidWhen == AuthRestrict.LOGGED_IN) {
+    if (data && data.currentUser && forbidWhen === AuthRestrict.LOGGED_IN) {
       return (
         <StandardWidth>
           <Redirect href={"/"} />
