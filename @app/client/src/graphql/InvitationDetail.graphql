@@ -1,6 +1,6 @@
 query InvitationDetail($id: UUID!, $code: String) {
   ...SharedLayout_Query
-  getOrganizationForInvitation(invitationId: $id, code: $code) {
+  organizationForInvitation(invitationId: $id, code: $code) {
     id
     name
     slug

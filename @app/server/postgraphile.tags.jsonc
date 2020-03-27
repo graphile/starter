@@ -37,11 +37,30 @@
         "tags": {
           // We are not omitting this table, because we will want to see the
           // list of invited users in future.
+        },
+        "constraint": {
+          "organization_invitations_organization_id_email_key": {
+            "tags": {
+              "omit": true
+            }
+          },
+          "organization_invitations_organization_id_user_id_key": {
+            "tags": {
+              "omit": true
+            }
+          }
         }
       },
       "app_public.organization_memberships": {
         "tags": {
           "omit": "all"
+        },
+        "constraint": {
+          "organization_memberships_organization_id_user_id_key": {
+            "tags": {
+              "omit": true
+            }
+          }
         }
       },
       "app_public.user_emails": {
@@ -99,6 +118,15 @@
       },
       "app_public.current_user_id": {
         "tags": { "omit": true }
+      },
+      "app_public.current_user_invited_organization_ids": {
+        "tags": { "omit": true }
+      },
+      "app_public.current_user_member_organization_ids": {
+        "tags": { "omit": true }
+      },
+      "app_public.organization_for_invitation": {
+        "description": "Given an invitation UUID (and, if required, the code that was emailed to you), retrieves the `Organization` that you were invited to."
       },
       "app_public.logout": {
         "tags": {
