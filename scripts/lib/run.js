@@ -2,7 +2,7 @@ const { spawnSync } = require("child_process");
 
 const runSync = (cmd, args, options = {}) => {
   const result = spawnSync(cmd, args, {
-    stdio: ["pipe", "inherit", "inherit"],
+    stdio: ["inherit", "inherit", "inherit"],
     windowsHide: true,
     ...options,
     env: {

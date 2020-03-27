@@ -1,6 +1,11 @@
 #!/usr/bin/env node
-const rimraf = require("rimraf");
+try {
+  const rimraf = require("rimraf");
 
-rimraf.sync(`${__dirname}/../@app/*/dist`);
-rimraf.sync(`${__dirname}/../@app/*/tsconfig.tsbuildinfo`);
-rimraf.sync(`${__dirname}/../@app/client/.next`);
+  rimraf.sync(`${__dirname}/../@app/*/dist`);
+  rimraf.sync(`${__dirname}/../@app/*/tsconfig.tsbuildinfo`);
+  rimraf.sync(`${__dirname}/../@app/client/.next`);
+} catch (e) {
+  console.error("Failed to clean up, perhaps rimraf isn't installed?");
+  console.error(e);
+}
