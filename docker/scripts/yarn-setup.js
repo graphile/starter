@@ -43,7 +43,7 @@ POSTGRES_PASSWORD=${password}
 # We're accessing Postgres via Docker, so we must use the db host and the
 # relevant password.
 DATABASE_HOST=db
-ROOT_DATABASE_URL=postgres://postgres:${password}@db/template1
+ROOT_DATABASE_URL=postgres://postgres:${password}@db/postgres
 `;
     await fsp.writeFile(DOCKER_DOTENV_PATH, data);
   }
