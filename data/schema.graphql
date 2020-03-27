@@ -346,6 +346,11 @@ type MakeEmailPrimaryPayload {
 The root mutation type which contains root level fields which mutate data.
 """
 type Mutation {
+  """
+  If someone invited you by your email address then you must include the code
+  that was emailed to you, otherwise you may accept the invitation directly
+  using the UUID. If successful, you will be a member of the organization.
+  """
   acceptInvitationToOrganization(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -372,6 +377,13 @@ type Mutation {
     """
     input: ConfirmAccountDeletionInput!
   ): ConfirmAccountDeletionPayload
+
+  """
+  An `Organization` is a great way of sharing access to resources between
+  multiple users without compromising security. When you create an organization
+  you will have the 'owner' and 'billing contact' roles. You may invite other
+  users and redistribute these roles.
+  """
   createOrganization(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -386,6 +398,10 @@ type Mutation {
     """
     input: CreateUserEmailInput!
   ): CreateUserEmailPayload
+
+  """
+  Only the 'owner' may delete an organization. This operation cannot be undone, so be sure that it is what you intend.
+  """
   deleteOrganization(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -419,6 +435,15 @@ type Mutation {
     """
     input: ForgotPasswordInput!
   ): ForgotPasswordPayload
+
+  """
+  You may invite a user to your organization either by their username (only for
+  verified users) or by their email. If you opt to invite by email then an email
+  will be sent to this person containing a code that they need to accept the
+  invitation. If the person doesn't already have an account they will be
+  instructed to create one; their account need not have the email address that
+  you invited listed as the secret code is confirmation enough.
+  """
   inviteToOrganization(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -461,6 +486,10 @@ type Mutation {
     """
     input: RegisterInput!
   ): RegisterPayload
+
+  """
+  The owner of an `Organization` may remove an `OrganizationMember` with this mutation.
+  """
   removeFromOrganization(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -498,12 +527,23 @@ type Mutation {
     """
     input: ResetPasswordInput!
   ): ResetPasswordPayload
+
+  """
+  The owner of an `Organization` may use this mutation to make any organization member the billing contact.
+  """
   transferOrganizationBillingContact(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
     input: TransferOrganizationBillingContactInput!
   ): TransferOrganizationBillingContactPayload
+
+  """
+  The owner of an `Organization` may use this mutation to transfer ownership to
+  a different organization member. Take care, if you assign ownership to someone
+  who cannot or will not access their account then you may need to contact
+  support to have ownership reassigned.
+  """
   transferOrganizationOwnership(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
