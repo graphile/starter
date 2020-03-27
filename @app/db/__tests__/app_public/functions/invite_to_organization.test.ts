@@ -69,7 +69,7 @@ it("Can invite user to organization", () =>
     // Assertions
     const { rows: invitations } = await asRoot(client, () =>
       client.query(
-        "select * from app_public.organization_invitations where organization_id = $1",
+        "select * from app_public.organization_invitations where organization_id = $1 order by id asc",
         [organization.id]
       )
     );

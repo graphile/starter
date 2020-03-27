@@ -31,8 +31,8 @@ it("can change password", () =>
     // Assertions
     const { rows: secrets } = await asRoot(client, () =>
       client.query(
-        "select * from app_private.user_secrets where password_hash = crypt($1, password_hash)",
-        [newPassword]
+        "select * from app_private.user_secrets where user_id = $1 and password_hash = crypt($2, password_hash)",
+        [user.id, newPassword]
       )
     );
 
