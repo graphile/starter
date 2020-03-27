@@ -663,7 +663,7 @@ CREATE FUNCTION app_public.accept_invitation_to_organization(invitation_id uuid,
 declare
   v_organization app_public.organizations;
 begin
-  v_organization = app_public.get_organization_for_invitation(invitation_id, code);
+  v_organization = app_public.organization_for_invitation(invitation_id, code);
 
   -- Accept the user into the organization
   insert into app_public.organization_memberships (organization_id, user_id)
@@ -1034,49 +1034,10 @@ COMMENT ON FUNCTION app_public.forgot_password(email public.citext) IS 'If you''
 
 
 --
--- Name: get_organization_for_invitation(uuid, text); Type: FUNCTION; Schema: app_public; Owner: -
---
-
-CREATE FUNCTION app_public.get_organization_for_invitation(invitation_id uuid, code text DEFAULT NULL::text) RETURNS app_public.organizations
-    LANGUAGE plpgsql STABLE SECURITY DEFINER
-    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
-    AS $$
-declare
-  v_invitation app_public.organization_invitations;
-  v_organization app_public.organizations;
-begin
-  if app_public.current_user_id() is null then
-    raise exception 'You must log in to accept an invitation' using errcode = 'LOGIN';
-  end if;
-
-  select * into v_invitation from app_public.organization_invitations where id = invitation_id;
-
-  if v_invitation is null then
-    raise exception 'We could not find that invitation' using errcode = 'NTFND';
-  end if;
-
-  if v_invitation.user_id is not null then
-    if v_invitation.user_id is distinct from app_public.current_user_id() then
-      raise exception 'That invitation is not for you' using errcode = 'DNIED';
-    end if;
-  else
-    if v_invitation.code is distinct from code then
-      raise exception 'Incorrect invitation code' using errcode = 'DNIED';
-    end if;
-  end if;
-
-  select * into v_organization from app_public.organizations where id = v_invitation.organization_id;
-
-  return v_organization;
-end;
-$$;
-
-
---
 -- Name: invite_to_organization(uuid, public.citext, public.citext); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.invite_to_organization(organization_id uuid, username public.citext, email public.citext) RETURNS void
+CREATE FUNCTION app_public.invite_to_organization(organization_id uuid, username public.citext DEFAULT NULL::public.citext, email public.citext DEFAULT NULL::public.citext) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
@@ -1215,6 +1176,45 @@ $$;
 --
 
 COMMENT ON FUNCTION app_public.make_email_primary(email_id uuid) IS 'Your primary email is where we''ll notify of account events; other emails may be used for discovery or login. Use this when you''re changing your email address.';
+
+
+--
+-- Name: organization_for_invitation(uuid, text); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.organization_for_invitation(invitation_id uuid, code text DEFAULT NULL::text) RETURNS app_public.organizations
+    LANGUAGE plpgsql STABLE SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
+    AS $$
+declare
+  v_invitation app_public.organization_invitations;
+  v_organization app_public.organizations;
+begin
+  if app_public.current_user_id() is null then
+    raise exception 'You must log in to accept an invitation' using errcode = 'LOGIN';
+  end if;
+
+  select * into v_invitation from app_public.organization_invitations where id = invitation_id;
+
+  if v_invitation is null then
+    raise exception 'We could not find that invitation' using errcode = 'NTFND';
+  end if;
+
+  if v_invitation.user_id is not null then
+    if v_invitation.user_id is distinct from app_public.current_user_id() then
+      raise exception 'That invitation is not for you' using errcode = 'DNIED';
+    end if;
+  else
+    if v_invitation.code is distinct from code then
+      raise exception 'Incorrect invitation code' using errcode = 'DNIED';
+    end if;
+  end if;
+
+  select * into v_organization from app_public.organizations where id = v_invitation.organization_id;
+
+  return v_organization;
+end;
+$$;
 
 
 --
@@ -2606,14 +2606,6 @@ GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO graphil
 
 
 --
--- Name: FUNCTION get_organization_for_invitation(invitation_id uuid, code text); Type: ACL; Schema: app_public; Owner: -
---
-
-REVOKE ALL ON FUNCTION app_public.get_organization_for_invitation(invitation_id uuid, code text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.get_organization_for_invitation(invitation_id uuid, code text) TO graphile_starter_visitor;
-
-
---
 -- Name: FUNCTION invite_to_organization(organization_id uuid, username public.citext, email public.citext); Type: ACL; Schema: app_public; Owner: -
 --
 
@@ -2649,6 +2641,14 @@ GRANT INSERT(email) ON TABLE app_public.user_emails TO graphile_starter_visitor;
 
 REVOKE ALL ON FUNCTION app_public.make_email_primary(email_id uuid) FROM PUBLIC;
 GRANT ALL ON FUNCTION app_public.make_email_primary(email_id uuid) TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION organization_for_invitation(invitation_id uuid, code text); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.organization_for_invitation(invitation_id uuid, code text) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.organization_for_invitation(invitation_id uuid, code text) TO graphile_starter_visitor;
 
 
 --

@@ -37,11 +37,30 @@
         "tags": {
           // We are not omitting this table, because we will want to see the
           // list of invited users in future.
+        },
+        "constraint": {
+          "organization_invitations_organization_id_email_key": {
+            "tags": {
+              "omit": true
+            }
+          },
+          "organization_invitations_organization_id_user_id_key": {
+            "tags": {
+              "omit": true
+            }
+          }
         }
       },
       "app_public.organization_memberships": {
         "tags": {
           "omit": "all"
+        },
+        "constraint": {
+          "organization_memberships_organization_id_user_id_key": {
+            "tags": {
+              "omit": true
+            }
+          }
         }
       },
       "app_public.user_emails": {
@@ -100,6 +119,12 @@
       "app_public.current_user_id": {
         "tags": { "omit": true }
       },
+      "app_public.current_user_invited_organization_ids": {
+        "tags": { "omit": true }
+      },
+      "app_public.current_user_member_organization_ids": {
+        "tags": { "omit": true }
+      },
       "app_public.logout": {
         "tags": {
           // We add our own logout method, so we don't want to expose this via GraphQL
@@ -135,6 +160,30 @@
         "tags": {
           "resultFieldName": "success"
         }
+      },
+      "app_public.create_organization": {
+        "description": "An `Organization` is a great way of sharing access to resources between multiple users without compromising security. When you create an organization you will have the 'owner' and 'billing contact' roles. You may invite other users and redistribute these roles."
+      },
+      "app_public.organization_for_invitation": {
+        "description": "Given an invitation UUID (and, if required, the code that was emailed to you), retrieves the `Organization` that you were invited to."
+      },
+      "app_public.invite_to_organization": {
+        "description": "You may invite a user to your organization either by their username (only for verified users) or by their email. If you opt to invite by email then an email will be sent to this person containing a code that they need to accept the invitation. If the person doesn't already have an account they will be instructed to create one; their account need not have the email address that you invited listed as the secret code is confirmation enough."
+      },
+      "app_public.accept_invitation_to_organization": {
+        "description": "If someone invited you by your email address then you must include the code that was emailed to you, otherwise you may accept the invitation directly using the UUID. If successful, you will be a member of the organization."
+      },
+      "app_public.transfer_organization_billing_contact": {
+        "description": "The owner of an `Organization` may use this mutation to make any organization member the billing contact."
+      },
+      "app_public.transfer_organization_ownership": {
+        "description": "The owner of an `Organization` may use this mutation to transfer ownership to a different organization member. Take care, if you assign ownership to someone who cannot or will not access their account then you may need to contact support to have ownership reassigned."
+      },
+      "app_public.remove_from_organization": {
+        "description": "The owner of an `Organization` may remove an `OrganizationMember` with this mutation."
+      },
+      "app_public.delete_organization": {
+        "description": "Only the 'owner' may delete an organization. This operation cannot be undone, so be sure that it is what you intend."
       }
     }
   }

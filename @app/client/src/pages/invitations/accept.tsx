@@ -87,7 +87,7 @@ const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = (props) => {
   const [status, setStatus] = React.useState(Status.PENDING);
   const [acceptError, setAcceptError] = React.useState<Error | null>(null);
 
-  const organization = data?.getOrganizationForInvitation;
+  const organization = data?.organizationForInvitation;
   const handleAccept = React.useCallback(() => {
     if (!organization) {
       return;

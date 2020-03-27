@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:af3861c450adf4a6d08a62fd910fa2b0e8f394fc
+--! Hash: sha1:86096586030c70564884a31cabecc6ee57bb53bc
 
 drop schema if exists app_public cascade;
 
@@ -1180,6 +1180,7 @@ drop function if exists app_public.organizations_current_user_is_billing_contact
 drop function if exists app_public.organizations_current_user_is_owner(app_public.organizations);
 drop function if exists app_public.accept_invitation_to_organization(uuid, text) cascade;
 drop function if exists app_public.get_organization_for_invitation(uuid, text) cascade;
+drop function if exists app_public.organization_for_invitation(uuid, text) cascade;
 drop function if exists app_public.invite_user_to_organization(uuid, uuid) cascade;
 drop function if exists app_public.invite_to_organization(uuid, citext, citext) cascade;
 drop function if exists app_public.current_user_invited_organization_ids() cascade;
@@ -1271,7 +1272,7 @@ begin
 end;
 $$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
 
-create function app_public.invite_to_organization(organization_id uuid, username citext, email citext)
+create function app_public.invite_to_organization(organization_id uuid, username citext = null, email citext = null)
   returns void as $$
 declare
   v_code text;
@@ -1321,7 +1322,7 @@ begin
 end;
 $$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
 
-create function app_public.get_organization_for_invitation(invitation_id uuid, code text = null)
+create function app_public.organization_for_invitation(invitation_id uuid, code text = null)
   returns app_public.organizations as $$
 declare
   v_invitation app_public.organization_invitations;
@@ -1358,7 +1359,7 @@ create function app_public.accept_invitation_to_organization(invitation_id uuid,
 declare
   v_organization app_public.organizations;
 begin
-  v_organization = app_public.get_organization_for_invitation(invitation_id, code);
+  v_organization = app_public.organization_for_invitation(invitation_id, code);
 
   -- Accept the user into the organization
   insert into app_public.organization_memberships (organization_id, user_id)
