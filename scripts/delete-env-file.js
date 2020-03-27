@@ -1,4 +1,8 @@
 #!/usr/bin/env node
-const rimraf = require("rimraf");
+const fs = require("fs");
 
-rimraf.sync(`${__dirname}/../.env`);
+try {
+  fs.unlinkSync(`${__dirname}/../.env`);
+} catch (e) {
+  /* NOOP */
+}
