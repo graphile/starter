@@ -2,7 +2,8 @@ const { runSync } = require("../../scripts/lib/run");
 const { basename, dirname, resolve } = require("path");
 const platform = require("os").platform();
 const { safeRandomString } = require("../../scripts/lib/random");
-const fsp = require("fs").promises;
+const fs = require("fs");
+const fsp = fs.promises;
 
 const DOCKER_DOTENV_PATH = `${__dirname}/../.env`;
 
