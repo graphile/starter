@@ -145,7 +145,7 @@ const task: Task = async (rawPayload, { addJob, withPgClient, job }) => {
       created_at: Date;
       updated_at: Date;
     }>(
-      "select * from app_public.user_emails where user_id = $1 and is_verified is true",
+      "select * from app_public.user_emails where user_id = $1 and is_verified is true order by id asc",
       [payload.user_id]
     )
   );

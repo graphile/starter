@@ -101,9 +101,10 @@ export const becomeUser = async (
 
 export const getSessions = async (client: PoolClient, userId: string) => {
   const { rows } = await asRoot(client, () =>
-    client.query(`select * from app_private.sessions where user_id = $1`, [
-      userId,
-    ])
+    client.query(
+      `select * from app_private.sessions where user_id = $1 order by uuid asc`,
+      [userId]
+    )
   );
   return rows;
 };
@@ -182,7 +183,7 @@ export const getJobs = async (
 ) => {
   const { rows } = await asRoot(client, () =>
     client.query(
-      "select * from graphile_worker.jobs where $1::text is null or task_identifier = $1::text",
+      "select * from graphile_worker.jobs where $1::text is null or task_identifier = $1::text order by id asc",
       [taskIdentifier]
     )
   );

@@ -127,7 +127,7 @@ it("cannot see other user's emails (verified or otherwise)", () =>
     // Block-scoped variables FTW
     {
       const { rows } = await client.query(
-        "select * from app_public.user_emails"
+        "select * from app_public.user_emails order by id asc"
       );
       const userIds = rows
         .map((row) => row.user_id)
@@ -138,7 +138,7 @@ it("cannot see other user's emails (verified or otherwise)", () =>
     // And just to check that our test is valid
     await asRoot(client, async () => {
       const { rows } = await client.query(
-        "select * from app_public.user_emails"
+        "select * from app_public.user_emails order by id asc"
       );
       const userIds = rows
         .map((row) => row.user_id)
