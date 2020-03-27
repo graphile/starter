@@ -185,6 +185,9 @@ export function getPostGraphileOptions({
        * Any properties here are merged into the settings passed to each Graphile
        * Engine plugin - useful for configuring how the plugins operate.
        */
+
+      // Makes all SQL function arguments except those with defaults non-nullable
+      pgStrictFunctions: true,
     },
 
     /*

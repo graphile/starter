@@ -6,7 +6,7 @@ input AcceptInvitationToOrganizationInput {
   """
   clientMutationId: String
   code: String
-  invitationId: UUID
+  invitationId: UUID!
 }
 
 """The output of our `acceptInvitationToOrganization` mutation."""
@@ -81,8 +81,8 @@ input CreateOrganizationInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  name: String
-  slug: String
+  name: String!
+  slug: String!
 }
 
 """The output of our `createOrganization` mutation."""
@@ -160,7 +160,7 @@ input DeleteOrganizationInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  organizationId: UUID
+  organizationId: UUID!
 }
 
 """The output of our `deleteOrganization` mutation."""
@@ -277,7 +277,7 @@ input InviteToOrganizationInput {
   """
   clientMutationId: String
   email: String
-  organizationId: UUID
+  organizationId: UUID!
   username: String
 }
 
@@ -844,7 +844,7 @@ type Query {
   Given an invitation UUID (and, if required, the code that was emailed to you),
   retrieves the `Organization` that you were invited to.
   """
-  organizationForInvitation(code: String, invitationId: UUID): Organization
+  organizationForInvitation(code: String, invitationId: UUID!): Organization
   organizationInvitation(id: UUID!): OrganizationInvitation
 
   """
@@ -938,8 +938,8 @@ input RemoveFromOrganizationInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  organizationId: UUID
-  userId: UUID
+  organizationId: UUID!
+  userId: UUID!
 }
 
 """The output of our `removeFromOrganization` mutation."""
@@ -1047,8 +1047,8 @@ input TransferOrganizationBillingContactInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  organizationId: UUID
-  userId: UUID
+  organizationId: UUID!
+  userId: UUID!
 }
 
 """The output of our `transferOrganizationBillingContact` mutation."""
@@ -1079,8 +1079,8 @@ input TransferOrganizationOwnershipInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  organizationId: UUID
-  userId: UUID
+  organizationId: UUID!
+  userId: UUID!
 }
 
 """The output of our `transferOrganizationOwnership` mutation."""

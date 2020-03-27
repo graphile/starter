@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:2a709a3f3fde0e3e75dd9c9f5dfbbbcd2406eba4
+--! Hash: sha1:86096586030c70564884a31cabecc6ee57bb53bc
 
 drop schema if exists app_public cascade;
 
@@ -1272,7 +1272,7 @@ begin
 end;
 $$ language plpgsql volatile security definer set search_path = pg_catalog, public, pg_temp;
 
-create function app_public.invite_to_organization(organization_id uuid, username citext, email citext)
+create function app_public.invite_to_organization(organization_id uuid, username citext = null, email citext = null)
   returns void as $$
 declare
   v_code text;

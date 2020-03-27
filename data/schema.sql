@@ -1037,7 +1037,7 @@ COMMENT ON FUNCTION app_public.forgot_password(email public.citext) IS 'If you''
 -- Name: invite_to_organization(uuid, public.citext, public.citext); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
-CREATE FUNCTION app_public.invite_to_organization(organization_id uuid, username public.citext, email public.citext) RETURNS void
+CREATE FUNCTION app_public.invite_to_organization(organization_id uuid, username public.citext DEFAULT NULL::public.citext, email public.citext DEFAULT NULL::public.citext) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
