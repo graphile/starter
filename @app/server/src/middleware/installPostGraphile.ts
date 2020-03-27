@@ -18,6 +18,7 @@ import { getHttpServer, getWebsocketMiddlewares } from "../app";
 import OrdersPlugin from "../plugins/Orders";
 import PassportLoginPlugin from "../plugins/PassportLoginPlugin";
 import PrimaryKeyMutationsOnlyPlugin from "../plugins/PrimaryKeyMutationsOnlyPlugin";
+import RemoveQueryQueryPlugin from "../plugins/RemoveQueryQueryPlugin";
 import SubscriptionsPlugin from "../plugins/SubscriptionsPlugin";
 import handleErrors from "../utils/handleErrors";
 import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
@@ -153,6 +154,10 @@ export function getPostGraphileOptions({
      *   https://www.graphile.org/postgraphile/extending/
      */
     appendPlugins: [
+      // PostGraphile adds a `query: Query` field to `Query` for Relay 1
+      // compatibility. We don't need that.
+      RemoveQueryQueryPlugin,
+
       // Adds support for our `postgraphile.tags.json5` file
       TagsFilePlugin,
 
