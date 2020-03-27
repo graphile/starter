@@ -8,7 +8,7 @@
     "bash": "yarn compose exec server bash",
     "dev": "yarn compose:exec:dev bash",
     "dev:start": "yarn compose:exec:dev yarn start",
-    "reset": "yarn down && yarn reset:volumes && yarn rebuild && yarn compose run server yarn reset",
+    "reset": "yarn down && yarn rebuild && yarn compose run server yarn reset && yarn down --volumes && yarn reset:volumes",
     "--DOCKER HELPERS--": "",
     "db:up": "yarn compose up -d db",
     "compose": "docker-compose -f ../docker-compose.yml",
