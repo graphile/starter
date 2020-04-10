@@ -5,6 +5,7 @@ import {
   ErrorAlert,
   Redirect,
   SharedLayout,
+  SpinPadded,
 } from "@app/components";
 import {
   InvitationDetailQuery,
@@ -14,7 +15,7 @@ import {
   useInvitationDetailQuery,
 } from "@app/graphql";
 import { getCodeFromError } from "@app/lib";
-import { Button, Col, Result, Row, Skeleton, Spin } from "antd";
+import { Button, Col, Result, Row, Skeleton } from "antd";
 import { NextPage } from "next";
 import Router, { NextRouter, useRouter } from "next/router";
 import * as qs from "querystring";
@@ -113,7 +114,7 @@ const InvitationAcceptInner: FC<InvitationAcceptInnerProps> = (props) => {
 
   let child: JSX.Element | null = null;
   if (status === Status.ACCEPTING) {
-    child = <Spin />;
+    child = <SpinPadded />;
   } else if (error || acceptError) {
     const code = getCodeFromError(error || acceptError);
     if (code === "NTFND") {

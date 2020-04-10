@@ -3,6 +3,7 @@ import {
   ErrorAlert,
   SettingsLayout,
   SocialLoginOptions,
+  SpinPadded,
   Strong,
 } from "@app/components";
 import {
@@ -97,7 +98,7 @@ const Settings_Accounts: NextPage = () => {
 
   const linkedAccounts =
     loading || !data || !data.currentUser ? (
-      <Spin />
+      <SpinPadded />
     ) : (
       <List
         bordered
