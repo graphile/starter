@@ -8,9 +8,11 @@ import installPostGraphile from "./installPostGraphile";
 import installSession from "./installSession";
 import installSharedStatic from "./installSharedStatic";
 import installSSR from "./installSSR";
+import installWorkerUtils from "./installWorkerUtils";
 
 export {
   installDatabasePools,
+  installWorkerUtils,
   installSession,
   installPassport,
   installLogging,
