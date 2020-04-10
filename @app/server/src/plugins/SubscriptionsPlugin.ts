@@ -7,6 +7,8 @@ import {
 } from "graphile-utils";
 // graphile-utils doesn't export this yet
 import { GraphQLResolveInfo } from "graphql";
+
+import { OurGraphQLContext } from "../middleware/installPostGraphile";
 type GraphileHelpers = any;
 type AugmentedGraphQLFieldResolver<
   TSource,
@@ -105,7 +107,7 @@ function recordByIdFromTable(
   return async (
     event: TgGraphQLSubscriptionPayload,
     _args: {},
-    _context: any,
+    _context: OurGraphQLContext,
     { graphile: { selectGraphQLResultFromTable } }
   ) => {
     const rows = await selectGraphQLResultFromTable(

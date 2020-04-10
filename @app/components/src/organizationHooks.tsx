@@ -1,10 +1,11 @@
 import { QueryResult } from "@apollo/react-common";
 import { OrganizationPage_QueryFragment } from "@app/graphql";
-import { Col, Row, Spin } from "antd";
+import { Col, Row } from "antd";
 import { useRouter } from "next/router";
 import React from "react";
 
 import { ErrorAlert, FourOhFour } from "./";
+import { SpinPadded } from "./SpinPadded";
 
 export function useOrganizationSlug() {
   const router = useRouter();
@@ -25,7 +26,7 @@ export function useOrganizationLoading(
   if (organization) {
     //child = <OrganizationPageInner organization={organization} />;
   } else if (loading) {
-    child = <Spin />;
+    child = <SpinPadded />;
   } else if (error) {
     child = <ErrorAlert error={error} />;
   } else {

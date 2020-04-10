@@ -4,7 +4,7 @@ import GraphilePro from "@graphile/pro"; // Requires license key
 import { Express, Request, Response } from "express";
 import { NodePlugin } from "graphile-build";
 import { resolve } from "path";
-import { Pool } from "pg";
+import { Pool, PoolClient } from "pg";
 import {
   enhanceHttpServerWithSubscriptions,
   makePluginHook,
@@ -22,6 +22,14 @@ import RemoveQueryQueryPlugin from "../plugins/RemoveQueryQueryPlugin";
 import SubscriptionsPlugin from "../plugins/SubscriptionsPlugin";
 import handleErrors from "../utils/handleErrors";
 import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
+
+export interface OurGraphQLContext {
+  pgClient: PoolClient;
+  sessionId: string | null;
+  rootPgPool: Pool;
+  login(user: any): Promise<void>;
+  logout(): Promise<void>;
+}
 
 const TagsFilePlugin = makePgSmartTagsFromFilePlugin(
   // We're using JSONC for VSCode compatibility; also using an explicit file
@@ -237,7 +245,9 @@ export function getPostGraphileOptions({
      * resolvers). This is useful if you write your own plugins that need
      * access to, e.g., the logged in user.
      */
-    async additionalGraphQLContextFromRequest(req) {
+    async additionalGraphQLContextFromRequest(
+      req
+    ): Promise<Partial<OurGraphQLContext>> {
       return {
         // The current session id
         sessionId: req.user && uuidOrNull(req.user.session_id),

@@ -1,5 +1,6 @@
 import { gql, makeExtendSchemaPlugin } from "graphile-utils";
 
+import { OurGraphQLContext } from "../middleware/installPostGraphile";
 import { ERROR_MESSAGE_OVERRIDES } from "../utils/handleErrors";
 
 const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
@@ -46,7 +47,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
   `,
   resolvers: {
     Mutation: {
-      async register(_mutation, args, context, resolveInfo) {
+      async register(_mutation, args, context: OurGraphQLContext, resolveInfo) {
         const { selectGraphQLResultFromTable } = resolveInfo.graphile;
         const { username, password, email, name, avatarUrl } = args.input;
         const { rootPgPool, login, pgClient } = context;
@@ -126,7 +127,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
           }
         }
       },
-      async login(_mutation, args, context, resolveInfo) {
+      async login(_mutation, args, context: OurGraphQLContext, resolveInfo) {
         const { selectGraphQLResultFromTable } = resolveInfo.graphile;
         const { username, password } = args.input;
         const { rootPgPool, login, pgClient } = context;
@@ -183,7 +184,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
         }
       },
 
-      async logout(_mutation, _args, context, _resolveInfo) {
+      async logout(_mutation, _args, context: OurGraphQLContext, _resolveInfo) {
         const { pgClient, logout } = context;
         await pgClient.query("select app_public.logout();");
         await logout();
