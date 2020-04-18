@@ -15,12 +15,12 @@ import {
 import { makePgSmartTagsFromFilePlugin } from "postgraphile/plugins";
 
 import { getHttpServer, getWebsocketMiddlewares } from "../app";
+import CreateUploadUrlPlugin from "../plugins/CreateUploadUrlPlugin";
 import OrdersPlugin from "../plugins/Orders";
 import PassportLoginPlugin from "../plugins/PassportLoginPlugin";
 import PrimaryKeyMutationsOnlyPlugin from "../plugins/PrimaryKeyMutationsOnlyPlugin";
 import RemoveQueryQueryPlugin from "../plugins/RemoveQueryQueryPlugin";
 import SubscriptionsPlugin from "../plugins/SubscriptionsPlugin";
-import CreateUploadUrlPlugin from "../plugins/CreateUploadUrlPlugin";
 import handleErrors from "../utils/handleErrors";
 import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
 
@@ -262,7 +262,7 @@ export function getPostGraphileOptions({
         // Use this to tell Passport.js we're logged in
         login: (user: any) =>
           new Promise((resolve, reject) => {
-            req.login(user, err => (err ? reject(err) : resolve()));
+            req.login(user, (err) => (err ? reject(err) : resolve()));
           }),
 
         logout: () => {
