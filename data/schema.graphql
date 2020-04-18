@@ -149,7 +149,7 @@ input CreateUploadUrlInput {
   contentType: AllowedUploadContentType!
 }
 
-"""The output of our `createUploadUrl mutation."""
+"""The output of our `createUploadUrl` mutation."""
 type CreateUploadUrlPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,

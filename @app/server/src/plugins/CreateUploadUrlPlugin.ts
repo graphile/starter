@@ -63,7 +63,7 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
     }
 
     """
-    The output of our \`createUploadUrl mutation.
+    The output of our \`createUploadUrl\` mutation.
     """
     type CreateUploadUrlPayload {
       """
