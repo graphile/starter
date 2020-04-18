@@ -5,16 +5,21 @@ import uuidv4 from "uuid/v4";
 
 import { OurGraphQLContext } from "../middleware/installPostGraphile";
 
-const ALLOWED_CONTENT_TYPE_ENUM_MAPPING = {
-  IMAGE_APNG: "image/apng",
-  IMAGE_BMP: "image/bmp",
-  IMAGE_GIF: "image/gif",
-  IMAGE_JPEG: "image/jpeg",
-  IMAGE_PNG: "image/png",
-  IMAGE_SVG_XML: "image/svg+xml",
-  IMAGE_TIFF: "image/tiff",
-  IMAGE_WEBP: "image/webp",
-};
+enum AllowedUploadContentType {
+  IMAGE_APNG = "image/apng",
+  IMAGE_BMP = "image/bmp",
+  IMAGE_GIF = "image/gif",
+  IMAGE_JPEG = "image/jpeg",
+  IMAGE_PNG = "image/png",
+  IMAGE_SVG_XML = "image/svg+xml",
+  IMAGE_TIFF = "image/tiff",
+  IMAGE_WEBP = "image/webp",
+}
+
+interface CreateUploadUrlInput {
+  clientMutationId?: string;
+  contentType: AllowedUploadContentType;
+}
 
 const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
   typeDefs: gql`
@@ -93,11 +98,12 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
     Mutation: {
       async createUploadUrl(
         _query,
-        args,
+        args: { input: CreateUploadUrlInput },
         context: OurGraphQLContext,
         _resolveInfo
       ) {
         const { rootPgPool } = context;
+        const { input } = args;
         const {
           rows: [user],
         } = await rootPgPool.query(
@@ -105,8 +111,7 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
         );
         const username: string = user.username;
 
-        const contentType =
-          ALLOWED_CONTENT_TYPE_ENUM_MAPPING[args.input.contentType];
+        const contentType: string = AllowedUploadContentType[input.contentType];
         const s3 = new aws.S3({
           region: awsRegion,
           signatureVersion: "v4",
@@ -121,8 +126,7 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
         };
         const signedUrl = await s3.getSignedUrlPromise("putObject", params);
         return {
-          clientMutationId: args.clientMutationId,
-          // what to do about `query` ?
+          clientMutationId: input.clientMutationId,
           uploadUrl: signedUrl,
         };
       },
