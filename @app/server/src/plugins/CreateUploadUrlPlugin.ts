@@ -1,6 +1,7 @@
 import { awsRegion, uploadBucket } from "@app/config";
 import * as aws from "aws-sdk";
 import { gql, makeExtendSchemaPlugin } from "graphile-utils";
+import { Pool } from "pg";
 import uuidv4 from "uuid/v4";
 
 import { OurGraphQLContext } from "../middleware/installPostGraphile";
@@ -21,34 +22,79 @@ interface CreateUploadUrlInput {
   contentType: AllowedUploadContentType;
 }
 
+/** The minimal set of information that this plugin needs to know about users. */
+interface User {
+  id: string;
+  isVerified: boolean;
+}
+
+async function getCurrentUser(pool: Pool): Promise<User | null> {
+  await pool.query("SAVEPOINT");
+  try {
+    const {
+      rows: [row],
+    } = await pool.query(
+      "select id, is_verified from app_public.users where id = app_public.current_user_id()"
+    );
+    if (!row) {
+      return null;
+    }
+    return {
+      id: row.id,
+      isVerified: row.is_verified,
+    };
+  } catch (err) {
+    await pool.query("ROLLBACK TO SAVEPOINT");
+    throw err;
+  } finally {
+    await pool.query("RELEASE SAVEPOINT");
+  }
+}
+
 const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
   typeDefs: gql`
     """
     The set of content types that we allow users to upload.
     """
     enum AllowedUploadContentType {
-      "image/apng"
+      """
+      image/apng
+      """
       IMAGE_APNG
-      "image/bmp"
+      """
+      image/bmp
+      """
       IMAGE_BMP
-      "image/gif"
+      """
+      image/gif
+      """
       IMAGE_GIF
-      "image/jpeg"
+      """
+      image/jpeg
+      """
       IMAGE_JPEG
-      "image/png"
+      """
+      image/png
+      """
       IMAGE_PNG
-      "image/svg+xml"
+      """
+      image/svg+xml
+      """
       IMAGE_SVG_XML
-      "image/tiff"
+      """
+      image/tiff
+      """
       IMAGE_TIFF
-      "image/webp"
+      """
+      image/webp
+      """
       IMAGE_WEBP
     }
 
     """
     All input for the \`createUploadUrl\` mutation.
     """
-    input CreateUploadUrlInput {
+    input CreateUploadUrlInput @scope(isMutationInput: true) {
       """
       An arbitrary string value with no semantic meaning. Will be included in the
       payload verbatim. May be used to track mutations by the client.
@@ -65,7 +111,7 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
     """
     The output of our \`createUploadUrl\` mutation.
     """
-    type CreateUploadUrlPayload {
+    type CreateUploadUrlPayload @scope(isMutationPayload: true) {
       """
       The exact same \`clientMutationId\` that was provided in the mutation input,
       unchanged and unused. May be used by a client to track mutations.
@@ -102,15 +148,23 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
         context: OurGraphQLContext,
         _resolveInfo
       ) {
-        const { rootPgPool } = context;
-        const { input } = args;
-        const {
-          rows: [user],
-        } = await rootPgPool.query(
-          `select username from app_public.users where id = app_public.current_user_id()`
-        );
-        const username: string = user.username;
+        const user = await getCurrentUser(context.rootPgPool);
 
+        if (!user) {
+          const err = new Error("Login required");
+          // @ts-ignore
+          err.code = "LOGIN";
+          throw err;
+        }
+
+        if (!user.isVerified) {
+          const err = new Error("Only verified users may upload files");
+          // @ts-ignore
+          err.code = "DNIED";
+          throw err;
+        }
+
+        const { input } = args;
         const contentType: string = AllowedUploadContentType[input.contentType];
         const s3 = new aws.S3({
           region: awsRegion,
@@ -120,7 +174,7 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
           Bucket: uploadBucket,
           ContentType: contentType,
           // randomly generated filename, nested under username directory
-          Key: `${username}/${uuidv4()}`,
+          Key: `${user.id}/${uuidv4()}`,
           Expires: 300, // signed URL will expire in 5 minutes
           ACL: "public-read", // uploaded file will be publicly readable
         };
