@@ -145,6 +145,15 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
         context: OurGraphQLContext,
         _resolveInfo
       ) {
+        if (!uploadBucket) {
+          const err = new Error(
+            "Server misconfigured: missing `AWS_BUCKET_UPLOAD` envvar"
+          );
+          // @ts-ignore
+          err.code = "MSCFG";
+          throw err;
+        }
+
         const user = await getCurrentUser(context.rootPgPool);
 
         if (!user) {
