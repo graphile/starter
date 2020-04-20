@@ -100,6 +100,7 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
       payload verbatim. May be used to track mutations by the client.
       """
       clientMutationId: String
+
       """
       You must provide the content type (or MIME type) of the content you intend
       to upload. For further information about content types, see
@@ -118,10 +119,6 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
       """
       clientMutationId: String
 
-      """
-      Our root query field type. Allows us to run any query from our mutation payload.
-      """
-      query: Query
       """
       Upload content to this signed URL.
       """
