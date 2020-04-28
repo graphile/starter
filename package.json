@@ -67,7 +67,8 @@
     "update-dotenv": "^1.1.1"
   },
   "resolutions": {
-    "graphql": "14.x"
+    "graphql": "14.x",
+    "pg-connection-string": "2.x"
   },
   "workspaces": {
     "packages": [
