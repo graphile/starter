@@ -100,7 +100,7 @@ it("Can invite user to organization", () =>
     expect(message.subject).toEqual(
       `You have been invited to ${organization.name}`
     );
-    const expectedLink = `http://localhost:5678/invitations/accept?id=${invitation.id}`;
+    const expectedLink = `${process.env.ROOT_URL}/invitations/accept?id=${invitation.id}`;
     expect(message.html).toContain(expectedLink);
   }));
 
