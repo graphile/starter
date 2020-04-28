@@ -10,7 +10,7 @@ function fixFilePaths(connectionString) {
   // here.
   return connectionString.replace(
     /\.\.\/\.\.\/data\//g,
-    resolve(__dirname, "../../data")
+    resolve(__dirname, "../../data") + "/"
   );
 }
 
