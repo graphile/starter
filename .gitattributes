@@ -4,3 +4,4 @@
 *.md text=auto eol=lf
 *.sh text=auto eol=lf
 *.yml text=auto eol=lf
+*.sql text=auto eol=lf
