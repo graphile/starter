@@ -1,6 +1,5 @@
 // These are the connection strings for the DB and the test DB.
-// NOTE: in production you probably want to add ?ssl=1 to force SSL usage.
-// NOTE: 'psql' does not like ?ssl=1, use ?sslmode=require for psql.
+// NOTE: in production you probably want to add ?ssl=true to force SSL usage.
 // NOTE: these used to be in `.env` but now it is used by docker-compose we can't use expansions
 process.env.DATABASE_URL =
   process.env.DATABASE_URL ||

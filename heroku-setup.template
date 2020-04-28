@@ -97,8 +97,8 @@ echo
 echo "Setting the Heroku variables"
 heroku config:set \
   NODE_ENV="production" \
-  DATABASE_URL="${DATABASE_URL}?ssl=1&sslrootcert=../../data/amazon-rds-ca-cert.pem" \
-  AUTH_DATABASE_URL="${AUTH_DATABASE_URL}?ssl=1&sslrootcert=../../data/amazon-rds-ca-cert.pem" \
+  DATABASE_URL="${DATABASE_URL}?ssl=true&sslrootcert=../../data/amazon-rds-ca-cert.pem" \
+  AUTH_DATABASE_URL="${AUTH_DATABASE_URL}?ssl=true&sslrootcert=../../data/amazon-rds-ca-cert.pem" \
   DATABASE_AUTHENTICATOR="${DATABASE_AUTHENTICATOR}" \
   DATABASE_VISITOR="${DATABASE_VISITOR}" \
   SECRET="$(openssl rand -base64 48)" \
