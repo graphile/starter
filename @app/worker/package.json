@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "gw": "node -r @app/config/env dist/index.js",
+    "gw": "cd dist && node -r @app/config/env ../node_modules/.bin/graphile-worker",
     "build": "tsc -b",
     "start": "yarn gw",
-    "dev": "node -r @app/config/env --inspect=9757 dist/index.js --watch",
+    "dev": "cd dist && node -r @app/config/env --inspect=9757 ../node_modules/.bin/graphile-worker --watch",
     "install-db-schema": "mkdir -p dist && yarn gw --schema-only"
   },
   "dependencies": {
@@ -22,8 +22,6 @@
     "lodash": "^4.17.15",
     "mjml": "^4.6.2",
     "nodemailer": "^6.4.6",
-    "pg": "^8.0.3",
-    "pg-connection-string": "^2.2.0",
     "tslib": "^1.11.1"
   }
 }

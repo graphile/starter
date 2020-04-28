@@ -39,7 +39,6 @@
     "passport": "^0.4.1",
     "passport-github2": "^0.1.11",
     "pg": "^8.0.3",
-    "pg-connection-string": "^2.2.0",
     "postgraphile": "^4.7.0",
     "redis": "^3.0.2",
     "source-map-support": "^0.5.13",

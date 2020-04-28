@@ -1,6 +1,5 @@
 import { Express } from "express";
 import { Pool } from "pg";
-import { parse } from "pg-connection-string";
 
 import { getShutdownActions } from "../app";
 
@@ -26,12 +25,16 @@ function swallowPoolError(_error: Error) {
 
 export default (app: Express) => {
   // This pool runs as the database owner, so it can do anything.
-  const rootPgPool = new Pool(parse(process.env.DATABASE_URL!) as any);
+  const rootPgPool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+  });
   rootPgPool.on("error", swallowPoolError);
   app.set("rootPgPool", rootPgPool);
 
   // This pool runs as the unprivileged user, it's what PostGraphile uses.
-  const authPgPool = new Pool(parse(process.env.AUTH_DATABASE_URL!) as any);
+  const authPgPool = new Pool({
+    connectionString: process.env.AUTH_DATABASE_URL,
+  });
   authPgPool.on("error", swallowPoolError);
   app.set("authPgPool", authPgPool);
 
