@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ExecutionResult, graphql, GraphQLSchema } from "graphql";
 import { Pool, PoolClient } from "pg";
+import { parse } from "pg-connection-string";
 import {
   createPostGraphileSchema,
   PostGraphileOptions,
@@ -105,9 +106,7 @@ interface ICtx {
 let ctx: ICtx | null = null;
 
 export const setup = async () => {
-  const rootPgPool = new Pool({
-    connectionString: process.env.TEST_DATABASE_URL,
-  });
+  const rootPgPool = new Pool(parse(process.env.TEST_DATABASE_URL) as any);
 
   const options = getPostGraphileOptions({ rootPgPool });
   const schema = await createPostGraphileSchema(
