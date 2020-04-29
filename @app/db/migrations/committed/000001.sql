@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:ea637ef2313e9d8c2973c2863a20f7df019ddfd8
+--! Hash: sha1:47b772fa91610fa456ad37c07f5b0dab1d8f90e8
 
 drop schema if exists app_public cascade;
 
@@ -1424,8 +1424,13 @@ begin
   if (v_my_membership is null) then
     -- I'm not a member of that organization
     return;
-  elsif v_my_membership.is_owner and remove_from_organization.user_id <> app_public.current_user_id() then
-    -- Delete it
+  elsif v_my_membership.is_owner then
+    if remove_from_organization.user_id <> app_public.current_user_id() then
+      -- Delete it
+    else
+      -- Need to transfer ownership before I can leave
+      return;
+    end if;
   elsif v_my_membership.user_id = user_id then
     -- Delete it
   else

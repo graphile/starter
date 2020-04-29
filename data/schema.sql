@@ -1270,8 +1270,13 @@ begin
   if (v_my_membership is null) then
     -- I'm not a member of that organization
     return;
-  elsif v_my_membership.is_owner and remove_from_organization.user_id <> app_public.current_user_id() then
-    -- Delete it
+  elsif v_my_membership.is_owner then
+    if remove_from_organization.user_id <> app_public.current_user_id() then
+      -- Delete it
+    else
+      -- Need to transfer ownership before I can leave
+      return;
+    end if;
   elsif v_my_membership.user_id = user_id then
     -- Delete it
   else
