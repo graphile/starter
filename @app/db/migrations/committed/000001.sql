@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:86096586030c70564884a31cabecc6ee57bb53bc
+--! Hash: sha1:47b772fa91610fa456ad37c07f5b0dab1d8f90e8
 
 drop schema if exists app_public cascade;
 
@@ -20,7 +20,6 @@ grant usage on schema public, app_public to :DATABASE_VISITOR;
 drop schema if exists app_hidden cascade;
 create schema app_hidden;
 grant usage on schema app_hidden to :DATABASE_VISITOR;
-alter default privileges in schema app_hidden grant usage, select on sequences to :DATABASE_VISITOR;
 
 /**********/
 
@@ -1425,8 +1424,13 @@ begin
   if (v_my_membership is null) then
     -- I'm not a member of that organization
     return;
-  elsif v_my_membership.is_owner and remove_from_organization.user_id <> app_public.current_user_id() then
-    -- Delete it
+  elsif v_my_membership.is_owner then
+    if remove_from_organization.user_id <> app_public.current_user_id() then
+      -- Delete it
+    else
+      -- Need to transfer ownership before I can leave
+      return;
+    end if;
   elsif v_my_membership.user_id = user_id then
     -- Delete it
   else
