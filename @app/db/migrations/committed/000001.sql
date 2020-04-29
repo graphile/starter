@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:86096586030c70564884a31cabecc6ee57bb53bc
+--! Hash: sha1:ea637ef2313e9d8c2973c2863a20f7df019ddfd8
 
 drop schema if exists app_public cascade;
 
@@ -20,7 +20,6 @@ grant usage on schema public, app_public to :DATABASE_VISITOR;
 drop schema if exists app_hidden cascade;
 create schema app_hidden;
 grant usage on schema app_hidden to :DATABASE_VISITOR;
-alter default privileges in schema app_hidden grant usage, select on sequences to :DATABASE_VISITOR;
 
 /**********/
 
