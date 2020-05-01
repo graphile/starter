@@ -9,13 +9,21 @@ import {
   withUserDb,
 } from "../../helpers";
 
-async function addEmail(client: PoolClient, email: string) {
+async function addEmail(client: PoolClient, email: string, verified = false) {
   const {
     rows: [row],
   } = await client.query(
     `insert into app_public.user_emails (email) values ($1) returning *`,
     [email]
   );
+  if (verified) {
+    await asRoot(client, () =>
+      client.query(
+        "update app_public.user_emails set is_verified = true where id = $1",
+        [row.id]
+      )
+    );
+  }
   return row;
 }
 
@@ -146,4 +154,91 @@ it("cannot see other user's emails (verified or otherwise)", () =>
       expect(userIds.length).toBeGreaterThan(0);
       expect(userIds[0]).toBe(user2.id);
     });
+  }));
+
+it("cannot delete last verified email", () =>
+  withRootDb(async (client) => {
+    const [user] = await createUsers(client, 1, false);
+    await becomeUser(client, user);
+
+    await addEmail(client, "newemail1@example.com", true);
+    await addEmail(client, "newemail2@example.com", true);
+    await addEmail(client, "newemail3@example.com", false);
+    const email4 = await addEmail(client, "newemail4@example.com", false);
+
+    const promise = client.query(
+      "delete from app_public.user_emails where user_id = $1 and id <> $2",
+      [user.id, email4.id]
+    );
+    await expect(promise).rejects.toMatchObject({
+      code: "CDLEA",
+    });
+  }));
+
+it("cannot delete last unverified email if no verified emails", () =>
+  withRootDb(async (client) => {
+    const [user] = await createUsers(client, 1, false);
+    await becomeUser(client, user);
+
+    await addEmail(client, "newemail1@example.com", false);
+    await addEmail(client, "newemail2@example.com", false);
+    await addEmail(client, "newemail3@example.com", false);
+
+    const promise = client.query(
+      "delete from app_public.user_emails where user_id = $1",
+      [user.id]
+    );
+    await expect(promise).rejects.toMatchObject({
+      code: "CDLEA",
+    });
+  }));
+
+it("can delete all but one verified email", () =>
+  withRootDb(async (client) => {
+    const [user] = await createUsers(client, 1, false);
+    await becomeUser(client, user);
+
+    await addEmail(client, "newemail1@example.com", true);
+    const email2 = await addEmail(client, "newemail2@example.com", true);
+    await addEmail(client, "newemail3@example.com", true);
+    await addEmail(client, "newemail4@example.com", false);
+    await addEmail(client, "newemail5@example.com", false);
+    await addEmail(client, "newemail6@example.com", false);
+
+    await client.query(
+      "delete from app_public.user_emails where user_id = $1 and id <> $2",
+      [user.id, email2.id]
+    );
+    const {
+      rows,
+    } = await client.query(
+      "select * from app_public.user_emails where user_id = $1",
+      [user.id]
+    );
+    expect(rows).toHaveLength(1);
+    expect(rows[0].id).toEqual(email2.id);
+  }));
+
+it("can delete all but one email if unverified", () =>
+  withRootDb(async (client) => {
+    const [user] = await createUsers(client, 1, false);
+    await becomeUser(client, user);
+
+    await addEmail(client, "newemail1@example.com", false);
+    const email2 = await addEmail(client, "newemail2@example.com", false);
+    await addEmail(client, "newemail3@example.com", false);
+    await addEmail(client, "newemail4@example.com", false);
+
+    await client.query(
+      "delete from app_public.user_emails where user_id = $1 and id <> $2",
+      [user.id, email2.id]
+    );
+    const {
+      rows,
+    } = await client.query(
+      "select * from app_public.user_emails where user_id = $1",
+      [user.id]
+    );
+    expect(rows).toHaveLength(1);
+    expect(rows[0].id).toEqual(email2.id);
   }));

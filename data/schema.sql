@@ -1547,6 +1547,52 @@ $$;
 
 
 --
+-- Name: tg_user_emails__prevent_delete_last_email(); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.tg_user_emails__prevent_delete_last_email() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $$
+begin
+  if exists (
+    with remaining as (
+      select user_emails.user_id
+      from app_public.user_emails
+      inner join deleted
+      on user_emails.user_id = deleted.user_id
+      -- Don't delete last verified email
+      where (user_emails.is_verified is true or not exists (
+        select 1
+        from deleted d2
+        where d2.user_id = user_emails.user_id
+        and d2.is_verified is true
+      ))
+      order by user_emails.id asc
+
+      /*
+       * Lock this table to prevent race conditions; see:
+       * https://www.cybertec-postgresql.com/en/triggers-to-enforce-constraints/
+       */
+      for update of user_emails
+    )
+    select 1
+    from app_public.users
+    where id in (
+      select user_id from deleted
+      except
+      select user_id from remaining
+    )
+  )
+  then
+    raise exception 'You must have at least one (verified) email address' using errcode = 'CDLEA';
+  end if;
+
+  return null;
+end;
+$$;
+
+
+--
 -- Name: tg_user_emails__verify_account_on_verified(); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
@@ -2125,6 +2171,13 @@ CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.user_emails FOR EA
 --
 
 CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_secrets__insert_with_user();
+
+
+--
+-- Name: user_emails _500_prevent_delete_last; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _500_prevent_delete_last AFTER DELETE ON app_public.user_emails REFERENCING OLD TABLE AS deleted FOR EACH STATEMENT EXECUTE PROCEDURE app_public.tg_user_emails__prevent_delete_last_email();
 
 
 --
@@ -2718,6 +2771,14 @@ GRANT ALL ON FUNCTION app_public.tg__graphql_subscription() TO graphile_starter_
 
 REVOKE ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() FROM PUBLIC;
 GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION tg_user_emails__prevent_delete_last_email(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.tg_user_emails__prevent_delete_last_email() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.tg_user_emails__prevent_delete_last_email() TO graphile_starter_visitor;
 
 
 --

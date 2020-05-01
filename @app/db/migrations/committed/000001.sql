@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:47b772fa91610fa456ad37c07f5b0dab1d8f90e8
+--! Hash: sha1:849bdc93cc91ccd03aa31f93fc35f97aca0b23fc
 
 drop schema if exists app_public cascade;
 
@@ -327,11 +327,58 @@ comment on column app_public.user_emails.is_verified is
 create policy select_own on app_public.user_emails for select using (user_id = app_public.current_user_id());
 create policy insert_own on app_public.user_emails for insert with check (user_id = app_public.current_user_id());
 -- No update
-create policy delete_own on app_public.user_emails for delete using (user_id = app_public.current_user_id()); -- TODO check this isn't the last one!
+create policy delete_own on app_public.user_emails for delete using (user_id = app_public.current_user_id());
 grant select on app_public.user_emails to :DATABASE_VISITOR;
 grant insert (email) on app_public.user_emails to :DATABASE_VISITOR;
 -- No update
 grant delete on app_public.user_emails to :DATABASE_VISITOR;
+
+-- Prevent deleting last email
+
+create function app_public.tg_user_emails__prevent_delete_last_email() returns trigger as $$
+begin
+  if exists (
+    with remaining as (
+      select user_emails.user_id
+      from app_public.user_emails
+      inner join deleted
+      on user_emails.user_id = deleted.user_id
+      -- Don't delete last verified email
+      where (user_emails.is_verified is true or not exists (
+        select 1
+        from deleted d2
+        where d2.user_id = user_emails.user_id
+        and d2.is_verified is true
+      ))
+      order by user_emails.id asc
+
+      /*
+       * Lock this table to prevent race conditions; see:
+       * https://www.cybertec-postgresql.com/en/triggers-to-enforce-constraints/
+       */
+      for update of user_emails
+    )
+    select 1
+    from app_public.users
+    where id in (
+      select user_id from deleted
+      except
+      select user_id from remaining
+    )
+  )
+  then
+    raise exception 'You must have at least one (verified) email address' using errcode = 'CDLEA';
+  end if;
+
+  return null;
+end;
+$$ language plpgsql security definer; -- Security definer is required for 'FOR UPDATE OF' since we don't grant UPDATE privileges.
+
+create trigger _500_prevent_delete_last
+  after delete on app_public.user_emails
+  referencing old table as deleted
+  for each statement
+  execute procedure app_public.tg_user_emails__prevent_delete_last_email();
 
 /**********/
 
