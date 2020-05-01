@@ -51,7 +51,7 @@ export default (app: Express) => {
       }
 
       const command = String(rawCommand);
-      const payload = rawPayload ? JSON.parse(rawPayload) : {};
+      const payload = rawPayload ? JSON.parse(String(rawPayload)) : {};
 
       // Now run the actual command:
       const result = await runCommand(req, res, rootPgPool, command, payload);
