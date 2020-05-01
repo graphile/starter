@@ -755,31 +755,14 @@ begin
   end if;
 
   -- Check the token
-  if v_user_secret.delete_account_token = token then
-    -- Token passes
-
-    -- Check that they are not the owner of any organizations
-    if exists(
-      select 1
-      from app_public.organization_memberships
-      where user_id = app_public.current_user_id()
-      and is_owner is true
-    ) then
-      raise exception 'You cannot delete your account until you are not the owner of any organizations.' using errcode = 'OWNER';
-    end if;
-
-    -- Reassign billing contact status back to the organization owner
-    update app_public.organization_memberships
-      set is_billing_contact = true
-      where is_owner = true
-      and organization_id in (
-        select organization_id
-        from app_public.organization_memberships my_memberships
-        where my_memberships.user_id = app_public.current_user_id()
-        and is_billing_contact is true
-      );
-
-    -- Delete their account :(
+  if (
+    -- token is still valid
+    v_user_secret.delete_account_token_generated > now() - v_token_max_duration
+  and
+    -- token matches
+    v_user_secret.delete_account_token = token
+  ) then
+    -- Token passes; delete their account :(
     delete from app_public.users where id = app_public.current_user_id();
     return true;
   end if;
@@ -1324,7 +1307,8 @@ begin
   select * into v_user_email
     from app_public.user_emails
     where user_id = app_public.current_user_id()
-    and is_primary is true;
+    order by is_primary desc, is_verified desc, id desc
+    limit 1;
 
   -- Fetch or generate token
   update app_private.user_secrets
@@ -1547,6 +1531,52 @@ $$;
 
 
 --
+-- Name: tg_user_emails__prevent_delete_last_email(); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.tg_user_emails__prevent_delete_last_email() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $$
+begin
+  if exists (
+    with remaining as (
+      select user_emails.user_id
+      from app_public.user_emails
+      inner join deleted
+      on user_emails.user_id = deleted.user_id
+      -- Don't delete last verified email
+      where (user_emails.is_verified is true or not exists (
+        select 1
+        from deleted d2
+        where d2.user_id = user_emails.user_id
+        and d2.is_verified is true
+      ))
+      order by user_emails.id asc
+
+      /*
+       * Lock this table to prevent race conditions; see:
+       * https://www.cybertec-postgresql.com/en/triggers-to-enforce-constraints/
+       */
+      for update of user_emails
+    )
+    select 1
+    from app_public.users
+    where id in (
+      select user_id from deleted
+      except
+      select user_id from remaining
+    )
+  )
+  then
+    raise exception 'You must have at least one (verified) email address' using errcode = 'CDLEA';
+  end if;
+
+  return null;
+end;
+$$;
+
+
+--
 -- Name: tg_user_emails__verify_account_on_verified(); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
@@ -1557,6 +1587,40 @@ CREATE FUNCTION app_public.tg_user_emails__verify_account_on_verified() RETURNS 
 begin
   update app_public.users set is_verified = true where id = new.user_id and is_verified is false;
   return new;
+end;
+$$;
+
+
+--
+-- Name: tg_users__deletion_organization_checks_and_actions(); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.tg_users__deletion_organization_checks_and_actions() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+begin
+  -- Check they're not an organization owner
+  if exists(
+    select 1
+    from app_public.organization_memberships
+    where user_id = app_public.current_user_id()
+    and is_owner is true
+  ) then
+    raise exception 'You cannot delete your account until you are not the owner of any organizations.' using errcode = 'OWNER';
+  end if;
+
+  -- Reassign billing contact status back to the organization owner
+  update app_public.organization_memberships
+    set is_billing_contact = true
+    where is_owner = true
+    and organization_id in (
+      select organization_id
+      from app_public.organization_memberships my_memberships
+      where my_memberships.user_id = app_public.current_user_id()
+      and is_billing_contact is true
+    );
+
+  return old;
 end;
 $$;
 
@@ -2107,6 +2171,13 @@ CREATE TRIGGER _500_audit_removed AFTER DELETE ON app_public.user_emails FOR EAC
 
 
 --
+-- Name: users _500_deletion_organization_checks_and_actions; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _500_deletion_organization_checks_and_actions BEFORE DELETE ON app_public.users FOR EACH ROW WHEN ((app_public.current_user_id() IS NOT NULL)) EXECUTE PROCEDURE app_public.tg_users__deletion_organization_checks_and_actions();
+
+
+--
 -- Name: users _500_gql_update; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
@@ -2125,6 +2196,13 @@ CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.user_emails FOR EA
 --
 
 CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_secrets__insert_with_user();
+
+
+--
+-- Name: user_emails _500_prevent_delete_last; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _500_prevent_delete_last AFTER DELETE ON app_public.user_emails REFERENCING OLD TABLE AS deleted FOR EACH STATEMENT EXECUTE PROCEDURE app_public.tg_user_emails__prevent_delete_last_email();
 
 
 --
@@ -2721,11 +2799,27 @@ GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO graphil
 
 
 --
+-- Name: FUNCTION tg_user_emails__prevent_delete_last_email(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.tg_user_emails__prevent_delete_last_email() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.tg_user_emails__prevent_delete_last_email() TO graphile_starter_visitor;
+
+
+--
 -- Name: FUNCTION tg_user_emails__verify_account_on_verified(); Type: ACL; Schema: app_public; Owner: -
 --
 
 REVOKE ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() FROM PUBLIC;
 GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION tg_users__deletion_organization_checks_and_actions(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.tg_users__deletion_organization_checks_and_actions() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.tg_users__deletion_organization_checks_and_actions() TO graphile_starter_visitor;
 
 
 --
