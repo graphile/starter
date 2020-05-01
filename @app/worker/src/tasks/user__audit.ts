@@ -129,8 +129,8 @@ const task: Task = async (rawPayload, { addJob, withPgClient, job }) => {
     );
     return;
   }
-  if (Math.abs(+user.created_at - +job.created_at) < 5) {
-    console.error(
+  if (Math.abs(+user.created_at - +job.created_at) < 2) {
+    console.info(
       `Not sending audit announcement for user '${payload.user_id}' because it occurred immediately after account creation. (Tried to audit: ${actionDescription})`
     );
     return;
