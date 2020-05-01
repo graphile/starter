@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "node -r @app/config/env ./node_modules/.bin/jest"
+    "test": "NODE_ENV=test node -r @app/config/env ./node_modules/.bin/jest"
   },
   "dependencies": {
     "dotenv": "^8.2.0"

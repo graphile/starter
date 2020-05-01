@@ -11,7 +11,7 @@
     "reset": "yarn gm reset",
     "dump": "yarn gm migrate && yarn gm reset --shadow --erase && yarn gm migrate --shadow --force",
     "wipe-if-demo": "./scripts/wipe-if-demo",
-    "test": "node -r @app/config/env ./node_modules/.bin/jest"
+    "test": "NODE_ENV=test node -r @app/config/env ./node_modules/.bin/jest"
   },
   "dependencies": {
     "graphile-migrate": "^0.2.0"

@@ -6,7 +6,7 @@
     "build": "tsc -b",
     "start": "node -r @app/config/env dist/index.js",
     "dev": "nodemon --signal SIGINT --watch 'dist/**/*.js' -x 'node --inspect=9678 -r @app/config/env -r source-map-support/register' dist/index.js",
-    "test": "node -r @app/config/env ./node_modules/.bin/jest"
+    "test": "NODE_ENV=test node -r @app/config/env ./node_modules/.bin/jest"
   },
   "dependencies": {
     "@app/client": "0.0.0",

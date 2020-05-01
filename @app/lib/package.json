@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -b",
-    "test": "node -r @app/config/env ./node_modules/.bin/jest"
+    "test": "NODE_ENV=test node -r @app/config/env ./node_modules/.bin/jest"
   },
   "dependencies": {
     "@apollo/react-ssr": "^3.1.3",

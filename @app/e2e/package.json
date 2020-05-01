@@ -6,7 +6,7 @@
     "cy": "node -r @app/config/env node_modules/.bin/cypress",
     "open": "yarn cy open",
     "run": "yarn cy run",
-    "test": "node -r @app/config/env ./node_modules/.bin/jest"
+    "test": "NODE_ENV=test node -r @app/config/env ./node_modules/.bin/jest"
   },
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^4.1.3",
