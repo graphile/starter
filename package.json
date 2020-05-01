@@ -6,7 +6,9 @@
   "scripts": {
     "setup": "yarn && node ./scripts/setup.js",
     "start": "node ./scripts/start.js",
+    "pretest": "lerna run pretest",
     "test": "node scripts/test.js",
+    "posttest": "lerna run posttest",
     "test:watch": "node scripts/test.js --watch",
     "lint": "tsc -b && yarn prettier:check && eslint --ext .js,.jsx,.ts,.tsx,.graphql .",
     "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx,.graphql . --fix; prettier --ignore-path .eslintignore --write '**/*.{js,jsx,ts,tsx,graphql,md}'",

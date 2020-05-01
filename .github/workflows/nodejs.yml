@@ -8,6 +8,8 @@ jobs:
 
     env:
       CI: true
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
 
     strategy:
       matrix:
@@ -15,7 +17,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:10.11
+        image: postgres:11.6
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -35,7 +37,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install pg_dump
-        run: sudo apt-get install postgresql-client-10
+        run: |
+          sudo bash -c "echo deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main >> /etc/apt/sources.list.d/pgdg.list"
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo apt-get update
+          sudo apt-get -yqq install postgresql-client-11
       - name: yarn, lint, build and test
         run: |
           cp .env.ci .env
@@ -43,5 +49,5 @@ jobs:
           CONFIRM_DROP=1 yarn setup
           yarn build
           yarn lint
-          yarn test
+          yarn test --ci
           yarn depcheck

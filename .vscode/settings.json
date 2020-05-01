@@ -13,14 +13,8 @@
     "typescriptreact",
     "graphql"
   ],
-  "editor.codeActionsOnSaveTimeout": 750,
   "editor.codeActionsOnSave": {
     "source.fixAll": true
-  },
-  "[graphql]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": false
-    }
   },
 
   "files.insertFinalNewline": true,
@@ -30,5 +24,14 @@
 
   "files.associations": {
     ".gmrc": "jsonc"
+  },
+
+  "[graphql]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": false
+    }
+  },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
   }
 }
