@@ -101,11 +101,7 @@ const Settings_Accounts: NextPage = () => {
                 We're sorry to see you go, please don't hesitate to reach out
                 and let us know why you no longer want your account.
               </P>
-              <Button
-                onClick={confirmDeletion}
-                type="danger"
-                disabled={deleting}
-              >
+              <Button onClick={confirmDeletion} danger disabled={deleting}>
                 PERMANENTLY DELETE MY ACCOUNT
               </Button>
             </>
@@ -133,7 +129,7 @@ const Settings_Accounts: NextPage = () => {
                 Deleting your account cannot be undone, you will lose all your
                 data.
               </P>
-              <Button onClick={openModal} type="danger">
+              <Button onClick={openModal} danger>
                 I want to delete my account
               </Button>
             </>
@@ -170,7 +166,8 @@ const Settings_Accounts: NextPage = () => {
         onCancel={closeModal}
         onOk={doIt}
         okText="Send delete account email"
-        okType="danger"
+        okType="primary"
+        okButtonProps={{ danger: true }}
         title="Send delete account confirmation email?"
         confirmLoading={doingIt}
       >
