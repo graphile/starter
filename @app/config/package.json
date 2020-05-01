@@ -5,9 +5,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "node -r @app/config/env ./node_modules/.bin/jest"
   },
   "dependencies": {
     "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "jest": "^25.1.0"
   }
 }

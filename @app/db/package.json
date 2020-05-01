@@ -10,7 +10,8 @@
     "uncommit": "yarn gm uncommit",
     "reset": "yarn gm reset",
     "dump": "yarn gm migrate && yarn gm reset --shadow --erase && yarn gm migrate --shadow --force",
-    "wipe-if-demo": "./scripts/wipe-if-demo"
+    "wipe-if-demo": "./scripts/wipe-if-demo",
+    "test": "node -r @app/config/env ./node_modules/.bin/jest"
   },
   "dependencies": {
     "graphile-migrate": "^0.2.0"
@@ -19,6 +20,7 @@
     "@types/pg": "^7.14.1",
     "graphile-worker": "^0.6.0",
     "lodash": "^4.17.15",
-    "pg": "^8.0.3"
+    "pg": "^8.0.3",
+    "jest": "^25.1.0"
   }
 }

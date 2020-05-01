@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "cd src && node -r @app/config/env ../node_modules/.bin/next build"
+    "build": "cd src && node -r @app/config/env ../node_modules/.bin/next build",
+    "test": "node -r @app/config/env ./node_modules/.bin/jest"
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.3",
@@ -38,6 +39,7 @@
     "webpack": "^4.42.1"
   },
   "devDependencies": {
-    "babel-plugin-import": "^1.13.0"
+    "babel-plugin-import": "^1.13.0",
+    "jest": "^25.1.0"
   }
 }
