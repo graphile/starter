@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:849bdc93cc91ccd03aa31f93fc35f97aca0b23fc
+--! Hash: sha1:ffd9aa994510338d0b6956e2065cff1d2b136965
 
 drop schema if exists app_public cascade;
 
@@ -766,7 +766,8 @@ begin
   select * into v_user_email
     from app_public.user_emails
     where user_id = app_public.current_user_id()
-    and is_primary is true;
+    order by is_primary desc, is_verified desc, id desc
+    limit 1;
 
   -- Fetch or generate token
   update app_private.user_secrets
@@ -818,7 +819,11 @@ begin
   end if;
 
   -- Check the token
-  if v_user_secret.delete_account_token = token then
+  if (
+    v_user_secret.delete_account_token_generated > now() - v_token_max_duration
+  and
+    v_user_secret.delete_account_token = token
+  ) then
     -- Token passes; delete their account :(
     delete from app_public.users where id = app_public.current_user_id();
     return true;
@@ -1524,7 +1529,13 @@ begin
   end if;
 
   -- Check the token
-  if v_user_secret.delete_account_token = token then
+  if (
+    -- token is still valid
+    v_user_secret.delete_account_token_generated > now() - v_token_max_duration
+  and
+    -- token matches
+    v_user_secret.delete_account_token = token
+  ) then
     -- Token passes
 
     -- Check that they are not the owner of any organizations

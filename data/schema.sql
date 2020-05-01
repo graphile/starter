@@ -755,7 +755,13 @@ begin
   end if;
 
   -- Check the token
-  if v_user_secret.delete_account_token = token then
+  if (
+    -- token is still valid
+    v_user_secret.delete_account_token_generated > now() - v_token_max_duration
+  and
+    -- token matches
+    v_user_secret.delete_account_token = token
+  ) then
     -- Token passes
 
     -- Check that they are not the owner of any organizations
@@ -1324,7 +1330,8 @@ begin
   select * into v_user_email
     from app_public.user_emails
     where user_id = app_public.current_user_id()
-    and is_primary is true;
+    order by is_primary desc, is_verified desc, id desc
+    limit 1;
 
   -- Fetch or generate token
   update app_private.user_secrets
