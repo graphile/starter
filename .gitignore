@@ -10,3 +10,4 @@ dist
 .agignore
 *.tsbuildinfo
 .ethereal
+yarn-error.log

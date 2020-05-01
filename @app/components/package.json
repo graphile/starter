@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "test": "NODE_ENV=test node -r @app/config/env ./node_modules/.bin/jest"
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.3",
@@ -17,6 +18,7 @@
     "tslib": "^1.11.1"
   },
   "devDependencies": {
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "jest": "^25.1.0"
   }
 }

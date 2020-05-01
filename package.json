@@ -6,7 +6,9 @@
   "scripts": {
     "setup": "yarn && node ./scripts/setup.js",
     "start": "node ./scripts/start.js",
+    "pretest": "lerna run pretest",
     "test": "node scripts/test.js",
+    "posttest": "lerna run posttest",
     "test:watch": "node scripts/test.js --watch",
     "lint": "tsc -b && yarn prettier:check && eslint --ext .js,.jsx,.ts,.tsx,.graphql .",
     "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx,.graphql . --fix; prettier --ignore-path .eslintignore --write '**/*.{js,jsx,ts,tsx,graphql,md}'",
@@ -37,9 +39,13 @@
     "string-width": "^4.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-typescript": "^7.9.0",
     "@types/jest": "^25.1.4",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
+    "babel-jest": "^25.5.1",
     "concurrently": "^5.1.0",
     "depcheck": "^0.9.2",
     "dotenv": "^8.2.0",
@@ -63,6 +69,7 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^25.2.1",
     "ts-loader": "^6.2.2",
+    "ts-node": "^8.9.1",
     "typescript": "^3.8.3",
     "update-dotenv": "^1.1.1"
   },
@@ -82,16 +89,5 @@
   "prettier": {
     "trailingComma": "es5",
     "proseWrap": "always"
-  },
-  "jest": {
-    "roots": [
-      "<rootDir>/@app"
-    ],
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testMatch": [
-      "**/__tests__/**/*.test.[jt]s?(x)"
-    ]
   }
 }

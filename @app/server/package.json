@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc -b",
     "start": "node -r @app/config/env dist/index.js",
-    "dev": "nodemon --signal SIGINT --watch 'dist/**/*.js' -x 'node --inspect=9678 -r @app/config/env -r source-map-support/register' dist/index.js"
+    "dev": "nodemon --signal SIGINT --watch 'dist/**/*.js' -x 'node --inspect=9678 -r @app/config/env -r source-map-support/register' dist/index.js",
+    "test": "NODE_ENV=test node -r @app/config/env ./node_modules/.bin/jest"
   },
   "dependencies": {
     "@app/client": "0.0.0",
@@ -47,7 +48,8 @@
   "devDependencies": {
     "@types/node": "^12.12.31",
     "graphql": "^14.4.2",
-    "mock-req": "^0.2.0"
+    "mock-req": "^0.2.0",
+    "jest": "^25.1.0"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.1",
