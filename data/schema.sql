@@ -762,30 +762,7 @@ begin
     -- token matches
     v_user_secret.delete_account_token = token
   ) then
-    -- Token passes
-
-    -- Check that they are not the owner of any organizations
-    if exists(
-      select 1
-      from app_public.organization_memberships
-      where user_id = app_public.current_user_id()
-      and is_owner is true
-    ) then
-      raise exception 'You cannot delete your account until you are not the owner of any organizations.' using errcode = 'OWNER';
-    end if;
-
-    -- Reassign billing contact status back to the organization owner
-    update app_public.organization_memberships
-      set is_billing_contact = true
-      where is_owner = true
-      and organization_id in (
-        select organization_id
-        from app_public.organization_memberships my_memberships
-        where my_memberships.user_id = app_public.current_user_id()
-        and is_billing_contact is true
-      );
-
-    -- Delete their account :(
+    -- Token passes; delete their account :(
     delete from app_public.users where id = app_public.current_user_id();
     return true;
   end if;
@@ -1615,6 +1592,40 @@ $$;
 
 
 --
+-- Name: tg_users__deletion_organization_checks_and_actions(); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.tg_users__deletion_organization_checks_and_actions() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+begin
+  -- Check they're not an organization owner
+  if exists(
+    select 1
+    from app_public.organization_memberships
+    where user_id = app_public.current_user_id()
+    and is_owner is true
+  ) then
+    raise exception 'You cannot delete your account until you are not the owner of any organizations.' using errcode = 'OWNER';
+  end if;
+
+  -- Reassign billing contact status back to the organization owner
+  update app_public.organization_memberships
+    set is_billing_contact = true
+    where is_owner = true
+    and organization_id in (
+      select organization_id
+      from app_public.organization_memberships my_memberships
+      where my_memberships.user_id = app_public.current_user_id()
+      and is_billing_contact is true
+    );
+
+  return old;
+end;
+$$;
+
+
+--
 -- Name: transfer_organization_billing_contact(uuid, uuid); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
@@ -2157,6 +2168,13 @@ CREATE TRIGGER _500_audit_removed AFTER DELETE ON app_public.user_authentication
 --
 
 CREATE TRIGGER _500_audit_removed AFTER DELETE ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg__add_audit_job('removed_email', 'user_id', 'id', 'email');
+
+
+--
+-- Name: users _500_deletion_organization_checks_and_actions; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _500_deletion_organization_checks_and_actions BEFORE DELETE ON app_public.users FOR EACH ROW WHEN ((app_public.current_user_id() IS NOT NULL)) EXECUTE PROCEDURE app_public.tg_users__deletion_organization_checks_and_actions();
 
 
 --
@@ -2794,6 +2812,14 @@ GRANT ALL ON FUNCTION app_public.tg_user_emails__prevent_delete_last_email() TO 
 
 REVOKE ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() FROM PUBLIC;
 GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO graphile_starter_visitor;
+
+
+--
+-- Name: FUNCTION tg_users__deletion_organization_checks_and_actions(); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.tg_users__deletion_organization_checks_and_actions() FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.tg_users__deletion_organization_checks_and_actions() TO graphile_starter_visitor;
 
 
 --
