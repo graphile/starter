@@ -16,7 +16,7 @@
     "@types/lodash": "^4.14.150",
     "@types/mjml": "^4.0.4",
     "@types/nodemailer": "^6.4.0",
-    "aws-sdk": "^2.667.0",
+    "aws-sdk": "^2.668.0",
     "chalk": "^4.0.0",
     "graphile-worker": "^0.6.0",
     "html-to-text": "^5.0.0",
@@ -26,6 +26,6 @@
     "tslib": "^1.11.1"
   },
   "devDependencies": {
-    "jest": "^25.5.3"
+    "jest": "^25.5.4"
   }
 }
