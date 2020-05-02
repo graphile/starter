@@ -48,7 +48,7 @@
   "devDependencies": {
     "@types/node": "^13.13.4",
     "graphql": "^14.4.2",
-    "jest": "^25.5.3",
+    "jest": "^25.5.4",
     "mock-req": "^0.2.0"
   },
   "optionalDependencies": {

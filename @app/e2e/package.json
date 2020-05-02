@@ -11,7 +11,7 @@
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^5.1.2",
     "cypress": "^4.5.0",
-    "jest": "^25.5.3",
+    "jest": "^25.5.4",
     "webpack": "^4.43.0"
   }
 }

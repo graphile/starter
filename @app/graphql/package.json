@@ -27,6 +27,6 @@
     "@graphql-codegen/typescript": "^1.13.4",
     "@graphql-codegen/typescript-operations": "^1.13.4",
     "@graphql-codegen/typescript-react-apollo": "1.13.4",
-    "jest": "^25.5.3"
+    "jest": "^25.5.4"
   }
 }

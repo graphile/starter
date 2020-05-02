@@ -30,7 +30,7 @@
     "@types/ws": "^7.2.4",
     "@types/zxcvbn": "^4.4.0",
     "express": "^4.17.1",
-    "jest": "^25.5.3",
+    "jest": "^25.5.4",
     "postgraphile": "^4.7.0",
     "typescript": "^3.8.3"
   }

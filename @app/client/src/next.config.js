@@ -1,5 +1,6 @@
 require("@app/config");
 const compose = require("lodash/flowRight");
+const AntDDayjsWebpackPlugin = require("antd-dayjs-webpack-plugin");
 
 const { ROOT_URL, T_AND_C_URL } = process.env;
 if (!ROOT_URL) {
@@ -81,6 +82,7 @@ if (!ROOT_URL) {
               // attempting to bundle them into the client.
               /^(node-gyp-build|bufferutil|utf-8-validate)$/
             ),
+            new AntDDayjsWebpackPlugin(),
           ],
           externals: [
             ...(externals || []),
