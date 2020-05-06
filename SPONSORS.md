@@ -16,13 +16,11 @@ Graphile ecosystem. Find out
 - domonda
 - Robert Claypool
 - James Allain
-- Stagency
 - Jack Dinker
-- 8th Light
 - Nigel Taylor
+- Qwick
 - DocIQ
 - Principia Mentis
-- Qwick
 - Partners in School Innovation
 - OpenLaw NZ
 - Sterblue
@@ -37,14 +35,12 @@ Graphile ecosystem. Find out
 - stlbucket
 - Matt Bretl
 - Chris Watland
-- James Rascoe
 - Mark Lipscombe
-- Michel Pelletier
-- Frank
+- James Rascoe
 - Mark Rapoza
 - innovation.rocks
-- cybere
 - Daniel Woelfel
+- cybere
 - Philipp Litzenberger
 - Bjørn Michelsen
 - CJ
