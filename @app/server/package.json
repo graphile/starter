@@ -24,7 +24,7 @@
     "@types/pg": "^7.14.1",
     "@types/redis": "^2.8.18",
     "@types/uuid": "^7.0.3",
-    "aws-sdk": "^2.645.0",
+    "aws-sdk": "^2.668.0",
     "body-parser": "^1.19.0",
     "chalk": "^4.0.0",
     "connect-pg-simple": "^6.1.0",
