@@ -2,7 +2,7 @@ import { awsRegion, uploadBucket } from "@app/config";
 import * as aws from "aws-sdk";
 import { gql, makeExtendSchemaPlugin } from "graphile-utils";
 import { Pool } from "pg";
-import uuidv4 from "uuid/v4";
+import { v4 as uuidv4 } from "uuid";
 
 import { OurGraphQLContext } from "../middleware/installPostGraphile";
 
