@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:b458072baf2c5e429dec84ace63e7988807f7b1d
+--! Hash: sha1:e1b27f7832f31570c34083d3a619062bc0ae4a72
 
 drop schema if exists app_public cascade;
 
@@ -372,7 +372,11 @@ begin
 
   return null;
 end;
-$$ language plpgsql security definer; -- Security definer is required for 'FOR UPDATE OF' since we don't grant UPDATE privileges.
+$$
+language plpgsql
+-- Security definer is required for 'FOR UPDATE OF' since we don't grant UPDATE privileges.
+security definer
+set search_path = pg_catalog, public, pg_temp;
 
 create trigger _500_prevent_delete_last
   after delete on app_public.user_emails
@@ -1276,9 +1280,9 @@ grant select on app_public.organization_memberships to :DATABASE_VISITOR;
 
 create table app_public.organization_invitations (
   id uuid primary key default gen_random_uuid(),
-  organization_id uuid not null references app_public.organizations,
+  organization_id uuid not null references app_public.organizations on delete cascade,
   code text,
-  user_id uuid references app_public.users,
+  user_id uuid references app_public.users on delete cascade,
   email citext,
   check ((user_id is null) <> (email is null)),
   check ((code is null) = (email is null)),
@@ -1288,7 +1292,7 @@ create table app_public.organization_invitations (
 alter table app_public.organization_invitations enable row level security;
 
 create index on app_public.organization_invitations(user_id);
-grant select on app_public.organization_invitations to :DATABASE_VISITOR;
+-- grant select on app_public.organization_invitations to :DATABASE_VISITOR;
 
 --------------------------------------------------------------------------------
 create function app_public.current_user_member_organization_ids() returns setof uuid as $$

@@ -1536,6 +1536,7 @@ $$;
 
 CREATE FUNCTION app_public.tg_user_emails__prevent_delete_last_email() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 begin
   if exists (
@@ -2263,7 +2264,7 @@ ALTER TABLE ONLY app_private.user_secrets
 --
 
 ALTER TABLE ONLY app_public.organization_invitations
-    ADD CONSTRAINT organization_invitations_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES app_public.organizations(id);
+    ADD CONSTRAINT organization_invitations_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES app_public.organizations(id) ON DELETE CASCADE;
 
 
 --
@@ -2271,7 +2272,7 @@ ALTER TABLE ONLY app_public.organization_invitations
 --
 
 ALTER TABLE ONLY app_public.organization_invitations
-    ADD CONSTRAINT organization_invitations_user_id_fkey FOREIGN KEY (user_id) REFERENCES app_public.users(id);
+    ADD CONSTRAINT organization_invitations_user_id_fkey FOREIGN KEY (user_id) REFERENCES app_public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -2476,6 +2477,7 @@ GRANT USAGE ON SCHEMA app_public TO graphile_starter_visitor;
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
 --
 
+REVOKE ALL ON SCHEMA public FROM postgres;
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO graphile_starter;
 GRANT USAGE ON SCHEMA public TO graphile_starter_visitor;
@@ -2852,13 +2854,6 @@ GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO graph
 
 REVOKE ALL ON FUNCTION app_public.verify_email(user_email_id uuid, token text) FROM PUBLIC;
 GRANT ALL ON FUNCTION app_public.verify_email(user_email_id uuid, token text) TO graphile_starter_visitor;
-
-
---
--- Name: TABLE organization_invitations; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT ON TABLE app_public.organization_invitations TO graphile_starter_visitor;
 
 
 --
