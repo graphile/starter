@@ -171,54 +171,8 @@ async function main() {
     process.exit(1);
   }
   const config = (await readDotenv()) || {};
-  const mergeAnswers = (cb) => (answers) => cb({ ...config, ...answers });
-  const questions = [
-    {
-      type: "input",
-      name: "DATABASE_NAME",
-      message: "What would you like to call your database?",
-      default: "graphile_starter",
-      validate: (name) =>
-        /^[a-z][a-z0-9_]+$/.test(name)
-          ? true
-          : "That doesn't look like a good name for a database, try something simpler - just lowercase alphanumeric and underscores",
-      when: !config.DATABASE_NAME,
-    },
-    {
-      type: "input",
-      name: "DATABASE_HOST",
-      message:
-        "What's the hostname of your database server (include :port if it's not the default :5432)?",
-      default: "localhost",
-      when: !("DATABASE_HOST" in config),
-    },
 
-    {
-      type: "input",
-      name: "ROOT_DATABASE_URL",
-      message: mergeAnswers(
-        (answers) =>
-          `Please enter a superuser connection string to the database server (so we can drop/create the '${answers.DATABASE_NAME}' and '${answers.DATABASE_NAME}_shadow' databases) - IMPORTANT: it must not be a connection to the '${answers.DATABASE_NAME}' database itself, instead try 'template1'.`
-      ),
-      default: mergeAnswers(
-        (answers) =>
-          `postgres://${
-            answers.DATABASE_HOST === "localhost" ? "" : answers.DATABASE_HOST
-          }/template1`
-      ),
-      when: !config.ROOT_DATABASE_URL,
-    },
-  ];
-  const answers = await inquirer.prompt(questions);
-
-  await withDotenvUpdater(answers, (add) =>
-    updateDotenv(add, {
-      ...config,
-      ...answers,
-    })
-  );
-
-  // And perform setup
+  // double check that server build has been run
   runSync(yarnCmd, ["server", "build"]);
 
   // FINALLY we can source our environment
@@ -344,7 +298,7 @@ async function main() {
     // Probably Docker setup
     console.log("  export UID; docker-compose up server");
   } else {
-    console.log("  yarn start");
+    console.log("  ", yarnCmd, " start");
   }
 
   console.log();
