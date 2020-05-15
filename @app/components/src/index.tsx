@@ -1,3 +1,4 @@
+export * from "./AvatarUpload";
 export * from "./ButtonLink";
 export * from "./ErrorAlert";
 export * from "./ErrorOccurred";
@@ -11,5 +12,6 @@ export * from "./SocialLoginOptions";
 export * from "./SpinPadded";
 export * from "./StandardWidth";
 export * from "./Text";
+export * from "./UserAvatar";
 export * from "./Warn";
 export * from "./organizationHooks";

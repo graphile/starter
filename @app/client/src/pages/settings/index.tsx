@@ -1,4 +1,9 @@
-import { ErrorAlert, Redirect, SettingsLayout } from "@app/components";
+import {
+  AvatarUpload,
+  ErrorAlert,
+  Redirect,
+  SettingsLayout,
+} from "@app/components";
 import {
   ProfileSettingsForm_UserFragment,
   useSettingsProfileQuery,
@@ -111,6 +116,13 @@ function ProfileSettingsForm({
         onFinish={handleSubmit}
         initialValues={{ name: user.name, username: user.username }}
       >
+        <Form.Item label="Avatar">
+          <AvatarUpload
+            user={user}
+            setError={setError}
+            setSuccess={setSuccess}
+          />
+        </Form.Item>
         <Form.Item
           label="Name"
           name="name"
@@ -136,7 +148,7 @@ function ProfileSettingsForm({
           <Input />
         </Form.Item>
         {error ? (
-          <Form.Item>
+          <Form.Item {...tailFormItemLayout}>
             <Alert
               type="error"
               message={`Updating username`}
@@ -154,7 +166,7 @@ function ProfileSettingsForm({
             />
           </Form.Item>
         ) : success ? (
-          <Form.Item>
+          <Form.Item {...tailFormItemLayout}>
             <Alert type="success" message={`Profile updated`} />
           </Form.Item>
         ) : null}
