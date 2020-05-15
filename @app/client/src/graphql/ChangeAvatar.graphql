@@ -1,9 +1,0 @@
-mutation ChangeAvatar($id: Int!, $patch: UserPatch!) {
-  updateUser(input: { id: $id, patch: $patch }) {
-    clientMutationId
-    user {
-      id
-      avatarUrl
-    }
-  }
-}

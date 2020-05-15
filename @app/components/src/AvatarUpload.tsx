@@ -1,6 +1,6 @@
 import {
   ProfileSettingsForm_UserFragment,
-  useChangeAvatarMutation,
+  useUpdateUserMutation,
 } from "@app/graphql";
 import { Icon, message, Upload } from "antd";
 import { UploadChangeParam } from "antd/lib/upload";
@@ -25,7 +25,7 @@ export function AvatarUpload({
   setSuccess: React.Dispatch<React.SetStateAction<boolean>>;
   setError: (error: Error | ApolloError | null) => void;
 }) {
-  const [changeAvatar] = useChangeAvatarMutation();
+  const [updateUser] = useUpdateUserMutation();
   const [fileList, setFileList] = useState<any>(
     user && user.avatarUrl
       ? [
@@ -85,7 +85,7 @@ export function AvatarUpload({
     setSuccess(false);
     setError(null);
     try {
-      await changeAvatar({
+      await updateUser({
         variables: {
           id: user.id,
           patch: {
