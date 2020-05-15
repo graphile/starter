@@ -15,7 +15,7 @@ import {
   getCodeFromError,
   tailFormItemLayout,
 } from "@app/lib";
-import { Alert, Button, Form, Input, PageHeader } from "antd";
+import { Alert, Button, Card, Form, Input, PageHeader } from "antd";
 import { useForm } from "antd/lib/form/util";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
@@ -109,71 +109,80 @@ function ProfileSettingsForm({
   const code = getCodeFromError(error);
   return (
     <div>
-      <PageHeader title="Edit profile" />
-      <Form
-        {...formItemLayout}
-        form={form}
-        onFinish={handleSubmit}
-        initialValues={{ name: user.name, username: user.username }}
-      >
-        <Form.Item label="Avatar">
+      <PageHeader title="Profile" />
+      <Card title="Update profile information" style={{ margin: "1rem" }}>
+        <Form
+          {...formItemLayout}
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={{ name: user.name, username: user.username }}
+        >
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: "Please enter your name",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: "Please choose a username",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          {error ? (
+            <Form.Item {...tailFormItemLayout}>
+              <Alert
+                type="error"
+                message={`Updating username`}
+                description={
+                  <span>
+                    {extractError(error).message}
+                    {code ? (
+                      <span>
+                        {" "}
+                        (Error code: <code>ERR_{code}</code>)
+                      </span>
+                    ) : null}
+                  </span>
+                }
+              />
+            </Form.Item>
+          ) : success ? (
+            <Form.Item {...tailFormItemLayout}>
+              <Alert type="success" message={`Profile updated`} />
+            </Form.Item>
+          ) : null}
+          <Form.Item {...tailFormItemLayout}>
+            <Button htmlType="submit">Update Profile</Button>
+          </Form.Item>
+        </Form>
+      </Card>
+      <Card title="Update avatar" style={{ margin: "1rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           <AvatarUpload
             user={user}
             setError={setError}
             setSuccess={setSuccess}
           />
-        </Form.Item>
-        <Form.Item
-          label="Name"
-          name="name"
-          rules={[
-            {
-              required: true,
-              message: "Please enter your name",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Username"
-          name="username"
-          rules={[
-            {
-              required: true,
-              message: "Please choose a username",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        {error ? (
-          <Form.Item {...tailFormItemLayout}>
-            <Alert
-              type="error"
-              message={`Updating username`}
-              description={
-                <span>
-                  {extractError(error).message}
-                  {code ? (
-                    <span>
-                      {" "}
-                      (Error code: <code>ERR_{code}</code>)
-                    </span>
-                  ) : null}
-                </span>
-              }
-            />
-          </Form.Item>
-        ) : success ? (
-          <Form.Item {...tailFormItemLayout}>
-            <Alert type="success" message={`Profile updated`} />
-          </Form.Item>
-        ) : null}
-        <Form.Item {...tailFormItemLayout}>
-          <Button htmlType="submit">Update Profile</Button>
-        </Form.Item>
-      </Form>
+        </div>
+      </Card>
     </div>
   );
 }
