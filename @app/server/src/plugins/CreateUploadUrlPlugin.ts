@@ -1,3 +1,4 @@
+import { awsRegion } from "@app/config";
 import * as aws from "aws-sdk";
 import { gql, makeExtendSchemaPlugin } from "graphile-utils";
 import { Pool } from "pg";
@@ -5,7 +6,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import { OurGraphQLContext } from "../middleware/installPostGraphile";
 
-const awsRegion = process.env.AWS_REGION || "us-east-1";
 const uploadBucket = process.env.S3_UPLOADS_BUCKET;
 
 const s3 = new aws.S3({
