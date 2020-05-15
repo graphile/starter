@@ -15,6 +15,7 @@ import {
 import { makePgSmartTagsFromFilePlugin } from "postgraphile/plugins";
 
 import { getHttpServer, getWebsocketMiddlewares } from "../app";
+import CreateUploadUrlPlugin from "../plugins/CreateUploadUrlPlugin";
 import OrdersPlugin from "../plugins/Orders";
 import PassportLoginPlugin from "../plugins/PassportLoginPlugin";
 import PrimaryKeyMutationsOnlyPlugin from "../plugins/PrimaryKeyMutationsOnlyPlugin";
@@ -183,6 +184,9 @@ export function getPostGraphileOptions({
 
       // Adds custom orders to our GraphQL schema
       OrdersPlugin,
+
+      // Allows API clients to fetch a pre-signed URL for uploading files
+      CreateUploadUrlPlugin,
     ],
 
     /*
