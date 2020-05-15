@@ -2,7 +2,10 @@ import { Avatar } from "antd";
 import React, { FC } from "react";
 
 export const UserAvatar: FC<{
-  user: { name: string; avatarUrl: string | null | undefined };
+  user: {
+    name?: string | null;
+    avatarUrl?: string | null;
+  };
 }> = (props) => {
   const { name, avatarUrl } = props.user;
   if (avatarUrl) {

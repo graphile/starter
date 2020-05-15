@@ -50,47 +50,20 @@ async function getCurrentUser(pool: Pool): Promise<User | null> {
     await pool.query("RELEASE SAVEPOINT");
   }
 }
+/** The set of content types that we allow users to upload.*/
+const ALLOWED_UPLOAD_CONTENT_TYPE = [
+  "image/apng",
+  "image/bmp",
+  "image/gif",
+  "image/jpeg",
+  "image/png",
+  "image/svg+xml",
+  "image/tiff",
+  "image/webp",
+];
 
 const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
   typeDefs: gql`
-    """
-    The set of content types that we allow users to upload.
-    """
-    enum AllowedUploadContentType {
-      """
-      image/apng
-      """
-      IMAGE_APNG
-      """
-      image/bmp
-      """
-      IMAGE_BMP
-      """
-      image/gif
-      """
-      IMAGE_GIF
-      """
-      image/jpeg
-      """
-      IMAGE_JPEG
-      """
-      image/png
-      """
-      IMAGE_PNG
-      """
-      image/svg+xml
-      """
-      IMAGE_SVG_XML
-      """
-      image/tiff
-      """
-      IMAGE_TIFF
-      """
-      image/webp
-      """
-      IMAGE_WEBP
-    }
-
     """
     All input for the \`createUploadUrl\` mutation.
     """
@@ -106,7 +79,7 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
       to upload. For further information about content types, see
       https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
       """
-      contentType: AllowedUploadContentType!
+      contentType: String!
     }
 
     """
@@ -170,8 +143,16 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
           throw err;
         }
 
-        const { input } = args;
-        const contentType: string = AllowedUploadContentType[input.contentType];
+        const {
+          input: { contentType, clientMutationId },
+        } = args;
+        if (!ALLOWED_UPLOAD_CONTENT_TYPE.includes(contentType)) {
+          throw new Error(
+            `Not allowed to upload that type; allowed types include: '${ALLOWED_UPLOAD_CONTENT_TYPE.join(
+              "', '"
+            )}'`
+          );
+        }
         const s3 = new aws.S3({
           region: awsRegion,
           signatureVersion: "v4",
@@ -186,7 +167,7 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
         };
         const signedUrl = await s3.getSignedUrlPromise("putObject", params);
         return {
-          clientMutationId: input.clientMutationId,
+          clientMutationId,
           uploadUrl: signedUrl,
         };
       },

@@ -1,8 +1,11 @@
+import { PlusOutlined } from "@ant-design/icons";
+import create from "@ant-design/icons/lib/components/IconFont";
 import {
   ProfileSettingsForm_UserFragment,
+  useCreateUploadUrlMutation,
   useUpdateUserMutation,
 } from "@app/graphql";
-import { Icon, message, Upload } from "antd";
+import { message, Upload } from "antd";
 import { UploadChangeParam } from "antd/lib/upload";
 import { RcCustomRequestOptions, UploadFile } from "antd/lib/upload/interface";
 import { ApolloError } from "apollo-client";
@@ -99,40 +102,37 @@ export function AvatarUpload({
       setError(e);
     }
   };
+  const [createUploadUrl] = useCreateUploadUrlMutation();
 
-  const customRequest = (option: RcCustomRequestOptions) => {
+  const customRequest = async (option: RcCustomRequestOptions) => {
     const { onSuccess, onError, file, onProgress } = option;
-    axios
-      .get(`${process.env.ROOT_URL}/api/s3`, {
-        params: {
-          key: file.uid,
-          operation: "put",
+    try {
+      const contentType = file.type;
+      const { data } = await createUploadUrl({
+        variables: {
+          input: {
+            contentType,
+          },
         },
-      })
-      .then((response) => {
-        const preSignedUrl = response.data.url;
-        axios
-          .put(preSignedUrl, file, {
-            onUploadProgress: (e) => {
-              const progress = Math.round((e.loaded / e.total) * 100);
-              onProgress({ percent: progress }, file);
-            },
-          })
-          .then((response) => {
-            if (response.config.url) {
-              changeUserAvatar(response.config.url.split("?")[0]);
-              onSuccess(response.config, file);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            onError(error);
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-        onError(error);
       });
+      const uploadUrl = data?.createUploadUrl?.uploadUrl;
+
+      if (!uploadUrl) {
+        throw new Error("Failed to generate upload URL");
+      }
+      const response = await axios.put(uploadUrl, file, {
+        onUploadProgress: (e) => {
+          const progress = Math.round((e.loaded / e.total) * 100);
+          onProgress({ percent: progress }, file);
+        },
+      });
+      if (response.config.url) {
+        changeUserAvatar(response.config.url.split("?")[0]);
+        onSuccess(response.config, file);
+      }
+    } catch (e) {
+      onError(e);
+    }
   };
 
   const deleteUserAvatarFromBucket = async () => {
@@ -167,7 +167,7 @@ export function AvatarUpload({
 
   const uploadButton = (
     <div>
-      <Icon type="plus" />
+      <PlusOutlined />
       <div className="ant-upload-text">Avatar</div>
     </div>
   );
