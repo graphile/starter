@@ -6,6 +6,7 @@
     "build": "tsc -b",
     "start": "node -r @app/config/env dist/index.js",
     "dev": "nodemon --signal SIGINT --watch 'dist/**/*.js' -x 'node --inspect=9678 -r @app/config/env -r source-map-support/register' dist/index.js",
+    "schema:export": "node -r @app/config/env node_modules/.bin/ts-node -O '{\"rootDir\":null}' scripts/schema-export.ts",
     "test": "NODE_ENV=test node -r @app/config/env ./node_modules/.bin/jest"
   },
   "dependencies": {
@@ -52,7 +53,8 @@
     "@types/node": "^13.13.4",
     "graphql": "^14.4.2",
     "jest": "^25.5.4",
-    "mock-req": "^0.2.0"
+    "mock-req": "^0.2.0",
+    "ts-node": "^8.10.1"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.1",
