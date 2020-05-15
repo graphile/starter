@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Upload, Icon, message } from "antd";
-import { UploadChangeParam } from "antd/lib/upload";
-import { UploadFile, RcCustomRequestOptions } from "antd/lib/upload/interface";
-import axios from "axios";
 import {
-  useChangeAvatarMutation,
   ProfileSettingsForm_UserFragment,
+  useChangeAvatarMutation,
 } from "@app/graphql";
+import { Icon, message, Upload } from "antd";
+import { UploadChangeParam } from "antd/lib/upload";
+import { RcCustomRequestOptions, UploadFile } from "antd/lib/upload/interface";
 import { ApolloError } from "apollo-client";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 export function slugify(string: string) {
   const a =
@@ -20,7 +20,7 @@ export function slugify(string: string) {
     .toString()
     .toLowerCase()
     .replace(/\s+/g, "-") // Replace spaces with -
-    .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+    .replace(p, (c) => b.charAt(a.indexOf(c))) // Replace special characters
     .replace(/&/g, "-and-") // Replace & with 'and'
     .replace(/[^\w\-]+/g, "") // Remove all non-word characters
     .replace(/\-\-+/g, "-") // Replace multiple - with single -
@@ -127,27 +127,27 @@ export function AvatarUpload({
           operation: "put",
         },
       })
-      .then(response => {
+      .then((response) => {
         const preSignedUrl = response.data.url;
         axios
           .put(preSignedUrl, file, {
-            onUploadProgress: e => {
+            onUploadProgress: (e) => {
               const progress = Math.round((e.loaded / e.total) * 100);
               onProgress({ percent: progress }, file);
             },
           })
-          .then(response => {
+          .then((response) => {
             if (response.config.url) {
               changeUserAvatar(response.config.url.split("?")[0]);
               onSuccess(response.config, file);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
             onError(error);
           });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
         onError(error);
       });
@@ -169,7 +169,7 @@ export function AvatarUpload({
           changeUserAvatar(null);
           return true;
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(JSON.stringify(error));
           return false;
         });
