@@ -587,37 +587,6 @@ type Organization {
   name: String!
 
   """
-  Reads and enables pagination through a set of `OrganizationInvitation`.
-  """
-  organizationInvitations(
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """
-    A condition to be used in determining which values should be returned by the collection.
-    """
-    condition: OrganizationInvitationCondition
-
-    """Only read the first `n` values of the set."""
-    first: Int
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-
-    """The method to use when ordering `OrganizationInvitation`."""
-    orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
-  ): OrganizationInvitationsConnection!
-
-  """
   Reads and enables pagination through a set of `OrganizationMembership`.
   """
   organizationMemberships(
@@ -660,80 +629,6 @@ input OrganizationCondition {
 
   """Checks for equality with the object’s `slug` field."""
   slug: String
-}
-
-type OrganizationInvitation {
-  code: String
-  email: String
-  id: UUID!
-
-  """
-  Reads a single `Organization` that is related to this `OrganizationInvitation`.
-  """
-  organization: Organization
-  organizationId: UUID!
-
-  """
-  Reads a single `User` that is related to this `OrganizationInvitation`.
-  """
-  user: User
-  userId: UUID
-}
-
-"""
-A condition to be used against `OrganizationInvitation` object types. All fields
-are tested for equality and combined with a logical ‘and.’
-"""
-input OrganizationInvitationCondition {
-  """Checks for equality with the object’s `id` field."""
-  id: UUID
-
-  """Checks for equality with the object’s `organizationId` field."""
-  organizationId: UUID
-
-  """Checks for equality with the object’s `userId` field."""
-  userId: UUID
-}
-
-"""A connection to a list of `OrganizationInvitation` values."""
-type OrganizationInvitationsConnection {
-  """
-  A list of edges which contains the `OrganizationInvitation` and cursor to aid in pagination.
-  """
-  edges: [OrganizationInvitationsEdge!]!
-
-  """A list of `OrganizationInvitation` objects."""
-  nodes: [OrganizationInvitation!]!
-
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """
-  The count of *all* `OrganizationInvitation` you could get from the connection.
-  """
-  totalCount: Int!
-}
-
-"""A `OrganizationInvitation` edge in the connection."""
-type OrganizationInvitationsEdge {
-  """A cursor for use in pagination."""
-  cursor: Cursor
-
-  """The `OrganizationInvitation` at the end of the edge."""
-  node: OrganizationInvitation!
-}
-
-"""Methods to use when ordering `OrganizationInvitation`."""
-enum OrganizationInvitationsOrderBy {
-  ID_ASC
-  ID_DESC
-  NATURAL
-  ORGANIZATION_ID_ASC
-  ORGANIZATION_ID_DESC
-  PRIMARY_KEY_ASC
-  PRIMARY_KEY_DESC
-  USER_ID_ASC
-  USER_ID_DESC
 }
 
 type OrganizationMembership {
@@ -885,38 +780,6 @@ type Query {
   retrieves the `Organization` that you were invited to.
   """
   organizationForInvitation(code: String, invitationId: UUID!): Organization
-  organizationInvitation(id: UUID!): OrganizationInvitation
-
-  """
-  Reads and enables pagination through a set of `OrganizationInvitation`.
-  """
-  organizationInvitations(
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """
-    A condition to be used in determining which values should be returned by the collection.
-    """
-    condition: OrganizationInvitationCondition
-
-    """Only read the first `n` values of the set."""
-    first: Int
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-
-    """The method to use when ordering `OrganizationInvitation`."""
-    orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
-  ): OrganizationInvitationsConnection
   organizationMembership(id: UUID!): OrganizationMembership
 
   """Reads and enables pagination through a set of `Organization`."""
@@ -1232,37 +1095,6 @@ type User {
 
   """Public-facing name (or pseudonym) of the user."""
   name: String
-
-  """
-  Reads and enables pagination through a set of `OrganizationInvitation`.
-  """
-  organizationInvitations(
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """
-    A condition to be used in determining which values should be returned by the collection.
-    """
-    condition: OrganizationInvitationCondition
-
-    """Only read the first `n` values of the set."""
-    first: Int
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-
-    """The method to use when ordering `OrganizationInvitation`."""
-    orderBy: [OrganizationInvitationsOrderBy!] = [PRIMARY_KEY_ASC]
-  ): OrganizationInvitationsConnection!
 
   """
   Reads and enables pagination through a set of `OrganizationMembership`.
