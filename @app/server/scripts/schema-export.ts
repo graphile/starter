@@ -1,5 +1,5 @@
 import { writeFileSync } from "fs";
-import { printSchema } from "graphql";
+import { lexicographicSortSchema, printSchema } from "graphql";
 import { Pool } from "pg";
 import { createPostGraphileSchema } from "postgraphile";
 
@@ -15,9 +15,10 @@ async function main() {
       "app_public",
       getPostGraphileOptions({ rootPgPool })
     );
+    const sorted = lexicographicSortSchema(schema);
     writeFileSync(
       `${__dirname}/../../../data/schema.graphql`,
-      printSchema(schema)
+      printSchema(sorted)
     );
     console.log("GraphQL schema exported");
   } finally {
