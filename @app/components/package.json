@@ -11,6 +11,7 @@
     "@apollo/react-common": "^3.1.4",
     "@apollo/react-hooks": "^3.1.5",
     "@app/graphql": "0.0.0",
+    "@app/lib": "0.0.0",
     "@types/axios": "^0.14.0",
     "antd": "^4.2.0",
     "apollo-client": "^2.6.8",

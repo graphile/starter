@@ -58,6 +58,10 @@ export const ERROR_MESSAGE_OVERRIDES: { [code: string]: typeof pluck } = {
     fields: conflictFieldsFromError(err),
     code: "NUNIQ",
   }),
+  MSCFG: (err) => ({
+    ...pluck(err),
+    message: err.message,
+  }),
 };
 
 function conflictFieldsFromError(err: any) {

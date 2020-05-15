@@ -176,11 +176,7 @@ function ProfileSettingsForm({
             justifyContent: "center",
           }}
         >
-          <AvatarUpload
-            user={user}
-            setError={setError}
-            setSuccess={setSuccess}
-          />
+          <AvatarUpload user={user} />
         </div>
       </Card>
     </div>

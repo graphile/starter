@@ -1,16 +1,18 @@
-import { PlusOutlined } from "@ant-design/icons";
-import create from "@ant-design/icons/lib/components/IconFont";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   ProfileSettingsForm_UserFragment,
   useCreateUploadUrlMutation,
   useUpdateUserMutation,
 } from "@app/graphql";
+import { extractError, getExceptionFromError } from "@app/lib";
 import { message, Upload } from "antd";
-import { UploadChangeParam } from "antd/lib/upload";
-import { RcCustomRequestOptions, UploadFile } from "antd/lib/upload/interface";
-import { ApolloError } from "apollo-client";
+import {
+  RcCustomRequestOptions,
+  UploadChangeParam,
+  UploadFile,
+} from "antd/lib/upload/interface";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import slugify from "slugify";
 
 export function getUid(name: string) {
@@ -19,53 +21,26 @@ export function getUid(name: string) {
   return randomHex() + "-" + fileNameSlug;
 }
 
+const ALLOWED_UPLOAD_CONTENT_TYPES = [
+  "image/apng",
+  "image/bmp",
+  "image/gif",
+  "image/jpeg",
+  "image/png",
+  "image/svg+xml",
+  "image/tiff",
+  "image/webp",
+];
+const ALLOWED_UPLOAD_CONTENT_TYPES_STRING = ALLOWED_UPLOAD_CONTENT_TYPES.join(
+  ","
+);
+
 export function AvatarUpload({
   user,
-  setSuccess,
-  setError,
 }: {
   user: ProfileSettingsForm_UserFragment;
-  setSuccess: React.Dispatch<React.SetStateAction<boolean>>;
-  setError: (error: Error | ApolloError | null) => void;
 }) {
   const [updateUser] = useUpdateUserMutation();
-  const [fileList, setFileList] = useState<any>(
-    user && user.avatarUrl
-      ? [
-          {
-            uid: "-1",
-            name: "avatar",
-            type: "image",
-            size: 1,
-            url: user.avatarUrl,
-          },
-        ]
-      : null
-  );
-
-  useEffect(() => {
-    if (user) {
-      const avatar = user.avatarUrl;
-      if (avatar) {
-        setFileList([
-          {
-            uid: "-1",
-            name: "avatar",
-            type: "image",
-            size: 1,
-            url: avatar,
-          },
-        ]);
-      } else {
-        setFileList(null);
-      }
-    }
-  }, [user, user.avatarUrl]);
-
-  // const onChange = (info: UploadChangeParam) => {
-  //   console.log(info);
-  //   setFileList([...fileList]);
-  // };
 
   const beforeUpload = (file: any) => {
     const fileName = file.name.split(".")[0];
@@ -84,25 +59,9 @@ export function AvatarUpload({
     return isJpgOrPng && isLt3M;
   };
 
-  const changeUserAvatar = async (avatarUrl: string | null) => {
-    setSuccess(false);
-    setError(null);
-    try {
-      await updateUser({
-        variables: {
-          id: user.id,
-          patch: {
-            avatarUrl,
-          },
-        },
-      });
-      setError(null);
-      setSuccess(true);
-    } catch (e) {
-      setError(e);
-    }
-  };
   const [createUploadUrl] = useCreateUploadUrlMutation();
+
+  const [loading, setLoading] = useState(false);
 
   const customRequest = async (option: RcCustomRequestOptions) => {
     const { onSuccess, onError, file, onProgress } = option;
@@ -127,63 +86,72 @@ export function AvatarUpload({
         },
       });
       if (response.config.url) {
-        changeUserAvatar(response.config.url.split("?")[0]);
+        await updateUser({
+          variables: {
+            id: user.id,
+            patch: {
+              avatarUrl: response.config.url.split("?")[0],
+            },
+          },
+        });
         onSuccess(response.config, file);
       }
     } catch (e) {
+      console.error(e);
       onError(e);
-    }
-  };
-
-  const deleteUserAvatarFromBucket = async () => {
-    if (user && user.avatarUrl) {
-      const key = user.avatarUrl.substring(user.avatarUrl.lastIndexOf("/") + 1);
-      await axios
-        .get(`${process.env.ROOT_URL}/api/s3`, {
-          params: {
-            key: `${key}`,
-            operation: "delete",
-          },
-        })
-        .then(() => {
-          // this isn't confirmation that the item was deleted
-          // only confimation that there wasnt an error..
-          changeUserAvatar(null);
-          return true;
-        })
-        .catch((error) => {
-          console.log(JSON.stringify(error));
-          return false;
-        });
-    }
-    return true;
-  };
-
-  const onRemove = async () => {
-    if (await deleteUserAvatarFromBucket()) {
-      setFileList(null);
     }
   };
 
   const uploadButton = (
     <div>
-      <PlusOutlined />
-      <div className="ant-upload-text">Avatar</div>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div className="ant-upload-text">Upload</div>
     </div>
   );
+
+  const onChange = (info: UploadChangeParam<UploadFile<any>>) => {
+    switch (info.file.status) {
+      case "uploading": {
+        setLoading(true);
+        break;
+      }
+      case "removed":
+      case "success": {
+        setLoading(false);
+        break;
+      }
+      case "error": {
+        const error: any = getExceptionFromError(info.file.error);
+        console.dir(error);
+        message.error(
+          typeof error === "string"
+            ? error
+            : error?.message ??
+                "Unknown error occurred" +
+                  (error?.code ? ` (${error.code})` : "")
+        );
+        setLoading(false);
+        break;
+      }
+    }
+  };
 
   return (
     <div>
       <Upload
+        accept={ALLOWED_UPLOAD_CONTENT_TYPES_STRING}
         name="avatar"
         listType="picture-card"
-        fileList={fileList}
+        showUploadList={false}
         beforeUpload={beforeUpload}
         customRequest={customRequest}
-        onRemove={onRemove}
-        showUploadList={{ showPreviewIcon: false, showDownloadIcon: false }}
+        onChange={onChange}
       >
-        {fileList && fileList.length >= 0 ? null : uploadButton}
+        {user.avatarUrl ? (
+          <img src={user.avatarUrl} alt="avatar" style={{ width: "100%" }} />
+        ) : (
+          uploadButton
+        )}
       </Upload>
     </div>
   );

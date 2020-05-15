@@ -1,4 +1,3 @@
-import { awsRegion, uploadBucket } from "@app/config";
 import * as aws from "aws-sdk";
 import { gql, makeExtendSchemaPlugin } from "graphile-utils";
 import { Pool } from "pg";
@@ -6,20 +5,17 @@ import { v4 as uuidv4 } from "uuid";
 
 import { OurGraphQLContext } from "../middleware/installPostGraphile";
 
-enum AllowedUploadContentType {
-  IMAGE_APNG = "image/apng",
-  IMAGE_BMP = "image/bmp",
-  IMAGE_GIF = "image/gif",
-  IMAGE_JPEG = "image/jpeg",
-  IMAGE_PNG = "image/png",
-  IMAGE_SVG_XML = "image/svg+xml",
-  IMAGE_TIFF = "image/tiff",
-  IMAGE_WEBP = "image/webp",
-}
+const awsRegion = process.env.AWS_REGION || "us-east-1";
+const uploadBucket = process.env.S3_UPLOADS_BUCKET;
+
+const s3 = new aws.S3({
+  region: awsRegion,
+  signatureVersion: "v4",
+});
 
 interface CreateUploadUrlInput {
   clientMutationId?: string;
-  contentType: AllowedUploadContentType;
+  contentType: string;
 }
 
 /** The minimal set of information that this plugin needs to know about users. */
@@ -51,7 +47,7 @@ async function getCurrentUser(pool: Pool): Promise<User | null> {
   }
 }
 /** The set of content types that we allow users to upload.*/
-const ALLOWED_UPLOAD_CONTENT_TYPE = [
+const ALLOWED_UPLOAD_CONTENT_TYPES = [
   "image/apng",
   "image/bmp",
   "image/gif",
@@ -120,7 +116,7 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
       ) {
         if (!uploadBucket) {
           const err = new Error(
-            "Server misconfigured: missing `AWS_BUCKET_UPLOAD` envvar"
+            "Server misconfigured: missing `S3_UPLOADS_BUCKET` envvar"
           );
           // @ts-ignore
           err.code = "MSCFG";
@@ -146,22 +142,18 @@ const CreateUploadUrlPlugin = makeExtendSchemaPlugin(() => ({
         const {
           input: { contentType, clientMutationId },
         } = args;
-        if (!ALLOWED_UPLOAD_CONTENT_TYPE.includes(contentType)) {
+        if (!ALLOWED_UPLOAD_CONTENT_TYPES.includes(contentType)) {
           throw new Error(
-            `Not allowed to upload that type; allowed types include: '${ALLOWED_UPLOAD_CONTENT_TYPE.join(
+            `Not allowed to upload that type; allowed types include: '${ALLOWED_UPLOAD_CONTENT_TYPES.join(
               "', '"
             )}'`
           );
         }
-        const s3 = new aws.S3({
-          region: awsRegion,
-          signatureVersion: "v4",
-        });
         const params = {
           Bucket: uploadBucket,
           ContentType: contentType,
           // randomly generated filename, nested under username directory
-          Key: `${user.id}/${uuidv4()}`,
+          Key: `avatars/${user.id}/${uuidv4()}`,
           Expires: 300, // signed URL will expire in 5 minutes
           ACL: "public-read", // uploaded file will be publicly readable
         };
