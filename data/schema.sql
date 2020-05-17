@@ -438,8 +438,8 @@ begin
   if v_username is null then
     v_username = coalesce(v_name, 'user');
   end if;
-  v_username = regexp_replace(v_username, '^[^a-z]+', '', 'i');
-  v_username = regexp_replace(v_username, '[^a-z0-9]+', '_', 'i');
+  v_username = regexp_replace(v_username, '^[^a-z]+', '', 'gi');
+  v_username = regexp_replace(v_username, '[^a-z0-9]+', '_', 'gi');
   if v_username is null or length(v_username) < 3 then
     v_username = 'user';
   end if;
