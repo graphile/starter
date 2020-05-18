@@ -51,3 +51,11 @@ jobs:
           yarn lint
           yarn test --ci
           yarn depcheck
+      - name: "Run pgRITA checks"
+        uses: pgrita/action@main
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost/graphile_starter
+          PGRITA_TOKEN: ${{ secrets.PGRITA_TOKEN }}
+        with:
+          project: graphile/graphile-starter
+          pass-on-no-token: true
