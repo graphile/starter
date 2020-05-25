@@ -23,7 +23,7 @@ export interface UserSpec {
 export type GetUserInformationFunction = (
   profile: any,
   accessToken: string,
-  refershToken: string,
+  refreshToken: string,
   extra: any,
   req: Request
 ) => UserSpec | Promise<UserSpec>;
