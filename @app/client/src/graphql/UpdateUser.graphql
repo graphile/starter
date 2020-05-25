@@ -5,6 +5,7 @@ mutation UpdateUser($id: UUID!, $patch: UserPatch!) {
       id
       name
       username
+      avatarUrl
     }
   }
 }

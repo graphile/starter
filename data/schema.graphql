@@ -106,6 +106,39 @@ type CreateOrganizationPayload {
   query: Query
 }
 
+"""All input for the `createUploadUrl` mutation."""
+input CreateUploadUrlInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  You must provide the content type (or MIME type) of the content you intend
+  to upload. For further information about content types, see
+  https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+  """
+  contentType: String!
+}
+
+"""The output of our `createUploadUrl` mutation."""
+type CreateUploadUrlPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Upload content to this signed URL."""
+  uploadUrl: String!
+}
+
 """All input for the create `UserEmail` mutation."""
 input CreateUserEmailInput {
   """
@@ -390,6 +423,14 @@ type Mutation {
     """
     input: CreateOrganizationInput!
   ): CreateOrganizationPayload
+
+  """Get a signed URL for uploading files. It will expire in 5 minutes."""
+  createUploadUrl(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateUploadUrlInput!
+  ): CreateUploadUrlPayload
 
   """Creates a single `UserEmail`."""
   createUserEmail(
