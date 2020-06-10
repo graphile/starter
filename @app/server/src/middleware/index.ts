@@ -1,3 +1,4 @@
+import installCSRFProtection from "./installCSRFProtection";
 import installCypressServerCommand from "./installCypressServerCommand";
 import installDatabasePools from "./installDatabasePools";
 import installErrorHandler from "./installErrorHandler";
@@ -11,6 +12,7 @@ import installSSR from "./installSSR";
 import installWorkerUtils from "./installWorkerUtils";
 
 export {
+  installCSRFProtection,
   installDatabasePools,
   installWorkerUtils,
   installSession,
