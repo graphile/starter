@@ -13,5 +13,12 @@ export default (app: Express) => {
     },
   });
 
-  app.use(csrfProtection);
+  app.use((req, res, next) => {
+    if (req.headers.referer === `${process.env.ROOT_URL}/graphiql`) {
+      // Bypass CSRF for GraphiQL
+      next();
+    } else {
+      csrfProtection(req, res, next);
+    }
+  });
 };
