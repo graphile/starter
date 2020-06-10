@@ -1,5 +1,6 @@
 // TODO: fix to 'import next' when next fixes the bug
 import { Express } from "express";
+import { parse } from "url";
 import next from "next";
 
 if (!process.env.NODE_ENV) {
@@ -29,6 +30,13 @@ export default async function installSSR(app: Express) {
   });
   app.get("*", async (req, res) => {
     const handler = await handlerPromise;
-    handler(req, res);
+    const parsedUrl = parse(req.url, true);
+    handler(req, res, {
+      ...parsedUrl,
+      query: {
+        ...parsedUrl.query,
+        CSRF_TOKEN: req.csrfToken(),
+      },
+    });
   });
 }

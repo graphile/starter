@@ -6,8 +6,9 @@ import { resolve } from "path";
 const isDev = process.env.NODE_ENV === "development";
 
 interface ParsedError {
-  message: String;
+  message: string;
   status: number;
+  code?: string;
 }
 
 function parseError(error: Error): ParsedError {
@@ -16,8 +17,16 @@ function parseError(error: Error): ParsedError {
    * might help attackers, by default we don't output the error message at all.
    * You should override this for specific classes of errors below.
    */
-  // TODO: process certain errors
 
+  if (error["code"] === "EBADCSRFTOKEN") {
+    return {
+      message: "Invalid CSRF token: please reload the page.",
+      status: 403,
+      code: error["code"],
+    };
+  }
+
+  // TODO: process certain errors
   const code = error["statusCode"] || error["status"] || error["code"];
   const codeAsFloat = parseInt(code, 10);
   const httpCode =
@@ -39,7 +48,11 @@ function getErrorPage({ message }: ParsedError) {
     );
   }
 
-  return errorPageTemplate({ message });
+  return errorPageTemplate({
+    message: message
+      ? String(message)
+      : "Something went wrong on the webpage you visited, please try again later",
+  });
 }
 
 export default function (app: Express) {
@@ -54,16 +67,18 @@ export default function (app: Express) {
       }
       res.status(parsedError.status);
       res.format({
-        "text/plain": function () {
-          res.send(errorMessageString);
+        "application/json": function () {
+          res.send({
+            errors: [{ message: errorMessageString, code: parsedError.code }],
+          });
         },
 
         "text/html": function () {
           res.send(getErrorPage(parsedError));
         },
 
-        "application/json": function () {
-          res.send({ errors: [{ message: errorMessageString }] });
+        "text/plain": function () {
+          res.send(errorMessageString);
         },
 
         default: function () {

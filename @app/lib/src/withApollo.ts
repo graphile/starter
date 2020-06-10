@@ -29,9 +29,18 @@ function makeServerSideLink(req: any, res: any) {
 }
 
 function makeClientSideLink(ROOT_URL: string) {
+  const nextDataEl = document.getElementById("__NEXT_DATA__");
+  if (!nextDataEl || !nextDataEl.textContent) {
+    throw new Error("Cannot read from __NEXT_DATA__ element");
+  }
+  const data = JSON.parse(nextDataEl.textContent);
+  const CSRF_TOKEN = data.query.CSRF_TOKEN;
   const httpLink = new HttpLink({
     uri: `${ROOT_URL}/graphql`,
     credentials: "same-origin",
+    headers: {
+      "CSRF-Token": CSRF_TOKEN,
+    },
   });
   wsClient = new SubscriptionClient(
     `${ROOT_URL.replace(/^http/, "ws")}/graphql`,

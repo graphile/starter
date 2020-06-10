@@ -76,6 +76,7 @@ export async function makeApp({
   await middleware.installWorkerUtils(app);
   await middleware.installHelmet(app);
   await middleware.installSession(app);
+  await middleware.installCSRFProtection(app);
   await middleware.installPassport(app);
   await middleware.installLogging(app);
   // These are our assets: images/etc; served out of the /@app/server/public folder (if present)
