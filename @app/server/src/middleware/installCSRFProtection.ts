@@ -1,5 +1,5 @@
-import { Express } from "express";
 import csrf from "csurf";
+import { Express } from "express";
 
 export default (app: Express) => {
   const csrfProtection = csrf({

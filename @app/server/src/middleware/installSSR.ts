@@ -1,7 +1,7 @@
 // TODO: fix to 'import next' when next fixes the bug
 import { Express } from "express";
-import { parse } from "url";
 import next from "next";
+import { parse } from "url";
 
 if (!process.env.NODE_ENV) {
   throw new Error("No NODE_ENV envvar! Try `export NODE_ENV=development`");
