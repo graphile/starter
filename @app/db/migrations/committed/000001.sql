@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:4a5b89d4e3a68e88e983431b964fe47a2a6ce550
+--! Hash: sha1:e6bd89aa12b755d5cbf4ffea0d60e949107e9e05
 
 drop schema if exists app_public cascade;
 
@@ -169,7 +169,6 @@ create function app_public.current_user_id() returns uuid as $$
 $$ language sql stable security definer set search_path to pg_catalog, public, pg_temp;
 comment on function app_public.current_user_id() is
   E'Handy method to get the current user ID for use in RLS policies, etc; in GraphQL, use `currentUser{id}` instead.';
--- We've put this in public, but omitted it, because it's often useful for debugging auth issues.
 
 /**********/
 

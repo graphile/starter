@@ -113,17 +113,26 @@
       }
     },
     "procedure": {
+      // We've put this in public, but omitted it, because it's often useful for debugging auth issues.
       "app_public.current_session_id": {
-        "tags": { "omit": true }
+        "tags": {
+          "omit": true
+        }
       },
       "app_public.current_user_id": {
-        "tags": { "omit": true }
+        "tags": {
+          "omit": true
+        }
       },
       "app_public.current_user_invited_organization_ids": {
-        "tags": { "omit": true }
+        "tags": {
+          "omit": true
+        }
       },
       "app_public.current_user_member_organization_ids": {
-        "tags": { "omit": true }
+        "tags": {
+          "omit": true
+        }
       },
       "app_public.logout": {
         "tags": {
