@@ -80,7 +80,7 @@ const Home: NextPage = () => {
 
           <Title level={4}>
             This page:{" "}
-            <a href="https://github.com/graphile/starter/blob/master/@app/client/src/pages/index.tsx">
+            <a href="https://github.com/graphile/starter/blob/main/@app/client/src/pages/index.tsx">
               <code>@app/client/src/pages/index.tsx</code>
             </a>
           </Title>
@@ -91,7 +91,7 @@ const Home: NextPage = () => {
 
           <Title level={4}>
             The server:{" "}
-            <a href="https://github.com/graphile/starter/blob/master/@app/server/src/index.ts">
+            <a href="https://github.com/graphile/starter/blob/main/@app/server/src/index.ts">
               <code>@app/server/src/index.ts</code>
             </a>
           </Title>
@@ -115,7 +115,7 @@ const Home: NextPage = () => {
             easiest way is to run <code>yarn db uncommit</code> which will undo
             this initial migration and move its content back to current.sql for
             you to modify. Please see{" "}
-            <a href="https://github.com/graphile/migrate/blob/master/README.md">
+            <a href="https://github.com/graphile/migrate/blob/main/README.md">
               the graphile-migrate documentation
             </a>
             .
