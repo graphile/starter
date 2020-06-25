@@ -4,7 +4,7 @@ This folder contains the database migrations. We're using the `graphile-migrate`
 project to produce these; we highly recommend you read the README before
 implementing your own migrations:
 
-https://github.com/graphile/migrate/blob/master/README.md
+https://github.com/graphile/migrate/blob/main/README.md
 
 The main file you'll be working with is `current.sql`.
 
