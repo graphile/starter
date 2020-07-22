@@ -113,6 +113,8 @@ export function SharedLayout({
         client.resetStore();
       } catch (e) {
         console.error(e);
+        // Something went wrong; redirect to /logout to force logout.
+        window.location.href = "/logout";
       }
     };
     Router.events.on("routeChangeComplete", reset);
