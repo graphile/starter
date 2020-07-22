@@ -2,11 +2,10 @@ import express, { Express } from "express";
 import { Server } from "http";
 import { Middleware } from "postgraphile";
 
+import { cloudflareIps } from "./cloudflare";
 import * as middleware from "./middleware";
 import { makeShutdownActions, ShutdownAction } from "./shutdownActions";
 import { sanitizeEnv } from "./utils";
-
-import { cloudflareIps } from "./cloudflare";
 
 // Server may not always be supplied, e.g. where mounting on a sub-route
 export function getHttpServer(app: Express): Server | void {
