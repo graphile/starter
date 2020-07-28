@@ -11,11 +11,30 @@ import Router from "next/router";
 import NProgress from "nprogress";
 import * as React from "react";
 
+declare global {
+  interface Window {
+    __GRAPHILE_APP__: {
+      ROOT_URL?: string;
+      T_AND_C_URL?: string;
+    };
+  }
+}
+
 NProgress.configure({
   showSpinner: false,
 });
 
 if (typeof window !== "undefined") {
+  const nextDataEl = document.getElementById("__NEXT_DATA__");
+  if (!nextDataEl || !nextDataEl.textContent) {
+    throw new Error("Cannot read from __NEXT_DATA__ element");
+  }
+  const data = JSON.parse(nextDataEl.textContent);
+  window.__GRAPHILE_APP__ = {
+    ROOT_URL: data.query.ROOT_URL,
+    T_AND_C_URL: data.query.T_AND_C_URL,
+  };
+
   Router.events.on("routeChangeStart", () => {
     NProgress.start();
   });
@@ -30,7 +49,7 @@ if (typeof window !== "undefined") {
     } else {
       notification.open({
         message: "Page load failed",
-        description: `This is very embarassing! Please reload the page. Further error details: ${
+        description: `This is very embarrassing! Please reload the page. Further error details: ${
           typeof err === "string" ? err : err.message
         }`,
         duration: 0,
