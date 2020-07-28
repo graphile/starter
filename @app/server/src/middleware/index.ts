@@ -6,6 +6,7 @@ import installHelmet from "./installHelmet";
 import installLogging from "./installLogging";
 import installPassport from "./installPassport";
 import installPostGraphile from "./installPostGraphile";
+import installSameOrigin from "./installSameOrigin";
 import installSession from "./installSession";
 import installSharedStatic from "./installSharedStatic";
 import installSSR from "./installSSR";
@@ -20,6 +21,7 @@ export {
   installLogging,
   installSharedStatic,
   installPostGraphile,
+  installSameOrigin,
   installSSR,
   installErrorHandler,
   installCypressServerCommand,
