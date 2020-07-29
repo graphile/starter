@@ -100,7 +100,7 @@ describe("when account doesn't already exist", () => {
         code: "MODAT",
       });
     }));
-
+//new row for relation \\"user_emails\\" violates check constraint \\"user_emails_email_check\\"
   it("cannot register with invalid email", () =>
     withRootDb(async (client) => {
       const promise = linkOrRegisterUser(
@@ -112,7 +112,7 @@ describe("when account doesn't already exist", () => {
         {}
       );
       await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
-        `"new row for relation \\"user_emails\\" violates check constraint \\"user_emails_email_check\\""`
+        `"neue Zeile für Relation »user_emails« verletzt Check-Constraint »user_emails_email_check«"`
       );
       await expect(promise).rejects.toMatchObject({
         code: "23514",

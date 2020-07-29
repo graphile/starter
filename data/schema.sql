@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.7 (Ubuntu 11.7-2.pgdg18.04+1)
--- Dumped by pg_dump version 11.7 (Ubuntu 11.7-2.pgdg18.04+1)
+-- Dumped from database version 12.3 (Debian 12.3-1.pgdg100+1)
+-- Dumped by pg_dump version 12.3 (Debian 12.3-1.pgdg100+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -38,6 +38,20 @@ CREATE SCHEMA app_public;
 
 
 --
+-- Name: audit; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA audit;
+
+
+--
+-- Name: SCHEMA audit; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON SCHEMA audit IS 'Out-of-table audit/history logging tables and trigger functions';
+
+
+--
 -- Name: citext; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -49,6 +63,20 @@ CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION citext IS 'data type for case-insensitive character strings';
+
+
+--
+-- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
 
 
 --
@@ -80,6 +108,146 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 
 
 --
+-- Name: _history_event; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public._history_event AS ENUM (
+    'INSERT',
+    'UPDATE',
+    'DELETE'
+);
+
+
+--
+-- Name: accounts_state; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.accounts_state AS ENUM (
+    'active',
+    'new',
+    'passive'
+);
+
+
+--
+-- Name: bank_transfers_tracking_status; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.bank_transfers_tracking_status AS ENUM (
+    'neu',
+    'exportiert',
+    'ausgeführt',
+    'nicht ausgeführt',
+    'rücklastschrift',
+    'vorschau'
+);
+
+
+--
+-- Name: contacts_gender; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.contacts_gender AS ENUM (
+    '',
+    'F',
+    'M'
+);
+
+
+--
+-- Name: contacts_state; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.contacts_state AS ENUM (
+    'active',
+    'passive',
+    'blocked'
+);
+
+
+--
+-- Name: deals_cycle; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.deals_cycle AS ENUM (
+    'monthly',
+    'quarterly',
+    'semiannual',
+    'annual',
+    'once'
+);
+
+
+--
+-- Name: deals_entry_day; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.deals_entry_day AS ENUM (
+    '',
+    '01',
+    '02',
+    '03',
+    '04',
+    '05',
+    '06',
+    '07',
+    '08',
+    '09',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20',
+    '21',
+    '22',
+    '23',
+    '24',
+    '25',
+    '26',
+    '27',
+    '28',
+    '29',
+    '30'
+);
+
+
+--
+-- Name: deals_pay_method; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.deals_pay_method AS ENUM (
+    'bill',
+    'debit'
+);
+
+
+--
+-- Name: deals_start_day; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.deals_start_day AS ENUM (
+    '1',
+    '15'
+);
+
+
+--
+-- Name: deals_status; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.deals_status AS ENUM (
+    'active',
+    'passive'
+);
+
+
+--
 -- Name: assert_valid_password(text); Type: FUNCTION; Schema: app_private; Owner: -
 --
 
@@ -97,7 +265,7 @@ $$;
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: users; Type: TABLE; Schema: app_public; Owner: -
@@ -1745,6 +1913,198 @@ COMMENT ON FUNCTION app_public.verify_email(user_email_id uuid, token text) IS '
 
 
 --
+-- Name: audit_table(regclass); Type: FUNCTION; Schema: audit; Owner: -
+--
+
+CREATE FUNCTION audit.audit_table(target_table regclass) RETURNS void
+    LANGUAGE sql
+    AS $_$
+SELECT audit.audit_table($1, BOOLEAN 't', BOOLEAN 't');
+$_$;
+
+
+--
+-- Name: FUNCTION audit_table(target_table regclass); Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON FUNCTION audit.audit_table(target_table regclass) IS '
+Add auditing support to the given table. Row-level changes will be logged with full client query text. No cols are ignored.
+';
+
+
+--
+-- Name: audit_table(regclass, boolean, boolean); Type: FUNCTION; Schema: audit; Owner: -
+--
+
+CREATE FUNCTION audit.audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean) RETURNS void
+    LANGUAGE sql
+    AS $_$
+SELECT audit.audit_table($1, $2, $3, ARRAY[]::text[]);
+$_$;
+
+
+--
+-- Name: audit_table(regclass, boolean, boolean, text[]); Type: FUNCTION; Schema: audit; Owner: -
+--
+
+CREATE FUNCTION audit.audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean, ignored_cols text[]) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  stm_targets text = 'INSERT OR UPDATE OR DELETE OR TRUNCATE';
+  _q_txt text;
+  _ignored_cols_snip text = '';
+BEGIN
+    EXECUTE 'DROP TRIGGER IF EXISTS audit_trigger_row ON ' || quote_ident(target_table::TEXT);
+    EXECUTE 'DROP TRIGGER IF EXISTS audit_trigger_stm ON ' || quote_ident(target_table::TEXT);
+
+    IF audit_rows THEN
+        IF array_length(ignored_cols,1) > 0 THEN
+            _ignored_cols_snip = ', ' || quote_literal(ignored_cols);
+        END IF;
+        _q_txt = 'CREATE TRIGGER audit_trigger_row AFTER INSERT OR UPDATE OR DELETE ON ' ||
+                 quote_ident(target_table::TEXT) ||
+                 ' FOR EACH ROW EXECUTE PROCEDURE audit.if_modified_func(' ||
+                 quote_literal(audit_query_text) || _ignored_cols_snip || ');';
+        RAISE NOTICE '%',_q_txt;
+        EXECUTE _q_txt;
+        stm_targets = 'TRUNCATE';
+    ELSE
+    END IF;
+
+    _q_txt = 'CREATE TRIGGER audit_trigger_stm AFTER ' || stm_targets || ' ON ' ||
+             target_table ||
+             ' FOR EACH STATEMENT EXECUTE PROCEDURE audit.if_modified_func('||
+             quote_literal(audit_query_text) || ');';
+    RAISE NOTICE '%',_q_txt;
+    EXECUTE _q_txt;
+
+END;
+$$;
+
+
+--
+-- Name: FUNCTION audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean, ignored_cols text[]); Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON FUNCTION audit.audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean, ignored_cols text[]) IS '
+Add auditing support to a table.
+
+Arguments:
+   target_table:     Table name, schema qualified if not on search_path
+   audit_rows:       Record each row change, or only audit at a statement level
+   audit_query_text: Record the text of the client query that triggered the audit event?
+   ignored_cols:     Columns to exclude from update diffs, ignore updates that change only ignored cols.
+';
+
+
+--
+-- Name: if_modified_func(); Type: FUNCTION; Schema: audit; Owner: -
+--
+
+CREATE FUNCTION audit.if_modified_func() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'public'
+    AS $$
+DECLARE
+    audit_row audit.logged_actions;
+    include_values boolean;
+    log_diffs boolean;
+    h_old hstore;
+    h_new hstore;
+    excluded_cols text[] = ARRAY[]::text[];
+BEGIN
+    IF TG_WHEN <> 'AFTER' THEN
+        RAISE EXCEPTION 'audit.if_modified_func() may only run as an AFTER trigger';
+    END IF;
+
+    audit_row = ROW(
+        nextval('audit.logged_actions_event_id_seq'), -- event_id
+        TG_TABLE_SCHEMA::text,                        -- schema_name
+        TG_TABLE_NAME::text,                          -- table_name
+        TG_RELID,                                     -- relation OID for much quicker searches
+        session_user::text,                           -- session_user_name
+        current_timestamp,                            -- action_tstamp_tx
+        statement_timestamp(),                        -- action_tstamp_stm
+        clock_timestamp(),                            -- action_tstamp_clk
+        txid_current(),                               -- transaction ID
+        current_setting('application_name'),          -- client application
+        inet_client_addr(),                           -- client_addr
+        inet_client_port(),                           -- client_port
+        current_query(),                              -- top-level query or queries (if multistatement) from client
+        substring(TG_OP,1,1),                         -- action
+        NULL, NULL,                                   -- row_data, changed_fields
+        'f'                                           -- statement_only
+        );
+
+    IF NOT TG_ARGV[0]::boolean IS DISTINCT FROM 'f'::boolean THEN
+        audit_row.client_query = NULL;
+    END IF;
+
+    IF TG_ARGV[1] IS NOT NULL THEN
+        excluded_cols = TG_ARGV[1]::text[];
+    END IF;
+
+    IF (TG_OP = 'UPDATE' AND TG_LEVEL = 'ROW') THEN
+        audit_row.row_data = hstore(OLD.*) - excluded_cols;
+        audit_row.changed_fields =  (hstore(NEW.*) - audit_row.row_data) - excluded_cols;
+        IF audit_row.changed_fields = hstore('') THEN
+            -- All changed fields are ignored. Skip this update.
+            RETURN NULL;
+        END IF;
+    ELSIF (TG_OP = 'DELETE' AND TG_LEVEL = 'ROW') THEN
+        audit_row.row_data = hstore(OLD.*) - excluded_cols;
+    ELSIF (TG_OP = 'INSERT' AND TG_LEVEL = 'ROW') THEN
+        audit_row.row_data = hstore(NEW.*) - excluded_cols;
+    ELSIF (TG_LEVEL = 'STATEMENT' AND TG_OP IN ('INSERT','UPDATE','DELETE','TRUNCATE')) THEN
+        audit_row.statement_only = 't';
+    ELSE
+        RAISE EXCEPTION '[audit.if_modified_func] - Trigger func added as trigger for unhandled case: %, %',TG_OP, TG_LEVEL;
+        RETURN NULL;
+    END IF;
+    INSERT INTO audit.logged_actions VALUES (audit_row.*);
+    RETURN NULL;
+END;
+$$;
+
+
+--
+-- Name: FUNCTION if_modified_func(); Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON FUNCTION audit.if_modified_func() IS '
+Track changes to a table at the statement and/or row level.
+
+Optional parameters to trigger in CREATE TRIGGER call:
+
+param 0: boolean, whether to log the query text. Default ''t''.
+
+param 1: text[], columns to ignore in updates. Default [].
+
+         Updates to ignored cols are omitted from changed_fields.
+
+         Updates with only ignored cols changed are not inserted
+         into the audit log.
+
+         Almost all the processing work is still done for updates
+         that ignored. If you need to save the load, you need to use
+         WHEN clause on the trigger instead.
+
+         No warning or error is issued if ignored_cols contains columns
+         that do not exist in the target table. This lets you specify
+         a standard set of ignored columns.
+
+There is no parameter to disable logging of values. Add this trigger as
+a ''FOR EACH STATEMENT'' rather than ''FOR EACH ROW'' trigger if you do not
+want to log row values.
+
+Note that the user name logged is the login role for the session. The audit trigger
+cannot obtain the active role because it is reset by the SECURITY DEFINER invocation
+of the audit trigger its self.
+';
+
+
+--
 -- Name: connect_pg_simple_sessions; Type: TABLE; Schema: app_private; Owner: -
 --
 
@@ -1850,6 +2210,189 @@ COMMENT ON TABLE app_private.user_secrets IS 'The contents of this table should 
 
 
 --
+-- Name: accounts; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.accounts (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    contact uuid NOT NULL,
+    bank_name text NOT NULL,
+    bic text DEFAULT ''::text,
+    account text DEFAULT ''::text,
+    blz text DEFAULT ''::text,
+    iban text NOT NULL,
+    creditor uuid NOT NULL,
+    sign_date date,
+    state app_public.accounts_state DEFAULT 'new'::app_public.accounts_state,
+    creation_date timestamp with time zone DEFAULT now() NOT NULL,
+    edited_by uuid NOT NULL,
+    last_locktime timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: activity; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.activity (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    result text,
+    request text NOT NULL,
+    user_id uuid NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: COLUMN activity.request; Type: COMMENT; Schema: app_public; Owner: -
+--
+
+COMMENT ON COLUMN app_public.activity.request IS 'DbQuery';
+
+
+--
+-- Name: bank_transfers; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.bank_transfers (
+    ag_name text NOT NULL,
+    ag_konto_or_iban text NOT NULL,
+    ag_blz_or_bic text NOT NULL,
+    zahlpfl_name text NOT NULL,
+    zahlpfl_name2 text,
+    zahlpfl_strasse text NOT NULL,
+    zahlpfl_name_ort text NOT NULL,
+    zahlpfl_name_kto_or_iban text NOT NULL,
+    zahlpfl_name_blz_or_bic text,
+    betrag double precision,
+    currency text DEFAULT '€'::text,
+    zahlart text DEFAULT 'BASIS'::text NOT NULL,
+    termin date NOT NULL,
+    vwz1 text DEFAULT ''::text,
+    vwz2 text DEFAULT ''::text,
+    vwz3 text DEFAULT ''::text,
+    vwz4 text DEFAULT ''::text,
+    vwz5 text DEFAULT ''::text,
+    vwz6 text DEFAULT ''::text,
+    vwz7 text DEFAULT ''::text,
+    vwz8 text DEFAULT ''::text,
+    vwz9 text DEFAULT ''::text,
+    ba_id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    tracking_status app_public.bank_transfers_tracking_status DEFAULT 'neu'::app_public.bank_transfers_tracking_status NOT NULL,
+    anforderungs_datum date NOT NULL,
+    rueck_datum date,
+    cycle text NOT NULL,
+    ref_id text NOT NULL,
+    mandat_id text NOT NULL,
+    mandat_datum date NOT NULL,
+    ag_creditor_id text NOT NULL,
+    sequenz text NOT NULL,
+    super_ag_name text NOT NULL
+);
+
+
+--
+-- Name: contacts; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.contacts (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    mandator uuid NOT NULL,
+    creation_date timestamp with time zone DEFAULT now() NOT NULL,
+    state text DEFAULT 'contact'::text,
+    use_email boolean DEFAULT false,
+    company_name text DEFAULT ''::text,
+    co_field text DEFAULT ''::text,
+    phone_code text DEFAULT 49,
+    phone_number text DEFAULT ''::text,
+    fax text DEFAULT ''::text,
+    title text DEFAULT ''::text,
+    title_pro text DEFAULT ''::text,
+    first_name text DEFAULT ''::text,
+    last_name text DEFAULT ''::text,
+    address text DEFAULT ''::text,
+    address_2 text DEFAULT ''::text,
+    city text DEFAULT ''::text,
+    postal_code text DEFAULT ''::text,
+    country_code text DEFAULT ''::text,
+    gender text DEFAULT ''::text,
+    date_of_birth date,
+    mobile text DEFAULT ''::text,
+    email text DEFAULT ''::text,
+    comments text DEFAULT ''::text,
+    edited_by uuid NOT NULL,
+    merged bigint[],
+    last_locktime timestamp with time zone DEFAULT now() NOT NULL,
+    owner uuid
+);
+
+
+--
+-- Name: COLUMN contacts.title_pro; Type: COMMENT; Schema: app_public; Owner: -
+--
+
+COMMENT ON COLUMN app_public.contacts.title_pro IS 'professional title';
+
+
+--
+-- Name: deals; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.deals (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    contact uuid NOT NULL,
+    creation_date timestamp with time zone DEFAULT now() NOT NULL,
+    account uuid,
+    target_account uuid NOT NULL,
+    start_day text DEFAULT '1'::text,
+    start_date date,
+    cycle app_public.deals_cycle NOT NULL,
+    amount numeric(10,2) NOT NULL,
+    product uuid NOT NULL,
+    agent uuid,
+    project uuid,
+    status text DEFAULT 'active'::text,
+    pay_method text DEFAULT 'debit'::text,
+    end_date date,
+    end_reason uuid,
+    repeat_date date,
+    edited_by uuid NOT NULL,
+    mandator uuid,
+    old_active boolean,
+    cycle_start_date date,
+    last_locktime timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: end_reasons; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.end_reasons (
+    id uuid,
+    reason text NOT NULL,
+    edited_by uuid NOT NULL,
+    mandator uuid NOT NULL
+);
+
+
+--
+-- Name: mandators; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.mandators (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    contact uuid NOT NULL,
+    name text NOT NULL,
+    description text,
+    info jsonb DEFAULT '{}'::jsonb,
+    edited_by uuid NOT NULL,
+    parent uuid,
+    last_locktime timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
 -- Name: organization_invitations; Type: TABLE; Schema: app_public; Owner: -
 --
 
@@ -1875,6 +2418,91 @@ CREATE TABLE app_public.organization_memberships (
     is_owner boolean DEFAULT false NOT NULL,
     is_billing_contact boolean DEFAULT false NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: products; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.products (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    name text NOT NULL,
+    description text,
+    value numeric(10,2),
+    attributes jsonb DEFAULT '{}'::jsonb,
+    mandator uuid NOT NULL,
+    active boolean,
+    edited_by uuid NOT NULL
+);
+
+
+--
+-- Name: projects; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.projects (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    mandator uuid NOT NULL,
+    name text NOT NULL,
+    description text,
+    edited_by uuid NOT NULL,
+    provision_percent double precision DEFAULT (0.0)::double precision,
+    cancellation_liable integer DEFAULT 0,
+    target_account uuid NOT NULL
+);
+
+
+--
+-- Name: roles; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.roles (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    name text NOT NULL,
+    description text DEFAULT ''::text,
+    permissions jsonb DEFAULT '{"users": [], "groups": [], "routes": []}'::jsonb NOT NULL,
+    edited_by uuid NOT NULL,
+    mandator uuid NOT NULL
+);
+
+
+--
+-- Name: statements; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.statements (
+    a text,
+    b text,
+    c date NOT NULL,
+    d date NOT NULL,
+    e double precision NOT NULL,
+    f text,
+    g text,
+    h text,
+    i text,
+    j text,
+    k text,
+    l text,
+    m text,
+    n text,
+    o text,
+    p text,
+    q text,
+    r text,
+    s text,
+    t text,
+    u text,
+    v text,
+    w text,
+    x text,
+    y text,
+    z text,
+    aa text,
+    processed boolean DEFAULT false NOT NULL,
+    kid uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    edited_by uuid NOT NULL,
+    mandator uuid
 );
 
 
@@ -1919,6 +2547,198 @@ COMMENT ON COLUMN app_public.user_authentications.identifier IS 'A unique identi
 --
 
 COMMENT ON COLUMN app_public.user_authentications.details IS 'Additional profile details extracted from this login method';
+
+
+--
+-- Name: user_groups; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.user_groups (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    name text NOT NULL,
+    description text,
+    can jsonb DEFAULT '{}'::jsonb,
+    mandator uuid NOT NULL,
+    edited_by uuid NOT NULL
+);
+
+
+--
+-- Name: logged_actions; Type: TABLE; Schema: audit; Owner: -
+--
+
+CREATE TABLE audit.logged_actions (
+    event_id bigint NOT NULL,
+    schema_name text NOT NULL,
+    table_name text NOT NULL,
+    relid oid NOT NULL,
+    session_user_name text,
+    action_tstamp_tx timestamp with time zone NOT NULL,
+    action_tstamp_stm timestamp with time zone NOT NULL,
+    action_tstamp_clk timestamp with time zone NOT NULL,
+    transaction_id bigint,
+    application_name text,
+    client_addr inet,
+    client_port integer,
+    client_query text,
+    action text NOT NULL,
+    row_data public.hstore,
+    changed_fields public.hstore,
+    statement_only boolean NOT NULL,
+    CONSTRAINT logged_actions_action_check CHECK ((action = ANY (ARRAY['I'::text, 'D'::text, 'U'::text, 'T'::text])))
+);
+
+
+--
+-- Name: TABLE logged_actions; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON TABLE audit.logged_actions IS 'History of auditable actions on audited tables, from audit.if_modified_func()';
+
+
+--
+-- Name: COLUMN logged_actions.event_id; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.event_id IS 'Unique identifier for each auditable event';
+
+
+--
+-- Name: COLUMN logged_actions.schema_name; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.schema_name IS 'Database schema audited table for this event is in';
+
+
+--
+-- Name: COLUMN logged_actions.table_name; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.table_name IS 'Non-schema-qualified table name of table event occured in';
+
+
+--
+-- Name: COLUMN logged_actions.relid; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.relid IS 'Table OID. Changes with drop/create. Get with ''tablename''::regclass';
+
+
+--
+-- Name: COLUMN logged_actions.session_user_name; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.session_user_name IS 'Login / session user whose statement caused the audited event';
+
+
+--
+-- Name: COLUMN logged_actions.action_tstamp_tx; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.action_tstamp_tx IS 'Transaction start timestamp for tx in which audited event occurred';
+
+
+--
+-- Name: COLUMN logged_actions.action_tstamp_stm; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.action_tstamp_stm IS 'Statement start timestamp for tx in which audited event occurred';
+
+
+--
+-- Name: COLUMN logged_actions.action_tstamp_clk; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.action_tstamp_clk IS 'Wall clock time at which audited event''s trigger call occurred';
+
+
+--
+-- Name: COLUMN logged_actions.transaction_id; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.transaction_id IS 'Identifier of transaction that made the change. May wrap, but unique paired with action_tstamp_tx.';
+
+
+--
+-- Name: COLUMN logged_actions.application_name; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.application_name IS 'Application name set when this audit event occurred. Can be changed in-session by client.';
+
+
+--
+-- Name: COLUMN logged_actions.client_addr; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.client_addr IS 'IP address of client that issued query. Null for unix domain socket.';
+
+
+--
+-- Name: COLUMN logged_actions.client_port; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.client_port IS 'Remote peer IP port address of client that issued query. Undefined for unix socket.';
+
+
+--
+-- Name: COLUMN logged_actions.client_query; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.client_query IS 'Top-level query that caused this auditable event. May be more than one statement.';
+
+
+--
+-- Name: COLUMN logged_actions.action; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.action IS 'Action type; I = insert, D = delete, U = update, T = truncate';
+
+
+--
+-- Name: COLUMN logged_actions.row_data; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.row_data IS 'Record value. Null for statement-level trigger. For INSERT this is the new tuple. For DELETE and UPDATE it is the old tuple.';
+
+
+--
+-- Name: COLUMN logged_actions.changed_fields; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.changed_fields IS 'New values of fields changed by UPDATE. Null except for row-level UPDATE events.';
+
+
+--
+-- Name: COLUMN logged_actions.statement_only; Type: COMMENT; Schema: audit; Owner: -
+--
+
+COMMENT ON COLUMN audit.logged_actions.statement_only IS '''t'' if audit event is from an FOR EACH STATEMENT trigger, ''f'' for FOR EACH ROW';
+
+
+--
+-- Name: logged_actions_event_id_seq; Type: SEQUENCE; Schema: audit; Owner: -
+--
+
+CREATE SEQUENCE audit.logged_actions_event_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: logged_actions_event_id_seq; Type: SEQUENCE OWNED BY; Schema: audit; Owner: -
+--
+
+ALTER SEQUENCE audit.logged_actions_event_id_seq OWNED BY audit.logged_actions.event_id;
+
+
+--
+-- Name: logged_actions event_id; Type: DEFAULT; Schema: audit; Owner: -
+--
+
+ALTER TABLE ONLY audit.logged_actions ALTER COLUMN event_id SET DEFAULT nextval('audit.logged_actions_event_id_seq'::regclass);
 
 
 --
@@ -1967,6 +2787,54 @@ ALTER TABLE ONLY app_private.user_email_secrets
 
 ALTER TABLE ONLY app_private.user_secrets
     ADD CONSTRAINT user_secrets_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.accounts
+    ADD CONSTRAINT accounts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: activity activity_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.activity
+    ADD CONSTRAINT activity_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: bank_transfers bank_transfers_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.bank_transfers
+    ADD CONSTRAINT bank_transfers_pkey PRIMARY KEY (ba_id);
+
+
+--
+-- Name: contacts contacts_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.contacts
+    ADD CONSTRAINT contacts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: deals deals_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.deals
+    ADD CONSTRAINT deals_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: mandators mandators_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.mandators
+    ADD CONSTRAINT mandators_pkey PRIMARY KEY (id);
 
 
 --
@@ -2026,6 +2894,38 @@ ALTER TABLE ONLY app_public.organizations
 
 
 --
+-- Name: products products_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.products
+    ADD CONSTRAINT products_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: projects projects_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.projects
+    ADD CONSTRAINT projects_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: roles roles_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.roles
+    ADD CONSTRAINT roles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: statements statements_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.statements
+    ADD CONSTRAINT statements_pkey PRIMARY KEY (kid);
+
+
+--
 -- Name: user_authentications uniq_user_authentications; Type: CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -2058,6 +2958,14 @@ ALTER TABLE ONLY app_public.user_emails
 
 
 --
+-- Name: user_groups user_groups_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.user_groups
+    ADD CONSTRAINT user_groups_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -2071,6 +2979,14 @@ ALTER TABLE ONLY app_public.users
 
 ALTER TABLE ONLY app_public.users
     ADD CONSTRAINT users_username_key UNIQUE (username);
+
+
+--
+-- Name: logged_actions logged_actions_pkey; Type: CONSTRAINT; Schema: audit; Owner: -
+--
+
+ALTER TABLE ONLY audit.logged_actions
+    ADD CONSTRAINT logged_actions_pkey PRIMARY KEY (event_id);
 
 
 --
@@ -2123,108 +3039,311 @@ CREATE INDEX user_authentications_user_id_idx ON app_public.user_authentications
 
 
 --
+-- Name: logged_actions_action_idx; Type: INDEX; Schema: audit; Owner: -
+--
+
+CREATE INDEX logged_actions_action_idx ON audit.logged_actions USING btree (action);
+
+
+--
+-- Name: logged_actions_action_tstamp_tx_stm_idx; Type: INDEX; Schema: audit; Owner: -
+--
+
+CREATE INDEX logged_actions_action_tstamp_tx_stm_idx ON audit.logged_actions USING btree (action_tstamp_stm);
+
+
+--
+-- Name: logged_actions_relid_idx; Type: INDEX; Schema: audit; Owner: -
+--
+
+CREATE INDEX logged_actions_relid_idx ON audit.logged_actions USING btree (relid);
+
+
+--
 -- Name: user_authentications _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_authentications FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_authentications FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
 
 
 --
 -- Name: user_emails _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.user_emails FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
 
 
 --
 -- Name: users _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg__timestamps();
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
 
 
 --
 -- Name: user_emails _200_forbid_existing_email; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _200_forbid_existing_email BEFORE INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_public.tg_user_emails__forbid_if_verified();
+CREATE TRIGGER _200_forbid_existing_email BEFORE INSERT ON app_public.user_emails FOR EACH ROW EXECUTE FUNCTION app_public.tg_user_emails__forbid_if_verified();
 
 
 --
 -- Name: user_emails _500_audit_added; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_audit_added AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg__add_audit_job('added_email', 'user_id', 'id', 'email');
+CREATE TRIGGER _500_audit_added AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE FUNCTION app_private.tg__add_audit_job('added_email', 'user_id', 'id', 'email');
 
 
 --
 -- Name: user_authentications _500_audit_removed; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_audit_removed AFTER DELETE ON app_public.user_authentications FOR EACH ROW EXECUTE PROCEDURE app_private.tg__add_audit_job('unlinked_account', 'user_id', 'service', 'identifier');
+CREATE TRIGGER _500_audit_removed AFTER DELETE ON app_public.user_authentications FOR EACH ROW EXECUTE FUNCTION app_private.tg__add_audit_job('unlinked_account', 'user_id', 'service', 'identifier');
 
 
 --
 -- Name: user_emails _500_audit_removed; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_audit_removed AFTER DELETE ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg__add_audit_job('removed_email', 'user_id', 'id', 'email');
+CREATE TRIGGER _500_audit_removed AFTER DELETE ON app_public.user_emails FOR EACH ROW EXECUTE FUNCTION app_private.tg__add_audit_job('removed_email', 'user_id', 'id', 'email');
 
 
 --
 -- Name: users _500_deletion_organization_checks_and_actions; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_deletion_organization_checks_and_actions BEFORE DELETE ON app_public.users FOR EACH ROW WHEN ((app_public.current_user_id() IS NOT NULL)) EXECUTE PROCEDURE app_public.tg_users__deletion_organization_checks_and_actions();
+CREATE TRIGGER _500_deletion_organization_checks_and_actions BEFORE DELETE ON app_public.users FOR EACH ROW WHEN ((app_public.current_user_id() IS NOT NULL)) EXECUTE FUNCTION app_public.tg_users__deletion_organization_checks_and_actions();
 
 
 --
 -- Name: users _500_gql_update; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_gql_update AFTER UPDATE ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_public.tg__graphql_subscription('userChanged', 'graphql:user:$1', 'id');
+CREATE TRIGGER _500_gql_update AFTER UPDATE ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_public.tg__graphql_subscription('userChanged', 'graphql:user:$1', 'id');
 
 
 --
 -- Name: user_emails _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_email_secrets__insert_with_user_email();
+CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.user_emails FOR EACH ROW EXECUTE FUNCTION app_private.tg_user_email_secrets__insert_with_user_email();
 
 
 --
 -- Name: users _500_insert_secrets; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE PROCEDURE app_private.tg_user_secrets__insert_with_user();
+CREATE TRIGGER _500_insert_secrets AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_private.tg_user_secrets__insert_with_user();
 
 
 --
 -- Name: user_emails _500_prevent_delete_last; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_prevent_delete_last AFTER DELETE ON app_public.user_emails REFERENCING OLD TABLE AS deleted FOR EACH STATEMENT EXECUTE PROCEDURE app_public.tg_user_emails__prevent_delete_last_email();
+CREATE TRIGGER _500_prevent_delete_last AFTER DELETE ON app_public.user_emails REFERENCING OLD TABLE AS deleted FOR EACH STATEMENT EXECUTE FUNCTION app_public.tg_user_emails__prevent_delete_last_email();
 
 
 --
 -- Name: organization_invitations _500_send_email; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_send_email AFTER INSERT ON app_public.organization_invitations FOR EACH ROW EXECUTE PROCEDURE app_private.tg__add_job('organization_invitations__send_invite');
+CREATE TRIGGER _500_send_email AFTER INSERT ON app_public.organization_invitations FOR EACH ROW EXECUTE FUNCTION app_private.tg__add_job('organization_invitations__send_invite');
 
 
 --
 -- Name: user_emails _500_verify_account_on_verified; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _500_verify_account_on_verified AFTER INSERT OR UPDATE OF is_verified ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS TRUE)) EXECUTE PROCEDURE app_public.tg_user_emails__verify_account_on_verified();
+CREATE TRIGGER _500_verify_account_on_verified AFTER INSERT OR UPDATE OF is_verified ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS TRUE)) EXECUTE FUNCTION app_public.tg_user_emails__verify_account_on_verified();
 
 
 --
 -- Name: user_emails _900_send_verification_email; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
-CREATE TRIGGER _900_send_verification_email AFTER INSERT ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS FALSE)) EXECUTE PROCEDURE app_private.tg__add_job('user_emails__send_verification');
+CREATE TRIGGER _900_send_verification_email AFTER INSERT ON app_public.user_emails FOR EACH ROW WHEN ((new.is_verified IS FALSE)) EXECUTE FUNCTION app_private.tg__add_job('user_emails__send_verification');
+
+
+--
+-- Name: accounts audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.accounts FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: activity audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.activity FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: bank_transfers audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.bank_transfers FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: contacts audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.contacts FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: deals audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.deals FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: end_reasons audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.end_reasons FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: mandators audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.mandators FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: products audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.products FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: projects audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.projects FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: roles audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.roles FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: statements audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.statements FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: user_groups audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.user_groups FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: users audit_trigger_row; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_row AFTER INSERT OR DELETE OR UPDATE ON app_public.users FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: accounts audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.accounts FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: activity audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.activity FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: bank_transfers audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.bank_transfers FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: contacts audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.contacts FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: deals audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.deals FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: end_reasons audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.end_reasons FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: mandators audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.mandators FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: products audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.products FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: projects audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.projects FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: roles audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.roles FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: statements audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.statements FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: user_groups audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.user_groups FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
+
+
+--
+-- Name: users audit_trigger_stm; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER audit_trigger_stm AFTER TRUNCATE ON app_public.users FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func('true');
 
 
 --
@@ -2338,6 +3457,36 @@ ALTER TABLE app_private.user_email_secrets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE app_private.user_secrets ENABLE ROW LEVEL SECURITY;
 
 --
+-- Name: accounts; Type: ROW SECURITY; Schema: app_public; Owner: -
+--
+
+ALTER TABLE app_public.accounts ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: activity; Type: ROW SECURITY; Schema: app_public; Owner: -
+--
+
+ALTER TABLE app_public.activity ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: bank_transfers; Type: ROW SECURITY; Schema: app_public; Owner: -
+--
+
+ALTER TABLE app_public.bank_transfers ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: contacts; Type: ROW SECURITY; Schema: app_public; Owner: -
+--
+
+ALTER TABLE app_public.contacts ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: deals; Type: ROW SECURITY; Schema: app_public; Owner: -
+--
+
+ALTER TABLE app_public.deals ENABLE ROW LEVEL SECURITY;
+
+--
 -- Name: user_authentications delete_own; Type: POLICY; Schema: app_public; Owner: -
 --
 
@@ -2375,6 +3524,18 @@ ALTER TABLE app_public.organization_memberships ENABLE ROW LEVEL SECURITY;
 --
 
 ALTER TABLE app_public.organizations ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: products; Type: ROW SECURITY; Schema: app_public; Owner: -
+--
+
+ALTER TABLE app_public.products ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: projects; Type: ROW SECURITY; Schema: app_public; Owner: -
+--
+
+ALTER TABLE app_public.projects ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: users select_all; Type: POLICY; Schema: app_public; Owner: -
@@ -2426,6 +3587,12 @@ CREATE POLICY select_own ON app_public.user_emails FOR SELECT USING ((user_id = 
 
 
 --
+-- Name: statements; Type: ROW SECURITY; Schema: app_public; Owner: -
+--
+
+ALTER TABLE app_public.statements ENABLE ROW LEVEL SECURITY;
+
+--
 -- Name: organizations update_owner; Type: POLICY; Schema: app_public; Owner: -
 --
 
@@ -2454,6 +3621,12 @@ ALTER TABLE app_public.user_authentications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE app_public.user_emails ENABLE ROW LEVEL SECURITY;
 
 --
+-- Name: user_groups; Type: ROW SECURITY; Schema: app_public; Owner: -
+--
+
+ALTER TABLE app_public.user_groups ENABLE ROW LEVEL SECURITY;
+
+--
 -- Name: users; Type: ROW SECURITY; Schema: app_public; Owner: -
 --
 
@@ -2463,14 +3636,14 @@ ALTER TABLE app_public.users ENABLE ROW LEVEL SECURITY;
 -- Name: SCHEMA app_hidden; Type: ACL; Schema: -; Owner: -
 --
 
-GRANT USAGE ON SCHEMA app_hidden TO graphile_starter_visitor;
+GRANT USAGE ON SCHEMA app_hidden TO crm_starter_visitor;
 
 
 --
 -- Name: SCHEMA app_public; Type: ACL; Schema: -; Owner: -
 --
 
-GRANT USAGE ON SCHEMA app_public TO graphile_starter_visitor;
+GRANT USAGE ON SCHEMA app_public TO crm_starter_visitor;
 
 
 --
@@ -2479,8 +3652,8 @@ GRANT USAGE ON SCHEMA app_public TO graphile_starter_visitor;
 
 REVOKE ALL ON SCHEMA public FROM postgres;
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
-GRANT ALL ON SCHEMA public TO graphile_starter;
-GRANT USAGE ON SCHEMA public TO graphile_starter_visitor;
+GRANT ALL ON SCHEMA public TO crm_starter;
+GRANT USAGE ON SCHEMA public TO crm_starter_visitor;
 
 
 --
@@ -2494,28 +3667,28 @@ REVOKE ALL ON FUNCTION app_private.assert_valid_password(new_password text) FROM
 -- Name: TABLE users; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT ON TABLE app_public.users TO graphile_starter_visitor;
+GRANT SELECT ON TABLE app_public.users TO crm_starter_visitor;
 
 
 --
 -- Name: COLUMN users.username; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT UPDATE(username) ON TABLE app_public.users TO graphile_starter_visitor;
+GRANT UPDATE(username) ON TABLE app_public.users TO crm_starter_visitor;
 
 
 --
 -- Name: COLUMN users.name; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT UPDATE(name) ON TABLE app_public.users TO graphile_starter_visitor;
+GRANT UPDATE(name) ON TABLE app_public.users TO crm_starter_visitor;
 
 
 --
 -- Name: COLUMN users.avatar_url; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT UPDATE(avatar_url) ON TABLE app_public.users TO graphile_starter_visitor;
+GRANT UPDATE(avatar_url) ON TABLE app_public.users TO crm_starter_visitor;
 
 
 --
@@ -2586,7 +3759,7 @@ REVOKE ALL ON FUNCTION app_private.tg_user_secrets__insert_with_user() FROM PUBL
 --
 
 REVOKE ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id uuid, code text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id uuid, code text) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id uuid, code text) TO crm_starter_visitor;
 
 
 --
@@ -2594,7 +3767,7 @@ GRANT ALL ON FUNCTION app_public.accept_invitation_to_organization(invitation_id
 --
 
 REVOKE ALL ON FUNCTION app_public.change_password(old_password text, new_password text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.change_password(old_password text, new_password text) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.change_password(old_password text, new_password text) TO crm_starter_visitor;
 
 
 --
@@ -2602,28 +3775,28 @@ GRANT ALL ON FUNCTION app_public.change_password(old_password text, new_password
 --
 
 REVOKE ALL ON FUNCTION app_public.confirm_account_deletion(token text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.confirm_account_deletion(token text) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.confirm_account_deletion(token text) TO crm_starter_visitor;
 
 
 --
 -- Name: TABLE organizations; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT ON TABLE app_public.organizations TO graphile_starter_visitor;
+GRANT SELECT ON TABLE app_public.organizations TO crm_starter_visitor;
 
 
 --
 -- Name: COLUMN organizations.slug; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT UPDATE(slug) ON TABLE app_public.organizations TO graphile_starter_visitor;
+GRANT UPDATE(slug) ON TABLE app_public.organizations TO crm_starter_visitor;
 
 
 --
 -- Name: COLUMN organizations.name; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT UPDATE(name) ON TABLE app_public.organizations TO graphile_starter_visitor;
+GRANT UPDATE(name) ON TABLE app_public.organizations TO crm_starter_visitor;
 
 
 --
@@ -2631,7 +3804,7 @@ GRANT UPDATE(name) ON TABLE app_public.organizations TO graphile_starter_visitor
 --
 
 REVOKE ALL ON FUNCTION app_public.create_organization(slug public.citext, name text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.create_organization(slug public.citext, name text) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.create_organization(slug public.citext, name text) TO crm_starter_visitor;
 
 
 --
@@ -2639,7 +3812,7 @@ GRANT ALL ON FUNCTION app_public.create_organization(slug public.citext, name te
 --
 
 REVOKE ALL ON FUNCTION app_public.current_session_id() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.current_session_id() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.current_session_id() TO crm_starter_visitor;
 
 
 --
@@ -2647,7 +3820,7 @@ GRANT ALL ON FUNCTION app_public.current_session_id() TO graphile_starter_visito
 --
 
 REVOKE ALL ON FUNCTION app_public."current_user"() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public."current_user"() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public."current_user"() TO crm_starter_visitor;
 
 
 --
@@ -2655,7 +3828,7 @@ GRANT ALL ON FUNCTION app_public."current_user"() TO graphile_starter_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.current_user_id() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.current_user_id() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.current_user_id() TO crm_starter_visitor;
 
 
 --
@@ -2663,7 +3836,7 @@ GRANT ALL ON FUNCTION app_public.current_user_id() TO graphile_starter_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.current_user_invited_organization_ids() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.current_user_invited_organization_ids() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.current_user_invited_organization_ids() TO crm_starter_visitor;
 
 
 --
@@ -2671,7 +3844,7 @@ GRANT ALL ON FUNCTION app_public.current_user_invited_organization_ids() TO grap
 --
 
 REVOKE ALL ON FUNCTION app_public.current_user_member_organization_ids() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.current_user_member_organization_ids() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.current_user_member_organization_ids() TO crm_starter_visitor;
 
 
 --
@@ -2679,7 +3852,7 @@ GRANT ALL ON FUNCTION app_public.current_user_member_organization_ids() TO graph
 --
 
 REVOKE ALL ON FUNCTION app_public.delete_organization(organization_id uuid) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.delete_organization(organization_id uuid) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.delete_organization(organization_id uuid) TO crm_starter_visitor;
 
 
 --
@@ -2687,7 +3860,7 @@ GRANT ALL ON FUNCTION app_public.delete_organization(organization_id uuid) TO gr
 --
 
 REVOKE ALL ON FUNCTION app_public.forgot_password(email public.citext) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO crm_starter_visitor;
 
 
 --
@@ -2695,7 +3868,7 @@ GRANT ALL ON FUNCTION app_public.forgot_password(email public.citext) TO graphil
 --
 
 REVOKE ALL ON FUNCTION app_public.invite_to_organization(organization_id uuid, username public.citext, email public.citext) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.invite_to_organization(organization_id uuid, username public.citext, email public.citext) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.invite_to_organization(organization_id uuid, username public.citext, email public.citext) TO crm_starter_visitor;
 
 
 --
@@ -2703,21 +3876,21 @@ GRANT ALL ON FUNCTION app_public.invite_to_organization(organization_id uuid, us
 --
 
 REVOKE ALL ON FUNCTION app_public.logout() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.logout() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.logout() TO crm_starter_visitor;
 
 
 --
 -- Name: TABLE user_emails; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,DELETE ON TABLE app_public.user_emails TO graphile_starter_visitor;
+GRANT SELECT,DELETE ON TABLE app_public.user_emails TO crm_starter_visitor;
 
 
 --
 -- Name: COLUMN user_emails.email; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT INSERT(email) ON TABLE app_public.user_emails TO graphile_starter_visitor;
+GRANT INSERT(email) ON TABLE app_public.user_emails TO crm_starter_visitor;
 
 
 --
@@ -2725,7 +3898,7 @@ GRANT INSERT(email) ON TABLE app_public.user_emails TO graphile_starter_visitor;
 --
 
 REVOKE ALL ON FUNCTION app_public.make_email_primary(email_id uuid) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.make_email_primary(email_id uuid) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.make_email_primary(email_id uuid) TO crm_starter_visitor;
 
 
 --
@@ -2733,7 +3906,7 @@ GRANT ALL ON FUNCTION app_public.make_email_primary(email_id uuid) TO graphile_s
 --
 
 REVOKE ALL ON FUNCTION app_public.organization_for_invitation(invitation_id uuid, code text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.organization_for_invitation(invitation_id uuid, code text) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.organization_for_invitation(invitation_id uuid, code text) TO crm_starter_visitor;
 
 
 --
@@ -2741,7 +3914,7 @@ GRANT ALL ON FUNCTION app_public.organization_for_invitation(invitation_id uuid,
 --
 
 REVOKE ALL ON FUNCTION app_public.organizations_current_user_is_billing_contact(org app_public.organizations) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.organizations_current_user_is_billing_contact(org app_public.organizations) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.organizations_current_user_is_billing_contact(org app_public.organizations) TO crm_starter_visitor;
 
 
 --
@@ -2749,7 +3922,7 @@ GRANT ALL ON FUNCTION app_public.organizations_current_user_is_billing_contact(o
 --
 
 REVOKE ALL ON FUNCTION app_public.organizations_current_user_is_owner(org app_public.organizations) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.organizations_current_user_is_owner(org app_public.organizations) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.organizations_current_user_is_owner(org app_public.organizations) TO crm_starter_visitor;
 
 
 --
@@ -2757,7 +3930,7 @@ GRANT ALL ON FUNCTION app_public.organizations_current_user_is_owner(org app_pub
 --
 
 REVOKE ALL ON FUNCTION app_public.remove_from_organization(organization_id uuid, user_id uuid) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.remove_from_organization(organization_id uuid, user_id uuid) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.remove_from_organization(organization_id uuid, user_id uuid) TO crm_starter_visitor;
 
 
 --
@@ -2765,7 +3938,7 @@ GRANT ALL ON FUNCTION app_public.remove_from_organization(organization_id uuid, 
 --
 
 REVOKE ALL ON FUNCTION app_public.request_account_deletion() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.request_account_deletion() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.request_account_deletion() TO crm_starter_visitor;
 
 
 --
@@ -2773,7 +3946,7 @@ GRANT ALL ON FUNCTION app_public.request_account_deletion() TO graphile_starter_
 --
 
 REVOKE ALL ON FUNCTION app_public.resend_email_verification_code(email_id uuid) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id uuid) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id uuid) TO crm_starter_visitor;
 
 
 --
@@ -2781,7 +3954,7 @@ GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id uuid) T
 --
 
 REVOKE ALL ON FUNCTION app_public.reset_password(user_id uuid, reset_token text, new_password text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.reset_password(user_id uuid, reset_token text, new_password text) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.reset_password(user_id uuid, reset_token text, new_password text) TO crm_starter_visitor;
 
 
 --
@@ -2789,7 +3962,7 @@ GRANT ALL ON FUNCTION app_public.reset_password(user_id uuid, reset_token text, 
 --
 
 REVOKE ALL ON FUNCTION app_public.tg__graphql_subscription() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.tg__graphql_subscription() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.tg__graphql_subscription() TO crm_starter_visitor;
 
 
 --
@@ -2797,7 +3970,7 @@ GRANT ALL ON FUNCTION app_public.tg__graphql_subscription() TO graphile_starter_
 --
 
 REVOKE ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO crm_starter_visitor;
 
 
 --
@@ -2805,7 +3978,7 @@ GRANT ALL ON FUNCTION app_public.tg_user_emails__forbid_if_verified() TO graphil
 --
 
 REVOKE ALL ON FUNCTION app_public.tg_user_emails__prevent_delete_last_email() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.tg_user_emails__prevent_delete_last_email() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.tg_user_emails__prevent_delete_last_email() TO crm_starter_visitor;
 
 
 --
@@ -2813,7 +3986,7 @@ GRANT ALL ON FUNCTION app_public.tg_user_emails__prevent_delete_last_email() TO 
 --
 
 REVOKE ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO crm_starter_visitor;
 
 
 --
@@ -2821,7 +3994,7 @@ GRANT ALL ON FUNCTION app_public.tg_user_emails__verify_account_on_verified() TO
 --
 
 REVOKE ALL ON FUNCTION app_public.tg_users__deletion_organization_checks_and_actions() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.tg_users__deletion_organization_checks_and_actions() TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.tg_users__deletion_organization_checks_and_actions() TO crm_starter_visitor;
 
 
 --
@@ -2829,7 +4002,7 @@ GRANT ALL ON FUNCTION app_public.tg_users__deletion_organization_checks_and_acti
 --
 
 REVOKE ALL ON FUNCTION app_public.transfer_organization_billing_contact(organization_id uuid, user_id uuid) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.transfer_organization_billing_contact(organization_id uuid, user_id uuid) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.transfer_organization_billing_contact(organization_id uuid, user_id uuid) TO crm_starter_visitor;
 
 
 --
@@ -2837,7 +4010,7 @@ GRANT ALL ON FUNCTION app_public.transfer_organization_billing_contact(organizat
 --
 
 REVOKE ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id uuid, user_id uuid) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id uuid, user_id uuid) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id uuid, user_id uuid) TO crm_starter_visitor;
 
 
 --
@@ -2845,7 +4018,7 @@ GRANT ALL ON FUNCTION app_public.transfer_organization_ownership(organization_id
 --
 
 REVOKE ALL ON FUNCTION app_public.users_has_password(u app_public.users) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO crm_starter_visitor;
 
 
 --
@@ -2853,79 +4026,107 @@ GRANT ALL ON FUNCTION app_public.users_has_password(u app_public.users) TO graph
 --
 
 REVOKE ALL ON FUNCTION app_public.verify_email(user_email_id uuid, token text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.verify_email(user_email_id uuid, token text) TO graphile_starter_visitor;
+GRANT ALL ON FUNCTION app_public.verify_email(user_email_id uuid, token text) TO crm_starter_visitor;
+
+
+--
+-- Name: FUNCTION audit_table(target_table regclass); Type: ACL; Schema: audit; Owner: -
+--
+
+REVOKE ALL ON FUNCTION audit.audit_table(target_table regclass) FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean); Type: ACL; Schema: audit; Owner: -
+--
+
+REVOKE ALL ON FUNCTION audit.audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean) FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean, ignored_cols text[]); Type: ACL; Schema: audit; Owner: -
+--
+
+REVOKE ALL ON FUNCTION audit.audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean, ignored_cols text[]) FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION if_modified_func(); Type: ACL; Schema: audit; Owner: -
+--
+
+REVOKE ALL ON FUNCTION audit.if_modified_func() FROM PUBLIC;
 
 
 --
 -- Name: TABLE organization_memberships; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT ON TABLE app_public.organization_memberships TO graphile_starter_visitor;
+GRANT SELECT ON TABLE app_public.organization_memberships TO crm_starter_visitor;
 
 
 --
 -- Name: TABLE user_authentications; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT SELECT,DELETE ON TABLE app_public.user_authentications TO graphile_starter_visitor;
+GRANT SELECT,DELETE ON TABLE app_public.user_authentications TO crm_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: app_hidden; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden REVOKE ALL ON SEQUENCES  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA app_hidden REVOKE ALL ON SEQUENCES  FROM crm_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA app_hidden GRANT SELECT,USAGE ON SEQUENCES  TO crm_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: app_hidden; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_hidden GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA app_hidden REVOKE ALL ON FUNCTIONS  FROM crm_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA app_hidden GRANT ALL ON FUNCTIONS  TO crm_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: app_public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON SEQUENCES  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA app_public REVOKE ALL ON SEQUENCES  FROM crm_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA app_public GRANT SELECT,USAGE ON SEQUENCES  TO crm_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: app_public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA app_public GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA app_public REVOKE ALL ON FUNCTIONS  FROM crm_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA app_public GRANT ALL ON FUNCTIONS  TO crm_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON SEQUENCES  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public GRANT SELECT,USAGE ON SEQUENCES  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA public REVOKE ALL ON SEQUENCES  FROM crm_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA public GRANT SELECT,USAGE ON SEQUENCES  TO crm_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM graphile_starter;
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter IN SCHEMA public GRANT ALL ON FUNCTIONS  TO graphile_starter_visitor;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA public REVOKE ALL ON FUNCTIONS  FROM crm_starter;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter IN SCHEMA public GRANT ALL ON FUNCTIONS  TO crm_starter_visitor;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: -; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE graphile_starter REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE crm_starter REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
 
 
 --

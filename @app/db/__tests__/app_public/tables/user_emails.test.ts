@@ -44,7 +44,7 @@ it("can add an email (unverified), receive code, verify email (and marks account
       }
     `);
   }));
-
+//  /permission denied for (table|relation) user_emails/
 it("cannot manually create a verified email", () =>
   withUserDb(async (client) => {
     const promise = client.query(
@@ -52,7 +52,7 @@ it("cannot manually create a verified email", () =>
       ["newemail@example.com"]
     );
     await expect(promise).rejects.toThrow(
-      /permission denied for (table|relation) user_emails/
+      /keine Berechtigung für Tabelle user_emails/
     );
   }));
 
@@ -64,7 +64,7 @@ it("cannot manually mark an email as verified", () =>
       [email.id]
     );
     await expect(promise).rejects.toThrow(
-      /permission denied for (table|relation) user_emails/
+      /keine Berechtigung für Tabelle user_emails/
     );
   }));
 

@@ -1,0 +1,741 @@
+yarn run v1.22.4
+$ node ./scripts/start.js
+@app/graphql: [19:33:05] Parse configuration [started]
+@app/graphql: [19:33:05] Parse configuration [completed]
+@app/graphql: [19:33:05] Generate outputs [started]
+@app/graphql: [19:33:05] Generate index.tsx [started]
+@app/graphql: [19:33:05] Load GraphQL schemas [started]
+@app/graphql: [19:33:05] Load GraphQL schemas [completed]
+@app/graphql: [19:33:05] Load GraphQL documents [started]
+@app/graphql: [19:33:05] Load GraphQL documents [completed]
+@app/graphql: [19:33:05] Generate [started]
+@app/graphql: [19:33:06] Generate [failed]
+@app/graphql: [19:33:06] → 
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AcceptOrganizationInvite.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AcceptOrganizationInvite.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AcceptOrganizationInvite.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AcceptOrganizationInvite.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AddEmail.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AddEmail.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AddEmail.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AddEmail.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "CreateUserEmailPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AddEmail.graphql:5:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ChangePassword.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ChangePassword.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ChangePassword.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ChangePassword.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "ChangePasswordPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ChangePassword.graphql:5:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ConfirmAccountDeletion.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ConfirmAccountDeletion.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ConfirmAccountDeletion.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ConfirmAccountDeletion.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "ConfirmAccountDeletionPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ConfirmAccountDeletion.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Field CreateOrganizationInput.organization of required type OrganizationInput! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:8:29
+@app/graphql:     GraphQLDocumentError: Field "name" is not defined by type CreateOrganizationInput.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:8:31
+@app/graphql:     GraphQLDocumentError: Field "slug" is not defined by type CreateOrganizationInput.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:8:44
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserAuthentications.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserAuthentications.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserAuthentications.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserAuthentications.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userAuthenticationsList" on type "User". Did you mean "userAuthenticationsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserAuthentications.graphql:4:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserUpdated.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserUpdated.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserUpdated.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserUpdated.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Field DeleteUserEmailInput.nodeId of required type ID! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:4:26
+@app/graphql:     GraphQLDocumentError: Field "id" is not defined by type DeleteUserEmailInput.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:4:28
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "DeleteUserEmailPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:5:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Field DeleteOrganizationInput.nodeId of required type ID! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:2:29
+@app/graphql:     GraphQLDocumentError: Field "organizationId" is not defined by type DeleteOrganizationInput. Did you mean clientMutationId?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:2:31
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_User.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_User.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_User.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_User.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_UserEmail.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_UserEmail.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_UserEmail.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_UserEmail.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ForgotPassword.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ForgotPassword.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ForgotPassword.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ForgotPassword.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InvitationDetail.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InvitationDetail.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InvitationDetail.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InvitationDetail.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InviteToOrganization.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InviteToOrganization.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InviteToOrganization.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InviteToOrganization.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Login.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Login.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Login.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Login.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "login" on type "Mutation". Did you mean "logout"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Login.graphql:2:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "LogoutPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Field "logout" argument "input" of type "LogoutInput!" is required, but it was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:2:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/MakeEmailPrimary.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/MakeEmailPrimary.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/MakeEmailPrimary.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/MakeEmailPrimary.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "MakeEmailPrimaryPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/MakeEmailPrimary.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationBySlug.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationBySlug.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationBySlug.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationBySlug.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationMembers.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationMembers.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationMembers.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationMembers.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage_Query.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage_Query.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage_Query.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage_Query.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ProfileSettingsForm_User.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ProfileSettingsForm_User.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ProfileSettingsForm_User.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ProfileSettingsForm_User.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Register.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Register.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Register.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Register.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "register" on type "Mutation".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Register.graphql:7:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RemoveFromOrganization.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RemoveFromOrganization.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RemoveFromOrganization.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RemoveFromOrganization.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RequestAccountDeletion.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RequestAccountDeletion.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RequestAccountDeletion.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RequestAccountDeletion.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "RequestAccountDeletionPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RequestAccountDeletion.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResendEmailVerification.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResendEmailVerification.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResendEmailVerification.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResendEmailVerification.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "ResendEmailVerificationCodePayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResendEmailVerification.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResetPassword.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResetPassword.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResetPassword.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResetPassword.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "ResetPasswordPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResetPassword.graphql:5:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsEmails.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsEmails.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsEmails.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsEmails.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsPassword.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsPassword.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsPassword.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsPassword.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsPassword.graphql:5:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsProfile.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsProfile.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsProfile.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsProfile.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Shared.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Shared.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Shared.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Shared.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SharedLayout_Query.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SharedLayout_Query.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SharedLayout_Query.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SharedLayout_Query.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationBillingContact.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationBillingContact.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationBillingContact.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationBillingContact.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationOwnership.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationOwnership.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationOwnership.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationOwnership.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Field DeleteUserAuthenticationInput.nodeId of required type ID! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:2:35
+@app/graphql:     GraphQLDocumentError: Field "id" is not defined by type DeleteUserAuthenticationInput.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:2:37
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "DeleteUserAuthenticationPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateOrganization.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateOrganization.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateOrganization.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateOrganization.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Field UpdateUserInput.nodeId of required type ID! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:2:21
+@app/graphql:     GraphQLDocumentError: Field UpdateUserInput.userPatch of required type UserPatch! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:2:21
+@app/graphql:     GraphQLDocumentError: Field "id" is not defined by type UpdateUserInput.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:2:23
+@app/graphql:     GraphQLDocumentError: Field "patch" is not defined by type UpdateUserInput. Did you mean userPatch?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:2:32
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/VerifyEmail.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/VerifyEmail.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/VerifyEmail.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/VerifyEmail.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "VerifyEmailPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/VerifyEmail.graphql:3:5
+@app/graphql: [19:33:06] Generate index.tsx [failed]
+@app/graphql: [19:33:06] → 
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AcceptOrganizationInvite.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AcceptOrganizationInvite.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AcceptOrganizationInvite.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AcceptOrganizationInvite.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AddEmail.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AddEmail.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AddEmail.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AddEmail.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "CreateUserEmailPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/AddEmail.graphql:5:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ChangePassword.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ChangePassword.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ChangePassword.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ChangePassword.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "ChangePasswordPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ChangePassword.graphql:5:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ConfirmAccountDeletion.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ConfirmAccountDeletion.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ConfirmAccountDeletion.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ConfirmAccountDeletion.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "ConfirmAccountDeletionPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ConfirmAccountDeletion.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Field CreateOrganizationInput.organization of required type OrganizationInput! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:8:29
+@app/graphql:     GraphQLDocumentError: Field "name" is not defined by type CreateOrganizationInput.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:8:31
+@app/graphql:     GraphQLDocumentError: Field "slug" is not defined by type CreateOrganizationInput.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CreateOrganization.graphql:8:44
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserAuthentications.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserAuthentications.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserAuthentications.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserAuthentications.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userAuthenticationsList" on type "User". Did you mean "userAuthenticationsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserAuthentications.graphql:4:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserUpdated.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserUpdated.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserUpdated.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/CurrentUserUpdated.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Field DeleteUserEmailInput.nodeId of required type ID! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:4:26
+@app/graphql:     GraphQLDocumentError: Field "id" is not defined by type DeleteUserEmailInput.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:4:28
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "DeleteUserEmailPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteEmail.graphql:5:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Field DeleteOrganizationInput.nodeId of required type ID! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:2:29
+@app/graphql:     GraphQLDocumentError: Field "organizationId" is not defined by type DeleteOrganizationInput. Did you mean clientMutationId?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/DeleteOrganization.graphql:2:31
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_User.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_User.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_User.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_User.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_UserEmail.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_UserEmail.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_UserEmail.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/EmailsForm_UserEmail.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ForgotPassword.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ForgotPassword.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ForgotPassword.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ForgotPassword.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InvitationDetail.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InvitationDetail.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InvitationDetail.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InvitationDetail.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InviteToOrganization.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InviteToOrganization.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InviteToOrganization.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/InviteToOrganization.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Login.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Login.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Login.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Login.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "login" on type "Mutation". Did you mean "logout"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Login.graphql:2:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "LogoutPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Field "logout" argument "input" of type "LogoutInput!" is required, but it was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Logout.graphql:2:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/MakeEmailPrimary.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/MakeEmailPrimary.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/MakeEmailPrimary.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/MakeEmailPrimary.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "MakeEmailPrimaryPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/MakeEmailPrimary.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationBySlug.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationBySlug.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationBySlug.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationBySlug.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationMembers.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationMembers.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationMembers.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationMembers.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage_Query.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage_Query.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage_Query.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/OrganizationPage_Query.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ProfileSettingsForm_User.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ProfileSettingsForm_User.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ProfileSettingsForm_User.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ProfileSettingsForm_User.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Register.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Register.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Register.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Register.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "register" on type "Mutation".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Register.graphql:7:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RemoveFromOrganization.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RemoveFromOrganization.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RemoveFromOrganization.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RemoveFromOrganization.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RequestAccountDeletion.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RequestAccountDeletion.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RequestAccountDeletion.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RequestAccountDeletion.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "RequestAccountDeletionPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/RequestAccountDeletion.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResendEmailVerification.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResendEmailVerification.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResendEmailVerification.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResendEmailVerification.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "ResendEmailVerificationCodePayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResendEmailVerification.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResetPassword.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResetPassword.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResetPassword.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResetPassword.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "ResetPasswordPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/ResetPassword.graphql:5:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsEmails.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsEmails.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsEmails.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsEmails.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsPassword.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsPassword.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsPassword.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsPassword.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsPassword.graphql:5:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsProfile.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsProfile.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsProfile.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SettingsProfile.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Shared.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Shared.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Shared.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/Shared.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SharedLayout_Query.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SharedLayout_Query.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SharedLayout_Query.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/SharedLayout_Query.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationBillingContact.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationBillingContact.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationBillingContact.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationBillingContact.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationOwnership.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationOwnership.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationOwnership.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/TransferOrganizationOwnership.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Field DeleteUserAuthenticationInput.nodeId of required type ID! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:2:35
+@app/graphql:     GraphQLDocumentError: Field "id" is not defined by type DeleteUserAuthenticationInput.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:2:37
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "DeleteUserAuthenticationPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UnlinkUserAuthentication.graphql:3:5
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateOrganization.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateOrganization.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateOrganization.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateOrganization.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Field UpdateUserInput.nodeId of required type ID! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:2:21
+@app/graphql:     GraphQLDocumentError: Field UpdateUserInput.userPatch of required type UserPatch! was not provided.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:2:21
+@app/graphql:     GraphQLDocumentError: Field "id" is not defined by type UpdateUserInput.
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:2:23
+@app/graphql:     GraphQLDocumentError: Field "patch" is not defined by type UpdateUserInput. Did you mean userPatch?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/UpdateUser.graphql:2:32
+@app/graphql:     GraphQLDocumentError: Cannot query field "userEmails" on type "User". Did you mean "username" or "userEmailsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/VerifyEmail.graphql:5:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "user" on type "OrganizationMembership". Did you mean "userId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/VerifyEmail.graphql:6:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "Organization". Did you mean "organizationMembershipsByOrganizationId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/VerifyEmail.graphql:18:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "organizationMemberships" on type "User". Did you mean "organizationMembershipsByUserId"?
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/VerifyEmail.graphql:15:3
+@app/graphql:     GraphQLDocumentError: Cannot query field "success" on type "VerifyEmailPayload".
+@app/graphql:         at /opt/src/crm-starter/@app/client/src/graphql/VerifyEmail.graphql:3:5
+@app/graphql: [19:33:06] Generate outputs [failed]
+Done in 3.22s.
