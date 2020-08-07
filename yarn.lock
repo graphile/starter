@@ -7774,10 +7774,10 @@ graphile-utils@^4.8.0-rc.0:
     graphql ">=0.9 <0.14 || ^14.0.2"
     tslib "^1.13.0"
 
-graphile-worker@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/graphile-worker/-/graphile-worker-0.7.0.tgz#47d5ad5a91f6237ee05c4aa32608a774767eb183"
-  integrity sha512-pxE7YALypDI2GzVUBFhBXskfHXSl2aWh5hiIKWA6nLsX0oCPduZ4aYIvGWG2bso1Jxr8I7qou0R5F33tpHdxyA==
+graphile-worker@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/graphile-worker/-/graphile-worker-0.7.2.tgz#c49adc658d3eeaf4bfca7d989dfaa0c15b28ebf5"
+  integrity sha512-QP5i4kefgBtWeJwq4fZx5BPBt7qJ9oV5I9jRe6R+X/xCybWTL2kT+7TtEaMU7rRLJ9qqCgBpIqEffpmdU1MPJQ==
   dependencies:
     "@types/debug" "^4.1.2"
     "@types/pg" "^7.14.3"
@@ -7875,9 +7875,9 @@ graphql-tools@5.0.0:
     uuid "^7.0.3"
 
 graphql@*, graphql@14.x, "graphql@>=0.9 <0.14 || ^14.0.2", "graphql@>=0.9 <15", "graphql@^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.2", graphql@^14.4.2, graphql@^14.5.8:
-  version "14.6.0"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.6.0.tgz#57822297111e874ea12f5cd4419616930cd83e49"
-  integrity sha512-VKzfvHEKybTKjQVpTFrA5yUq2S9ihcZvfJAtsDBBCuV6wauPu1xl/f9ehgVf0FcEJJs4vz6ysb/ZMkGigQZseg==
+  version "14.7.0"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.7.0.tgz#7fa79a80a69be4a31c27dda824dc04dac2035a72"
+  integrity sha512-l0xWZpoPKpppFzMfvVyFmp9vLN7w/ZZJPefUicMCepfJeQ8sMcztloGYY9DfjVPo6tIUDzU5Hw3MUbIjj9AVVA==
   dependencies:
     iterall "^1.2.2"
 
@@ -11994,9 +11994,9 @@ performance-now@^2.1.0:
   integrity sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
 
 pg-connection-string@0.1.3, pg-connection-string@2.x, pg-connection-string@^2.0.0, pg-connection-string@^2.1.0:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.2.3.tgz#48e1158ec37eaa82e98dbcb7307103ec303fe0e7"
-  integrity sha512-I/KCSQGmOrZx6sMHXkOs2MjddrYcqpza3Dtsy0AjIgBr/bZiPJRK9WhABXN1Uy1UDazRbi9gZEzO2sAhL5EqiQ==
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.3.0.tgz#c13fcb84c298d0bfa9ba12b40dd6c23d946f55d6"
+  integrity sha512-ukMTJXLI7/hZIwTW7hGMZJ0Lj0S2XQBCJ4Shv4y1zgQ/vqVea+FLhzywvPj0ujSuofu+yA4MYHGZPTsgjBgJ+w==
 
 pg-int8@1.0.1:
   version "1.0.1"
