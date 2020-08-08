@@ -21,12 +21,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Install schema
-        run: psql -f data/schema.sql postgres://postgres:postgres@localhost/postgres
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Setup DB
+        run: |
+          cp .env.ci .env
+          yarn --frozen-lockfile
+          CONFIRM_DROP=1 yarn setup
       - name: "Run pgRITA checks"
         uses: pgrita/action@main
         env:
-          DATABASE_URL: postgres://postgres:postgres@localhost/postgres
+          DATABASE_URL: postgres://postgres:postgres@localhost/graphile_starter
           PGRITA_TOKEN: ${{ secrets.PGRITA_TOKEN }}
         with:
           project: graphile/graphile-starter
