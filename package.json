@@ -89,6 +89,14 @@
   },
   "prettier": {
     "trailingComma": "es5",
-    "proseWrap": "always"
+    "proseWrap": "always",
+    "overrides": [
+      {
+        "files": ["*.yml", "*.yaml"],
+        "options": {
+          "printWidth": 120
+        }
+      }
+    ]
   }
 }

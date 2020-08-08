@@ -13,21 +13,20 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
+        ports:
+          - "0.0.0.0:5432:5432"
         # needed because the postgres container does not provide a healthcheck
-        options:
-          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
-          --health-retries 5
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install schema
-        run:
-          psql -f data/schema.sql postgres://postgres:postgres@postgres/postgres
+        run: psql -f data/schema.sql postgres://postgres:postgres@localhost/postgres
       - name: "Run pgRITA checks"
         uses: pgrita/action@main
         env:
-          DATABASE_URL: postgres://postgres:postgres@postgres/postgres
+          DATABASE_URL: postgres://postgres:postgres@localhost/postgres
           PGRITA_TOKEN: ${{ secrets.PGRITA_TOKEN }}
         with:
           project: graphile/graphile-starter
