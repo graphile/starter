@@ -99,6 +99,7 @@ export async function makeApp({
    * express middleware. These helpers may be asynchronous, but they should
    * operate very rapidly to enable quick as possible server startup.
    */
+  await middleware.installCors(app);
   await middleware.installDatabasePools(app);
   await middleware.installWorkerUtils(app);
   await middleware.installHelmet(app);
