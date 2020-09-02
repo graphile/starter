@@ -4,7 +4,7 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "setup": "yarn && node ./scripts/setup.js",
+    "setup": "yarn && node ./scripts/setup.js && lerna run setup",
     "start": "node ./scripts/start.js",
     "pretest": "lerna run pretest",
     "test": "node scripts/test.js",
@@ -92,7 +92,10 @@
     "proseWrap": "always",
     "overrides": [
       {
-        "files": ["*.yml", "*.yaml"],
+        "files": [
+          "*.yml",
+          "*.yaml"
+        ],
         "options": {
           "printWidth": 120
         }
