@@ -277,6 +277,15 @@ To shut everything down:
 | ---------- | :-: | ------------------------------ |
 | Ctrl-c     | or  | `export UID; yarn docker down` |
 
+### Custom commands
+
+To grant admin rights to a user call toogle-admin with 1, you can also remove
+admin rights sending 0 as the last argument:
+
+```
+yarn db toggle-admin <username> <[0-1]>
+```
+
 ## Making it yours
 
 1. Download and extract a zip of
