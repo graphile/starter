@@ -1,3 +1,4 @@
+import installCors from "./installCors";
 import installCSRFProtection from "./installCSRFProtection";
 import installCypressServerCommand from "./installCypressServerCommand";
 import installDatabasePools from "./installDatabasePools";
@@ -13,6 +14,7 @@ import installSSR from "./installSSR";
 import installWorkerUtils from "./installWorkerUtils";
 
 export {
+  installCors,
   installCSRFProtection,
   installDatabasePools,
   installWorkerUtils,
