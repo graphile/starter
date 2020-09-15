@@ -61,7 +61,7 @@ runMain(async function () {
     })
   );
 
-  // Run server build
+  // And perform setup
   runSync(yarnCmd, ["server", "build"]);
 
   if (process.argv[2] === "auto") {

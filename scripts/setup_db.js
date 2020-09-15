@@ -19,7 +19,7 @@ runMain(async function () {
   // Ensure server build has been run
   runSync(yarnCmd, ["server", "build"]);
 
-  // FINALLY we can source our environment
+  // Source our environment
   dotenv.config({ path: `${__dirname}/../.env` });
   require(`${__dirname}/../@app/config/extra`);
   const {
