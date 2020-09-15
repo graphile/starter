@@ -17,7 +17,7 @@ may prefer to switch this out for your preferred migration framework such as
 [flyway](https://flywaydb.org/) or many many many others.
 
 Should you decide to stick with Graphile Migrate, we strongly encourage you to
-[read the Graphile Migrate README](https://github.com/graphile/migrate/blob/master/README.md)
+[read the Graphile Migrate README](https://github.com/graphile/migrate/blob/main/README.md)
 before attempting to write your own migrations. Graphile Migrate works in quite
 a different way to many other migration frameworks, and relys on your discipline
 and SQL knowledge to work well.

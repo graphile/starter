@@ -2,8 +2,7 @@ require("@app/config");
 const compose = require("lodash/flowRight");
 const AntDDayjsWebpackPlugin = require("antd-dayjs-webpack-plugin");
 
-const { ROOT_URL, T_AND_C_URL } = process.env;
-if (!ROOT_URL) {
+if (!process.env.ROOT_URL) {
   if (process.argv[1].endsWith("/depcheck")) {
     /* NOOP */
   } else {
@@ -72,10 +71,16 @@ if (!ROOT_URL) {
           plugins: [
             ...config.plugins,
             new webpack.DefinePlugin({
-              "process.env.ROOT_URL": JSON.stringify(
-                ROOT_URL || "http://localhost:5678"
-              ),
-              "process.env.T_AND_C_URL": JSON.stringify(T_AND_C_URL || null),
+              /*
+               * IMPORTANT: we don't want to hard-code these values, otherwise
+               * we cannot promote a bundle to another environment. Further,
+               * they need to be valid both within the browser _AND_ on the
+               * server side when performing SSR.
+               */
+              "process.env.ROOT_URL":
+                "(typeof window !== 'undefined' ? window.__GRAPHILE_APP__.ROOT_URL : process.env.ROOT_URL)",
+              "process.env.T_AND_C_URL":
+                "(typeof window !== 'undefined' ? window.__GRAPHILE_APP__.T_AND_C_URL : process.env.T_AND_C_URL)",
             }),
             new webpack.IgnorePlugin(
               // These modules are server-side only; we don't want webpack

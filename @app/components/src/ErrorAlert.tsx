@@ -1,4 +1,6 @@
-import { Alert, Result } from "antd";
+import { SyncOutlined } from "@ant-design/icons";
+import { Alert, Button, Result } from "antd";
+import Paragraph from "antd/lib/typography/Paragraph";
 import { ApolloError } from "apollo-client";
 import React from "react";
 
@@ -7,6 +9,33 @@ export interface ErrorAlertProps {
 }
 
 export function ErrorAlert({ error }: ErrorAlertProps) {
+  const code: string | undefined = (error as any)?.networkError?.result
+    ?.errors?.[0]?.code;
+  if (code === "EBADCSRFTOKEN") {
+    return (
+      <Result
+        status="403"
+        title="Invalid CSRF token"
+        subTitle={
+          <>
+            <Paragraph type="secondary">
+              Our security protections have failed to authenticate your request;
+              to solve this you need to refresh the page:
+            </Paragraph>
+            <Paragraph>
+              <Button
+                type="primary"
+                onClick={() => window.location.reload()}
+                icon={<SyncOutlined />}
+              >
+                Refresh page
+              </Button>
+            </Paragraph>
+          </>
+        }
+      />
+    );
+  }
   return (
     <Result
       status="error"

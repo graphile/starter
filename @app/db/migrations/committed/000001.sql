@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:e1b27f7832f31570c34083d3a619062bc0ae4a72
+--! Hash: sha1:e6bd89aa12b755d5cbf4ffea0d60e949107e9e05
 
 drop schema if exists app_public cascade;
 
@@ -169,7 +169,6 @@ create function app_public.current_user_id() returns uuid as $$
 $$ language sql stable security definer set search_path to pg_catalog, public, pg_temp;
 comment on function app_public.current_user_id() is
   E'Handy method to get the current user ID for use in RLS policies, etc; in GraphQL, use `currentUser{id}` instead.';
--- We've put this in public, but omitted it, because it's often useful for debugging auth issues.
 
 /**********/
 
@@ -961,8 +960,8 @@ begin
   if v_username is null then
     v_username = coalesce(v_name, 'user');
   end if;
-  v_username = regexp_replace(v_username, '^[^a-z]+', '', 'i');
-  v_username = regexp_replace(v_username, '[^a-z0-9]+', '_', 'i');
+  v_username = regexp_replace(v_username, '^[^a-z]+', '', 'gi');
+  v_username = regexp_replace(v_username, '[^a-z0-9]+', '_', 'gi');
   if v_username is null or length(v_username) < 3 then
     v_username = 'user';
   end if;

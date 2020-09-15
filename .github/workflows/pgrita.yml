@@ -1,0 +1,40 @@
+name: pgRITA
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:11.6
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - "0.0.0.0:5432:5432"
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Setup DB
+        run: |
+          cp .env.ci .env
+          yarn --frozen-lockfile
+          CONFIRM_DROP=1 yarn setup
+      - name: "Run pgRITA checks"
+        uses: pgrita/action@main
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost/graphile_starter
+          PGRITA_TOKEN: ${{ secrets.PGRITA_TOKEN }}
+        with:
+          project: graphile/graphile-starter
+          pass-on-no-token: true

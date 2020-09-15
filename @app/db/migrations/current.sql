@@ -69,7 +69,7 @@ relevant operations on them. The tables will appear when you uncomment the
 
 -- create table app_public.posts (
 --   id               serial primary key,
---   author_id        int default app_public.current_user_id() references app_public.users(id) on delete set null,
+--   author_id        uuid default app_public.current_user_id() references app_public.users(id) on delete set null,
 --   headline         text not null check (char_length(headline) < 280),
 --   body             text,
 --   topic            text not null references app_public.topics on delete restrict,
@@ -103,7 +103,7 @@ relevant operations on them. The tables will appear when you uncomment the
 
 -- create table app_public.user_feed_posts (
 --   id               serial primary key,
---   user_id          int not null references app_public.users on delete cascade,
+--   user_id          uuid not null references app_public.users on delete cascade,
 --   post_id          int not null references app_public.posts on delete cascade,
 --   created_at       timestamptz not null default now()
 -- );

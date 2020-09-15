@@ -4,9 +4,10 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "setup": "yarn && yarn setup:env && yarn setup:db",
+    "setup": "yarn && yarn setup:env && yarn setup:db && yarn setup:packages",
     "setup:env": "node ./scripts/setup_env.js",
     "setup:db": "node ./scripts/setup_db.js",
+    "setup:packages": "lerna run setup",
     "start": "node ./scripts/start.js",
     "pretest": "lerna run pretest",
     "test": "node scripts/test.js",
@@ -23,6 +24,7 @@
     "reset": "yarn clean && node ./scripts/delete-env-file.js",
     "--shortcuts to run commands in workspaces--": "",
     "client": "yarn workspace @app/client",
+    "components": "yarn workspace @app/components",
     "db": "yarn workspace @app/db",
     "e2e": "yarn workspace @app/e2e",
     "graphql": "yarn workspace @app/graphql",
@@ -45,8 +47,8 @@
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-typescript": "^7.9.0",
     "@types/jest": "^25.2.1",
-    "@typescript-eslint/eslint-plugin": "^2.30.0",
-    "@typescript-eslint/parser": "^2.30.0",
+    "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "@typescript-eslint/parser": "^4.1.1",
     "babel-jest": "^25.5.1",
     "concurrently": "^5.2.0",
     "depcheck": "^0.9.2",
@@ -71,8 +73,8 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^25.4.0",
     "ts-loader": "^7.0.2",
-    "ts-node": "^8.9.1",
-    "typescript": "^3.8.3",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2",
     "update-dotenv": "^1.1.1"
   },
   "resolutions": {
@@ -90,6 +92,17 @@
   },
   "prettier": {
     "trailingComma": "es5",
-    "proseWrap": "always"
+    "proseWrap": "always",
+    "overrides": [
+      {
+        "files": [
+          "*.yml",
+          "*.yaml"
+        ],
+        "options": {
+          "printWidth": 120
+        }
+      }
+    ]
   }
 }
