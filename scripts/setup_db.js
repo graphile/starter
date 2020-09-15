@@ -13,7 +13,7 @@ const pg = require("pg");
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-runMain(async function () {
+runMain(async () => {
   await checkGit();
 
   // Ensure server build has been run

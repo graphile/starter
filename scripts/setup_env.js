@@ -11,7 +11,7 @@ const {
 } = require("./_setup_utils");
 const inquirer = require("inquirer");
 
-runMain(async function () {
+runMain(async () => {
   await checkGit();
   const config = (await readDotenv()) || {};
   const mergeAnswers = (cb) => (answers) => cb({ ...config, ...answers });
