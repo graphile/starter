@@ -198,6 +198,7 @@ const Settings_Emails: NextPage = () => {
 
 export default Settings_Emails;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface FormValues {
   email: string;
 }
