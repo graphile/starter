@@ -5,6 +5,7 @@ import { SendEmailPayload } from "./send_email";
 
 /* For tracking account actions */
 
+/*
 type AccountAction =
   | "linked_account" //
   | "unlinked_account" //
@@ -12,6 +13,7 @@ type AccountAction =
   | "reset_password" //
   | "added_email" //
   | "removed_email"; //
+ */
 
 type UserAuditPayload =
   | {
