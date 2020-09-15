@@ -64,7 +64,12 @@ runMain(async function () {
   // Run server build
   runSync(yarnCmd, ["server", "build"]);
 
-  outro(`\
+  if (process.argv[2] === "auto") {
+    // We're advancing automatically
+    console.log(`\
+✅ Environment file setup success`);
+  } else {
+    outro(`\
 ✅ Environment file setup success
 
 🚀 The next step is to set up the database, run:
@@ -72,4 +77,5 @@ runMain(async function () {
   ${yarnCmd} setup:db
 
 If you're not using graphile-migrate, then you should run your preferred migration framework now.  This step should also include creating the necessary schemas and roles.  Consult the generated .env file for what is needed.`);
+  }
 });

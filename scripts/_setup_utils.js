@@ -188,9 +188,8 @@ exports.outro = (message) => {
   console.log(message);
   console.log();
   console.log();
-  console.log(
-    "🙏 Please support our Open Source work: https://graphile.org/sponsor"
-  );
+  console.log("🙏 Please support our Open Source work:");
+  console.log("     https://graphile.org/sponsor");
   console.log();
   console.log("____________________________________________________________");
   console.log();

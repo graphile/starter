@@ -4,7 +4,7 @@
   "private": true,
   "description": "Description of project here",
   "scripts": {
-    "setup": "yarn && yarn setup:env && yarn setup:db && yarn setup:packages",
+    "setup": "yarn && yarn setup:env auto && yarn setup:db && yarn setup:packages",
     "setup:env": "node ./scripts/setup_env.js",
     "setup:db": "node ./scripts/setup_db.js",
     "setup:packages": "lerna run setup",
