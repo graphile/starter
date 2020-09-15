@@ -73,7 +73,11 @@ ROOT_DATABASE_URL=postgres://postgres:${password}@db/postgres
   ]);
 
   // Run setup as normal
-  runSync(yarnCmd, ["compose", "run", "server", "yarn", "setup", projectName]);
+  runSync(yarnCmd, ["compose", "run", "server", "yarn", "setup"], {
+    env: {
+      PROJECT_NAME: projectName,
+    },
+  });
 }
 
 main().catch((e) => {
