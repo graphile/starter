@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@app/config": "0.0.0",
-    "@types/html-to-text": "^5.1.0",
-    "@types/lodash": "^4.14.150",
+    "@types/html-to-text": "^5.1.2",
+    "@types/lodash": "^4.14.161",
     "@types/mjml": "^4.0.4",
     "@types/nodemailer": "^6.4.0",
     "aws-sdk": "^2.668.0",
@@ -23,7 +23,7 @@
     "lodash": "^4.17.15",
     "mjml": "^4.6.2",
     "nodemailer": "^6.4.6",
-    "tslib": "^1.11.1"
+    "tslib": "^2.0.1"
   },
   "devDependencies": {
     "jest": "^25.5.4"

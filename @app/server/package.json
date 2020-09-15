@@ -17,15 +17,15 @@
     "@graphile/pg-pubsub": "^4.9.0",
     "@graphile/pro": "^0.10.0",
     "@types/connect-pg-simple": "^4.2.0",
-    "@types/connect-redis": "^0.0.13",
+    "@types/connect-redis": "^0.0.14",
     "@types/csurf": "^1.9.36",
     "@types/express-session": "^1.17.0",
-    "@types/helmet": "^0.0.46",
-    "@types/morgan": "^1.9.0",
-    "@types/passport": "^1.0.3",
+    "@types/helmet": "^0.0.48",
+    "@types/morgan": "^1.9.1",
+    "@types/passport": "^1.0.4",
     "@types/passport-github2": "^1.2.4",
-    "@types/pg": "^7.14.1",
-    "@types/redis": "^2.8.18",
+    "@types/pg": "^7.14.4",
+    "@types/redis": "^2.8.27",
     "body-parser": "^1.19.0",
     "chalk": "^4.0.0",
     "connect-pg-simple": "^6.1.0",
@@ -47,14 +47,14 @@
     "postgraphile": "^4.9.0",
     "redis": "^3.0.2",
     "source-map-support": "^0.5.13",
-    "tslib": "^1.11.1"
+    "tslib": "^2.0.1"
   },
   "devDependencies": {
-    "@types/node": "^13.13.4",
+    "@types/node": "^14.10.1",
     "graphql": "^14.4.2",
     "jest": "^25.5.4",
     "mock-req": "^0.2.0",
-    "ts-node": "^8.10.1"
+    "ts-node": "^9.0.0"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.1",
