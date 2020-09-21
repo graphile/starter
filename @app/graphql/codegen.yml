@@ -2,6 +2,7 @@ overwrite: true
 schema: "../../data/schema.graphql"
 documents: "../client/src/**/*.graphql"
 config:
+  avoidOptionals: true
   scalars:
     Datetime: "string"
     JSON: "{ [key: string]: any }"
