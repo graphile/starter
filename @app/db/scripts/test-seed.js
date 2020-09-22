@@ -18,7 +18,10 @@ async function main() {
   }
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+const inTests = process.env.IN_TESTS;
+if (inTests) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
