@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -b",
-    "test": "NODE_ENV=test node -r @app/config/env ./node_modules/.bin/jest"
+    "test": "cross-env NODE_ENV=test npx -n \"-r @app/config/env\" jest"
   },
   "dependencies": {
     "@apollo/react-ssr": "^3.1.5",
@@ -29,6 +29,7 @@
     "@types/express": "^4.17.8",
     "@types/ws": "^7.2.6",
     "@types/zxcvbn": "^4.4.0",
+    "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "jest": "^25.5.4",
     "postgraphile": "^4.9.0",

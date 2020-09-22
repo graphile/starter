@@ -74,7 +74,7 @@ if (process.argv.length > 3) {
     [
       {
         name: "jest",
-        command: `node --inspect=9876 node_modules/.bin/jest -i ${arg}`,
+        command: `npx -n \"--inspect=9876\" jest -i ${arg}`,
         prefixColor: "greenBright",
       },
       {
