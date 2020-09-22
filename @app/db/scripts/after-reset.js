@@ -5,5 +5,5 @@ spawn("yarn", ["workspace", "@app/worker", "install-db-schema"], {
     ...process.env,
     DATABASE_URL: process.env.GM_DBURL,
   },
-  shell: true
+  shell: true,
 });
