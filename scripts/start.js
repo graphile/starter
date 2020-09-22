@@ -16,4 +16,5 @@ spawn("yarn", ["dev"], {
     YARN_SILENT: "1",
     npm_config_loglevel: "silent",
   },
+  shell: true,
 });
