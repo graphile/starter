@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "gm": "node -r @app/config/env node_modules/.bin/graphile-migrate",
+    "gm": "npx -n \"-r @app/config/env\" graphile-migrate",
     "migrate": "yarn gm migrate",
     "watch": "yarn gm watch",
     "commit": "yarn gm commit",
@@ -11,13 +11,14 @@
     "reset": "yarn gm reset",
     "dump": "yarn gm migrate && yarn gm reset --shadow --erase && yarn gm migrate --shadow --forceActions",
     "wipe-if-demo": "./scripts/wipe-if-demo",
-    "test": "NODE_ENV=test node -r @app/config/env ./node_modules/.bin/jest"
+    "test": "cross-env NODE_ENV=test npx -n \"-r @app/config/env\" jest"
   },
   "dependencies": {
     "graphile-migrate": "^1.0.1"
   },
   "devDependencies": {
     "@types/pg": "^7.14.4",
+    "cross-env": "^7.0.2",
     "graphile-worker": "^0.8.0",
     "jest": "^25.5.4",
     "lodash": "^4.17.15",
