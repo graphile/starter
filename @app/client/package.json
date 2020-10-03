@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "cd src && npx -n \"-r @app/config/env\" next build",
-    "test": "cross-env NODE_ENV=test npx -n \"-r @app/config/env\" jest"
+    "build": "cd src && npx --no-install -n \"-r @app/config/env\" next build",
+    "test": "cross-env NODE_ENV=test npx --no-install -n \"-r @app/config/env\" jest"
   },
   "dependencies": {
     "@ant-design/icons": "^4.1.0",

@@ -27,6 +27,7 @@
     "@graphql-codegen/typescript": "^1.17.10",
     "@graphql-codegen/typescript-operations": "^1.17.8",
     "@graphql-codegen/typescript-react-apollo": "2.0.7",
+    "cross-env": "^7.0.2",
     "jest": "^25.5.4"
   }
 }

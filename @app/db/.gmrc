@@ -68,7 +68,7 @@
     "!afterReset.sql",
     {
       "_": "command",
-      "command": "node scripts/after-reset.js"
+      "command": "cross-env-shell \"DATABASE_URL=\\\"$GM_DBURL\\\" yarn workspace @app/worker install-db-schema\""
     }
   ],
 
@@ -79,6 +79,7 @@
     {
       "_": "command",
       "shadow": true,
+      // NOTE: this script does nothing when envvar `IN_TESTS` is `1`
       "command": "node scripts/dump-db.js"
     }
   ],
@@ -91,6 +92,7 @@
     {
       "_": "command",
       "shadow": true,
+      // NOTE: this script does nothing unless envvar `IN_TESTS` is `1`
       "command": "node scripts/test-seed.js"
     }
   ],
