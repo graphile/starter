@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -b",
-    "test": "cross-env NODE_ENV=test npx -n \"-r @app/config/env\" jest"
+    "test": "cross-env NODE_ENV=test npx --no-install -n \"-r @app/config/env\" jest"
   },
   "dependencies": {
     "@ant-design/icons": "^4.1.0",

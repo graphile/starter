@@ -74,7 +74,7 @@ if (process.argv.length > 3) {
     [
       {
         name: "jest",
-        command: `npx -n \"--inspect=9876\" jest -i ${arg}`,
+        command: `npx --no-install -n \"--inspect=9876\" jest -i ${arg}`,
         prefixColor: "greenBright",
       },
       {

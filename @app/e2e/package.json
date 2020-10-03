@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "cy": "npx -n \"-r @app/config/env\" cypress",
+    "cy": "npx --no-install -n \"-r @app/config/env\" cypress",
     "open": "yarn cy open",
     "run": "yarn cy run",
-    "test": "cross-env NODE_ENV=test npx -n \"-r @app/config/env\" jest"
+    "test": "cross-env NODE_ENV=test npx --no-install -n \"-r @app/config/env\" jest"
   },
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^5.1.2",

@@ -1,6 +1,10 @@
 const { writeFile } = require("fs").promises;
 const pg = require("pg");
 
+if (process.env.IN_TESTS !== "1") {
+  process.exit(0);
+}
+
 async function main() {
   const connectionString = process.env.GM_DBURL;
   if (!connectionString) {
@@ -18,10 +22,7 @@ async function main() {
   }
 }
 
-const inTests = process.env.IN_TESTS;
-if (inTests) {
-  main().catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
-}
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
