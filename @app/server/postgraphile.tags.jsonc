@@ -7,7 +7,7 @@
  * See https://www.graphile.org/postgraphile/smart-tags/ for more information.
  */
 {
-  "$schema": "https://gist.githubusercontent.com/singingwolfboy/a7144db4e24b5d31ba81f28b878a4b51/raw/cd1e371baa41756e02f1d6f36a3dea86388d4084/pg-smart-tags-schema.json",
+  "$schema": "./pg-database-smart-tags.schema.json",
   "version": 1,
   "config": {
     "class": {

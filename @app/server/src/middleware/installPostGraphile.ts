@@ -12,6 +12,7 @@ import {
   postgraphile,
   PostGraphileOptions,
 } from "postgraphile";
+import { createJsonSchema as CreateJsonSchemaPlugin } from "postgraphile-tag-json-tools";
 import { makePgSmartTagsFromFilePlugin } from "postgraphile/plugins";
 
 import { getHttpServer, getWebsocketMiddlewares } from "../app";
@@ -183,6 +184,14 @@ export function getPostGraphileOptions({
 
       // Adds custom orders to our GraphQL schema
       OrdersPlugin,
+
+      // Plugins for just Development mode
+      ...(!isDev
+        ? []
+        : [
+            // updates the `pg-database-smart-tags.schema.json` file based on the database
+            CreateJsonSchemaPlugin,
+          ]),
     ],
 
     /*
@@ -201,6 +210,12 @@ export function getPostGraphileOptions({
 
       // Makes all SQL function arguments except those with defaults non-nullable
       pgStrictFunctions: true,
+
+      tagJsonPlugin: {
+        // tells the CreateJsonSchemaPlugin to create the `pg-database-smart-tags.schema.json`
+        // file in the base folder, next to the `postgraphile.tags.jsonc` file.
+        tagFileFolder: resolve(__dirname, "../.."),
+      },
     },
 
     /*

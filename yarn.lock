@@ -12754,6 +12754,11 @@ postgraphile-core@4.9.0:
     graphile-build-pg "4.9.0"
     tslib "^2.0.1"
 
+postgraphile-tag-json-tools@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/postgraphile-tag-json-tools/-/postgraphile-tag-json-tools-0.1.1.tgz#3ddc102b11da00c9981d330ad3d5e38235a3fb97"
+  integrity sha512-iN1WDSQsX+BY7yqds4U/hT4EWkzh5UIi/8WhR2fvEPOkmT7CojmyYFhFd6FmFT60tNfJ3ktDeZPt+BmyjT+ALg==
+
 postgraphile@^4.9.0:
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/postgraphile/-/postgraphile-4.9.0.tgz#71bca224833f702803169802ce9b79e36b739be1"

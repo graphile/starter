@@ -45,6 +45,7 @@
     "passport-github2": "^0.1.12",
     "pg": "^8.0.3",
     "postgraphile": "^4.9.0",
+    "postgraphile-tag-json-tools": "^0.1.1",
     "redis": "^3.0.2",
     "source-map-support": "^0.5.13",
     "tslib": "^2.0.1"

@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+
+  "title": "JSONPgSmartTags",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "number",
+      "minimum": 1
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "class": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/pgClass"
+          }
+        },
+        "attribute": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/pgEntity"
+          }
+        },
+        "constraint": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/pgEntity"
+          }
+        },
+        "procedure": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/pgEntity"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "tags": {
+      "$id": "#tags",
+      "type": "object",
+      "$comment": "------ Add extra tags here, in `properties`. ------",
+      "properties": {
+        "omit": { "oneOf": [{ "type": "boolean" }, { "type": "string" }] },
+        "notNull": { "type": "boolean" },
+        "filterable": { "type": "boolean" },
+        "sortable": { "type": "boolean" },
+        "name": { "type": "string" },
+        "fieldName": { "type": "string" },
+        "foreignFieldName": { "type": "string" },
+        "foreignSingleFieldName": { "type": "string" },
+        "foreignKey": { "type": "string" },
+        "primaryKey": { "type": "string" },
+        "simpleCollections": { "type": "string" },
+        "resultFieldName": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "pgEntity": {
+      "$id": "#pgEntity",
+      "type": "object",
+      "properties": {
+        "tags": { "$ref": "#/definitions/tags" },
+        "description": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "pgClass": {
+      "type": "object",
+      "properties": {
+        "tags": { "$ref": "#/definitions/tags" },
+        "description": { "type": "string" },
+        "attribute": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/pgEntity" }
+        },
+        "constraint": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/pgEntity" }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

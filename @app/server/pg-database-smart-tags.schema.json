@@ -1,0 +1,494 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JSONPgSmartTags",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "number",
+      "minimum": 1
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "class": {
+          "type": "object",
+          "properties": {
+            "app_public.organization_invitations": {
+              "$ref": "#/definitions/class:app_public.organization_invitations"
+            },
+            "organization_invitations": {
+              "$ref": "#/definitions/class:app_public.organization_invitations"
+            },
+            "app_public.organization_memberships": {
+              "$ref": "#/definitions/class:app_public.organization_memberships"
+            },
+            "organization_memberships": {
+              "$ref": "#/definitions/class:app_public.organization_memberships"
+            },
+            "app_public.organizations": {
+              "$ref": "#/definitions/class:app_public.organizations"
+            },
+            "organizations": {
+              "$ref": "#/definitions/class:app_public.organizations"
+            },
+            "app_public.user_authentications": {
+              "$ref": "#/definitions/class:app_public.user_authentications"
+            },
+            "user_authentications": {
+              "$ref": "#/definitions/class:app_public.user_authentications"
+            },
+            "app_public.user_emails": {
+              "$ref": "#/definitions/class:app_public.user_emails"
+            },
+            "user_emails": {
+              "$ref": "#/definitions/class:app_public.user_emails"
+            },
+            "app_public.users": {
+              "$ref": "#/definitions/class:app_public.users"
+            },
+            "users": {
+              "$ref": "#/definitions/class:app_public.users"
+            }
+          },
+          "additionalProperties": false
+        },
+        "attribute": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "app_public.organization_invitations.code",
+              "app_public.organization_invitations.email",
+              "app_public.organization_invitations.id",
+              "app_public.organization_invitations.organization_id",
+              "app_public.organization_invitations.user_id",
+              "app_public.organization_memberships.created_at",
+              "app_public.organization_memberships.id",
+              "app_public.organization_memberships.is_billing_contact",
+              "app_public.organization_memberships.is_owner",
+              "app_public.organization_memberships.organization_id",
+              "app_public.organization_memberships.user_id",
+              "app_public.organizations.created_at",
+              "app_public.organizations.id",
+              "app_public.organizations.name",
+              "app_public.organizations.slug",
+              "app_public.user_authentications.created_at",
+              "app_public.user_authentications.details",
+              "app_public.user_authentications.id",
+              "app_public.user_authentications.identifier",
+              "app_public.user_authentications.service",
+              "app_public.user_authentications.updated_at",
+              "app_public.user_authentications.user_id",
+              "app_public.user_emails.created_at",
+              "app_public.user_emails.email",
+              "app_public.user_emails.id",
+              "app_public.user_emails.is_primary",
+              "app_public.user_emails.is_verified",
+              "app_public.user_emails.updated_at",
+              "app_public.user_emails.user_id",
+              "app_public.users.avatar_url",
+              "app_public.users.created_at",
+              "app_public.users.id",
+              "app_public.users.is_admin",
+              "app_public.users.is_verified",
+              "app_public.users.name",
+              "app_public.users.updated_at",
+              "app_public.users.username",
+              "avatar_url",
+              "code",
+              "created_at",
+              "details",
+              "email",
+              "id",
+              "identifier",
+              "is_admin",
+              "is_billing_contact",
+              "is_owner",
+              "is_primary",
+              "is_verified",
+              "name",
+              "organization_id",
+              "organization_invitations.code",
+              "organization_invitations.email",
+              "organization_invitations.id",
+              "organization_invitations.organization_id",
+              "organization_invitations.user_id",
+              "organization_memberships.created_at",
+              "organization_memberships.id",
+              "organization_memberships.is_billing_contact",
+              "organization_memberships.is_owner",
+              "organization_memberships.organization_id",
+              "organization_memberships.user_id",
+              "organizations.created_at",
+              "organizations.id",
+              "organizations.name",
+              "organizations.slug",
+              "service",
+              "slug",
+              "updated_at",
+              "user_authentications.created_at",
+              "user_authentications.details",
+              "user_authentications.id",
+              "user_authentications.identifier",
+              "user_authentications.service",
+              "user_authentications.updated_at",
+              "user_authentications.user_id",
+              "user_emails.created_at",
+              "user_emails.email",
+              "user_emails.id",
+              "user_emails.is_primary",
+              "user_emails.is_verified",
+              "user_emails.updated_at",
+              "user_emails.user_id",
+              "user_id",
+              "username",
+              "users.avatar_url",
+              "users.created_at",
+              "users.id",
+              "users.is_admin",
+              "users.is_verified",
+              "users.name",
+              "users.updated_at",
+              "users.username"
+            ]
+          }
+        },
+        "constraint": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "organization_invitations_organization_id_email_key",
+              "organization_invitations_organization_id_fkey",
+              "organization_invitations_organization_id_user_id_key",
+              "organization_invitations_pkey",
+              "organization_invitations_user_id_fkey",
+              "organization_memberships_organization_id_fkey",
+              "organization_memberships_organization_id_user_id_key",
+              "organization_memberships_pkey",
+              "organization_memberships_user_id_fkey",
+              "organizations_pkey",
+              "organizations_slug_key",
+              "uniq_user_authentications",
+              "user_authentications_pkey",
+              "user_authentications_user_id_fkey",
+              "user_emails_pkey",
+              "user_emails_user_id_email_key",
+              "user_emails_user_id_fkey",
+              "users_pkey",
+              "users_username_key"
+            ]
+          }
+        },
+        "procedure": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "accept_invitation_to_organization",
+              "app_public.accept_invitation_to_organization",
+              "app_public.change_password",
+              "app_public.confirm_account_deletion",
+              "app_public.create_organization",
+              "app_public.current_session_id",
+              "app_public.current_user",
+              "app_public.current_user_id",
+              "app_public.current_user_invited_organization_ids",
+              "app_public.current_user_member_organization_ids",
+              "app_public.delete_organization",
+              "app_public.forgot_password",
+              "app_public.invite_to_organization",
+              "app_public.logout",
+              "app_public.make_email_primary",
+              "app_public.organization_for_invitation",
+              "app_public.organizations_current_user_is_billing_contact",
+              "app_public.organizations_current_user_is_owner",
+              "app_public.remove_from_organization",
+              "app_public.request_account_deletion",
+              "app_public.resend_email_verification_code",
+              "app_public.reset_password",
+              "app_public.transfer_organization_billing_contact",
+              "app_public.transfer_organization_ownership",
+              "app_public.users_has_password",
+              "app_public.verify_email",
+              "change_password",
+              "confirm_account_deletion",
+              "create_organization",
+              "current_session_id",
+              "current_user",
+              "current_user_id",
+              "current_user_invited_organization_ids",
+              "current_user_member_organization_ids",
+              "delete_organization",
+              "forgot_password",
+              "invite_to_organization",
+              "logout",
+              "make_email_primary",
+              "organization_for_invitation",
+              "organizations_current_user_is_billing_contact",
+              "organizations_current_user_is_owner",
+              "remove_from_organization",
+              "request_account_deletion",
+              "resend_email_verification_code",
+              "reset_password",
+              "transfer_organization_billing_contact",
+              "transfer_organization_ownership",
+              "users_has_password",
+              "verify_email"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "class:app_public.organization_invitations": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "$ref": "./pg-smart-tags.schema.json#/definitions/tags"
+        },
+        "description": {
+          "type": "string"
+        },
+        "attribute": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "id",
+              "organization_id",
+              "code",
+              "user_id",
+              "email"
+            ]
+          }
+        },
+        "constraint": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "organization_invitations_pkey",
+              "organization_invitations_organization_id_fkey",
+              "organization_invitations_organization_id_user_id_key",
+              "organization_invitations_organization_id_email_key",
+              "organization_invitations_user_id_fkey"
+            ]
+          }
+        }
+      }
+    },
+    "class:app_public.organization_memberships": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "$ref": "./pg-smart-tags.schema.json#/definitions/tags"
+        },
+        "description": {
+          "type": "string"
+        },
+        "attribute": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "id",
+              "organization_id",
+              "user_id",
+              "is_owner",
+              "is_billing_contact",
+              "created_at"
+            ]
+          }
+        },
+        "constraint": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "organization_memberships_pkey",
+              "organization_memberships_organization_id_fkey",
+              "organization_memberships_organization_id_user_id_key",
+              "organization_memberships_user_id_fkey"
+            ]
+          }
+        }
+      }
+    },
+    "class:app_public.organizations": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "$ref": "./pg-smart-tags.schema.json#/definitions/tags"
+        },
+        "description": {
+          "type": "string"
+        },
+        "attribute": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "id",
+              "slug",
+              "name",
+              "created_at"
+            ]
+          }
+        },
+        "constraint": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "organizations_pkey",
+              "organizations_slug_key"
+            ]
+          }
+        }
+      }
+    },
+    "class:app_public.user_authentications": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "$ref": "./pg-smart-tags.schema.json#/definitions/tags"
+        },
+        "description": {
+          "type": "string"
+        },
+        "attribute": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "id",
+              "user_id",
+              "service",
+              "identifier",
+              "details",
+              "created_at",
+              "updated_at"
+            ]
+          }
+        },
+        "constraint": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "user_authentications_pkey",
+              "user_authentications_user_id_fkey",
+              "uniq_user_authentications"
+            ]
+          }
+        }
+      }
+    },
+    "class:app_public.user_emails": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "$ref": "./pg-smart-tags.schema.json#/definitions/tags"
+        },
+        "description": {
+          "type": "string"
+        },
+        "attribute": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "id",
+              "user_id",
+              "email",
+              "is_verified",
+              "is_primary",
+              "created_at",
+              "updated_at"
+            ]
+          }
+        },
+        "constraint": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "user_emails_pkey",
+              "user_emails_user_id_fkey",
+              "user_emails_user_id_email_key"
+            ]
+          }
+        }
+      }
+    },
+    "class:app_public.users": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "$ref": "./pg-smart-tags.schema.json#/definitions/tags"
+        },
+        "description": {
+          "type": "string"
+        },
+        "attribute": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "id",
+              "username",
+              "name",
+              "avatar_url",
+              "is_admin",
+              "is_verified",
+              "created_at",
+              "updated_at"
+            ]
+          }
+        },
+        "constraint": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "./pg-smart-tags.schema.json#/definitions/pgEntity"
+          },
+          "propertyNames": {
+            "enum": [
+              "users_pkey",
+              "users_username_key"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
