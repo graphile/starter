@@ -19,19 +19,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14'
-      - name: Start PostgreSQL
+      - name: Install PostgreSQL 12
         run: |
-          $postgreSqlSvc = Get-Service "postgresql*"
-          Set-Service $postgreSqlSvc.Name -StartupType manual
-          $postgreSqlSvc.Start()
-          $env:PATH += ";$env:PGBIN"
-          $env:PGPASSWORD = "root"
-          $postgreSqlSvc.WaitForStatus('Running')
-          psql -U postgres -d postgres -c "alter user postgres with password 'postgres'";
-          Restart-Service $postgreSqlSvc
+          choco install postgresql12 --force --params '/Password:postgres'
       - name: yarn, lint, build and test
         run: |
-          $env:PATH += ";$env:PGBIN"
+          $env:PATH += ";C:\Program Files\PostgreSQL\12\bin"
           cp .env.ci .env
           yarn --frozen-lockfile
           yarn setup

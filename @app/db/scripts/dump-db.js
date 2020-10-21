@@ -21,7 +21,7 @@ spawn(
     "--exclude-schema=graphile_migrate",
     "--exclude-schema=graphile_worker",
     "--file=../../data/schema.sql",
-    `"${connectionString}"`,
+    connectionString,
   ],
   {
     stdio: "inherit",
