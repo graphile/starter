@@ -339,6 +339,10 @@ Use `yarn run build` to generate a production build of the project
 
 ## Deploying to Heroku
 
+Prerequisites:
+
+- Install the Heroku CLI: https://devcenter.heroku.com/articles/heroku-cli
+
 If you are using `graphile-migrate` make sure that you have executed
 `graphile-migrate commit` to commit all your database changes, since we only run
 committed migrations in production.
@@ -361,10 +365,10 @@ automate the setup process. This script does the following:
 - Adds the Heroku app as a git remote named 'Heroku'
 - Pushes the 'master' branch to Heroku to perform your initial build
 
-Copy `heroku-setup.template` to `heroku-setup`, then edit it and customize the
-settings at the top. We also recommend reading through the script and
-customizing it as you see fit - particularly if you are using additional
-extensions that need installing.
+Create a copy of `heroku-setup.template` and rename the copy to `heroku-setup`,
+then edit it and customize the settings at the top. We also recommend reading
+through the script and customizing it as you see fit - particularly if you are
+using additional extensions that need installing.
 
 Now run the script:
 
