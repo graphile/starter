@@ -340,8 +340,8 @@ Use `yarn run build` to generate a production build of the project
 ## Deploying to Heroku
 
 Prerequisites:
- - Install the Heroku CLI: https://devcenter.heroku.com/articles/heroku-cli
- 
+
+- Install the Heroku CLI: https://devcenter.heroku.com/articles/heroku-cli
 
 If you are using `graphile-migrate` make sure that you have executed
 `graphile-migrate commit` to commit all your database changes, since we only run
