@@ -6,7 +6,7 @@
 
 # The name of the Heroku app to create.
 # Must start with a letter, end with a letter or digit and can only contain lowercase letters, digits, and dashes.
-export APP_NAME="PICK-A-UNIQUE-NAME"
+export APP_NAME="pick-a-unique-name"
 
 # The name of the database to create.
 # Must be under 48 characters long, shorter is better.
