@@ -50,7 +50,8 @@ psql -X1v ON_ERROR_STOP=1 "${SUPERUSER_TEMPLATE1_URL}" -c 'SELECT true AS succes
 echo
 echo
 echo "Creating Heroku app"
-heroku apps:create "$APP_NAME"
+# Region can be either us or eu
+heroku apps:create "$APP_NAME" --region us
 
 echo
 echo
