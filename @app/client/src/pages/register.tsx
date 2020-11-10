@@ -17,7 +17,7 @@ import {
   tailFormItemLayout,
 } from "@app/lib";
 import { Alert, Button, Form, Input, Tooltip } from "antd";
-import { useForm } from "antd/lib/form/util";
+import { useForm } from "antd/lib/form/Form";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import Router from "next/router";

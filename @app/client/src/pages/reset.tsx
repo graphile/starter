@@ -8,7 +8,7 @@ import {
 import { useResetPasswordMutation, useSharedQuery } from "@app/graphql";
 import { formItemLayout, setPasswordInfo, tailFormItemLayout } from "@app/lib";
 import { Alert, Button, Form, Input } from "antd";
-import { useForm } from "antd/lib/form/util";
+import { useForm } from "antd/lib/form/Form";
 import get from "lodash/get";
 import { NextPage } from "next";
 import { Store } from "rc-field-form/lib/interface";
