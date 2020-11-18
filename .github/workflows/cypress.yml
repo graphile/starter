@@ -51,7 +51,7 @@ jobs:
       - name: Start worker in background
         run: yarn worker start &
       - name: Cypress run
-        uses: cypress-io/github-action@v1
+        uses: cypress-io/github-action@v2
         with:
           wait-on: http://localhost:5678
           working-directory: "@app/e2e"
