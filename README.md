@@ -16,6 +16,40 @@ Starter to Heroku and entirely wipe the database, so your data may not persist.
 If you wish to delete your data before this time you can do so via the delete
 account feature baked into the starter.
 
+## NOT FOR BEGINNERS
+
+We do not advise that you build your own projects on top of this project until
+you're comfortable with the various tools it uses
+([Node.js](https://nodejs.org/en/docs/),
+[Express](https://expressjs.com/en/api.html),
+[PostgreSQL](https://www.postgresql.org/docs/current/index.html),
+[GraphQL](https://graphql.org/learn/),
+[PostGraphile](https://www.graphile.org/postgraphile/introduction/),
+[Graphile Worker](https://github.com/graphile/worker),
+[Graphile Migrate](https://github.com/graphile/migrate),
+[TypeScript](https://www.typescriptlang.org/docs/),
+[React](https://reactjs.org/docs/getting-started.html),
+[Apollo Client for React](https://www.apollographql.com/docs/react/),
+[GraphQL Code Generator](https://github.com/dotansimha/graphql-code-generator),
+[ESLint](https://eslint.org/),
+[Prettier](https://prettier.io/docs/en/index.html), [Jest](https://jestjs.io/),
+[Cypress](https://www.cypress.io/), etc).
+
+This is an **advanced** project with deeply integrated tooling across the full
+stack. The project is called "Starter" because it helps you to start new
+projects with all these technologies, tools and techniques already in place. If
+you're not already familiar with these things then you'll probably find the
+project overwhelming, it is not intended to be your first experience of any of
+these tools.
+
+If you're just getting started with PostGraphile, before you dive into this
+project make sure you check out the
+[PostGraphile required knowledge](https://www.graphile.org/postgraphile/required-knowledge/)
+and especially the
+[schema design tutorial](https://www.graphile.org/postgraphile/postgresql-schema-design/).
+This repository takes a slightly different approach to schema design than the
+aforementioned tutorial, but it's still an incredibly valuable resource.
+
 ## Purpose
 
 Graphile Starter is an opinionated quick-start project for full-stack
@@ -36,14 +70,6 @@ productivity. You might use it:
 However you use it, the project can be deployed to many platforms, and can be
 scaled to larger audiences both horizontally and vertically with very few
 changes.
-
-**Not intended for beginners**: this project combines a lot of technologies
-together to produce a highly productive development environment, and includes a
-pre-built database schema for an advanced account system. If you're not already
-familiar with a lot of these technologies, or haven't built a database-driven
-project before, you may find that there's too many things to get your head
-around at once. For beginners, we recommend you start with the
-[PostGraphile schema design tutorial](https://www.graphile.org/postgraphile/postgresql-schema-design/).
 
 Please note that this software is not "complete," free of software defects, or
 free of security issues — it is not a "finished" solution, but rather the seed
@@ -153,6 +179,10 @@ this list:
   Next.js for Vue users
 - [Create React App variant](https://github.com/alexk111/graphile-starter-cra) -
   replaces Next.js for apps without Server Side Rendering
+
+**VARIANTS ARE NOT OFFICIALLY SUPPORTED** and may become out of date or
+unmaintained over time. If you have issues with variants, please submit issues
+or PRs to the projects in question, not to this project.
 
 ## Prerequisites
 

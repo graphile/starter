@@ -13,11 +13,12 @@
     "test": "node scripts/test.js",
     "posttest": "lerna run posttest",
     "test:watch": "node scripts/test.js --watch",
-    "lint": "tsc -b && yarn prettier:check && eslint --ext .js,.jsx,.ts,.tsx,.graphql .",
-    "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx,.graphql . --fix; prettier --ignore-path .eslintignore --write '**/*.{js,jsx,ts,tsx,graphql,md}'",
-    "prettier:check": "prettier --ignore-path .eslintignore --check '**/*.{js,jsx,ts,tsx,graphql,md}'",
-    "depcheck": "lerna exec --stream 'yarn depcheck --ignores=\"@app/config,@app/client,tslib,webpack,babel-plugin-import,source-map-support,@graphql-codegen/*,graphql-toolkit,net,tls,dayjs\" --ignore-dirs=\".next\"'",
-    "dev": "yarn && lerna run codegen --stream && tsc -b && concurrently --kill-others --names 'TSC,WATCH,RUN,TEST' --prefix '({name})' --prefix-colors 'yellow.bold,yellow.bold,cyan.bold,greenBright.bold' 'tsc -b --watch --preserveWatchOutput --assumeChangesOnlyAffectDirectDependencies' 'lerna run --parallel watch' 'lerna run --parallel dev' 'sleep 10; yarn test:watch'",
+    "lint": "tsc -b && yarn prettier:all --check && yarn eslint .",
+    "lint:fix": "yarn eslint --fix . && yarn prettier:all --write",
+    "eslint": "eslint --ext .js,.jsx,.ts,.tsx,.graphql",
+    "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,graphql,md}\"",
+    "depcheck": "lerna exec --stream \"yarn depcheck --ignores=\"@app/config,@app/client,tslib,webpack,babel-plugin-import,source-map-support,@graphql-codegen/*,graphql-toolkit,net,tls,dayjs\" --ignore-dirs=\".next\"\"",
+    "dev": "yarn && lerna run codegen --stream && tsc -b && concurrently --kill-others --names \"TSC,WATCH,RUN,TEST\" --prefix \"({name})\" --prefix-colors \"yellow.bold,yellow.bold,cyan.bold,greenBright.bold\" \"tsc -b --watch --preserveWatchOutput\" \"lerna run --parallel watch\" \"lerna run --parallel dev\" \"yarn test:watch --delay 10\"",
     "build": "lerna run build",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
     "clean": "node ./scripts/clean.js",
@@ -38,7 +39,7 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "dependencies": {
     "abort-controller": "^3.0.0",
-    "graphql": "^14.5.8",
+    "graphql": "^15.4.0",
     "lerna": "^3.20.2",
     "string-width": "^4.2.0"
   },
@@ -78,7 +79,7 @@
     "update-dotenv": "^1.1.1"
   },
   "resolutions": {
-    "graphql": "14.x",
+    "graphql": "15.x",
     "pg-connection-string": "2.x"
   },
   "workspaces": {

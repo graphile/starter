@@ -1,0 +1,34 @@
+name: Windows Node CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      CI: true
+      CONFIRM_DROP: 1
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node.js 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - name: Install PostgreSQL 12
+        run: |
+          choco install postgresql12 --force --params '/Password:postgres'
+      - name: yarn, lint, build and test
+        run: |
+          $env:PATH += ";C:\Program Files\PostgreSQL\12\bin"
+          cp .env.ci .env
+          yarn --frozen-lockfile
+          yarn setup
+          yarn build
+          yarn lint
+          yarn test --ci
+          yarn depcheck
