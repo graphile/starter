@@ -72,7 +72,6 @@
     "nodemon": "^2.0.3",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.1",
     "ts-jest": "^25.4.0",
     "ts-loader": "^7.0.2",
     "ts-node": "^9.0.0",
