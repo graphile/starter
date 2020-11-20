@@ -40,8 +40,8 @@
     "webpack": "^4.43.0"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2",
     "babel-plugin-import": "^1.13.0",
+    "cross-env": "^7.0.2",
     "jest": "^25.5.4"
   }
 }
