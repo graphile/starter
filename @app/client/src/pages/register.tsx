@@ -128,7 +128,7 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
   );
 
   const validateToNextPassword = useCallback(
-    async (_rule: any, value: any, callback: any) => {
+    async (_rule: any, value: any) => {
       try {
         if (value && confirmDirty) {
           await form.validateFields(["confirm"]);
@@ -136,19 +136,14 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
       } catch (e) {
         // Handled elsewhere
       }
-      callback();
     },
     [confirmDirty, form]
   );
 
   const compareToFirstPassword = useCallback(
-    (_rule: any, value: any, callback: any) => {
+    async (_rule: any, value: any) => {
       if (value && value !== form.getFieldValue("password")) {
-        callback(
-          "Make sure your passphrase is the same in both passphrase boxes."
-        );
-      } else {
-        callback();
+        return "Make sure your passphrase is the same in both passphrase boxes.";
       }
     },
     [form]
