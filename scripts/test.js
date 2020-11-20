@@ -4,7 +4,7 @@ require("@app/config/env");
 const { execSync, spawnSync: rawSpawnSync } = require("child_process");
 const concurrently = require("concurrently");
 
-const spawnSync = (cmd, args, options) => {
+function spawnSync(cmd, args, options) {
   const result = rawSpawnSync(cmd, args, {
     stdio: ["pipe", "inherit", "inherit"],
     env: {
@@ -12,6 +12,7 @@ const spawnSync = (cmd, args, options) => {
       YARN_SILENT: "1",
       npm_config_loglevel: "silent",
     },
+    shell: true,
     ...options,
   });
 
@@ -44,7 +45,7 @@ const spawnSync = (cmd, args, options) => {
   }
 
   return result;
-};
+}
 
 // Dear graphile-migrate, please treat the test DB as if it were the shadow DB
 process.env.SHADOW_DATABASE_URL = process.env.TEST_DATABASE_URL;
@@ -53,41 +54,54 @@ process.env.SHADOW_DATABASE_URL = process.env.TEST_DATABASE_URL;
 process.env.IN_TESTS = "1";
 process.env.NODE_ENV = "test";
 
-const opts = {
-  stdio: "inherit",
-  cwd: process.cwd(),
-};
-
-// Reset the test database
-execSync("yarn db gm reset --shadow --erase", opts);
-execSync("yarn db watch --once --shadow", opts);
-
-// If we're in watch mode
-const arg = process.argv[2];
-if (process.argv.length > 3) {
-  throw new Error(
-    `Extra arguments not understood '${process.argv.join("' '")}'`
-  );
-} else if (arg === "--watch" || arg === "--watchAll") {
-  // We're in watch mode, so keep watching the `current.yml` file
-  concurrently(
-    [
-      {
-        name: "jest",
-        command: `node --inspect=9876 node_modules/.bin/jest -i ${arg}`,
-        prefixColor: "greenBright",
-      },
-      {
-        name: "testdb",
-        command: "yarn db watch --shadow",
-        prefixColor: "blue",
-      },
-    ],
-    {
-      killOthers: ["failure"],
-    }
-  );
+const cmdArgs = process.argv.slice(2);
+const watchMode = cmdArgs.find(
+  (arg) => arg === "--watch" || arg === "--watchAll"
+);
+const delayArg = cmdArgs.indexOf("--delay");
+let delaySeconds = null;
+if (delayArg > -1) {
+  delaySeconds = parseFloat(cmdArgs[delayArg + 1]);
+  if (isNaN(delaySeconds)) {
+    throw new Error("Did not get a valid delay argument in seconds.");
+  }
+  setTimeout(main, delaySeconds * 1000);
 } else {
-  // Run once, so just run the tests
-  spawnSync("jest", ["-i", ...process.argv.slice(2)], opts);
+  main();
+}
+
+function main() {
+  const opts = {
+    stdio: "inherit",
+    cwd: process.cwd(),
+  };
+
+  // Reset the test database
+  execSync("yarn db gm reset --shadow --erase", opts);
+  execSync("yarn db watch --once --shadow", opts);
+
+  if (watchMode) {
+    // We're in watch mode, so keep watching the `current.yml` file
+    concurrently(
+      [
+        {
+          name: "jest",
+          command: `npx --no-install -n \"--inspect=9876\" jest -i ${watchMode}`,
+          prefixColor: "greenBright",
+        },
+        {
+          name: "testdb",
+          command: "yarn db watch --shadow",
+          prefixColor: "blue",
+        },
+      ],
+      {
+        killOthers: ["failure"],
+      }
+    );
+  } else {
+    // Run once, so just run the tests
+    const argsWithoutDelayArg = cmdArgs.filter((arg) => arg !== "--delay");
+    spawnSync("jest", ["-i", ...argsWithoutDelayArg], opts);
+  }
 }

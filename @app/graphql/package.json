@@ -8,7 +8,7 @@
     "build": "yarn codegen && tsc -b",
     "watch": "yarn codegen --watch",
     "codegen": "graphql-codegen --config codegen.yml",
-    "test": "NODE_ENV=test node -r @app/config/env ./node_modules/.bin/jest"
+    "test": "cross-env NODE_ENV=test npx --no-install -n \"-r @app/config/env\" jest"
   },
   "dependencies": {
     "@apollo/react-common": "^3.1.4",
@@ -27,6 +27,7 @@
     "@graphql-codegen/typescript": "^1.17.10",
     "@graphql-codegen/typescript-operations": "^1.17.8",
     "@graphql-codegen/typescript-react-apollo": "2.0.7",
+    "cross-env": "^7.0.2",
     "jest": "^25.5.4"
   }
 }

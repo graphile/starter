@@ -68,7 +68,7 @@
     "!afterReset.sql",
     {
       "_": "command",
-      "command": "DATABASE_URL=\"${GM_DBURL}\" yarn workspace @app/worker install-db-schema"
+      "command": "cross-env DATABASE_URL=\"$GM_DBURL\" yarn workspace @app/worker install-db-schema"
     }
   ],
 
@@ -79,7 +79,8 @@
     {
       "_": "command",
       "shadow": true,
-      "command": "if [ \"$IN_TESTS\" != \"1\" ]; then ./scripts/dump-db; fi"
+      // NOTE: this script does nothing when envvar `IN_TESTS` is `1`
+      "command": "node scripts/dump-db.js"
     }
   ],
 
@@ -91,7 +92,8 @@
     {
       "_": "command",
       "shadow": true,
-      "command": "if [ \"$IN_TESTS\" = \"1\" ]; then node scripts/test-seed.js; fi"
+      // NOTE: this script does nothing unless envvar `IN_TESTS` is `1`
+      "command": "node scripts/test-seed.js"
     }
   ],
 
