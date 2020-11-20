@@ -51,8 +51,7 @@
   },
   "devDependencies": {
     "@types/node": "^14.10.1",
-    "cross-env": "^7.0.2",
-    "graphql": "^14.4.2",
+    "graphql": "^15.4.0",
     "jest": "^25.5.4",
     "mock-req": "^0.2.0",
     "ts-node": "^9.0.0"
