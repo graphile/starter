@@ -127,23 +127,10 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
     [setConfirmDirty, confirmDirty]
   );
 
-  const validateToNextPassword = useCallback(
-    async (_rule: any, value: any) => {
-      try {
-        if (value && confirmDirty) {
-          await form.validateFields(["confirm"]);
-        }
-      } catch (e) {
-        // Handled elsewhere
-      }
-    },
-    [confirmDirty, form]
-  );
-
   const compareToFirstPassword = useCallback(
     async (_rule: any, value: any) => {
       if (value && value !== form.getFieldValue("password")) {
-        return "Make sure your passphrase is the same in both passphrase boxes.";
+        throw "Make sure your passphrase is the same in both passphrase boxes.";
       }
     },
     [form]
@@ -170,6 +157,15 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
         changedValues
       );
       setPasswordIsDirty(form.isFieldTouched("password"));
+      if (changedValues.confirm) {
+        if (form.isFieldTouched("password")) {
+          form.validateFields(["password"]);
+        }
+      } else if (changedValues.password) {
+        if (form.isFieldTouched("confirm")) {
+          form.validateFields(["confirm"]);
+        }
+      }
     },
     [form]
   );
@@ -284,9 +280,6 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
                   {
                     required: true,
                     message: "Please input your passphrase.",
-                  },
-                  {
-                    validator: validateToNextPassword,
                   },
                 ]}
               >
