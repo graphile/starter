@@ -114,6 +114,15 @@ const ResetPage: NextPage<IProps> = ({
         changedValues
       );
       setPasswordIsDirty(form.isFieldTouched("password"));
+      if (changedValues.confirm) {
+        if (form.isFieldTouched("password")) {
+          form.validateFields(["password"]);
+        }
+      } else if (changedValues.password) {
+        if (form.isFieldTouched("confirm")) {
+          form.validateFields(["confirm"]);
+        }
+      }
     },
     [form]
   );
