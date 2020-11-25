@@ -3,7 +3,7 @@ import { AuthRestrict, SharedLayout } from "@app/components";
 import { useForgotPasswordMutation, useSharedQuery } from "@app/graphql";
 import { extractError, getCodeFromError } from "@app/lib";
 import { Alert, Button, Form, Input } from "antd";
-import { useForm } from "antd/lib/form/util";
+import { useForm } from "antd/lib/form/Form";
 import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import Link from "next/link";
