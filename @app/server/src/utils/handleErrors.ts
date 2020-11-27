@@ -58,6 +58,12 @@ export const ERROR_MESSAGE_OVERRIDES: { [code: string]: typeof pluck } = {
     fields: conflictFieldsFromError(err),
     code: "NUNIQ",
   }),
+  "23503": (err) => ({
+    ...pluck(err),
+    message: "Invalid reference",
+    fields: conflictFieldsFromError(err),
+    code: "BADFK",
+  }),
 };
 
 function conflictFieldsFromError(err: any) {
@@ -65,13 +71,18 @@ function conflictFieldsFromError(err: any) {
   // TODO: extract a list of constraints from the DB
   if (constraint && table) {
     const PREFIX = `${table}_`;
-    const SUFFIX = `_key`;
-    if (constraint.startsWith(PREFIX) && constraint.endsWith(SUFFIX)) {
-      const maybeColumnNames = constraint.substr(
-        PREFIX.length,
-        constraint.length - PREFIX.length - SUFFIX.length
+    const SUFFIX_LIST = [`_key`, `_fkey`];
+    if (constraint.startsWith(PREFIX)) {
+      const matchingSuffix = SUFFIX_LIST.find((SUFFIX) =>
+        constraint.endsWith(SUFFIX)
       );
-      return [camelCase(maybeColumnNames)];
+      if (matchingSuffix) {
+        const maybeColumnNames = constraint.substr(
+          PREFIX.length,
+          constraint.length - PREFIX.length - matchingSuffix.length
+        );
+        return [camelCase(maybeColumnNames)];
+      }
     }
   }
   return undefined;
