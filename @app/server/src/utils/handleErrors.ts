@@ -60,7 +60,7 @@ export const ERROR_MESSAGE_OVERRIDES: { [code: string]: typeof pluck } = {
   }),
   "23503": (err) => ({
     ...pluck(err),
-    message: "Invalid foreign key",
+    message: "Invalid reference",
     fields: conflictFieldsFromError(err),
     code: "BADFK",
   }),
