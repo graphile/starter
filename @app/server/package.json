@@ -44,7 +44,7 @@
     "passport": "^0.4.1",
     "passport-github2": "^0.1.12",
     "pg": "^8.0.3",
-    "postgraphile": "^4.10.0-alpha.0",
+    "postgraphile": "^4.10.0",
     "redis": "^3.0.2",
     "source-map-support": "^0.5.13",
     "tslib": "^2.0.1"
