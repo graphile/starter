@@ -58,6 +58,12 @@ export const ERROR_MESSAGE_OVERRIDES: { [code: string]: typeof pluck } = {
     fields: conflictFieldsFromError(err),
     code: "NUNIQ",
   }),
+  "23503": (err) => ({
+    ...pluck(err),
+    message: "Invalid foreign key",
+    fields: conflictFieldsFromError(err),
+    code: "BADFK",
+  }),
 };
 
 function conflictFieldsFromError(err: any) {
