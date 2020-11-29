@@ -29,6 +29,15 @@ export type GetUserInformationFunction = (
 ) => UserSpec | Promise<UserSpec>;
 
 /*
+ * Add returnTo property using [declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html).
+ */
+declare module "express-session" {
+  interface SessionData {
+    returnTo: string;
+  }
+}
+
+/*
  * Stores where to redirect the user to on authentication success.
  * Tries to avoid redirect loops or malicious redirects.
  */
