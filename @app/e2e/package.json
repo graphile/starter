@@ -11,8 +11,8 @@
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^5.1.2",
     "cross-env": "^7.0.2",
-    "cypress": "^4.5.0",
-    "jest": "^25.5.4",
+    "cypress": "^6.0.0",
+    "jest": "^26.6.3",
     "webpack": "^4.43.0"
   }
 }
