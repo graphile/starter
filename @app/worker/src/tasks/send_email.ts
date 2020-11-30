@@ -9,7 +9,7 @@ import {
 } from "@app/config";
 import chalk from "chalk";
 import { promises as fsp } from "fs";
-import * as html2text from "html-to-text";
+import { htmlToText } from "html-to-text";
 import * as nodemailer from "nodemailer";
 
 import getTransport from "../transport";
@@ -49,11 +49,9 @@ const task: Task = async (inPayload) => {
     const templateFn = await loadTemplate(template);
     const html = await templateFn(variables);
     const html2textableHtml = html.replace(/(<\/?)div/g, "$1p");
-    const text = html2text
-      .fromString(html2textableHtml, {
-        wordwrap: 120,
-      })
-      .replace(/\n\s+\n/g, "\n\n");
+    const text = htmlToText(html2textableHtml, {
+      wordwrap: 120,
+    }).replace(/\n\s+\n/g, "\n\n");
     Object.assign(options, { html, text });
   }
   const info = await transport.sendMail(options);
