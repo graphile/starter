@@ -14,16 +14,16 @@ import installWorkerUtils from "./installWorkerUtils";
 
 export {
   installCSRFProtection,
+  installCypressServerCommand,
   installDatabasePools,
-  installWorkerUtils,
-  installSession,
-  installPassport,
+  installErrorHandler,
+  installHelmet,
   installLogging,
-  installSharedStatic,
+  installPassport,
   installPostGraphile,
   installSameOrigin,
+  installSession,
+  installSharedStatic,
   installSSR,
-  installErrorHandler,
-  installCypressServerCommand,
-  installHelmet,
+  installWorkerUtils,
 };
