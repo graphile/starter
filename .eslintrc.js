@@ -153,7 +153,8 @@ module.exports = {
      * simple-import-sort seems to be the most stable import sorting currently,
      * disable others
      */
-    "simple-import-sort/sort": "error",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
     "sort-imports": "off",
     "import/order": "off",
 
