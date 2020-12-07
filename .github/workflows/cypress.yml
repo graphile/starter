@@ -5,7 +5,9 @@ on: [pull_request]
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    options: --ipc=host --shm-size=512m
+    container:
+      image: cypress/browsers:latest
+      options: --ipc=host --shm-size=512m
 
     env:
       CYPRESS_ROOT_URL: http://localhost:5678
