@@ -5,6 +5,7 @@ on: [pull_request]
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
+    options: --user 1001 --shm-size=2g
 
     env:
       CYPRESS_ROOT_URL: http://localhost:5678
