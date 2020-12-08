@@ -5,8 +5,6 @@ on: [pull_request]
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    # Without this, Cypress crashes with OOM errors
-    options: --ipc=host --shm-size=512m
 
     env:
       CYPRESS_ROOT_URL: http://localhost:5678
