@@ -1,12 +1,13 @@
 import { Express } from "express";
 import helmet from "helmet";
 
-const isDev = process.env.NODE_ENV === "development";
+const isDevOrTest =
+  process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
 
 export default function installHelmet(app: Express) {
   app.use(
     helmet(
-      isDev
+      isDevOrTest
         ? {
             // Dev needs 'unsafe-eval' due to
             // https://github.com/vercel/next.js/issues/14221
