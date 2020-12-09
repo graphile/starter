@@ -29,5 +29,8 @@ module.exports = (on, config) => {
     config.defaultCommandTimeout = 20000; // default 4000
     config.requestTimeout = 10000; // default 5000
   }
+
+  require("cypress-log-to-output").install(on);
+
   return config;
 };
