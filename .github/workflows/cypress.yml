@@ -6,7 +6,7 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
     container:
-      image: cypress/browsers:node12.18.3-chrome87-ff82
+      image: ubuntu:16.04
       options: --ipc=host --shm-size=512m
 
     env:
@@ -42,7 +42,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install pg_dump
-        run: apt-get update && apt-get install postgresql-client-10
+        run: apt-get update && apt-get install -y postgresql-client
       - name: Setup
         run: |
           cp .env.ci .env
