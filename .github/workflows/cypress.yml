@@ -55,6 +55,7 @@ jobs:
         with:
           wait-on: http://localhost:5678
           working-directory: "@app/e2e"
+          browser: chrome
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
