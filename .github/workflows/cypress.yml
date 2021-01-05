@@ -12,7 +12,6 @@ jobs:
       CI: true
       CONFIRM_DROP: 1
       NODE_ENV: test
-      BABEL_ENV: production
       ENABLE_CYPRESS_COMMANDS: 1
 
     strategy:
