@@ -2,6 +2,8 @@ require("@app/config");
 const compose = require("lodash/flowRight");
 const AntDDayjsWebpackPlugin = require("antd-dayjs-webpack-plugin");
 
+const ci = !!process.env.CI;
+
 if (!process.env.ROOT_URL) {
   if (process.argv[1].endsWith("/depcheck")) {
     /* NOOP */
@@ -66,10 +68,16 @@ if (!process.env.ROOT_URL) {
         const externals =
           isServer && dev ? makeSafe(config.externals) : config.externals;
 
+        const plugins = ci
+          ? config.plugins.filter(
+              (p) =>
+                !["UglifyJsPlugin", "TerserPlugin"].includes(p.constructor.name)
+            )
+          : config.plugins;
         return {
           ...config,
           plugins: [
-            ...config.plugins,
+            ...plugins,
             new webpack.DefinePlugin({
               /*
                * IMPORTANT: we don't want to hard-code these values, otherwise
