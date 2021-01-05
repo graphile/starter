@@ -31,7 +31,7 @@ const { Text } = Typography;
  */
 const _babelHackRow = Row;
 const _babelHackCol = Col;
-export { _babelHackRow as Row, _babelHackCol as Col, Link };
+export { _babelHackCol as Col, Link, _babelHackRow as Row };
 
 export const contentMinHeight = "calc(100vh - 64px - 70px)";
 

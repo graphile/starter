@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "strict": true,
     "baseUrl": "node_modules",
     "target": "es5",
