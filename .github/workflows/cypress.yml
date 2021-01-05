@@ -8,7 +8,6 @@ jobs:
 
     env:
       CYPRESS_ROOT_URL: http://localhost:5678
-      CYPRESS_NO_COMMAND_LOG: 1
       CI: true
       CONFIRM_DROP: 1
       NODE_ENV: test
@@ -56,7 +55,6 @@ jobs:
         with:
           wait-on: http://localhost:5678
           working-directory: "@app/e2e"
-          browser: chrome
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
