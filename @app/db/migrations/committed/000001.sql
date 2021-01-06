@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:e6bd89aa12b755d5cbf4ffea0d60e949107e9e05
+--! Hash: sha1:c8ccaecea92c2b3d0693254eaff28a8daea76e85
 
 drop schema if exists app_public cascade;
 
@@ -174,7 +174,7 @@ comment on function app_public.current_user_id() is
 
 create table app_public.users (
   id uuid primary key default gen_random_uuid(),
-  username citext not null unique check(length(username) >= 2 and length(username) <= 24 and username ~ '^[a-zA-Z]([a-zA-Z0-9][_]?)+$'),
+  username citext not null unique check(length(username) >= 2 and length(username) <= 24 and username ~ '^[a-zA-Z]([_]?[a-zA-Z0-9])+$'),
   name text,
   avatar_url text check(avatar_url ~ '^https?://[^/]+'),
   is_admin boolean not null default false,
