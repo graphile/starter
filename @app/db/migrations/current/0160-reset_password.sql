@@ -2,9 +2,13 @@
  * This is the second half of resetting a users password, please see
  * `app_public.forgot_password` for the first half.
  *
- * The `app_public.reset_password` function checks the reset token is correct
+ * The `app_private.reset_password` function checks the reset token is correct
  * and sets the user's password to be the newly provided password, assuming
- * `assert_valid_password` is happy with it.
+ * `assert_valid_password` is happy with it. If the attempt fails, this is
+ * logged to avoid a brute force attack. Since we cannot risk this tracking
+ * being lost (e.g. by a later error rolling back the transaction), we put this
+ * function into app_private and explicitly call it from the `resetPassword`
+ * field in `PassportLoginPlugin.ts`.
  */
 
 create function app_private.assert_valid_password(new_password text) returns void as $$
@@ -16,8 +20,7 @@ begin
 end;
 $$ language plpgsql volatile;
 
--- IMPORTANT: This should be in app_private.
-create function app_public.reset_password(user_id uuid, reset_token text, new_password text) returns boolean as $$
+create function app_private.reset_password(user_id uuid, reset_token text, new_password text) returns boolean as $$
 declare
   v_user app_public.users;
   v_user_secret app_private.user_secrets;
@@ -80,9 +83,4 @@ begin
     return null;
   end if;
 end;
-$$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
-
-comment on function app_public.reset_password(user_id uuid, reset_token text, new_password text) is
-  E'After triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
-
-
+$$ language plpgsql strict volatile;

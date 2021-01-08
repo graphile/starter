@@ -145,11 +145,6 @@
           "resultFieldName": "success"
         }
       },
-      "app_public.reset_password": {
-        "tags": {
-          "resultFieldName": "success"
-        }
-      },
       "app_public.request_account_deletion": {
         "tags": {
           "resultFieldName": "success"

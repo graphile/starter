@@ -8,7 +8,13 @@
  *
  * `app_public.forgot_password` is responsible for checking these things and
  * queueing a reset password token to be emailed to the user. For what happens
- * after the user receives this email, see instead `app_public.reset_password`.
+ * after the user receives this email, see instead `app_private.reset_password`.
+ *
+ * NOTE: unlike app_private.login and app_private.reset_password, rolling back
+ * the results of this function will not cause any security issues so we do not
+ * need to call it indirectly as we do for those other functions. (Rolling back
+ * will undo the tracking of when we sent the email but it will also prevent
+ * the email being sent, so it's harmless.)
  */
 
 create table app_private.unregistered_email_password_resets (
