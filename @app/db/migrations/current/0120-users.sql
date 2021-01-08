@@ -88,8 +88,10 @@ alter table app_private.user_secrets enable row level security;
 comment on table app_private.user_secrets is
   E'The contents of this table should never be visible to the user. Contains data mostly related to authentication.';
 
--- When we insert into `users` we _always_ want there to be a matching
--- `user_secrets` entry, so we have a trigger to enforce this:
+/*
+ * When we insert into `users` we _always_ want there to be a matching
+ * `user_secrets` entry, so we have a trigger to enforce this:
+ */
 create function app_private.tg_user_secrets__insert_with_user() returns trigger as $$
 begin
   insert into app_private.user_secrets(user_id) values(NEW.id);
@@ -103,10 +105,27 @@ create trigger _500_insert_secrets
 comment on function app_private.tg_user_secrets__insert_with_user() is
   E'Ensures that every user record has an associated user_secret record.';
 
--- Because you can register with username/password or using OAuth (social
--- login), we need a way to tell the user whether or not they have a
--- password. This is to help the UI display the right interface: change
--- password or set password.
+/*
+ * Because you can register with username/password or using OAuth (social
+ * login), we need a way to tell the user whether or not they have a
+ * password. This is to help the UI display the right interface: change
+ * password or set password.
+ */
 create function app_public.users_has_password(u app_public.users) returns boolean as $$
   select (password_hash is not null) from app_private.user_secrets where user_secrets.user_id = u.id and u.id = app_public.current_user_id();
 $$ language sql stable security definer set search_path to pg_catalog, public, pg_temp;
+
+/*
+ * When the user validates their email address we want the UI to be notified
+ * immediately, so we'll issue a notification to the `graphql:user:*` topic
+ * which GraphQL users can subscribe to via the `currentUserUpdated`
+ * subscription field.
+ */
+create trigger _500_gql_update
+  after update on app_public.users
+  for each row
+  execute procedure app_public.tg__graphql_subscription(
+    'userChanged', -- the "event" string, useful for the client to know what happened
+    'graphql:user:$1', -- the "topic" the event will be published to, as a template
+    'id' -- If specified, `$1` above will be replaced with NEW.id or OLD.id from the trigger.
+  );

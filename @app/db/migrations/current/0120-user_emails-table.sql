@@ -216,3 +216,23 @@ end;
 $$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
 comment on function app_public.verify_email(user_email_id uuid, token text) is
   E'Once you have received a verification token for your email, you may call this mutation with that token to make your email verified.';
+
+/*
+ * When the users first email address is verified we will mark their account as
+ * verified, which can unlock additional features that were gated behind an
+ * `isVerified` check.
+ */
+
+create function app_public.tg_user_emails__verify_account_on_verified() returns trigger as $$
+begin
+  update app_public.users set is_verified = true where id = new.user_id and is_verified is false;
+  return new;
+end;
+$$ language plpgsql strict volatile security definer set search_path to pg_catalog, public, pg_temp;
+
+create trigger _500_verify_account_on_verified
+  after insert or update of is_verified
+  on app_public.user_emails
+  for each row
+  when (new.is_verified is true)
+  execute procedure app_public.tg_user_emails__verify_account_on_verified();
