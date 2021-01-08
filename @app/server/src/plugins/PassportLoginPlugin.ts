@@ -30,13 +30,36 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
       success: Boolean
     }
 
+    """
+    All input for the \`resetPassword\` mutation.
+    """
     input ResetPasswordInput {
+      """
+      An arbitrary string value with no semantic meaning. Will be included in the
+      payload verbatim. May be used to track mutations by the client.
+      """
+      clientMutationId: String
+
       userId: UUID!
       resetToken: String!
       newPassword: String!
     }
 
+    """
+    The output of our \`resetPassword\` mutation.
+    """
     type ResetPasswordPayload {
+      """
+      The exact same \`clientMutationId\` that was provided in the mutation input,
+      unchanged and unused. May be used by a client to track mutations.
+      """
+      clientMutationId: String
+
+      """
+      Our root query field type. Allows us to run any query from our mutation payload.
+      """
+      query: Query
+
       success: Boolean
     }
 
@@ -57,8 +80,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
       logout: LogoutPayload
 
       """
-      After triggering forgotPassword, you''ll be sent a reset token. Combine
-      this with your user ID and a new password to reset your password.
+      After triggering forgotPassword, you'll be sent a reset token. Combine this with your user ID and a new password to reset your password.
       """
       resetPassword(input: ResetPasswordInput!): ResetPasswordPayload
     }
@@ -218,7 +240,12 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
         _resolveInfo
       ) {
         const { rootPgPool } = context;
-        const { userId, resetToken, newPassword } = args.input;
+        const {
+          userId,
+          resetToken,
+          newPassword,
+          clientMutationId,
+        } = args.input;
 
         // Since the `reset_password` function needs to keep track of attempts
         // for security, we cannot risk the transaction being rolled back by a
@@ -233,6 +260,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
         );
 
         return {
+          clientMutationId,
           success: row?.success,
         };
       },

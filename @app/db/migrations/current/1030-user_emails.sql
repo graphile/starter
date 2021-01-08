@@ -27,7 +27,9 @@ create unique index uniq_user_emails_verified_email on app_public.user_emails(em
 -- Only one primary email per user.
 create unique index uniq_user_emails_primary_email on app_public.user_emails (user_id) where (is_primary is true);
 -- Allow efficient retrieval of all the emails owned by a particular user.
-create index idx_user_emails_primary on app_public.user_emails (user_id, is_primary);
+create index idx_user_emails_user on app_public.user_emails (user_id);
+-- For the user settings page sorting
+create index idx_user_emails_primary on app_public.user_emails (is_primary, user_id);
 
 -- Keep created_at and updated_at up to date.
 create trigger _100_timestamps
