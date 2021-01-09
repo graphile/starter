@@ -8,7 +8,7 @@
     "build": "yarn codegen && tsc -b",
     "watch": "yarn codegen --watch",
     "codegen": "graphql-codegen --config codegen.yml",
-    "test": "cross-env NODE_ENV=test npx --no-install -n \"-r @app/config/env\" jest"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
   },
   "dependencies": {
     "@apollo/react-common": "^3.1.4",
