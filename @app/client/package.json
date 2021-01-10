@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "cd src && cross-env NODE_ENV=production NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\"  next build",
+    "build": "cd src && cross-env NODE_ENV=production NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" next build",
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
   },
   "dependencies": {
