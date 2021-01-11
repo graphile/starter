@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.7 (Ubuntu 11.7-2.pgdg18.04+1)
--- Dumped by pg_dump version 11.7 (Ubuntu 11.7-2.pgdg18.04+1)
+-- Dumped from database version 11.9 (Ubuntu 11.9-1.pgdg18.04+1)
+-- Dumped by pg_dump version 11.9 (Ubuntu 11.9-1.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -284,8 +284,7 @@ CREATE TABLE app_private.sessions (
 --
 
 CREATE FUNCTION app_private.login(username public.citext, password text) RETURNS app_private.sessions
-    LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
+    LANGUAGE plpgsql STRICT
     AS $$
 declare
   v_user app_public.users;
@@ -486,6 +485,78 @@ $$;
 --
 
 COMMENT ON FUNCTION app_private.register_user(f_service character varying, f_identifier character varying, f_profile json, f_auth_details json, f_email_is_verified boolean) IS 'Used to register a user from information gleaned from OAuth. Primarily used by link_or_register_user';
+
+
+--
+-- Name: reset_password(uuid, text, text); Type: FUNCTION; Schema: app_private; Owner: -
+--
+
+CREATE FUNCTION app_private.reset_password(user_id uuid, reset_token text, new_password text) RETURNS boolean
+    LANGUAGE plpgsql STRICT
+    AS $$
+declare
+  v_user app_public.users;
+  v_user_secret app_private.user_secrets;
+  v_token_max_duration interval = interval '3 days';
+begin
+  select users.* into v_user
+  from app_public.users
+  where id = user_id;
+
+  if not (v_user is null) then
+    -- Load their secrets
+    select * into v_user_secret from app_private.user_secrets
+    where user_secrets.user_id = v_user.id;
+
+    -- Have there been too many reset attempts?
+    if (
+      v_user_secret.first_failed_reset_password_attempt is not null
+    and
+      v_user_secret.first_failed_reset_password_attempt > NOW() - v_token_max_duration
+    and
+      v_user_secret.failed_reset_password_attempts >= 20
+    ) then
+      raise exception 'Password reset locked - too many reset attempts' using errcode = 'LOCKD';
+    end if;
+
+    -- Not too many reset attempts, let's check the token
+    if v_user_secret.reset_password_token = reset_token then
+      -- Excellent - they're legit
+      perform app_private.assert_valid_password(new_password);
+      -- Let's reset the password as requested
+      update app_private.user_secrets
+      set
+        password_hash = crypt(new_password, gen_salt('bf')),
+        failed_password_attempts = 0,
+        first_failed_password_attempt = null,
+        reset_password_token = null,
+        reset_password_token_generated = null,
+        failed_reset_password_attempts = 0,
+        first_failed_reset_password_attempt = null
+      where user_secrets.user_id = v_user.id;
+      perform graphile_worker.add_job(
+        'user__audit',
+        json_build_object(
+          'type', 'reset_password',
+          'user_id', v_user.id,
+          'current_user_id', app_public.current_user_id()
+        ));
+      return true;
+    else
+      -- Wrong token, bump all the attempt tracking figures
+      update app_private.user_secrets
+      set
+        failed_reset_password_attempts = (case when first_failed_reset_password_attempt is null or first_failed_reset_password_attempt < now() - v_token_max_duration then 1 else failed_reset_password_attempts + 1 end),
+        first_failed_reset_password_attempt = (case when first_failed_reset_password_attempt is null or first_failed_reset_password_attempt < now() - v_token_max_duration then now() else first_failed_reset_password_attempt end)
+      where user_secrets.user_id = v_user.id;
+      return null;
+    end if;
+  else
+    -- No user with that id was found
+    return null;
+  end if;
+end;
+$$;
 
 
 --
@@ -802,6 +873,9 @@ CREATE FUNCTION app_public.create_organization(slug public.citext, name text) RE
 declare
   v_org app_public.organizations;
 begin
+  if app_public.current_user_id() is null then
+    raise exception 'You must log in to create an organization' using errcode = 'LOGIN';
+  end if;
   insert into app_public.organizations (slug, name) values (slug, name) returning * into v_org;
   insert into app_public.organization_memberships (organization_id, user_id, is_owner, is_billing_contact)
     values(v_org.id, app_public.current_user_id(), true, true);
@@ -1376,86 +1450,6 @@ COMMENT ON FUNCTION app_public.resend_email_verification_code(email_id uuid) IS 
 
 
 --
--- Name: reset_password(uuid, text, text); Type: FUNCTION; Schema: app_public; Owner: -
---
-
-CREATE FUNCTION app_public.reset_password(user_id uuid, reset_token text, new_password text) RETURNS boolean
-    LANGUAGE plpgsql STRICT SECURITY DEFINER
-    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
-    AS $$
-declare
-  v_user app_public.users;
-  v_user_secret app_private.user_secrets;
-  v_token_max_duration interval = interval '3 days';
-begin
-  select users.* into v_user
-  from app_public.users
-  where id = user_id;
-
-  if not (v_user is null) then
-    -- Load their secrets
-    select * into v_user_secret from app_private.user_secrets
-    where user_secrets.user_id = v_user.id;
-
-    -- Have there been too many reset attempts?
-    if (
-      v_user_secret.first_failed_reset_password_attempt is not null
-    and
-      v_user_secret.first_failed_reset_password_attempt > NOW() - v_token_max_duration
-    and
-      v_user_secret.failed_reset_password_attempts >= 20
-    ) then
-      raise exception 'Password reset locked - too many reset attempts' using errcode = 'LOCKD';
-    end if;
-
-    -- Not too many reset attempts, let's check the token
-    if v_user_secret.reset_password_token = reset_token then
-      -- Excellent - they're legit
-      perform app_private.assert_valid_password(new_password);
-      -- Let's reset the password as requested
-      update app_private.user_secrets
-      set
-        password_hash = crypt(new_password, gen_salt('bf')),
-        failed_password_attempts = 0,
-        first_failed_password_attempt = null,
-        reset_password_token = null,
-        reset_password_token_generated = null,
-        failed_reset_password_attempts = 0,
-        first_failed_reset_password_attempt = null
-      where user_secrets.user_id = v_user.id;
-      perform graphile_worker.add_job(
-        'user__audit',
-        json_build_object(
-          'type', 'reset_password',
-          'user_id', v_user.id,
-          'current_user_id', app_public.current_user_id()
-        ));
-      return true;
-    else
-      -- Wrong token, bump all the attempt tracking figures
-      update app_private.user_secrets
-      set
-        failed_reset_password_attempts = (case when first_failed_reset_password_attempt is null or first_failed_reset_password_attempt < now() - v_token_max_duration then 1 else failed_reset_password_attempts + 1 end),
-        first_failed_reset_password_attempt = (case when first_failed_reset_password_attempt is null or first_failed_reset_password_attempt < now() - v_token_max_duration then now() else first_failed_reset_password_attempt end)
-      where user_secrets.user_id = v_user.id;
-      return null;
-    end if;
-  else
-    -- No user with that id was found
-    return null;
-  end if;
-end;
-$$;
-
-
---
--- Name: FUNCTION reset_password(user_id uuid, reset_token text, new_password text); Type: COMMENT; Schema: app_public; Owner: -
---
-
-COMMENT ON FUNCTION app_public.reset_password(user_id uuid, reset_token text, new_password text) IS 'After triggering forgotPassword, you''ll be sent a reset token. Combine this with your user ID and a new password to reset your password.';
-
-
---
 -- Name: tg__graphql_subscription(); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
@@ -1497,7 +1491,8 @@ begin
       v_last_topic = v_topic;
       perform pg_notify(v_topic, json_build_object(
         'event', v_event,
-        'subject', v_sub
+        'subject', v_sub,
+        'id', v_record.id
       )::text);
     end if;
   end loop;
@@ -2088,6 +2083,13 @@ CREATE INDEX idx_user_emails_primary ON app_public.user_emails USING btree (is_p
 
 
 --
+-- Name: idx_user_emails_user; Type: INDEX; Schema: app_public; Owner: -
+--
+
+CREATE INDEX idx_user_emails_user ON app_public.user_emails USING btree (user_id);
+
+
+--
 -- Name: organization_invitations_user_id_idx; Type: INDEX; Schema: app_public; Owner: -
 --
 
@@ -2547,6 +2549,13 @@ REVOKE ALL ON FUNCTION app_private.register_user(f_service character varying, f_
 
 
 --
+-- Name: FUNCTION reset_password(user_id uuid, reset_token text, new_password text); Type: ACL; Schema: app_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_private.reset_password(user_id uuid, reset_token text, new_password text) FROM PUBLIC;
+
+
+--
 -- Name: FUNCTION tg__add_audit_job(); Type: ACL; Schema: app_private; Owner: -
 --
 
@@ -2774,14 +2783,6 @@ GRANT ALL ON FUNCTION app_public.request_account_deletion() TO graphile_starter_
 
 REVOKE ALL ON FUNCTION app_public.resend_email_verification_code(email_id uuid) FROM PUBLIC;
 GRANT ALL ON FUNCTION app_public.resend_email_verification_code(email_id uuid) TO graphile_starter_visitor;
-
-
---
--- Name: FUNCTION reset_password(user_id uuid, reset_token text, new_password text); Type: ACL; Schema: app_public; Owner: -
---
-
-REVOKE ALL ON FUNCTION app_public.reset_password(user_id uuid, reset_token text, new_password text) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.reset_password(user_id uuid, reset_token text, new_password text) TO graphile_starter_visitor;
 
 
 --
