@@ -14,11 +14,11 @@
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
   },
   "dependencies": {
+    "cross-env": "^7.0.2",
     "graphile-migrate": "^1.0.1"
   },
   "devDependencies": {
     "@types/pg": "^7.14.4",
-    "cross-env": "^7.0.2",
     "graphile-worker": "^0.8.1",
     "jest": "^26.6.3",
     "lodash": "^4.17.15",
