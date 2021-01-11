@@ -15,6 +15,7 @@ context("Login", () => {
     });
     cy.visit(Cypress.env("ROOT_URL") + "/login");
     cy.getCy("loginpage-button-withusername").click();
+    cy.getCy("header-login-button").should("not.exist"); // No login button on login page
 
     // Action
     cy.getCy("loginpage-input-username").type("testuser");
@@ -46,7 +47,7 @@ context("Login", () => {
     // Assertion
     cy.contains("Incorrect username or passphrase").should("exist");
     cy.url().should("equal", Cypress.env("ROOT_URL") + "/login"); // Should be on login page still
-    cy.getCy("header-login-button").should("exist"); // Should not be logged in
+    cy.getCy("header-login-button").should("not.exist"); // No login button on login page
     cy.getCy("layout-dropdown-user").should("not.exist"); // Should not be logged in
     cy.getCy("layout-dropdown-user").should("not.exist"); // Should not be logged in
 
