@@ -1,3 +1,4 @@
+import { ENABLE_CYPRESS_COMMANDS, isDevOrTest } from "@app/config";
 import { urlencoded } from "body-parser";
 import { Express, Request, RequestHandler, Response } from "express";
 import { Pool } from "pg";
@@ -6,7 +7,7 @@ import { getRootPgPool } from "./installDatabasePools";
 
 export default (app: Express) => {
   // Only enable this in test/development mode
-  if (!["test", "development"].includes(process.env.NODE_ENV || "")) {
+  if (!isDevOrTest) {
     throw new Error("This code must not run in production");
   }
 
@@ -15,7 +16,7 @@ export default (app: Express) => {
    * to be set; this gives us extra protection against accidental XSS/CSRF
    * attacks.
    */
-  const safeToRun = process.env.ENABLE_CYPRESS_COMMANDS === "1";
+  const safeToRun = ENABLE_CYPRESS_COMMANDS;
 
   const rootPgPool = getRootPgPool(app);
 

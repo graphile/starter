@@ -1,3 +1,4 @@
+import { ROOT_URL } from "@app/config";
 import csrf from "csurf";
 import { Express } from "express";
 
@@ -17,8 +18,8 @@ export default (app: Express) => {
     if (
       req.method === "POST" &&
       req.path === "/graphql" &&
-      (req.headers.referer === `${process.env.ROOT_URL}/graphiql` ||
-        req.headers.origin === process.env.ROOT_URL)
+      (req.headers.referer === `${ROOT_URL}/graphiql` ||
+        req.headers.origin === ROOT_URL)
     ) {
       // Bypass CSRF for GraphiQL
       next();

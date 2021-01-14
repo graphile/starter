@@ -1,3 +1,15 @@
+import {
+  DATABASE_URL,
+  DATABASE_VISITOR,
+  ENABLE_GRAPHIQL,
+  GRAPHILE_LICENSE,
+  GRAPHQL_COST_LIMIT,
+  GRAPHQL_DEPTH_LIMIT,
+  GRAPHQL_PAGINATION_CAP,
+  HIDE_QUERY_COST,
+  isDev,
+  isTest,
+} from "@app/config";
 import PgPubsub from "@graphile/pg-pubsub";
 import GraphilePro from "@graphile/pro"; // Requires license key
 import PgSimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
@@ -39,8 +51,6 @@ const TagsFilePlugin = makePgSmartTagsFromFilePlugin(
 
 type UUID = string;
 
-const isTest = process.env.NODE_ENV === "test";
-
 function uuidOrNull(input: string | number | null | undefined): UUID | null {
   if (!input) return null;
   const str = String(input);
@@ -55,15 +65,12 @@ function uuidOrNull(input: string | number | null | undefined): UUID | null {
   }
 }
 
-const isDev = process.env.NODE_ENV === "development";
-//const isTest = process.env.NODE_ENV === "test";
-
 const pluginHook = makePluginHook([
   // Add the pub/sub realtime provider
   PgPubsub,
 
   // If we have a Graphile Pro license, then enable the plugin
-  ...(process.env.GRAPHILE_LICENSE ? [GraphilePro] : []),
+  ...(GRAPHILE_LICENSE ? [GraphilePro] : []),
 ]);
 
 interface IPostGraphileOptionsOptions {
@@ -80,7 +87,7 @@ export function getPostGraphileOptions({
     pluginHook,
 
     // This is so that PostGraphile installs the watch fixtures, it's also needed to enable live queries
-    ownerConnectionString: process.env.DATABASE_URL,
+    ownerConnectionString: DATABASE_URL,
 
     // On production we still want to start even if the database isn't available.
     // On development, we want to deal nicely with issues in the database.
@@ -108,7 +115,7 @@ export function getPostGraphileOptions({
     setofFunctionsContainNulls: false,
 
     // Enable GraphiQL in development
-    graphiql: isDev || !!process.env.ENABLE_GRAPHIQL,
+    graphiql: isDev || ENABLE_GRAPHIQL,
     // Use a fancier GraphiQL with `prettier` for formatting, and header editing.
     enhanceGraphiql: true,
     // Allow EXPLAIN in development (you can replace this with a callback function if you want more control)
@@ -228,7 +235,7 @@ export function getPostGraphileOptions({
       }
       return {
         // Everyone uses the "visitor" role currently
-        role: process.env.DATABASE_VISITOR,
+        role: DATABASE_VISITOR,
 
         /*
          * Note, though this says "jwt" it's not actually anything to do with
@@ -269,14 +276,10 @@ export function getPostGraphileOptions({
     },
 
     // Pro plugin options (requires process.env.GRAPHILE_LICENSE)
-    defaultPaginationCap:
-      parseInt(process.env.GRAPHQL_PAGINATION_CAP || "", 10) || 50,
-    graphqlDepthLimit:
-      parseInt(process.env.GRAPHQL_DEPTH_LIMIT || "", 10) || 12,
-    graphqlCostLimit:
-      parseInt(process.env.GRAPHQL_COST_LIMIT || "", 10) || 30000,
-    exposeGraphQLCost:
-      (parseInt(process.env.HIDE_QUERY_COST || "", 10) || 0) < 1,
+    defaultPaginationCap: GRAPHQL_PAGINATION_CAP,
+    graphqlDepthLimit: GRAPHQL_DEPTH_LIMIT,
+    graphqlCostLimit: GRAPHQL_COST_LIMIT,
+    exposeGraphQLCost: HIDE_QUERY_COST,
     // readReplicaPgPool ...,
   };
   return options;
