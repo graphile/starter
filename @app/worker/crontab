@@ -1,0 +1,15 @@
+# Put your repeating tasks in this file.
+#
+# See: https://github.com/graphile/worker#recurring-tasks-crontab
+#
+# ┌───────────── UTC minute (0 - 59)
+# │ ┌───────────── UTC hour (0 - 23)
+# │ │ ┌───────────── UTC day of the month (1 - 31)
+# │ │ │ ┌───────────── UTC month (1 - 12)
+# │ │ │ │ ┌───────────── UTC day of the week (0 - 6) (Sunday to Saturday)
+# │ │ │ │ │ ┌───────────── task (identifier) to schedule
+# │ │ │ │ │ │    ┌────────── optional scheduling options
+# │ │ │ │ │ │    │     ┌────── optional payload to merge
+# │ │ │ │ │ │    │     │
+# │ │ │ │ │ │    │     │
+# * * * * * task ?opts {payload}
