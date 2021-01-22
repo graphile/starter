@@ -6,7 +6,7 @@
     "gw": "cd dist && cross-env NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" graphile-worker --crontab ../crontab",
     "build": "tsc -b",
     "start": "yarn gw",
-    "dev": "cd dist && cross-env NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env --inspect=9757\" graphile-worker --watch",
+    "dev": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --inspect=9757\" yarn gw --watch",
     "install-db-schema": "mkdirp dist && yarn gw --schema-only",
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
   },
