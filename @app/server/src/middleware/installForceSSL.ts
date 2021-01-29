@@ -8,9 +8,15 @@ export default (app: Express) => {
   }
   app.use((req, res, next) => {
     if (req.protocol !== "https") {
-      return res.redirect(`${process.env.ROOT_URL}${req.path}`);
+      if (req.method === "GET" || req.method === "HEAD") {
+        res.redirect(`${process.env.ROOT_URL}${req.path}`);
+      } else {
+        res
+          .status(405)
+          .send(`'${req.method}' requests may only be performed over HTTPS.`);
+      }
     } else {
-      return next();
+      next();
     }
   });
 };
