@@ -73,7 +73,7 @@ exports.updateDotenv = function updateDotenv(add, answers) {
 
   add(
     "SECRET",
-    safeRandomString(30),
+    safeRandomString(48),
     `\
 # This secret is used for signing cookies`
   );

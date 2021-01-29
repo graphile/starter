@@ -1,8 +1,6 @@
+import { isDev, isTest } from "@app/config";
 import { GraphQLError } from "graphql";
 import { camelCase } from "lodash";
-
-const isDev = process.env.NODE_ENV === "development";
-const isTest = process.env.NODE_ENV === "test";
 
 const ERROR_PROPERTIES_TO_EXPOSE =
   isDev || isTest

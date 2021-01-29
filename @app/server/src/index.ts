@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
+import { PORT } from "@app/config";
 import chalk from "chalk";
 import { createServer } from "http";
 
@@ -19,7 +20,6 @@ async function main() {
   httpServer.addListener("request", app);
 
   // And finally, we open the listen port
-  const PORT = parseInt(process.env.PORT || "", 10) || 3000;
   httpServer.listen(PORT, () => {
     const address = httpServer.address();
     const actualPort: string =

@@ -1,3 +1,4 @@
+import { ROOT_URL } from "@app/config";
 import { Express, Request, RequestHandler } from "express";
 import passport from "passport";
 
@@ -81,7 +82,7 @@ export default (
     new Strategy(
       {
         ...strategyConfig,
-        callbackURL: `${process.env.ROOT_URL}/auth/${service}/callback`,
+        callbackURL: `${ROOT_URL}/auth/${service}/callback`,
         passReqToCallback: true,
       },
       async (

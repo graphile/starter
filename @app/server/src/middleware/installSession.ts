@@ -1,3 +1,8 @@
+import {
+  MAXIMUM_SESSION_DURATION_IN_MILLISECONDS,
+  REDIS_URL,
+  SECRET,
+} from "@app/config";
 import ConnectPgSimple from "connect-pg-simple";
 import ConnectRedis from "connect-redis";
 import { Express, RequestHandler } from "express";
@@ -10,24 +15,10 @@ import { getRootPgPool } from "./installDatabasePools";
 const RedisStore = ConnectRedis(session);
 const PgStore = ConnectPgSimple(session);
 
-const MILLISECOND = 1;
-const SECOND = 1000 * MILLISECOND;
-const MINUTE = 60 * SECOND;
-const HOUR = 60 * MINUTE;
-const DAY = 24 * HOUR;
-
-const { SECRET } = process.env;
-if (!SECRET) {
-  throw new Error("Server misconfigured");
-}
-const MAXIMUM_SESSION_DURATION_IN_MILLISECONDS =
-  parseInt(process.env.MAXIMUM_SESSION_DURATION_IN_MILLISECONDS || "", 10) ||
-  3 * DAY;
-
 export default (app: Express) => {
   const rootPgPool = getRootPgPool(app);
 
-  const store = process.env.REDIS_URL
+  const store = REDIS_URL
     ? /*
        * Using redis for session storage means the session can be shared across
        * multiple Node.js instances (and survives a server restart), see:
@@ -36,7 +27,7 @@ export default (app: Express) => {
        */
       new RedisStore({
         client: redis.createClient({
-          url: process.env.REDIS_URL,
+          url: REDIS_URL,
         }),
       })
     : /*

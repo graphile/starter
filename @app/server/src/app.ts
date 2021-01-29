@@ -1,3 +1,4 @@
+import { isDev, isTest, TRUST_PROXY } from "@app/config";
 import express, { Express } from "express";
 import { Server } from "http";
 import { Middleware } from "postgraphile";
@@ -5,7 +6,6 @@ import { Middleware } from "postgraphile";
 import { cloudflareIps } from "./cloudflare";
 import * as middleware from "./middleware";
 import { makeShutdownActions, ShutdownAction } from "./shutdownActions";
-import { sanitizeEnv } from "./utils";
 
 // Server may not always be supplied, e.g. where mounting on a sub-route
 export function getHttpServer(app: Express): Server | void {
@@ -27,11 +27,6 @@ export async function makeApp({
 }: {
   httpServer?: Server;
 } = {}): Promise<Express> {
-  sanitizeEnv();
-
-  const isTest = process.env.NODE_ENV === "test";
-  const isDev = process.env.NODE_ENV === "development";
-
   const shutdownActions = makeShutdownActions();
 
   if (isDev) {
@@ -50,7 +45,7 @@ export async function makeApp({
    * server knows it's running in SSL mode, and so the logs can log the true
    * IP address of the client rather than the IP address of our proxy.
    */
-  if (process.env.TRUST_PROXY) {
+  if (TRUST_PROXY) {
     /*
       We recommend you set TRUST_PROXY to the following:
 
@@ -63,11 +58,11 @@ export async function makeApp({
     */
     app.set(
       "trust proxy",
-      process.env.TRUST_PROXY === "1"
+      TRUST_PROXY === "1"
         ? true
-        : process.env.TRUST_PROXY === "cloudflare"
+        : TRUST_PROXY === "cloudflare"
         ? ["loopback", "linklocal", "uniquelocal", ...cloudflareIps]
-        : process.env.TRUST_PROXY.split(",")
+        : TRUST_PROXY.split(",")
     );
   }
 

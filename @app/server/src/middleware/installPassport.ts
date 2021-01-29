@@ -1,3 +1,4 @@
+import { GITHUB_KEY, GITHUB_SECRET } from "@app/config";
 import { Express } from "express";
 import { get } from "lodash";
 import passport from "passport";
@@ -40,14 +41,14 @@ export default async (app: Express) => {
     res.redirect("/");
   });
 
-  if (process.env.GITHUB_KEY) {
+  if (GITHUB_KEY) {
     await installPassportStrategy(
       app,
       "github",
       GitHubStrategy,
       {
-        clientID: process.env.GITHUB_KEY,
-        clientSecret: process.env.GITHUB_SECRET,
+        clientID: GITHUB_KEY,
+        clientSecret: GITHUB_SECRET,
         scope: ["user:email"],
       },
       {},

@@ -1,8 +1,6 @@
+import { isDevOrTest } from "@app/config";
 import { Express } from "express";
 import helmet from "helmet";
-
-const isDevOrTest =
-  process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
 
 export default function installHelmet(app: Express) {
   app.use(
