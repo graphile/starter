@@ -7691,10 +7691,10 @@ graphile-utils@^4.11.2:
     graphql ">=0.9 <0.14 || ^14.0.2 || ^15.4.0"
     tslib "^2.0.1"
 
-graphile-worker@^0.9.0-rc.1:
-  version "0.9.0-rc.1"
-  resolved "https://registry.yarnpkg.com/graphile-worker/-/graphile-worker-0.9.0-rc.1.tgz#b36ebfd2cbfd0dd2a2b47aa4d2bb70b9797cedff"
-  integrity sha512-Df79caz3dXbK4rbhHqdAcXBgv/z/8uRLzO4R8Hm513Th3tGEaXD7QVd8MvQ/S99w0yebkYbylmZ+xM8RS0e01Q==
+graphile-worker@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/graphile-worker/-/graphile-worker-0.9.0.tgz#aa1c794dea80acf7abeb68c5c8ce6a2c41675b1a"
+  integrity sha512-tb3zT0k3XCsVWUqReA1NlepkD4Pezmd1Ot9+9ItKxLLElK2T17eYpkMEsk48vH3yR7tMQSnwJHrEuirtn9z6fg==
   dependencies:
     "@types/debug" "^4.1.2"
     "@types/pg" "^7.14.3"
