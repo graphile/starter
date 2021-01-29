@@ -149,7 +149,7 @@ const Settings_Emails: NextPage = () => {
           <PageHeader title="Email addresses" />
           <P>
             <Strong>
-              Account notices will be sent your your primary email address.
+              Account notices will be sent your primary email address.
             </Strong>{" "}
             Additional email addresses may be added to help with account
             recovery (or to change your primary email), but they cannot be used
