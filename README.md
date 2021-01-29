@@ -114,16 +114,28 @@ And please give some love to our featured sponsors 🤩:
 
 ## Table of contents
 
-- [Features](#features)
-- [Variants](#variants)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-- [Running](#running)
-- [Making it yours](#making-it-yours)
-- [Docker development](#docker-development-1)
-- [Production build](#production-build-for-local-mode)
-- [Deploying to Heroku](#deploying-to-heroku)
-- [License](#mit-license)
+- [Graphile Starter](#graphile-starter)
+  - [Take it for a spin!](#take-it-for-a-spin)
+  - [NOT FOR BEGINNERS](#not-for-beginners)
+  - [Purpose](#purpose)
+  - [Crowd-funded open-source software](#crowd-funded-open-source-software)
+    - [Click here to find out more about sponsors and sponsorship.](#click-here-to-find-out-more-about-sponsors-and-sponsorship)
+  - [Table of contents](#table-of-contents)
+  - [Features](#features)
+  - [Variants](#variants)
+  - [Prerequisites](#prerequisites)
+    - [Local development](#local-development)
+    - [Docker development](#docker-development)
+  - [Getting started](#getting-started)
+  - [Running](#running)
+  - [Making it yours](#making-it-yours)
+  - [Docker development](#docker-development-1)
+  - [Building the production docker image](#building-the-production-docker-image)
+  - [Production build for local mode](#production-build-for-local-mode)
+  - [Deploying to Heroku](#deploying-to-heroku)
+  - [Cleanup](#cleanup)
+  - [Custom packages](#custom-packages)
+  - [MIT License](#mit-license)
 
 ## Features
 
@@ -363,6 +375,15 @@ docker run --rm -it --init -p 5678:5678 \
 
 Currently if you miss required envvars weird things will happen; we don't
 currently have environment validation (PRs welcome!).
+
+Note: If you are using the `production.Dockerfile` to run graphile/starter in a
+Docker container on eg. Kubernetes, AWS ECS, DigitalOcean App Platform (or
+similar) and you are trying to connect to Amazon RDS or DigitalOcean databases
+(or probably other manged databases), make sure to replace
+`/data/amazon-rds-ca-cert.pem` with the CA certificate of your own database.
+This file is copied into your Docker image during build time and can therefore
+be referenced in your env variables `DATABASE_URL` and `AUTH_DATABASE_URL`:  
+`DATABASE_URL="postgres://name:password@host:port/dbname?ssl=true&sslrootcert=/app/data/amazon-rds-ca-cert.pem"`
 
 ## Production build for local mode
 
