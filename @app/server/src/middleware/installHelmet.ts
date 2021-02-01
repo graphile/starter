@@ -11,28 +11,38 @@ const ROOT_URL = tmpRootUrl;
 const isDevOrTest =
   process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
 
+const CSP_DIRECTIVES = {
+  ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+  "connect-src": [
+    "'self'",
+    // Safari doesn't allow using wss:// origins as 'self' from
+    // an https:// page, so we have to translate explicitly for
+    // it.
+    ROOT_URL.replace(/^http/, "ws"),
+  ],
+};
+
 export default function installHelmet(app: Express) {
   app.use(
     helmet(
       isDevOrTest
         ? {
-            // Dev needs 'unsafe-eval' due to
-            // https://github.com/vercel/next.js/issues/14221
             contentSecurityPolicy: {
               directives: {
-                ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+                ...CSP_DIRECTIVES,
+                // Dev needs 'unsafe-eval' due to
+                // https://github.com/vercel/next.js/issues/14221
                 "script-src": ["'self'", "'unsafe-eval'"],
-                "connect-src": [
-                  "'self'",
-                  // Safari doesn't allow using wss:// origins as 'self' from
-                  // an https:// page, so we have to translate explicitly for
-                  // it.
-                  ROOT_URL.replace(/^http/, "ws"),
-                ],
               },
             },
           }
-        : {}
+        : {
+            contentSecurityPolicy: {
+              directives: {
+                ...CSP_DIRECTIVES,
+              },
+            },
+          }
     )
   );
 }
