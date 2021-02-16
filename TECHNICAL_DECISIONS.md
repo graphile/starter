@@ -11,7 +11,7 @@
 - [Next.js](#nextjs)
 - [AntD](#antd)
 - [OAuth](#oauth)
-- [Detailed list of all technologies](#detailed-list-of-all-technologies)
+- [Detailed list of technologies](#detailed-list-of-technologies)
 
 ## Overview
 
