@@ -379,7 +379,7 @@ currently have environment validation (PRs welcome!).
 Note: If you are using the `production.Dockerfile` to run graphile/starter in a
 Docker container on eg. Kubernetes, AWS ECS, DigitalOcean App Platform (or
 similar) and you are trying to connect to Amazon RDS or DigitalOcean databases
-(or probably other manged databases), make sure to replace
+(or probably other managed databases), make sure to replace
 `/data/amazon-rds-ca-cert.pem` with the CA certificate of your own database.
 This file is copied into your Docker image during build time and can therefore
 be referenced in your env variables `DATABASE_URL` and `AUTH_DATABASE_URL`:  
