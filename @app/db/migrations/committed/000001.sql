@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:ef5472d97cdb95ed4b3535802312280e53601fb0
+--! Hash: sha1:fbd6ffb5be53e7e0bfc63929a52cfc13e698c5f0
 
 --! split: 0001-reset.sql
 /*
@@ -1556,7 +1556,7 @@ comment on function app_public.resend_email_verification_code(email_id uuid) is
  * be typically useful for a B2B SaaS project: the organization can have
  * multiple members, one of which is the "owner", one is the "billing contact"
  * and the others are just regular members (though you can of course add
- * additional tiers by adding columns to the `organization_memberships` table.
+ * additional tiers by adding columns to the `organization_memberships` table).
  *
  * This file drops all the organizations functionality, but it's unnecessary
  * because `0001-reset.sql` has already done all that; we just include it
