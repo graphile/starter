@@ -67,7 +67,7 @@ alter default privileges in schema public, app_public, app_hidden
  * These triggers are commonly used across many tables.
  */
 
--- Used for queueing jobs easily; relys on the fact that every table we have
+-- Used for queueing jobs easily; relies on the fact that every table we have
 -- has a primary key 'id' column; this won't work if you rename your primary
 -- key columns.
 create function app_private.tg__add_job() returns trigger as $$
@@ -290,7 +290,7 @@ create index on app_private.sessions (user_id);
 /*
  * This function is responsible for reading the `jwt.claims.session_id`
  * transaction setting (set from the `pgSettings` function within
- * `installPostGraphile.ts`). Defining this inside a function means we an
+ * `installPostGraphile.ts`). Defining this inside a function means we can
  * modify it in future to allow additional ways of defining the session.
  */
 
@@ -1556,12 +1556,7 @@ comment on function app_public.resend_email_verification_code(email_id uuid) is
  * be typically useful for a B2B SaaS project: the organization can have
  * multiple members, one of which is the "owner", one is the "billing contact"
  * and the others are just regular members (though you can of course add
- * additional tiers by adding columns to the `organization_memberships` table,
- * this is modelled in a way that would be typically useful for a B2B SaaS
- * project: the organization can have multiple members, one of which is the
- * "owner", one is the "billing contact" and the others are just regular
- * members (though you can of course add additional tiers by adding columns to
- * the `organization_memberships` table).
+ * additional tiers by adding columns to the `organization_memberships` table.
  *
  * This file drops all the organizations functionality, but it's unnecessary
  * because `0001-reset.sql` has already done all that; we just include it
