@@ -1,6 +1,5 @@
 import { CrownOutlined, DownOutlined } from "@ant-design/icons";
-import { QueryResult } from "@apollo/react-common";
-import { useApolloClient } from "@apollo/react-hooks";
+import { ApolloError, QueryResult, useApolloClient } from "@apollo/client";
 import { companyName, projectName } from "@app/config";
 import {
   SharedLayout_QueryFragment,
@@ -9,7 +8,6 @@ import {
   useLogoutMutation,
 } from "@app/graphql";
 import { Avatar, Col, Dropdown, Layout, Menu, Row, Typography } from "antd";
-import { ApolloError } from "apollo-client";
 import Head from "next/head";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";

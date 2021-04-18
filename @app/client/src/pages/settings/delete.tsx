@@ -1,3 +1,4 @@
+import { ApolloError } from "@apollo/client";
 import { ErrorAlert, P, SettingsLayout } from "@app/components";
 import {
   useConfirmAccountDeletionMutation,
@@ -6,7 +7,6 @@ import {
 } from "@app/graphql";
 import { getCodeFromError } from "@app/lib";
 import { Alert, Button, Modal, PageHeader, Typography } from "antd";
-import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";

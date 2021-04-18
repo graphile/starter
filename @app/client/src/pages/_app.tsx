@@ -2,10 +2,9 @@ import "antd/dist/antd.less";
 import "nprogress/nprogress.css";
 import "../styles.less";
 
-import { ApolloProvider } from "@apollo/react-hooks";
+import { ApolloClient, ApolloProvider } from "@apollo/client";
 import { withApollo } from "@app/lib";
 import { notification } from "antd";
-import { ApolloClient } from "apollo-client";
 import App from "next/app";
 import Router from "next/router";
 import NProgress from "nprogress";

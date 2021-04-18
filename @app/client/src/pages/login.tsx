@@ -1,5 +1,5 @@
 import { LockOutlined, UserAddOutlined, UserOutlined } from "@ant-design/icons";
-import { useApolloClient } from "@apollo/react-hooks";
+import { ApolloError, useApolloClient } from "@apollo/client";
 import {
   AuthRestrict,
   ButtonLink,
@@ -18,7 +18,6 @@ import {
 } from "@app/lib";
 import { Alert, Button, Form, Input } from "antd";
 import { useForm } from "antd/lib/form/Form";
-import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import Link from "next/link";
 import Router from "next/router";

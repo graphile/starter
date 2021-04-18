@@ -4,7 +4,7 @@ import {
   NextLink,
   Observable,
   Operation,
-} from "apollo-link";
+} from "@apollo/client";
 import { Request, Response } from "express";
 import { execute, getOperationAST } from "graphql";
 import { HttpRequestHandler } from "postgraphile";
