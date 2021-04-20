@@ -39,7 +39,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install pg_dump
-        run: sudo apt-get update && sudo apt-get install postgresql-client-10
+        run: |
+          sudo bash -c "echo deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main >> /etc/apt/sources.list.d/pgdg.list"
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo apt-get update
+          sudo apt-get -yqq install postgresql-client-11
       - name: Setup
         run: |
           cp .env.ci .env
