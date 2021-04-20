@@ -979,6 +979,11 @@ type TransferOrganizationOwnershipPayload {
   query: Query
 }
 
+"""
+A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122).
+"""
+scalar UUID
+
 """All input for the `updateOrganization` mutation."""
 input UpdateOrganizationInput {
   """
@@ -1295,6 +1300,11 @@ input UserPatch {
   username: String
 }
 
+type UserSubscriptionPayload {
+  event: String
+  user: User
+}
+
 """A `User` edge in the connection."""
 type UsersEdge {
   """A cursor for use in pagination."""
@@ -1314,16 +1324,6 @@ enum UsersOrderBy {
   USERNAME_ASC
   USERNAME_DESC
 }
-
-type UserSubscriptionPayload {
-  event: String
-  user: User
-}
-
-"""
-A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122).
-"""
-scalar UUID
 
 """All input for the `verifyEmail` mutation."""
 input VerifyEmailInput {
