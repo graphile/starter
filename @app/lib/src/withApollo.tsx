@@ -149,7 +149,7 @@ export const withApollo = withApolloBase(
       cache: new InMemoryCache({
         typePolicies: {
           Query: {
-            keyFields: ["ROOT_QUERY"],
+            queryType: true,
           },
         },
       }).restore(initialState || {}),
