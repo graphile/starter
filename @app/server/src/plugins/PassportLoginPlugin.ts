@@ -240,12 +240,8 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
         _resolveInfo
       ) {
         const { rootPgPool } = context;
-        const {
-          userId,
-          resetToken,
-          newPassword,
-          clientMutationId,
-        } = args.input;
+        const { userId, resetToken, newPassword, clientMutationId } =
+          args.input;
 
         // Since the `reset_password` function needs to keep track of attempts
         // for security, we cannot risk the transaction being rolled back by a

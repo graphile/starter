@@ -39,18 +39,14 @@ function getCy(cyName: string): Chainable<JQuery<HTMLElement>> {
 /**
  * Deletes all users with username starting 'test'.
  */
-function serverCommand(
-  command: "clearTestUsers"
-): Chainable<{
+function serverCommand(command: "clearTestUsers"): Chainable<{
   success: true;
 }>;
 
 /**
  * Deletes all organizations with slug starting 'test'.
  */
-function serverCommand(
-  command: "clearTestOrganizations"
-): Chainable<{
+function serverCommand(command: "clearTestOrganizations"): Chainable<{
   success: true;
 }>;
 

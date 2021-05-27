@@ -87,10 +87,8 @@ export async function makeApp({
    * When we're using websockets, we may want them to have access to
    * sessions/etc for authentication.
    */
-  const websocketMiddlewares: Middleware<
-    express.Request,
-    express.Response
-  >[] = [];
+  const websocketMiddlewares: Middleware<express.Request, express.Response>[] =
+    [];
   app.set("websocketMiddlewares", websocketMiddlewares);
 
   /*
