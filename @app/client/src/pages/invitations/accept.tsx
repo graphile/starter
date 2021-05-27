@@ -1,4 +1,4 @@
-import { QueryResult } from "@apollo/react-common";
+import { QueryResult } from "@apollo/client";
 import {
   AuthRestrict,
   ButtonLink,

@@ -1,3 +1,4 @@
+import { ApolloError } from "@apollo/client";
 import {
   AuthRestrict,
   ErrorAlert,
@@ -14,7 +15,6 @@ import {
   useOrganizationPageQuery,
 } from "@app/graphql";
 import { Alert, Button, message, PageHeader, Popconfirm } from "antd";
-import { ApolloError } from "apollo-client";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useState } from "react";

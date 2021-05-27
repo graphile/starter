@@ -1,15 +1,15 @@
-import { getDataFromTree } from "@apollo/react-ssr";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { ApolloClient } from "apollo-client";
 import {
+  ApolloClient,
   ApolloLink,
   FetchResult,
+  HttpLink,
+  InMemoryCache,
   Observable,
   Operation,
   split,
-} from "apollo-link";
-import { onError } from "apollo-link-error";
-import { HttpLink } from "apollo-link-http";
+} from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
+import { getDataFromTree } from "@apollo/client/react/ssr";
 import { getOperationAST, GraphQLError, print } from "graphql";
 import { Client, createClient } from "graphql-ws";
 import withApolloBase from "next-with-apollo";
@@ -147,12 +147,11 @@ export const withApollo = withApolloBase(
     const client = new ApolloClient({
       link: ApolloLink.from([onErrorLink, mainLink]),
       cache: new InMemoryCache({
-        dataIdFromObject: (o) =>
-          o.__typename === "Query"
-            ? "ROOT_QUERY"
-            : o.id
-            ? `${o.__typename}:${o.id}`
-            : null,
+        typePolicies: {
+          Query: {
+            queryType: true,
+          },
+        },
       }).restore(initialState || {}),
     });
 

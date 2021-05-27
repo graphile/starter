@@ -13,7 +13,7 @@ config:
   withHOC: false
   withComponent: false
   withHooks: true
-  reactApolloVersion: 2
+  reactApolloVersion: 3
 generates:
   index.tsx:
     plugins:

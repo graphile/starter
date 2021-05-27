@@ -1,3 +1,4 @@
+import { ApolloError } from "@apollo/client";
 import { AuthRestrict, Redirect, SharedLayout } from "@app/components";
 import {
   CreatedOrganizationFragment,
@@ -14,7 +15,6 @@ import {
 import { Alert, Button, Col, Form, Input, PageHeader, Row, Spin } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import Text from "antd/lib/typography/Text";
-import { ApolloError } from "apollo-client";
 import { debounce } from "lodash";
 import { NextPage } from "next";
 import { Store } from "rc-field-form/lib/interface";
