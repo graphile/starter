@@ -137,7 +137,8 @@ export const pruneIds = (row: { [key: string]: unknown }) =>
       : v
   );
 
-const uuidRegexp = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const uuidRegexp =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const pruneUUIDs = (row: { [key: string]: unknown }) =>
   mapValues(row, (v, k) => {

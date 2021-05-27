@@ -58,10 +58,8 @@ const CreateOrganizationPage: NextPage = () => {
   }, [checkSlug, slug]);
 
   const code = getCodeFromError(formError);
-  const [
-    organization,
-    setOrganization,
-  ] = useState<null | CreatedOrganizationFragment>(null);
+  const [organization, setOrganization] =
+    useState<null | CreatedOrganizationFragment>(null);
   const [createOrganization] = useCreateOrganizationMutation();
   const handleSubmit = useCallback(
     async (values: Store) => {

@@ -209,9 +209,7 @@ it("can delete all but one verified email", () =>
       "delete from app_public.user_emails where user_id = $1 and id <> $2",
       [user.id, email2.id]
     );
-    const {
-      rows,
-    } = await client.query(
+    const { rows } = await client.query(
       "select * from app_public.user_emails where user_id = $1",
       [user.id]
     );
@@ -233,9 +231,7 @@ it("can delete all but one email if unverified", () =>
       "delete from app_public.user_emails where user_id = $1 and id <> $2",
       [user.id, email2.id]
     );
-    const {
-      rows,
-    } = await client.query(
+    const { rows } = await client.query(
       "select * from app_public.user_emails where user_id = $1",
       [user.id]
     );

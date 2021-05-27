@@ -30,10 +30,8 @@ export async function createUserAndLogIn() {
   }
 }
 
-let known: Record<
-  string,
-  { counter: number; values: Map<unknown, string> }
-> = {};
+let known: Record<string, { counter: number; values: Map<unknown, string> }> =
+  {};
 beforeEach(() => {
   known = {};
 });
