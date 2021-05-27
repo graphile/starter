@@ -255,7 +255,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
         const {
           rows: [row],
         } = await rootPgPool.query(
-          `select app_private.reset_password($1, $2, $3) as success`,
+          `select app_private.reset_password($1::uuid, $2::text, $3::text) as success`,
           [userId, resetToken, newPassword]
         );
 
