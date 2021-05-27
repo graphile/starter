@@ -19,7 +19,7 @@
     "@types/react": "^17.0.8",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
-    "antd": "^4.16.0",
+    "antd": "4.15.6",
     "antd-dayjs-webpack-plugin": "^1.0.6",
     "dayjs": "^1.10.5",
     "graphql": "^15.4.0",
