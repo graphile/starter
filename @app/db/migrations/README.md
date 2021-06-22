@@ -6,7 +6,7 @@ implementing your own migrations:
 
 https://github.com/graphile/migrate/blob/main/README.md
 
-The main file you'll be working with is `current.sql`.
+The main file you'll be working with is `1-current.sql`.
 
 ## afterReset.sql
 
@@ -15,7 +15,7 @@ currently grants permissions to the relevant roles and creates the required
 extensions. It's expected that this is ran with database superuser privileges as
 normal users often don't have sufficient permissions to install extensions.
 
-## current.sql
+## current/1-current.sql
 
 This is where your new database changes go. They need to be idempotent (for
 details read the README above). The `yarn start` command will automatically
@@ -51,7 +51,7 @@ with
 yarn db commit
 ```
 
-This will call `graphile-migrate commit` which involves moving `current.sql`
+This will call `graphile-migrate commit` which involves moving `1-current.sql`
 into the `committed` folder, and hashing it to prevent later modifications
 (which should instead be done with additional migrations).
 
