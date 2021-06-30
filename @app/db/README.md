@@ -19,11 +19,13 @@ may prefer to switch this out for your preferred migration framework such as
 Should you decide to stick with Graphile Migrate, we strongly encourage you to
 [read the Graphile Migrate README](https://github.com/graphile/migrate/blob/main/README.md)
 before attempting to write your own migrations. Graphile Migrate works in quite
-a different way to many other migration frameworks, and relys on your discipline
-and SQL knowledge to work well.
+a different way to many other migration frameworks, and relies on your
+discipline and SQL knowledge to work well.
 
 If you're not very comfortable with SQL then we recommend you use an alternative
 migration framework (for now at least, Graphile Migrate is still young...)
+
+[Read more about the migrations in `migrations/README.md`.](./migrations/README.md)
 
 ## Database Roles
 
@@ -45,7 +47,7 @@ Graphile Starter uses three roles:
   queries runs as, it's what the vast majority of your `GRANT`s will reference
   and the row level security policies will apply to. It represents both logged
   in AND logged out users to your GraphQL API - it's assumed that your Row Level
-  Security policies will deferentiate between these states (and any other
+  Security policies will differentiate between these states (and any other
   "application roles" the user may have) to determine what they are permitted to
   do.
 
@@ -59,3 +61,10 @@ dev, production), not with your own user role nor the default superuser role
 (often named `postgres`). This ensures that the system behaves as expected when
 graduating from your local dev environment to hosted database systems in
 production.
+
+## \_\_tests\_\_/
+
+Our database tests are written in Jest, enabling you to call database functions
+or run SQL and perform your regular assertions against them. We've added a
+number of helpers to make this easier; read more in the
+[\_\_tests\_\_ README](./__tests__/README.md).
