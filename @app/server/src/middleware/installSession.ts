@@ -78,6 +78,7 @@ export default (app: Express) => {
     if (req.isSameOrigin) {
       sessionMiddleware(req, res, next);
     } else {
+      console.warn('⚠️ Request did not come from SameOrigin, session was not created.')
       next();
     }
   };
