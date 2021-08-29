@@ -80,7 +80,7 @@
       "_": "command",
       "shadow": true,
       // NOTE: this script does nothing when envvar `IN_TESTS` is `1`
-      "command": "node scripts/dump-db.js"
+      "command": "zx scripts/dump-db.mjs"
     }
   ],
 
@@ -93,7 +93,7 @@
       "_": "command",
       "shadow": true,
       // NOTE: this script does nothing unless envvar `IN_TESTS` is `1`
-      "command": "node scripts/test-seed.js"
+      "command": "zx scripts/test-seed.mjs"
     }
   ],
 

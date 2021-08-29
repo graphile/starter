@@ -1,23 +1,23 @@
-#!/usr/bin/env node
-const {
-  yarnCmd,
-  runMain,
+#!/usr/bin/env zx
+
+import dotenv from "dotenv";
+import inquirer from "inquirer";
+import pg from "pg";
+import { $ } from "zx";
+
+import {
   checkGit,
   outro,
-  runSync,
   projectName,
-} = require("./_setup_utils");
-const inquirer = require("inquirer");
-const dotenv = require("dotenv");
-const pg = require("pg");
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  runMain,
+  yarnCmd,
+} from "./_setup_utils.mjs";
 
 runMain(async () => {
   await checkGit();
 
   // Ensure server build has been run
-  runSync(yarnCmd, ["server", "build"]);
+  await $`${yarnCmd} server build`;
 
   // Source our environment
   dotenv.config({ path: `${__dirname}/../.env` });
@@ -48,6 +48,7 @@ runMain(async () => {
   - database role ${DATABASE_OWNER}`,
       },
     ]);
+
     if (!confirm.CONFIRM) {
       console.error("Confirmation failed; exiting");
       process.exit(1);
@@ -125,8 +126,8 @@ runMain(async () => {
   }
   await pgPool.end();
 
-  runSync(yarnCmd, ["db", "reset", "--erase"]);
-  runSync(yarnCmd, ["db", "reset", "--shadow", "--erase"]);
+  await $`${yarnCmd} db reset --erase`;
+  await $`${yarnCmd} db reset --shadow --erase`;
 
   outro(`\
 ✅ Setup success

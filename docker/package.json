@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "setup": "node ./scripts/yarn-setup.js",
+    "setup": "zx ./scripts/yarn-setup.mjs",
     "start": "yarn compose up server",
     "bash": "yarn compose exec server bash",
     "dev": "yarn compose:exec:dev bash",
@@ -13,7 +13,7 @@
     "db:up": "yarn compose up -d db",
     "compose": "docker-compose -f ../docker-compose.yml",
     "compose:exec:dev": "yarn down && yarn compose up -d dev && yarn compose exec dev ",
-    "reset:volumes": "node ./scripts/clean-volumes.js",
+    "reset:volumes": "zx ./scripts/clean-volumes.mjs",
     "rebuild": "yarn compose build",
     "down": "yarn compose down --remove-orphans"
   },

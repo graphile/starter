@@ -1,12 +1,12 @@
-const fsp = require("fs").promises;
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
+import { fs } from "zx";
 
-const DOTENV_PATH = `${__dirname}/../../.env`;
+const DOTENV_PATH = `${__dirname}/../.env`;
 
-async function readDotenv() {
+export async function readDotenv() {
   let buffer = null;
   try {
-    buffer = await fsp.readFile(DOTENV_PATH);
+    buffer = await fs.readFile(DOTENV_PATH);
   } catch (e) {
     /* noop */
   }
@@ -33,10 +33,10 @@ function encodeDotenvValue(str) {
   return str;
 }
 
-async function withDotenvUpdater(overrides, callback) {
+export async function withDotenvUpdater(overrides, callback) {
   let data;
   try {
-    data = await fsp.readFile(DOTENV_PATH, "utf8");
+    data = await fs.readFile(DOTENV_PATH, "utf8");
     // Trim whitespace, and prefix with newline so we can do easier checking later
     data = "\n" + data.trim();
   } catch (e) {
@@ -83,8 +83,5 @@ async function withDotenvUpdater(overrides, callback) {
 
   data = data.trim() + "\n";
 
-  await fsp.writeFile(DOTENV_PATH, data);
+  await fs.writeFile(DOTENV_PATH, data);
 }
-
-exports.readDotenv = readDotenv;
-exports.withDotenvUpdater = withDotenvUpdater;

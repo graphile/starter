@@ -1,11 +1,9 @@
-const { randomBytes } = require("crypto");
+import { randomBytes } from "crypto";
 
-function safeRandomString(length) {
+export function safeRandomString(length) {
   // Roughly equivalent to shell `openssl rand -base64 30 | tr '+/' '-_'`
   return randomBytes(length)
     .toString("base64")
     .replace(/\+/g, "-")
     .replace(/\//g, "_");
 }
-
-exports.safeRandomString = safeRandomString;

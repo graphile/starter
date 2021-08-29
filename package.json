@@ -5,24 +5,24 @@
   "description": "Description of project here",
   "scripts": {
     "setup": "yarn && yarn setup:env auto && yarn setup:db && yarn setup:packages",
-    "setup:env": "node ./scripts/setup_env.js",
-    "setup:db": "node ./scripts/setup_db.js",
+    "setup:env": "zx ./scripts/setup_env.mjs",
+    "setup:db": "zx ./scripts/setup_db.mjs",
     "setup:packages": "lerna run setup",
-    "start": "node ./scripts/start.js",
+    "start": "zx ./scripts/start.mjs",
     "pretest": "lerna run pretest",
-    "test": "node scripts/test.js",
+    "test": "zx scripts/test.mjs",
     "posttest": "lerna run posttest",
-    "test:watch": "node scripts/test.js --watch",
+    "test:watch": "zx scripts/test.mjs --watch",
     "lint": "tsc -b && yarn prettier:all --check && yarn eslint .",
     "lint:fix": "yarn eslint --fix . && yarn prettier:all --write",
-    "eslint": "eslint --ext .js,.jsx,.ts,.tsx,.graphql",
-    "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,graphql,md}\"",
+    "eslint": "eslint --ext .js,.mjs,.jsx,.ts,.tsx,.graphql",
+    "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,mjs,jsx,ts,tsx,graphql,md}\"",
     "depcheck": "lerna exec --stream \"yarn depcheck --ignores=\"@app/config,@app/client,tslib,webpack,babel-plugin-import,source-map-support,@graphql-codegen/*,*eslint*,@typescript-eslint/*,graphql-toolkit,net,tls,dayjs\" --ignore-dirs=\".next\"\"",
     "dev": "yarn && lerna run codegen --stream && tsc -b && concurrently --kill-others --names \"TSC,WATCH,RUN,TEST\" --prefix \"({name})\" --prefix-colors \"yellow.bold,yellow.bold,cyan.bold,greenBright.bold\" \"tsc -b --watch --preserveWatchOutput\" \"lerna run --parallel watch\" \"lerna run --parallel dev\" \"yarn test:watch --delay 10\"",
     "build": "lerna run build",
     "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
-    "clean": "node ./scripts/clean.js",
-    "reset": "yarn clean && node ./scripts/delete-env-file.js",
+    "clean": "zx ./scripts/clean.mjs",
+    "reset": "yarn clean && zx ./scripts/delete-env-file.mjs",
     "--shortcuts to run commands in workspaces--": "",
     "client": "yarn workspace @app/client",
     "components": "yarn workspace @app/components",
@@ -41,7 +41,8 @@
     "abort-controller": "^3.0.0",
     "graphql": "^15.4.0",
     "lerna": "^4.0.0",
-    "string-width": "^5.0.0"
+    "string-width": "^5.0.0",
+    "zx": "^4.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
@@ -83,23 +84,15 @@
     "pg-connection-string": "2.x"
   },
   "workspaces": {
-    "packages": [
-      "@app/*",
-      "docker"
-    ],
-    "nohoist": [
-      "**/cypress"
-    ]
+    "packages": ["@app/*", "docker"],
+    "nohoist": ["**/cypress"]
   },
   "prettier": {
     "trailingComma": "es5",
     "proseWrap": "always",
     "overrides": [
       {
-        "files": [
-          "*.yml",
-          "*.yaml"
-        ],
+        "files": ["*.yml", "*.yaml"],
         "options": {
           "printWidth": 120
         }
