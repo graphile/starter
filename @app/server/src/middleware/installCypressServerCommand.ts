@@ -75,10 +75,12 @@ export default (app: Express) => {
        */
       console.error("cypressServerCommand failed!");
       console.error(e);
+      const message = e instanceof Error ? e.message : "unknown";
+      const stack = e instanceof Error ? e.stack : undefined;
       res.status(500).json({
         error: {
-          message: e.message,
-          stack: e.stack,
+          message,
+          stack,
         },
       });
     }
