@@ -25,6 +25,6 @@
     "express": "^4.17.1",
     "jest": "^27.0.1",
     "postgraphile": "^4.12.1",
-    "typescript": "^4.0.2"
+    "typescript": "^4.4.3"
   }
 }
