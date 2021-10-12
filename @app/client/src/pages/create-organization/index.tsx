@@ -34,10 +34,10 @@ const CreateOrganizationPage: NextPage = () => {
   const [slugCheckIsValid, setSlugCheckIsValid] = useState(false);
   const checkSlug = useMemo(
     () =>
-      debounce(async (slug: string) => {
+      debounce((slug: string) => {
         try {
           if (slug) {
-            await lookupOrganizationBySlug({
+            lookupOrganizationBySlug({
               variables: {
                 slug,
               },
