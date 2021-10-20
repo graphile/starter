@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.2 (Ubuntu 13.2-1.pgdg18.04+1)
--- Dumped by pg_dump version 13.2 (Ubuntu 13.2-1.pgdg18.04+1)
+-- Dumped from database version 13.4 (Ubuntu 13.4-0ubuntu0.21.04.1)
+-- Dumped by pg_dump version 13.4 (Ubuntu 13.4-0ubuntu0.21.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -522,7 +522,9 @@ begin
     -- Not too many reset attempts, let's check the token
     if v_user_secret.reset_password_token = reset_token then
       -- Excellent - they're legit
+
       perform app_private.assert_valid_password(new_password);
+
       -- Let's reset the password as requested
       update app_private.user_secrets
       set
@@ -534,6 +536,12 @@ begin
         failed_reset_password_attempts = 0,
         first_failed_reset_password_attempt = null
       where user_secrets.user_id = v_user.id;
+
+      -- Revoke the users' sessions
+      delete from app_private.sessions
+      where sessions.user_id = v_user.id;
+
+      -- Notify user their password was reset
       perform graphile_worker.add_job(
         'user__audit',
         json_build_object(
@@ -541,6 +549,7 @@ begin
           'user_id', v_user.id,
           'current_user_id', app_public.current_user_id()
         ));
+
       return true;
     else
       -- Wrong token, bump all the attempt tracking figures
@@ -770,11 +779,19 @@ begin
 
     if v_user_secret.password_hash = crypt(old_password, v_user_secret.password_hash) then
       perform app_private.assert_valid_password(new_password);
+
       -- Reset the password as requested
       update app_private.user_secrets
       set
         password_hash = crypt(new_password, gen_salt('bf'))
       where user_secrets.user_id = v_user.id;
+
+      -- Revoke all other sessions
+      delete from app_private.sessions
+      where sessions.user_id = v_user.id
+      and sessions.uuid <> app_public.current_session_id();
+
+      -- Notify user their password was changed
       perform graphile_worker.add_job(
         'user__audit',
         json_build_object(
@@ -782,6 +799,7 @@ begin
           'user_id', v_user.id,
           'current_user_id', app_public.current_user_id()
         ));
+
       return true;
     else
       raise exception 'Incorrect password' using errcode = 'CREDS';
