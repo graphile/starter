@@ -1,4 +1,6 @@
-const { spawn } = require("child_process");
+#!/usr/bin/env zx
+
+import { spawn } from "child_process";
 
 if (process.env.IN_TESTS === "1") {
   process.exit(0);

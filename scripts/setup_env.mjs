@@ -1,15 +1,17 @@
 #!/usr/bin/env node
-const {
-  yarnCmd,
-  runMain,
+
+import inquirer from "inquirer";
+import { $ } from "zx";
+
+import {
   checkGit,
   outro,
-  withDotenvUpdater,
-  updateDotenv,
   readDotenv,
-  runSync,
-} = require("./_setup_utils");
-const inquirer = require("inquirer");
+  runMain,
+  updateDotenv,
+  withDotenvUpdater,
+  yarnCmd,
+} from "./_setup_utils.mjs";
 
 runMain(async () => {
   await checkGit();
@@ -62,7 +64,7 @@ runMain(async () => {
   );
 
   // And perform setup
-  runSync(yarnCmd, ["server", "build"]);
+  await $`${yarnCmd} server build`;
 
   if (process.argv[2] === "auto") {
     // We're advancing automatically

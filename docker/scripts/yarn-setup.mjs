@@ -1,10 +1,10 @@
-const { runSync } = require("../../scripts/lib/run");
-const { basename, dirname, resolve } = require("path");
-const platform = require("os").platform();
-const { safeRandomString } = require("../../scripts/lib/random");
-const fs = require("fs");
-const fsp = fs.promises;
+#!/usr/bin/env zx
 
+import { $, fs, path } from "zx";
+import { safeRandomString } from "../../scripts/lib/random.mjs";
+
+const { basename, dirname, resolve } = path;
+const platform = os.platform();
 const DOCKER_DOTENV_PATH = `${__dirname}/../.env`;
 
 if (platform !== "win32" && !process.env.UID) {
@@ -17,7 +17,7 @@ if (platform !== "win32" && !process.env.UID) {
 async function main() {
   // Check that docker/.env exists
   try {
-    await fsp.access(DOCKER_DOTENV_PATH, fs.constants.F_OK);
+    await fs.access(DOCKER_DOTENV_PATH, fs.constants.F_OK);
   } catch (e) {
     // Does not exist, write it
     const password = safeRandomString(30);
@@ -46,7 +46,7 @@ POSTGRES_PASSWORD=${password}
 DATABASE_HOST=db
 ROOT_DATABASE_URL=postgres://postgres:${password}@db/postgres
 `;
-    await fsp.writeFile(DOCKER_DOTENV_PATH, data);
+    await fs.writeFile(DOCKER_DOTENV_PATH, data);
   }
 
   // The `docker-compose` project name defaults to the directory name containing
@@ -58,11 +58,11 @@ ROOT_DATABASE_URL=postgres://postgres:${password}@db/postgres
   // On Windows we must run 'yarn.cmd' rather than 'yarn'
   const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
 
-  runSync(yarnCmd, ["down"]);
-  runSync(yarnCmd, ["db:up"]);
+  await $`${yarnCmd} down`;
+  await $`${yarnCmd} db:up`;
 
   // Fix permissions
-  runSync(yarnCmd, [
+  await $`${yarnCmd} ${[
     "compose",
     "run",
     "server",
@@ -70,10 +70,10 @@ ROOT_DATABASE_URL=postgres://postgres:${password}@db/postgres
     "bash",
     "-c",
     "chmod o+rwx /var/run/docker.sock && chown -R node /work/node_modules /work/@app/*/node_modules",
-  ]);
+  ]}`;
 
   // Run setup as normal
-  runSync(yarnCmd, [
+  await $`${yarnCmd} ${[
     "compose",
     "run",
     "-e",
@@ -81,7 +81,7 @@ ROOT_DATABASE_URL=postgres://postgres:${password}@db/postgres
     "server",
     "yarn",
     "setup",
-  ]);
+  ]}`;
 }
 
 main().catch((e) => {

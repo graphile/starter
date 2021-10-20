@@ -1,25 +1,20 @@
+import { fs, os } from "zx";
+
+import { readDotenv, withDotenvUpdater } from "./lib/dotenv.mjs";
+import { safeRandomString } from "./lib/random.mjs";
+
 if (parseInt(process.version.split(".")[0], 10) < 10) {
   throw new Error("This project requires Node.js >= 10.0.0");
 }
 
-const fsp = require("fs").promises;
-const { runSync } = require("./lib/run");
-const { withDotenvUpdater, readDotenv } = require("./lib/dotenv");
-const { safeRandomString } = require("./lib/random");
-
 // fixes runSync not throwing ENOENT on windows
-const platform = require("os").platform();
-const yarnCmd = platform === "win32" ? "yarn.cmd" : "yarn";
+export const yarnCmd = os.platform() === "win32" ? "yarn.cmd" : "yarn";
 
-const projectName = process.env.PROJECT_NAME;
+export const projectName = process.env.PROJECT_NAME;
 
-exports.withDotenvUpdater = withDotenvUpdater;
-exports.readDotenv = readDotenv;
-exports.runSync = runSync;
-exports.yarnCmd = yarnCmd;
-exports.projectName = projectName;
+export { readDotenv, withDotenvUpdater };
 
-exports.updateDotenv = function updateDotenv(add, answers) {
+export function updateDotenv(add, answers) {
   add(
     "GRAPHILE_LICENSE",
     null,
@@ -142,11 +137,11 @@ exports.updateDotenv = function updateDotenv(add, answers) {
 # The name of the folder you cloned graphile-starter to (so we can run docker-compose inside a container):`
     );
   }
-};
+}
 
-exports.checkGit = async function checkGit() {
+export async function checkGit() {
   try {
-    const gitStat = await fsp.stat(`${__dirname}/../.git`);
+    const gitStat = await fs.stat(`${__dirname}/../.git`);
     if (!gitStat || !gitStat.isDirectory()) {
       throw new Error("No .git folder found");
     }
@@ -170,16 +165,16 @@ exports.checkGit = async function checkGit() {
     console.error();
     process.exit(1);
   }
-};
+}
 
-exports.runMain = (main) => {
+export const runMain = (main) => {
   main().catch((e) => {
     console.error(e);
     process.exit(1);
   });
 };
 
-exports.outro = (message) => {
+export const outro = (message) => {
   console.log();
   console.log();
   console.log("____________________________________________________________");
