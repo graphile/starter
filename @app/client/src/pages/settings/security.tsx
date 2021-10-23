@@ -50,27 +50,32 @@ const Settings_Security: NextPage = () => {
         setError(null);
         setSuccess(true);
       } catch (e) {
-        const errcode = getCodeFromError(e);
-        if (errcode === "WEAKP") {
-          form.setFields([
-            {
-              name: "newPassword",
-              value: form.getFieldValue("newPassword"),
-              errors: [
-                "The server believes this passphrase is too weak, please make it stronger",
-              ],
-            },
-          ]);
-        } else if (errcode === "CREDS") {
-          form.setFields([
-            {
-              name: "oldPassword",
-              value: form.getFieldValue("oldPassword"),
-              errors: ["Incorrect old passphrase"],
-            },
-          ]);
+        if (e instanceof Error) {
+          const errcode = getCodeFromError(e);
+          if (errcode === "WEAKP") {
+            form.setFields([
+              {
+                name: "newPassword",
+                value: form.getFieldValue("newPassword"),
+                errors: [
+                  "The server believes this passphrase is too weak, please make it stronger",
+                ],
+              },
+            ]);
+          } else if (errcode === "CREDS") {
+            form.setFields([
+              {
+                name: "oldPassword",
+                value: form.getFieldValue("oldPassword"),
+                errors: ["Incorrect old passphrase"],
+              },
+            ]);
+          } else {
+            setError(e);
+          }
         } else {
-          setError(e);
+          setError(new Error("Please check the errors above and try again"));
+          console.dir(e);
         }
       }
     },

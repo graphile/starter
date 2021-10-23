@@ -94,7 +94,7 @@ const ResetPage: NextPage<IProps> = ({
             setError(new Error("Incorrect token, please check and try again"));
           }
         } catch (e) {
-          if (e.message) {
+          if (e instanceof Error) {
             setError(e);
           } else {
             setError(new Error("Please check the errors above and try again"));

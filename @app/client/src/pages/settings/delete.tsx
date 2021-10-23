@@ -46,7 +46,12 @@ const Settings_Accounts: NextPage = () => {
         }
         setItIsDone(true);
       } catch (e) {
-        setError(e);
+        if (e instanceof Error || e instanceof ApolloError) {
+          setError(e);
+        } else {
+          setError(new Error("Please check the errors above and try again"));
+          console.dir(e);
+        }
       }
       setDoingIt(false);
       setConfirmOpen(false);
@@ -67,7 +72,12 @@ const Settings_Accounts: NextPage = () => {
         // Display confirmation
         setDeleted(true);
       } catch (e) {
-        setError(e);
+        if (e instanceof Error || e instanceof ApolloError) {
+          setError(e);
+        } else {
+          setError(new Error("Please check the errors above and try again"));
+          console.dir(e);
+        }
       }
       setDeleting(false);
     })();

@@ -78,7 +78,11 @@ const CreateOrganizationPage: NextPage = () => {
         setFormError(null);
         setOrganization(data?.createOrganization?.organization || null);
       } catch (e) {
-        setFormError(e);
+        if (e instanceof Error || e instanceof ApolloError) {
+          setFormError(e);
+        } else {
+          console.dir(e);
+        }
       }
     },
     [createOrganization]

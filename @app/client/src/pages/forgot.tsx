@@ -32,7 +32,11 @@ const ForgotPassword: NextPage = () => {
           // Success: refetch
           setSuccessfulEmail(email);
         } catch (e) {
-          setError(e);
+          if (e instanceof Error || e instanceof ApolloError) {
+            setError(e);
+          } else {
+            console.dir(e);
+          }
         }
       })();
     },

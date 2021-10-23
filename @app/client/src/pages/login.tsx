@@ -150,18 +150,23 @@ function LoginForm({
         client.resetStore();
         Router.push(onSuccessRedirectTo);
       } catch (e) {
-        const code = getCodeFromError(e);
-        if (code === "CREDS") {
-          form.setFields([
-            {
-              name: "password",
-              value: form.getFieldValue("password"),
-              errors: ["Incorrect username or passphrase"],
-            },
-          ]);
-          setSubmitDisabled(true);
+        if (e instanceof Error || e instanceof ApolloError) {
+          const code = getCodeFromError(e);
+          if (code === "CREDS") {
+            form.setFields([
+              {
+                name: "password",
+                value: form.getFieldValue("password"),
+                errors: ["Incorrect username or passphrase"],
+              },
+            ]);
+            setSubmitDisabled(true);
+          } else {
+            setError(e);
+          }
         } else {
-          setError(e);
+          setError(new Error("Please check the errors above and try again"));
+          console.dir(e);
         }
       }
     },

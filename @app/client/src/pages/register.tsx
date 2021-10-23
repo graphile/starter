@@ -67,51 +67,56 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
         client.resetStore();
         Router.push(next);
       } catch (e) {
-        const code = getCodeFromError(e);
-        const exception = getExceptionFromError(e);
-        const fields: any = exception && exception["fields"];
-        if (code === "WEAKP") {
-          form.setFields([
-            {
-              name: "password",
-              value: form.getFieldValue("password"),
-              errors: [
-                "The server believes this passphrase is too weak, please make it stronger",
-              ],
-            },
-          ]);
-        } else if (code === "EMTKN") {
-          form.setFields([
-            {
-              name: "email",
-              value: form.getFieldValue("email"),
-              errors: [
-                "An account with this email address has already been registered, consider using the 'Forgot passphrase' function.",
-              ],
-            },
-          ]);
-        } else if (code === "NUNIQ" && fields && fields[0] === "username") {
-          form.setFields([
-            {
-              name: "username",
-              value: form.getFieldValue("username"),
-              errors: [
-                "An account with this username has already been registered, please try a different username.",
-              ],
-            },
-          ]);
-        } else if (code === "23514") {
-          form.setFields([
-            {
-              name: "username",
-              value: form.getFieldValue("username"),
-              errors: [
-                "This username is not allowed; usernames must be between 2 and 24 characters long (inclusive), must start with a letter, and must contain only alphanumeric characters and underscores.",
-              ],
-            },
-          ]);
+        if (e instanceof Error) {
+          const code = getCodeFromError(e);
+          const exception = getExceptionFromError(e);
+          const fields: any = exception && exception["fields"];
+          if (code === "WEAKP") {
+            form.setFields([
+              {
+                name: "password",
+                value: form.getFieldValue("password"),
+                errors: [
+                  "The server believes this passphrase is too weak, please make it stronger",
+                ],
+              },
+            ]);
+          } else if (code === "EMTKN") {
+            form.setFields([
+              {
+                name: "email",
+                value: form.getFieldValue("email"),
+                errors: [
+                  "An account with this email address has already been registered, consider using the 'Forgot passphrase' function.",
+                ],
+              },
+            ]);
+          } else if (code === "NUNIQ" && fields && fields[0] === "username") {
+            form.setFields([
+              {
+                name: "username",
+                value: form.getFieldValue("username"),
+                errors: [
+                  "An account with this username has already been registered, please try a different username.",
+                ],
+              },
+            ]);
+          } else if (code === "23514") {
+            form.setFields([
+              {
+                name: "username",
+                value: form.getFieldValue("username"),
+                errors: [
+                  "This username is not allowed; usernames must be between 2 and 24 characters long (inclusive), must start with a letter, and must contain only alphanumeric characters and underscores.",
+                ],
+              },
+            ]);
+          } else {
+            setError(e);
+          }
         } else {
-          setError(e);
+          setError(new Error("Please check the errors above and try again"));
+          console.dir(e);
         }
       }
     },

@@ -219,7 +219,12 @@ function AddEmailForm({ error, setError, onComplete }: AddEmailFormProps) {
         await addEmail({ variables: { email: values.email } });
         onComplete();
       } catch (e) {
-        setError(e);
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new Error("Please check the errors above and try again"));
+          console.dir(e);
+        }
       }
     },
     [addEmail, onComplete, setError]

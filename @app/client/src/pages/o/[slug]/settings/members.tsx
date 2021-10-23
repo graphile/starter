@@ -125,11 +125,12 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = (
         message.success(`'${inviteText}' invited.`);
         form.setFieldsValue({ inviteText: "" });
       } catch (e) {
+        const errMessage =
+          e instanceof Error
+            ? e.message.replace(/^GraphQL Error:/i, "")
+            : "Unknown error";
         // TODO: handle this through the interface
-        message.error(
-          "Could not invite to organization: " +
-            e.message.replace(/^GraphQL Error:/i, "")
-        );
+        message.error("Could not invite to organization: " + errMessage);
       } finally {
         setInviteInProgress(false);
       }
@@ -208,7 +209,12 @@ const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = (
         refetchQueries: ["OrganizationMembers"],
       });
     } catch (e) {
-      message.error("Error occurred when removing member: " + e.message);
+      if (e instanceof Error) {
+        message.error("Error occurred when removing member: " + e.message);
+      } else {
+        message.error("Unknown error occurred when removing member");
+        console.dir(e);
+      }
     }
   }, [node.user, organization.id, removeMember]);
 
@@ -223,7 +229,14 @@ const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = (
         refetchQueries: ["OrganizationMembers"],
       });
     } catch (e) {
-      message.error("Error occurred when transferring ownership: " + e.message);
+      if (e instanceof Error) {
+        message.error(
+          "Error occurred when transferring ownership: " + e.message
+        );
+      } else {
+        message.error("Unknown error occurred when transferring ownership");
+        console.dir(e);
+      }
     }
   }, [node.user, organization.id, transferOwnership]);
 
@@ -238,9 +251,16 @@ const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = (
         refetchQueries: ["OrganizationMembers"],
       });
     } catch (e) {
-      message.error(
-        "Error occurred when transferring billing contact: " + e.message
-      );
+      if (e instanceof Error) {
+        message.error(
+          "Error occurred when transferring billing contact: " + e.message
+        );
+      } else {
+        message.error(
+          "Unknown error occurred when transferring billing contact"
+        );
+        console.dir(e);
+      }
     }
   }, [node.user, organization.id, transferBilling]);
 

@@ -83,19 +83,24 @@ function ProfileSettingsForm({
         setError(null);
         setSuccess(true);
       } catch (e) {
-        const errcode = getCodeFromError(e);
-        if (errcode === "23505") {
-          form.setFields([
-            {
-              name: "username",
-              value: form.getFieldValue("username"),
-              errors: [
-                "This username is already in use, please pick a different name",
-              ],
-            },
-          ]);
+        if (e instanceof Error) {
+          const errcode = getCodeFromError(e);
+          if (errcode === "23505") {
+            form.setFields([
+              {
+                name: "username",
+                value: form.getFieldValue("username"),
+                errors: [
+                  "This username is already in use, please pick a different name",
+                ],
+              },
+            ]);
+          } else {
+            setError(e);
+          }
         } else {
-          setError(e);
+          setError(new Error("Please check the errors above and try again"));
+          console.dir(e);
         }
       }
     },

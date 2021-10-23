@@ -73,7 +73,12 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = (
           Router.push(`/o/[slug]/settings`, `/o/${newSlug}/settings`);
         }
       } catch (e) {
-        setError(e);
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new Error("Please check the errors above and try again"));
+          console.dir(e);
+        }
       }
     },
     [organization.id, organization.slug, updateOrganization]
