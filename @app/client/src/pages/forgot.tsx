@@ -35,6 +35,7 @@ const ForgotPassword: NextPage = () => {
           if (e instanceof Error || e instanceof ApolloError) {
             setError(e);
           } else {
+            setError(new Error("Please check the errors above and try again"));
             console.dir(e);
           }
         }

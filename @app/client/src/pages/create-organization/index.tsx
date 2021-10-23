@@ -81,6 +81,9 @@ const CreateOrganizationPage: NextPage = () => {
         if (e instanceof Error || e instanceof ApolloError) {
           setFormError(e);
         } else {
+          setFormError(
+            new Error("Please check the errors above and try again")
+          );
           console.dir(e);
         }
       }
