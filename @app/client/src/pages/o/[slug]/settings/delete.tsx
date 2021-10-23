@@ -57,7 +57,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = (
   const { organization } = props;
   const router = useRouter();
   const [deleteOrganization] = useDeleteOrganizationMutation();
-  const [error, setError] = useState<ApolloError | null>(null);
+  const [error, setError] = useState<Error | ApolloError | null>(null);
   const handleDelete = useCallback(async () => {
     try {
       await deleteOrganization({
@@ -69,9 +69,10 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = (
       message.info(`Organization '${organization.name}' successfully deleted`);
       router.push("/");
     } catch (e) {
-      if (e instanceof ApolloError) {
+      if (e instanceof Error || e instanceof ApolloError) {
         setError(e);
       } else {
+        setError(new Error("Please check the errors above and try again"));
         console.dir(e);
       }
       return;
