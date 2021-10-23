@@ -47,7 +47,7 @@
     "postgraphile": "^4.12.1",
     "redis": "^3.1.2",
     "source-map-support": "^0.5.13",
-    "tslib": "^2.2.0"
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@types/node": "^15.6.1",
