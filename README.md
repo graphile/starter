@@ -188,7 +188,7 @@ their own opinions. A few of these are listed below; if you maintain a fork of
 this project please make a note at the top of your own README, and add it to
 this list:
 
-- [Vue 3 + Vite SSR variant](https://github.com/xvaara/graphile-starter-vite-ssr-vue3-apollor) -
+- [Vue 3 + Vite SSR variant](https://github.com/xvaara/graphile-starter-vite-ssr-vue3-apollo) -
   replaces Next.js with Vue and Vite SSR
 - [Nuxt.js variant](https://github.com/JoeSchr/graphile-starter) - replaces
   Next.js for Vue users
