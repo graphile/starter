@@ -31,7 +31,7 @@ FORCE_COLOR=2
 # instance inside the current running container which doesn't work with volume
 # mappings, so we must use \`docker-compose exec\`. \`-T\` is needed because our
 # \`.gmrc\` checks for interactive TTY.
-PG_DUMP=docker-compose exec -T db pg_dump
+PG_DUMP="docker-compose exec -T db pg_dump"
 
 # Drops tables without asking in \`yarn setup\`. Reasoning: 1) docker-compose is
 # not tty, 2) it's a dev env anyway.
