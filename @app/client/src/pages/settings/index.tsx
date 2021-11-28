@@ -84,7 +84,7 @@ function ProfileSettingsForm({
         setSuccess(true);
       } catch (e) {
         const errcode = getCodeFromError(e);
-        if (errcode === "23505") {
+        if (errcode === "NUNIQ") {
           form.setFields([
             {
               name: "username",
