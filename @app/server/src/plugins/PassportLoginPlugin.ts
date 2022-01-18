@@ -92,7 +92,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
         const { username, password, email, name, avatarUrl } = args.input;
         const { rootPgPool, login, pgClient } = context;
         try {
-          // Call our login function to find out if the username/password combination exists
+          // Create a user and create a session for it in the proccess
           const {
             rows: [details],
           } = await rootPgPool.query(
