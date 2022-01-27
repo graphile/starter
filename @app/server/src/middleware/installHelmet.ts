@@ -19,6 +19,8 @@ const CSP_DIRECTIVES = {
     // an https:// page, so we have to translate explicitly for
     // it.
     ROOT_URL.replace(/^http/, "ws"),
+    // ws://localhost:24678
+    ROOT_URL.replace(/^http/, "ws").replace(/5678/, "24678"),
   ],
 };
 
@@ -30,9 +32,8 @@ export default function installHelmet(app: Express) {
             contentSecurityPolicy: {
               directives: {
                 ...CSP_DIRECTIVES,
-                // Dev needs 'unsafe-eval' due to
-                // https://github.com/vercel/next.js/issues/14221
-                "script-src": ["'self'", "'unsafe-eval'"],
+                // Dev needs 'unsafe-inline' when using vite-ssr
+                "script-src": ["'self'", "'unsafe-inline'"],
               },
             },
           }

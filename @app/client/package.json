@@ -1,0 +1,29 @@
+{
+  "scripts": {
+    "// TODO: replace these as needed": "",
+    "build": "cross-env NODE_ENV=production NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" yarn build:client && yarn build:server",
+    "build:client": "vite build",
+    "build:server": "vite build --ssr"
+  },
+  "dependencies": {
+    "graphql": "15.5.0",
+    "express": "^4.17.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.8",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
+    "@vitejs/plugin-react": "^1.1.4",
+    "cross-env": "^7.0.3",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.3.2",
+    "vite": "^2.7.12",
+    "vite-plugin-ssr": "^0.3.49"
+  },
+  "// Needed for Yarn workspaces": "",
+  "name": "@app/client",
+  "version": "0.0.0"
+}
