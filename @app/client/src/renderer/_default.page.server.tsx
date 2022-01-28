@@ -1,39 +1,43 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
+import { FilledContext, Helmet, HelmetProvider } from "react-helmet-async";
 import type { PageContextBuiltIn } from "vite-plugin-ssr";
 import { dangerouslySkipEscape, escapeInject } from "vite-plugin-ssr";
 
-import logoUrl from "./logo.svg";
 import { PageShell } from "./PageShell";
 import type { PageContext } from "./types";
 
 export { render };
 // See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ["pageProps", "documentProps", "urlPathname"];
+export const passToClient = [
+  "pageProps",
+  "helmetContext",
+  "documentProps",
+  "urlPathname",
+  "routeParams",
+];
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
+  const helmetContext: any = {};
   const { Page, pageProps } = pageContext;
   const pageHtml = ReactDOMServer.renderToString(
-    <PageShell pageContext={pageContext}>
-      <Page {...pageProps} />
-    </PageShell>
+    <HelmetProvider context={helmetContext}>
+      <Helmet>
+        <title>Vite SSR app</title>
+      </Helmet>
+      <PageShell pageContext={pageContext}>
+        <Page {...pageProps} />
+      </PageShell>
+    </HelmetProvider>
   );
-
-  // See https://vite-plugin-ssr.com/head
-  const { documentProps } = pageContext;
-  const title = (documentProps && documentProps.title) || "Vite SSR app";
-  const desc =
-    (documentProps && documentProps.description) ||
-    "App using Vite + vite-plugin-ssr";
+  const { helmet } = helmetContext as FilledContext;
 
   const documentHtml = escapeInject`<!DOCTYPE html>
-    <html lang="en">
+    <html lang="en" ${dangerouslySkipEscape(helmet.htmlAttributes.toString())}>
       <head>
-        <meta charset="UTF-8" />
-        <link rel="icon" href="${logoUrl}" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="${desc}" />
-        <title>${title}</title>
+        ${dangerouslySkipEscape(helmet.title.toString())}
+        ${dangerouslySkipEscape(helmet.meta.toString())}
+        ${dangerouslySkipEscape(helmet.link.toString())}
       </head>
       <body>
         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
