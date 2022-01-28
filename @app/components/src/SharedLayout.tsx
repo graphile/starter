@@ -225,14 +225,14 @@ export function SharedLayout({
                         </Menu.Item>
                       )
                     )}
-                    <Menu.Item>
+                    <Menu.Item key="_create-organization">
                       <Link href="/create-organization">
                         <a data-cy="layout-link-create-organization">
                           Create organization
                         </a>
                       </Link>
                     </Menu.Item>
-                    <Menu.Item>
+                    <Menu.Item key="_settings">
                       <Link href="/settings">
                         <a data-cy="layout-link-settings">
                           <Warn okay={data.currentUser.isVerified}>
@@ -241,7 +241,7 @@ export function SharedLayout({
                         </a>
                       </Link>
                     </Menu.Item>
-                    <Menu.Item>
+                    <Menu.Item key="_logout">
                       <a onClick={handleLogout}>Logout</a>
                     </Menu.Item>
                   </Menu>
