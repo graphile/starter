@@ -13,6 +13,11 @@
     "esModuleInterop": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],
+  "references": [
+    {"path": "../config"},
+    {"path": "../lib"},
+    {"path": "../graphql"},
+  ],
   "ts-node": {
     "transpileOnly": true,
     "compilerOptions": {

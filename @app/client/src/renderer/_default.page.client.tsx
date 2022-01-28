@@ -1,3 +1,4 @@
+import { ApolloClient, ApolloProvider } from "@apollo/client";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -5,13 +6,25 @@ import type { PageContextBuiltInClient } from "vite-plugin-ssr/client/router";
 import { useClientRouter } from "vite-plugin-ssr/client/router";
 
 import logoUrl from "./logo.svg";
+import { makeApolloClient } from "./makeApolloClient";
 import { PageShell } from "./PageShell";
 import type { PageContext } from "./types";
+
+let apolloClient: ApolloClient<any>;
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { hydrationPromise } = useClientRouter({
   render(pageContext: PageContextBuiltInClient & PageContext) {
-    const { Page, pageProps, helmetContext } = pageContext;
+    const { Page, pageProps, helmetContext, apolloInitialState } = pageContext;
+
+    // Only create a single instance when using Client Routing.
+    if (!apolloClient) {
+      apolloClient = makeApolloClient({
+        initialState: apolloInitialState,
+        ROOT_URL: pageContext.ROOT_URL,
+      });
+    }
+
     const page = (
       <HelmetProvider context={helmetContext}>
         <Helmet>
@@ -24,9 +37,11 @@ const { hydrationPromise } = useClientRouter({
           <title>Vite SSR app</title>
         </Helmet>
 
-        <PageShell pageContext={pageContext}>
-          <Page {...pageProps} />
-        </PageShell>
+        <ApolloProvider client={apolloClient}>
+          <PageShell pageContext={pageContext}>
+            <Page {...pageProps} />
+          </PageShell>
+        </ApolloProvider>
       </HelmetProvider>
     );
     const container = document.getElementById("page-view");

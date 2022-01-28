@@ -1,3 +1,4 @@
+import { ApolloClient } from "@apollo/client";
 import { FilledContext } from "react-helmet-async";
 
 export type PageProps = {};
@@ -10,5 +11,9 @@ export type PageContext = {
     title?: string;
     description?: string;
   };
+  ROOT_URL: string;
+  csrfToken: string;
+  apolloClient: ApolloClient<any>;
+  apolloInitialState: any;
   helmetContext: FilledContext;
 };

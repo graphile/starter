@@ -1,4 +1,4 @@
-// Duplicate in @app/client/src/renderer
+// Duplicate in @app/lib/src
 import {
   ApolloLink,
   FetchResult,
@@ -18,6 +18,7 @@ export interface GraphileApolloLinkInterface {
   res: Response;
 
   /** The instance of the express middleware returned by calling `postgraphile()` */
+  // @ts-ignore
   postgraphileMiddleware: HttpRequestHandler<Request, Response>;
 
   /** An optional rootValue to use inside resolvers. */
