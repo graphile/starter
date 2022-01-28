@@ -22,8 +22,6 @@ const { hydrationPromise } = useClientRouter({
             content="width=device-width, initial-scale=1.0"
           />
           <title>Vite SSR app</title>
-
-          <title>Vite SSR app</title>
         </Helmet>
 
         <PageShell pageContext={pageContext}>
