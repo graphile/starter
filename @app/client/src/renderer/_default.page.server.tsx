@@ -1,7 +1,8 @@
 import { ApolloProvider } from "@apollo/client";
 import { getDataFromTree } from "@apollo/client/react/ssr";
+import { createStylesServer, ServerStyles } from "@mantine/ssr";
 import React from "react";
-import ReactDOMServer from "react-dom/server";
+import ReactDOMServer, { renderToString } from "react-dom/server";
 import { FilledContext, Helmet, HelmetProvider } from "react-helmet-async";
 import type { PageContextBuiltIn } from "vite-plugin-ssr";
 import { dangerouslySkipEscape, escapeInject } from "vite-plugin-ssr";
@@ -24,9 +25,11 @@ export const passToClient = [
   "urlPathname",
 ];
 
+const stylesServer = createStylesServer();
+
 async function render(pageContext: PageContextBuiltIn & PageContext) {
   const helmetContext: any = {};
-  const { Page, pageProps, apolloClient } = pageContext;
+  const { Page, pageProps, apolloClient, renderedStyles } = pageContext;
   const pageHtml = ReactDOMServer.renderToString(
     <HelmetProvider context={helmetContext}>
       <Helmet>
@@ -50,6 +53,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
         ${dangerouslySkipEscape(helmet.title.toString())}
         ${dangerouslySkipEscape(helmet.meta.toString())}
         ${dangerouslySkipEscape(helmet.link.toString())}
+        ${dangerouslySkipEscape(renderedStyles)}
       </head>
       <body>
         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
@@ -79,12 +83,16 @@ async function onBeforeRender(pageContext: PageContext) {
   // TODO mc 2022-01-28: review add'l logic in next-with-apollo source
   // https://github.com/lfades/next-with-apollo/blob/master/src/withApollo.tsx#L73
   const pageHtml = await getDataFromTree(tree);
+  const renderedStyles = renderToString(
+    <ServerStyles html={pageHtml} server={stylesServer} />
+  );
 
   const apolloInitialState = apolloClient.extract();
   return {
     pageContext: {
       pageHtml,
       apolloInitialState,
+      renderedStyles,
     },
   };
 }

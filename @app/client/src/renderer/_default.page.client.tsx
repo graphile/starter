@@ -1,6 +1,7 @@
 import "nprogress/nprogress.css";
 
 import { ApolloClient, ApolloProvider } from "@apollo/client";
+import { MantineProvider } from "@mantine/core";
 import * as NProgress from "nprogress";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -40,11 +41,13 @@ const { hydrationPromise } = useClientRouter({
           <title>Vite SSR app</title>
         </Helmet>
 
-        <ApolloProvider client={apolloClient}>
-          <PageShell pageContext={pageContext}>
-            <Page {...pageProps} />
-          </PageShell>
-        </ApolloProvider>
+        <MantineProvider>
+          <ApolloProvider client={apolloClient}>
+            <PageShell pageContext={pageContext}>
+              <Page {...pageProps} />
+            </PageShell>
+          </ApolloProvider>
+        </MantineProvider>
       </HelmetProvider>
     );
     const container = document.getElementById("page-view");

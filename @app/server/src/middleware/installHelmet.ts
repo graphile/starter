@@ -13,6 +13,7 @@ const isDevOrTest =
 
 const CSP_DIRECTIVES = {
   ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+  "script-src": ["'self'", "'unsafe-inline'"],
   "connect-src": [
     "'self'",
     // Safari doesn't allow using wss:// origins as 'self' from

@@ -16,4 +16,5 @@ export type PageContext = {
   apolloClient: ApolloClient<any>;
   apolloInitialState: any;
   helmetContext: FilledContext;
+  renderedStyles: string;
 };
