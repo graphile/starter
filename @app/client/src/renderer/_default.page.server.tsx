@@ -1,3 +1,4 @@
+import logoUrl from "./logo.svg";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { FilledContext, Helmet, HelmetProvider } from "react-helmet-async";
@@ -23,6 +24,9 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
   const pageHtml = ReactDOMServer.renderToString(
     <HelmetProvider context={helmetContext}>
       <Helmet>
+        <meta charSet="UTF-8" />
+        <link rel="icon" href={logoUrl} />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Vite SSR app</title>
       </Helmet>
       <PageShell pageContext={pageContext}>

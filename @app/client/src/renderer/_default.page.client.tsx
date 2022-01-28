@@ -4,6 +4,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import type { PageContextBuiltInClient } from "vite-plugin-ssr/client/router";
 import { useClientRouter } from "vite-plugin-ssr/client/router";
 
+import logoUrl from "./logo.svg";
 import { PageShell } from "./PageShell";
 import type { PageContext } from "./types";
 
@@ -14,6 +15,14 @@ const { hydrationPromise } = useClientRouter({
     const page = (
       <HelmetProvider context={helmetContext}>
         <Helmet>
+          <meta charSet="UTF-8" />
+          <link rel="icon" href={logoUrl} />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+          <title>Vite SSR app</title>
+
           <title>Vite SSR app</title>
         </Helmet>
 
