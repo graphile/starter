@@ -1,4 +1,7 @@
+import "nprogress/nprogress.css";
+
 import { ApolloClient, ApolloProvider } from "@apollo/client";
+import * as NProgress from "nprogress";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -62,8 +65,10 @@ hydrationPromise.then(() => {
 function onTransitionStart() {
   console.log("Page transition start");
   document.querySelector("#page-view")!.classList.add("page-transition");
+  NProgress.start();
 }
 function onTransitionEnd() {
   console.log("Page transition end");
   document.querySelector("#page-view")!.classList.remove("page-transition");
+  NProgress.done();
 }

@@ -4,7 +4,8 @@
     "_dev": "vite",
     "build": "cross-env NODE_ENV=production NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" yarn build:client && yarn build:server",
     "build:client": "vite build",
-    "build:server": "vite build --ssr"
+    "build:server": "vite build --ssr",
+    "lint": "eslint \"**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
     "@app/config": "0.0.0",
@@ -14,6 +15,7 @@
     "graphql-ws": "^4.5.1",
     "express": "^4.17.2",
     "helmet": "^4.6.0",
+    "nprogress": "^0.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet-async": "^1.2.2"
@@ -21,10 +23,12 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.8",
+    "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "@types/react-helmet-async": "^1.0.3",
     "@vitejs/plugin-react": "^1.1.4",
+    "eslint": "^8.7.0",
     "cross-env": "^7.0.3",
     "ts-node": "^10.4.0",
     "typescript": "^4.3.2",
