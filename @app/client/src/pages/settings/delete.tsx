@@ -45,7 +45,7 @@ const Settings_Accounts: NextPage = () => {
           throw new Error("Requesting deletion failed");
         }
         setItIsDone(true);
-      } catch (e) {
+      } catch (e: any) {
         setError(e);
       }
       setDoingIt(false);
@@ -66,7 +66,7 @@ const Settings_Accounts: NextPage = () => {
         await confirmAccountDeletion({ variables: { token } });
         // Display confirmation
         setDeleted(true);
-      } catch (e) {
+      } catch (e: any) {
         setError(e);
       }
       setDeleting(false);

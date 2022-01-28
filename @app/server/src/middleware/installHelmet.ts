@@ -24,8 +24,9 @@ const CSP_DIRECTIVES = {
 
 export default function installHelmet(app: Express) {
   app.use(
-    helmet(
-      isDevOrTest
+    helmet({
+      crossOriginEmbedderPolicy: false, // Enables prettier script and SVG icon in GraphiQL
+      ...(isDevOrTest
         ? {
             contentSecurityPolicy: {
               directives: {
@@ -42,7 +43,7 @@ export default function installHelmet(app: Express) {
                 ...CSP_DIRECTIVES,
               },
             },
-          }
-    )
+          }),
+    })
   );
 }

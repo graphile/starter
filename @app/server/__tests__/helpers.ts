@@ -130,7 +130,7 @@ export const teardown = async () => {
     ctx = null;
     rootPgPool.end();
     return null;
-  } catch (e) {
+  } catch (e: any) {
     console.error(e);
     return null;
   }

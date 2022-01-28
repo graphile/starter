@@ -24,7 +24,7 @@ afterAll(() => {
         const pool = pools[key];
         delete pools[key];
         await pool.end();
-      } catch (e) {
+      } catch (e: any) {
         console.error("Failed to release connection!");
         console.error(e);
       }
@@ -75,7 +75,7 @@ export const asRoot = async <T>(
   } finally {
     try {
       await client.query("select set_config('role', $1, true)", [role]);
-    } catch (e) {
+    } catch (e: any) {
       // Transaction was probably aborted, don't clobber the error
     }
   }

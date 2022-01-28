@@ -6,13 +6,13 @@
     "cy": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" cypress",
     "open": "yarn cy open",
     "run": "yarn cy run",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest --passWithNoTests"
   },
   "devDependencies": {
-    "@cypress/webpack-preprocessor": "^5.5.0",
+    "@cypress/webpack-preprocessor": "^5.11.0",
     "cross-env": "^7.0.2",
-    "cypress": "^7.4.0",
-    "jest": "^27.0.1",
-    "webpack": "^4.43.0"
+    "cypress": "^9.3.1",
+    "jest": "^27.4.7",
+    "webpack": "^5.67.0"
   }
 }

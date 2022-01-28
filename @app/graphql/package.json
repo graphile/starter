@@ -8,20 +8,20 @@
     "build": "yarn codegen && tsc -b",
     "watch": "yarn codegen --watch",
     "codegen": "graphql-codegen --config codegen.yml",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest --passWithNoTests"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.19",
+    "@apollo/client": "^3.5.8",
     "react": "^17.0.2",
-    "tslib": "^2.2.0"
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
-    "@graphql-codegen/add": "^2.0.1",
-    "@graphql-codegen/cli": "^1.17.9",
-    "@graphql-codegen/typescript": "^1.17.10",
-    "@graphql-codegen/typescript-operations": "^1.17.8",
-    "@graphql-codegen/typescript-react-apollo": "2.2.5",
+    "@graphql-codegen/add": "^3.1.1",
+    "@graphql-codegen/cli": "^2.4.0",
+    "@graphql-codegen/typescript": "^2.4.2",
+    "@graphql-codegen/typescript-operations": "^2.2.2",
+    "@graphql-codegen/typescript-react-apollo": "3.2.4",
     "cross-env": "^7.0.2",
-    "jest": "^27.0.1"
+    "jest": "^27.4.7"
   }
 }

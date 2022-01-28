@@ -4,20 +4,20 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -b",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest --passWithNoTests"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.6.2",
-    "@apollo/client": "^3.3.19",
+    "@ant-design/icons": "^4.7.0",
+    "@apollo/client": "^3.5.8",
     "@app/graphql": "0.0.0",
-    "antd": "4.15.6",
-    "next": "^10.2.3",
+    "antd": "4.18.5",
+    "next": "^12.0.8",
     "react": "^17.0.2",
-    "tslib": "^2.2.0"
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "jest": "^27.0.1",
-    "typescript": "^4.0.2"
+    "jest": "^27.4.7",
+    "typescript": "^4.5.5"
   }
 }

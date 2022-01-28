@@ -1,7 +1,6 @@
 import { Task } from "graphile-worker";
 import { template as lodashTemplate } from "lodash";
-// @ts-ignore
-import mjml2html = require("mjml");
+import mjml2html from "mjml";
 import {
   emailLegalText as legalText,
   fromEmail,

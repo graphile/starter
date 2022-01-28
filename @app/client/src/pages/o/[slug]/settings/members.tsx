@@ -124,7 +124,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = (
         });
         message.success(`'${inviteText}' invited.`);
         form.setFieldsValue({ inviteText: "" });
-      } catch (e) {
+      } catch (e: any) {
         // TODO: handle this through the interface
         message.error(
           "Could not invite to organization: " +
@@ -207,7 +207,7 @@ const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = (
         },
         refetchQueries: ["OrganizationMembers"],
       });
-    } catch (e) {
+    } catch (e: any) {
       message.error("Error occurred when removing member: " + e.message);
     }
   }, [node.user, organization.id, removeMember]);
@@ -222,7 +222,7 @@ const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = (
         },
         refetchQueries: ["OrganizationMembers"],
       });
-    } catch (e) {
+    } catch (e: any) {
       message.error("Error occurred when transferring ownership: " + e.message);
     }
   }, [node.user, organization.id, transferOwnership]);
@@ -237,7 +237,7 @@ const OrganizationMemberListItem: FC<OrganizationMemberListItemProps> = (
         },
         refetchQueries: ["OrganizationMembers"],
       });
-    } catch (e) {
+    } catch (e: any) {
       message.error(
         "Error occurred when transferring billing contact: " + e.message
       );

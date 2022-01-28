@@ -68,7 +68,7 @@ export class GraphileApolloLink extends ApolloLink {
             observer.next(data);
             observer.complete();
           }
-        } catch (e) {
+        } catch (e: any) {
           if (!observer.closed) {
             observer.error(e);
           } else {

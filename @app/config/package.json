@@ -6,13 +6,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest --passWithNoTests"
   },
   "dependencies": {
-    "dotenv": "^10.0.0"
+    "dotenv": "^14.3.2"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "jest": "^27.0.1"
+    "jest": "^27.4.7"
   }
 }

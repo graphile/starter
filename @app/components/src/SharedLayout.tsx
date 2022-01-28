@@ -109,7 +109,7 @@ export function SharedLayout({
       try {
         await logout();
         client.resetStore();
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
         // Something went wrong; redirect to /logout to force logout.
         window.location.href = "/logout";

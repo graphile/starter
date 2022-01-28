@@ -68,7 +68,7 @@ export default (app: Express) => {
          */
         res.json(result);
       }
-    } catch (e) {
+    } catch (e: any) {
       /*
        * If anything goes wrong, let the test runner know so that it can fail
        * the test.
