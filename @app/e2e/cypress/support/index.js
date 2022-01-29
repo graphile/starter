@@ -27,13 +27,4 @@ Cypress.on("uncaught:exception", (err) => {
   if (err.message.includes("ResizeObserver loop limit exceeded")) {
     return false;
   }
-
-  // This is temporary workaround for: https://github.com/react-component/dropdown/pull/193
-  if (
-    err.message.includes(
-      "Cannot read properties of null (reading 'triggerRef')"
-    )
-  ) {
-    return false;
-  }
 });
