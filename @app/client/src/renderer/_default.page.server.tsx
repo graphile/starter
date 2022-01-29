@@ -4,12 +4,15 @@ import { createStylesServer, ServerStyles } from "@mantine/ssr";
 import React from "react";
 import ReactDOMServer, { renderToString } from "react-dom/server";
 import { FilledContext, Helmet, HelmetProvider } from "react-helmet-async";
+import { MantineProvider } from "@mantine/core";
 import type { PageContextBuiltIn } from "vite-plugin-ssr";
 import { dangerouslySkipEscape, escapeInject } from "vite-plugin-ssr";
 
 import logoUrl from "./logo.svg";
 import { PageShell } from "./PageShell";
 import type { PageContext } from "./types";
+import { PageContextProvider } from "./usePageContext";
+import { App } from "./App";
 
 export { render };
 export { onBeforeRender };
@@ -22,30 +25,25 @@ export const passToClient = [
   "pageProps",
   "ROOT_URL",
   "routeParams",
+  "renderedStyles",
   "urlPathname",
 ];
 
 const stylesServer = createStylesServer();
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
-  const helmetContext: any = {};
   const { Page, pageProps, apolloClient, renderedStyles } = pageContext;
+  const helmetContext: any = {};
   const pageHtml = ReactDOMServer.renderToString(
-    <HelmetProvider context={helmetContext}>
-      <Helmet>
-        <meta charSet="UTF-8" />
-        <link rel="icon" href={logoUrl} />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Vite SSR app</title>
-      </Helmet>
-      <ApolloProvider client={apolloClient}>
-        <PageShell pageContext={pageContext}>
-          <Page {...pageProps} />
-        </PageShell>
-      </ApolloProvider>
-    </HelmetProvider>
+    <App
+      pageContext={pageContext}
+      apolloClient={apolloClient}
+      helmetContext={helmetContext}
+    >
+      <Page {...pageProps} />
+    </App>
   );
-  const { helmet } = helmetContext as FilledContext;
+  const { helmet } = helmetContext;
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html lang="en" ${dangerouslySkipEscape(helmet.htmlAttributes.toString())}>
@@ -68,17 +66,18 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
   };
 }
 
-// TODO mc 2022-01-28: this seems redundant with render() above
 async function onBeforeRender(pageContext: PageContext) {
-  const { Page, apolloClient } = pageContext;
+  const { Page, pageProps, apolloClient } = pageContext;
   const helmetContext: any = pageContext?.helmetContext || {};
 
   const tree = (
-    <HelmetProvider context={helmetContext}>
-      <ApolloProvider client={apolloClient}>
-        <Page />
-      </ApolloProvider>
-    </HelmetProvider>
+    <App
+      pageContext={pageContext}
+      apolloClient={apolloClient}
+      helmetContext={helmetContext}
+    >
+      <Page {...pageProps} />
+    </App>
   );
   // TODO mc 2022-01-28: review add'l logic in next-with-apollo source
   // https://github.com/lfades/next-with-apollo/blob/master/src/withApollo.tsx#L73

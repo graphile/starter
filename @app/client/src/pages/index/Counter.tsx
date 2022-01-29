@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import { Button } from "@mantine/core";
+import React, { useState } from "react";
 
-export { Counter }
+export { Counter };
 
 function Counter() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
   return (
-    <button type="button" onClick={() => setCount((count) => count + 1)}>
+    <Button onClick={() => setCount((count) => count + 1)}>
       Counter {count}
-    </button>
-  )
+    </Button>
+  );
 }
