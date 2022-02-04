@@ -32,24 +32,26 @@ function Page() {
 
           <Text>Please read the next few sections before continuing.</Text>
 
-          <Heading order={4}>Next.js and page load delays: dev only</Heading>
+          <Heading order={4}>Vite-SSR and page load delays: dev only</Heading>
           <Text>
-            We use Next.js to serve the React app. This gives us server-side
-            rendering, routing, bundle splitting, hot reloading, and much more.
-            However, in development when you visit a page it must first be
-            loaded from the file system and transpiled and bundled by the
-            server, served to the client, and then executed. This means there
-            can be a small delay when loading a web page for the first time in
-            development. In production, this delay should be vastly smaller, and
-            can be eliminated with pre-fetching. You can read more about this in
-            the{" "}
-            <a href="https://nextjs.org/docs#prefetching-pages">Next.js docs</a>
+            We use vite-plugin-ssr to serve the React app. This gives us
+            server-side rendering, routing, bundle splitting, hot reloading, and
+            much more. However, in development when you visit a page it must
+            first be loaded from the file system and transpiled and bundled by
+            the server, served to the client, and then executed. This means
+            there can be a small delay when loading a web page for the first
+            time in development. In production, this delay should be vastly
+            smaller, and can be eliminated with pre-fetching. You can read more
+            about this in the{" "}
+            <a href="https://vite-plugin-ssr.com/useClientRouter#link-prefetching">
+              Vite-plugin-ssr docs
+            </a>
           </Text>
 
           <Heading order={4}>Page hangs: development only</Heading>
           <Text>
-            If the page hangs this is likely because the Next server was
-            restarted. Please reload the page.
+            If the page hangs this is likely because the vite-plugin-ssr server
+            was restarted. Please reload the page.
           </Text>
 
           <Heading order={4}>Emails</Heading>
@@ -79,8 +81,8 @@ function Page() {
 
           <Heading order={4}>
             This page:{" "}
-            <a href="https://github.com/graphile/starter/blob/main/@app/client/src/pages/index.tsx">
-              <code>@app/client/src/pages/index.tsx</code>
+            <a href="https://github.com/marcelchastain/graphile-starter-vite/blob/main/@app/client/src/pages/index.page.tsx">
+              <code>@app/client/src/pages/index.page.tsx</code>
             </a>
           </Heading>
           <Text>
@@ -90,7 +92,7 @@ function Page() {
 
           <Heading order={4}>
             The server:{" "}
-            <a href="https://github.com/graphile/starter/blob/main/@app/server/src/index.ts">
+            <a href="https://github.com/marcelchastain/graphile-starter-vite/blob/main/@app/server/src/index.ts">
               <code>@app/server/src/index.ts</code>
             </a>
           </Heading>
@@ -162,7 +164,7 @@ function Page() {
           <ol>
             <Li>
               Download and extract a zip of the{" "}
-              <a href="https://github.com/graphile/starter/releases">
+              <a href="https://github.com/marcelchastain/graphile-starter-vite/releases">
                 latest release from GitHub
               </a>
             </Li>
@@ -251,9 +253,9 @@ function Page() {
 
           <Heading order={4}>Validation</Heading>
           <Text>
-            We use {/*// TODO chakra forms */}
-            <a href="https://ant.design/components/form/">AntD's forms</a>, so
-            validation is provided via these. We've shown how to connect
+            We use{" "}
+            <a href="https://mantine.dev/hooks/use-form/">Mantine's forms</a>,
+            so validation is provided via these. We've shown how to connect
             server-side errors into the form validation, for example try
             registering a new account using the email address of an account{" "}
             <strong>that has already been verified</strong>.
