@@ -1,13 +1,20 @@
+import { viteCommonjs } from "@originjs/vite-plugin-commonjs";
 import react from "@vitejs/plugin-react";
 import { UserConfig } from "vite";
+import EnvironmentPlugin from "vite-plugin-environment";
 import ssr from "vite-plugin-ssr/plugin";
-import Icons from "unplugin-icons/vite";
 
 const config: UserConfig = {
-  plugins: [react(), Icons({}), ssr()],
-  root: "./src",
-  define: {
-    __ROOT_URL__: JSON.stringify(process.env.ROOT_URL),
+  plugins: [
+    EnvironmentPlugin(["ROOT_URL"]),
+    // This seems to still be needed for @app/config
+    viteCommonjs(),
+    react(),
+    ssr(),
+  ],
+  // root: "./src",
+  optimizeDeps: {
+    include: ["@app/config", "@app/graphql", "@app/lib"],
   },
 };
 

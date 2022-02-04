@@ -13,7 +13,7 @@ const isDevOrTest =
 
 const CSP_DIRECTIVES = {
   ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-  "script-src": ["'self'", "'unsafe-inline'"],
+  "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
   "connect-src": [
     "'self'",
     // Safari doesn't allow using wss:// origins as 'self' from
@@ -34,7 +34,7 @@ export default function installHelmet(app: Express) {
               directives: {
                 ...CSP_DIRECTIVES,
                 // Dev needs 'unsafe-inline' when using vite-ssr
-                "script-src": ["'self'", "'unsafe-inline'"],
+                "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
               },
             },
           }

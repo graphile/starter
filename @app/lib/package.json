@@ -2,29 +2,34 @@
   "name": "@app/lib",
   "version": "0.0.0",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -b",
+    "build": "yarn build:es2015 && yarn build:cjs",
+    "build:es2015": "tsc --module es2015 --target es2015 --outdir es2015",
+    "build:cjs": "tsc --module commonjs --target es5 --outdir dist",
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
+  },
+  "exports": {
+    ".": {
+      "import": "./es2015/index.js",
+      "require": "./dist/index.js"
+    }
   },
   "dependencies": {
     "@apollo/client": "^3.3.19",
     "graphql": "^15.4.0",
     "graphql-ws": "^4.5.1",
-    "next": "^10.2.3",
-    "next-with-apollo": "^5.1.1",
-    "rc-field-form": "^1.20.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "tslib": "^2.2.0",
+    "tslib": "^2.3.1",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.8",
-    "@types/zxcvbn": "^4.4.0",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "jest": "^27.0.1",
     "postgraphile": "^4.12.1",
-    "typescript": "^4.0.2"
+    "typescript": "^4.5.5"
   }
 }

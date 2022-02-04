@@ -60,7 +60,7 @@ class WebSocketLink extends ApolloLink {
 let _rootURL: string | null = null;
 function createWsClient() {
   if (!_rootURL) {
-    throw new Error("No ROOT_URL");
+    throw new Error("client createWsClient No ROOT_URL");
   }
   const url = `${_rootURL.replace(/^http/, "ws")}/graphql`;
   return createClient({

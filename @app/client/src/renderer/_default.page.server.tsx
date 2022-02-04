@@ -1,18 +1,14 @@
-import { ApolloProvider } from "@apollo/client";
+import "./index.css";
+
 import { getDataFromTree } from "@apollo/client/react/ssr";
 import { createStylesServer, ServerStyles } from "@mantine/ssr";
 import React from "react";
 import ReactDOMServer, { renderToString } from "react-dom/server";
-import { FilledContext, Helmet, HelmetProvider } from "react-helmet-async";
-import { MantineProvider } from "@mantine/core";
 import type { PageContextBuiltIn } from "vite-plugin-ssr";
 import { dangerouslySkipEscape, escapeInject } from "vite-plugin-ssr";
 
-import logoUrl from "./logo.svg";
-import { PageShell } from "./PageShell";
-import type { PageContext } from "./types";
-import { PageContextProvider } from "./usePageContext";
 import { App } from "./App";
+import type { PageContext } from "./types";
 
 export { render };
 export { onBeforeRender };
@@ -31,7 +27,9 @@ export const passToClient = [
 
 const stylesServer = createStylesServer();
 
-async function render(pageContext: PageContextBuiltIn & PageContext) {
+async function render(
+  pageContext: PageContextBuiltIn & PageContext
+): Promise<{ pageContext: {}; documentHtml: any }> {
   const { Page, pageProps, apolloClient, renderedStyles } = pageContext;
   const helmetContext: any = {};
   const pageHtml = ReactDOMServer.renderToString(

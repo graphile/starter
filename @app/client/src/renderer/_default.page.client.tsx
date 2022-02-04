@@ -1,17 +1,18 @@
 import "nprogress/nprogress.css";
+import "./index.css";
 
-import { ApolloClient, ApolloProvider } from "@apollo/client";
-import { MantineProvider } from "@mantine/core";
+import { ApolloClient } from "@apollo/client";
 import * as NProgress from "nprogress";
 import React from "react";
 import ReactDOM from "react-dom";
-import { Helmet, HelmetProvider } from "react-helmet-async";
-import type { PageContextBuiltInClient } from "vite-plugin-ssr/client/router";
-import { useClientRouter } from "vite-plugin-ssr/client/router";
+import {
+  PageContextBuiltInClient,
+  useClientRouter,
+} from "vite-plugin-ssr/client/router";
 
+import { App } from "./App";
 import { makeApolloClient } from "./makeApolloClient";
 import type { PageContext } from "./types";
-import { App } from "./App";
 
 let apolloClient: ApolloClient<any>;
 
@@ -27,6 +28,11 @@ const { hydrationPromise } = useClientRouter({
         ROOT_URL: pageContext.ROOT_URL,
       });
     }
+
+    // Updated state is being passed to us by the server on every page load,
+    // which got it from getDataFromTree(), so we need to restore on every
+    // page transition.
+    apolloClient.restore(apolloInitialState);
 
     const page = (
       <App

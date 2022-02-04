@@ -16,6 +16,7 @@ import { Client, createClient } from "graphql-ws";
 
 import { GraphileApolloLink } from "./GraphileApolloLink";
 
+// TODO mc-2022-02-01 don't use module-level vars to store state in esm on serverside
 let wsClient: Client | null = null;
 
 class WebSocketLink extends ApolloLink {

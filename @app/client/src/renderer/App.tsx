@@ -1,5 +1,6 @@
 import { ApolloClient, ApolloProvider } from "@apollo/client";
-import { MantineProvider } from "@mantine/core";
+import { MantineProvider, TypographyStylesProvider } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
 import React from "react";
 import { FilledContext, Helmet, HelmetProvider } from "react-helmet-async";
 
@@ -20,31 +21,27 @@ function App({
   apolloClient: ApolloClient<any>;
   helmetContext: FilledContext;
 }) {
-  // apolloClient
   return (
-    <React.StrictMode>
-      <HelmetProvider context={helmetContext}>
-        <Helmet>
-          <meta charSet="UTF-8" />
-          <link rel="icon" href={logoUrl} />
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0"
-          />
-          <title>Vite SSR app</title>
-        </Helmet>
-        <MantineProvider
-          withNormalizeCSS
-          withGlobalStyles
-          theme={{ colorScheme: "dark" }}
-        >
+    <HelmetProvider context={helmetContext}>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <link rel="icon" href={logoUrl} />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vite SSR app</title>
+      </Helmet>
+      <MantineProvider
+        withNormalizeCSS
+        withGlobalStyles
+        theme={{ colorScheme: "dark" }}
+      >
+        <NotificationsProvider>
           <ApolloProvider client={apolloClient}>
             <PageContextProvider pageContext={pageContext}>
-              {children}
+              <TypographyStylesProvider>{children}</TypographyStylesProvider>
             </PageContextProvider>
           </ApolloProvider>
-        </MantineProvider>
-      </HelmetProvider>
-    </React.StrictMode>
+        </NotificationsProvider>
+      </MantineProvider>
+    </HelmetProvider>
   );
 }

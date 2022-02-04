@@ -5,15 +5,23 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "build": "yarn codegen && tsc -b",
+    "build": "yarn codegen && yarn build:es2015 && yarn build:cjs",
+    "build:es2015": "tsc --module es2015 --target es2015 --outdir es2015",
+    "build:cjs": "tsc --module commonjs --target es5 --outdir .",
     "watch": "yarn codegen --watch",
     "codegen": "graphql-codegen --config codegen.yml",
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
   },
+  "exports": {
+    ".": {
+      "import": "./es2015/index.js",
+      "require": "./index.js"
+    }
+  },
   "dependencies": {
     "@apollo/client": "^3.3.19",
     "react": "^17.0.2",
-    "tslib": "^2.2.0"
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^2.0.1",

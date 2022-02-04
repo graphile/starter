@@ -1,7 +1,6 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "strict": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "target": "esnext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
@@ -12,16 +11,11 @@
     "skipLibCheck": true,
     "esModuleInterop": true
   },
+  "exclude": ["node_modules"],
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],
   "references": [
     {"path": "../config"},
     {"path": "../lib"},
     {"path": "../graphql"},
-  ],
-  "ts-node": {
-    "transpileOnly": true,
-    "compilerOptions": {
-      "module": "CommonJS"
-    }
-  }
+  ]
 }
