@@ -10,8 +10,8 @@
     "@ant-design/icons": "^4.7.0",
     "@apollo/client": "^3.5.8",
     "@app/graphql": "0.0.0",
-    "antd": "4.18.5",
-    "next": "^12.0.8",
+    "antd": "4.18.6",
+    "next": "^12.0.10",
     "react": "^17.0.2",
     "tslib": "^2.3.1"
   },
