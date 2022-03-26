@@ -11,16 +11,16 @@
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest --passWithNoTests"
   },
   "dependencies": {
-    "@apollo/client": "^3.5.8",
+    "@apollo/client": "^3.5.10",
     "react": "^17.0.2",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^3.1.1",
-    "@graphql-codegen/cli": "^2.4.0",
-    "@graphql-codegen/typescript": "^2.4.2",
-    "@graphql-codegen/typescript-operations": "^2.2.3",
-    "@graphql-codegen/typescript-react-apollo": "3.2.5",
+    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/typescript": "^2.4.8",
+    "@graphql-codegen/typescript-operations": "^2.3.5",
+    "@graphql-codegen/typescript-react-apollo": "3.2.11",
     "cross-env": "^7.0.2",
     "jest": "^27.4.7"
   }

@@ -15,10 +15,10 @@
   },
   "dependencies": {
     "cross-env": "^7.0.3",
-    "graphile-migrate": "^1.2.0"
+    "graphile-migrate": "^1.3.0"
   },
   "devDependencies": {
-    "@types/pg": "^8.6.4",
+    "@types/pg": "^8.6.5",
     "graphile-worker": "^0.12.2",
     "jest": "^27.4.7",
     "lodash": "^4.17.15",

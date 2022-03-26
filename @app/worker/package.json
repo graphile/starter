@@ -12,18 +12,18 @@
   },
   "dependencies": {
     "@app/config": "0.0.0",
-    "@types/html-to-text": "^8.0.1",
-    "@types/lodash": "^4.14.178",
+    "@types/html-to-text": "^8.1.0",
+    "@types/lodash": "^4.14.180",
     "@types/mjml": "^4.7.0",
     "@types/nodemailer": "^6.4.4",
-    "aws-sdk": "^2.1073.0",
+    "aws-sdk": "^2.1101.0",
     "chalk": "^4.1.2",
     "cross-env": "^7.0.3",
     "graphile-worker": "^0.12.2",
     "html-to-text": "^8.1.0",
     "lodash": "^4.17.21",
     "mjml": "^4.12.0",
-    "nodemailer": "^6.7.2",
+    "nodemailer": "^6.7.3",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
