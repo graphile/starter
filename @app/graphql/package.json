@@ -18,9 +18,9 @@
   "devDependencies": {
     "@graphql-codegen/add": "^3.1.1",
     "@graphql-codegen/cli": "^2.6.2",
-    "@graphql-codegen/typescript": "^2.4.8",
-    "@graphql-codegen/typescript-operations": "^2.3.5",
-    "@graphql-codegen/typescript-react-apollo": "3.2.11",
+    "@graphql-codegen/typescript": "^2.4.10",
+    "@graphql-codegen/typescript-operations": "^2.3.7",
+    "@graphql-codegen/typescript-react-apollo": "3.2.13",
     "cross-env": "^7.0.2",
     "jest": "^27.4.7"
   }

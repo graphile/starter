@@ -13,13 +13,13 @@
     "@app/config": "0.0.0",
     "@app/graphql": "0.0.0",
     "@app/lib": "0.0.0",
-    "@types/lodash": "^4.14.180",
+    "@types/lodash": "^4.14.182",
     "@types/node": "^16.11.21",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.43",
     "antd": "4.19.3",
     "antd-dayjs-webpack-plugin": "^1.0.6",
-    "dayjs": "^1.11.0",
+    "dayjs": "^1.11.2",
     "graphql": "^15.4.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.1.1",
-    "babel-plugin-import": "^1.13.0",
+    "babel-plugin-import": "^1.13.5",
     "cross-env": "^7.0.2",
     "jest": "^27.4.7"
   }
