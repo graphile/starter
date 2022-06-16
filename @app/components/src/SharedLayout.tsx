@@ -254,7 +254,10 @@ export function SharedLayout({
                   <Avatar>
                     {(data.currentUser.name && data.currentUser.name[0]) || "?"}
                   </Avatar>
-                  <Warn okay={data.currentUser.isVerified}>
+                  <Warn
+                    okay={data.currentUser.isVerified}
+                    data-cy="header-unverified-warning"
+                  >
                     <span style={{ marginLeft: 8, marginRight: 8 }}>
                       {data.currentUser.name}
                     </span>

@@ -225,6 +225,13 @@ async function runCommand(
     const { email = "testuser@example.com" } = payload;
     const userEmailSecrets = await getUserEmailSecrets(rootPgPool, email);
     return userEmailSecrets;
+  } else if (command === "verifyUser") {
+    const { username = "testuser" } = payload;
+    await rootPgPool.query(
+      "update app_public.users SET is_verified = TRUE where username = $1",
+      [username]
+    );
+    return { success: true };
   } else {
     throw new Error(`Command '${command}' not understood.`);
   }

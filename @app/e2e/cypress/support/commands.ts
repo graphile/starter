@@ -91,6 +91,15 @@ function serverCommand(
   verification_token: string | null;
 }>;
 
+/**
+ * Marks the given user as verified. Used for testing live user subscription
+ * updates.
+ */
+function serverCommand(
+  command: "verifyUser",
+  payload?: { username?: string }
+): Chainable<{ success: true }>;
+
 // The actual implementation of the 'serverCommand' function.
 function serverCommand(command: string, payload?: any): any {
   const url = `${Cypress.env(
