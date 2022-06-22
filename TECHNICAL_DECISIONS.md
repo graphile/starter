@@ -147,7 +147,7 @@ information, see the
   - Handle errors in email verification flow
   - Login (with mixed case username/email, or via social)
   - Email management (add more, delete old, change primary, resend verification)
-  - `User.isVerified` to check they have at least on verified email (can use
+  - `User.isVerified` to check they have at least one verified email (can use
     this to govern further permissions)
   - Update profile information
   - Change password flow
