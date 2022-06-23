@@ -201,6 +201,8 @@ this list:
   Next.js for Vue users
 - [Create React App variant](https://github.com/alexk111/graphile-starter-cra) -
   replaces Next.js for apps without Server Side Rendering
+- [Remix variant](https://github.com/fnimick/graphile-starter-remix) - replaces
+  Next.js with Remix
 
 **VARIANTS ARE NOT OFFICIALLY SUPPORTED** and may become out of date or
 unmaintained over time. If you have issues with variants, please submit issues
