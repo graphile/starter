@@ -1,4 +1,24 @@
-# Graphile Starter
+# Graphile Starter with Remix
+
+This is a fork of the original graphile starter, with Next replaced with
+[Remix](https://remix.run). This provides the same SSR and rapid development
+abilities while also embracing the new layout route model.
+
+GraphQL queries and mutations are performed via Remix loaders and actions to
+allow Remix optimizations and the form model to work to their fullest.
+Subscriptions are still handled in the client via an Apollo websocket link, but
+simply retrigger the remix loaders on a new data event to keep the display logic
+clean. This means that this is **not suitable for high-throughput subscription
+use cases**.
+
+NOTE: The migration from `graphile/starter`'s NextJS project is incomplete, but
+this provides a good base for beginning a new Postgraphile/Remix project.
+GraphQL queries, subscriptions, and other core elements all work as expected.
+Some account management and all organization features are missing.
+
+---
+
+# Original Readme
 
 ## Take it for a spin!
 
@@ -121,7 +141,8 @@ And please give some love to our featured sponsors 🤩:
 
 ## Table of contents
 
-- [Graphile Starter](#graphile-starter)
+- [Graphile Starter with Remix](#graphile-starter-with-remix)
+- [Original Readme](#original-readme)
   - [Take it for a spin!](#take-it-for-a-spin)
   - [NOT FOR BEGINNERS](#not-for-beginners)
   - [Purpose](#purpose)
@@ -166,11 +187,6 @@ There are four tenets to Graphile Starter:
 Graphile Starter is easy to start and everything is pre-configured as much as
 possible.
 
-NOTE: The migration from `graphile/starter`'s NextJS project is incomplete, but
-this provides a good base for beginning a new Postgraphile/Remix project.
-GraphQL queries, subscriptions, and other core elements all work as expected.
-Some account management and all organization features are missing.
-
 **Speedy development**: hot reloading, easy debugging, Graphile's
 [idempotent migration system](https://github.com/graphile/migrate),
 [job queue](/TECHNICAL_DECISIONS.md#job-queue) and server middleware ready to
@@ -206,6 +222,8 @@ this list:
   Next.js for Vue users
 - [Create React App variant](https://github.com/alexk111/graphile-starter-cra) -
   replaces Next.js for apps without Server Side Rendering
+- [Remix variant](https://github.com/fnimick/graphile-starter-remix) - replaces
+  Next.js with Remix
 
 **VARIANTS ARE NOT OFFICIALLY SUPPORTED** and may become out of date or
 unmaintained over time. If you have issues with variants, please submit issues
