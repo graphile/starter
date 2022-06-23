@@ -7,7 +7,7 @@ ARG TARGET="server"
 ################################################################################
 # Build stage 1 - `yarn build`
 
-FROM node:12-alpine as builder
+FROM node:14-alpine as builder
 # Import our shared args
 ARG NODE_ENV
 ARG ROOT_URL
@@ -29,7 +29,7 @@ RUN yarn run build
 ################################################################################
 # Build stage 2 - COPY the relevant things (multiple steps)
 
-FROM node:12-alpine as clean
+FROM node:14-alpine as clean
 # Import our shared args
 ARG NODE_ENV
 ARG ROOT_URL
@@ -40,12 +40,10 @@ COPY --from=builder /app/@app/config/ /app/@app/config/
 COPY --from=builder /app/@app/db/ /app/@app/db/
 COPY --from=builder /app/@app/graphql/ /app/@app/graphql/
 COPY --from=builder /app/@app/lib/ /app/@app/lib/
-COPY --from=builder /app/@app/components/package.json /app/@app/components/
-COPY --from=builder /app/@app/components/dist/ /app/@app/components/dist/
-COPY --from=builder /app/@app/client/package.json /app/@app/client/package.json
-COPY --from=builder /app/@app/client/assets/ /app/@app/client/assets/
-COPY --from=builder /app/@app/client/src/next.config.js /app/@app/client/src/next.config.js
-COPY --from=builder /app/@app/client/.next /app/@app/client/.next
+COPY --from=builder /app/@app/client/package.json /app/@app/-client/package.json
+COPY --from=builder /app/@app/client/public/ /app/@app/client/public/
+COPY --from=builder /app/@app/client/remix.config.js /app/@app/client/remix.config.js
+COPY --from=builder /app/@app/client/build /app/@app/client/build
 COPY --from=builder /app/@app/server/package.json /app/@app/server/
 COPY --from=builder /app/@app/server/postgraphile.tags.jsonc /app/@app/server/
 COPY --from=builder /app/@app/server/dist/ /app/@app/server/dist/
@@ -66,7 +64,7 @@ RUN rm -Rf /app/node_modules /app/@app/*/node_modules
 ################################################################################
 # Build stage FINAL - COPY everything, once, and then do a clean `yarn install`
 
-FROM node:12-alpine
+FROM node:14-alpine
 
 EXPOSE $PORT
 WORKDIR /app/

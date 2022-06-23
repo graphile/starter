@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.19",
+    "@app/graphql": "0.0.0",
     "graphql": "^15.4.0",
     "graphql-ws": "^4.5.1",
     "next": "^10.2.3",

@@ -37,5 +37,12 @@ export function getCodeFromError(
   error: null | Error | ApolloError | GraphQLError
 ): null | string {
   const err = getExceptionFromError(error);
+  // console.log(err);
   return (err && err["code"]) || null;
+}
+
+export class GraphqlQueryError extends Error {
+  constructor(message: string, public graphQLErrors: GraphQLError[]) {
+    super(message);
+  }
 }

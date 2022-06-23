@@ -61,6 +61,10 @@ runMain(async () => {
     })
   );
 
+  // Run graphql codegen (necessary for server build)
+  runSync(yarnCmd, ["graphql", "codegen"]);
+  // Build @app/lib
+  runSync(yarnCmd, ["lib", "build"]);
   // And perform setup
   runSync(yarnCmd, ["server", "build"]);
 

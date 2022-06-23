@@ -1,0 +1,52 @@
+/*
+ * Work around a bug in antd where a <Button type="primary" block href="...">
+ * has blue text on blue background
+ */
+a.ant-btn-primary {
+  color: white;
+}
+a.ant-btn-primary:hover {
+  color: #f0faff;
+}
+
+/*
+Allow styling of button as links.
+*/
+button.button-link {
+  align-items: normal;
+  background-color: rgba(0, 0, 0, 0);
+  border-color: rgb(48, 85, 238);
+  border-style: none;
+  box-sizing: content-box;
+  color: rgb(48, 85, 238);
+  cursor: pointer;
+  display: inline;
+  font: inherit;
+  height: auto;
+  padding: 0;
+  perspective-origin: 0 0;
+  text-align: start;
+  text-decoration: none;
+  transform-origin: 0 0;
+  width: auto;
+  -moz-appearance: none;
+  -webkit-logical-height: 1em; /* Chrome ignores auto, so we have to use this hack to set the correct height  */
+  -webkit-logical-width: auto; /* Chrome ignores auto, but here for completeness */
+}
+
+/* Mozilla uses a pseudo-element to show focus on buttons, */
+/* but anchors are highlighted via the focus pseudo-class. */
+
+@supports (-moz-appearance: none) {
+  /* Mozilla-only */
+  button.button-link::-moz-focus-inner {
+    /* reset any predefined properties */
+    border: none;
+    padding: 0;
+  }
+  button.button-link:focus {
+    /* add outline to focus pseudo-class */
+    outline-style: dotted;
+    outline-width: 1px;
+  }
+}

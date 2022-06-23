@@ -2,16 +2,19 @@
 
 ## Table of contents
 
-- [Overview](#overview)
-- [Initial database](#initial-database)
-- [graphile-migrate](#graphile-migrate)
-- [graphile-worker](#graphile-worker)
-- [Server](#server)
-- [Cypress e2e tests](#cypress-e2e-tests)
-- [Next.js](#nextjs)
-- [AntD](#antd)
-- [OAuth](#oauth)
+- [Technical Decisions in Graphile Starter](#technical-decisions-in-graphile-starter)
+  - [Table of contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Initial database](#initial-database)
+  - [graphile-migrate](#graphile-migrate)
+  - [graphile-worker](#graphile-worker)
+  - [Server](#server)
+  - [Cypress e2e tests](#cypress-e2e-tests)
+  - [Remix](#remix)
+  - [AntD](#antd)
+  - [OAuth](#oauth)
 - [Detailed list of technologies](#detailed-list-of-technologies)
+  - [TODO](#todo)
 
 ## Overview
 
@@ -75,15 +78,11 @@ covering loading the various pages, registering an account, logging in,
 verifying and managing your emails. You should be able to easily build on top of
 these tests to ensure that your project remains rock-solid at all times.
 
-## Next.js
+## Remix
 
-We use Next.js ([docs](https://nextjs.org/)) to handle the various common
-concerns of a React application for us (server-side rendering, routing,
-bundling, bundle-splitting, etc). The `@app/client/src/pages/_app.tsx` file is a
-[custom &lt;App&gt;](https://nextjs.org/docs#custom-app) which allows you to add
-any providers you need to. We've already set it up with `withApollo` from
-`@app/client/src/lib/withApollo` which includes all the Apollo configuration,
-including the client URL.
+We use Remix ([docs](https://remix.run/)) to handle the various common concerns
+of a React application for us (server-side rendering, routing, bundling,
+bundle-splitting, etc).
 
 ## AntD
 

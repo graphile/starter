@@ -1,5 +1,4 @@
 .env
-.next
 node_modules
 dist
 /heroku-setup
@@ -11,3 +10,5 @@ dist
 *.tsbuildinfo
 .ethereal
 yarn-error.log
+
+**/.DS_Store

@@ -103,6 +103,7 @@ export default function handleErrors(
       extensions: {
         exception,
       },
+      code,
     };
   });
 }

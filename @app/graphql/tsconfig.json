@@ -11,5 +11,5 @@
     "module": "commonjs",
     "jsx": "react"
   },
-  "include": ["index.tsx"]
+  "include": ["index.ts"]
 }

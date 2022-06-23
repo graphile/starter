@@ -114,7 +114,7 @@ export async function makeApp({
     await middleware.installCypressServerCommand(app);
   }
   await middleware.installPostGraphile(app);
-  await middleware.installSSR(app);
+  await middleware.installRemix(app);
 
   /*
    * Error handling middleware

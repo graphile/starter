@@ -5,12 +5,11 @@ export default (app: Express) => {
   const csrfProtection = csrf({
     // Store to the session rather than a Cookie
     cookie: false,
+  });
 
-    // Extract the CSRF Token from the `CSRF-Token` header.
-    value(req) {
-      const csrfToken = req.headers["csrf-token"];
-      return typeof csrfToken === "string" ? csrfToken : "";
-    },
+  const insecureCsrfProtection = csrf({
+    cookie: false,
+    ignoreMethods: ["GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"],
   });
 
   app.use((req, res, next) => {
@@ -22,8 +21,11 @@ export default (app: Express) => {
     ) {
       // Bypass CSRF for GraphiQL
       next();
-    } else {
+    } else if (req.path.startsWith("/graphql")) {
       csrfProtection(req, res, next);
+    } else {
+      // disable CSRF parsing for remix, but still add `req.csrfToken()` method
+      insecureCsrfProtection(req, res, next);
     }
   });
 };

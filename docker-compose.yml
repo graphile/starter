@@ -37,6 +37,8 @@ services:
       - "9678:9678"
       - "9876:9876"
       - "9757:9757"
+      # Remix websocket for live reload
+      - "8002:8002"
     depends_on:
       - db
     #* Overrides default command so things don't shut down after the process ends.
@@ -73,7 +75,6 @@ services:
       - nm_app_graphql:/work/@app/graphql/node_modules
       - nm_app_server:/work/@app/server/node_modules
       - nm_app_worker:/work/@app/worker/node_modules
-
       #* You may want to enable following lines
       #* to use your local configs inside container
       ## avoids vscode extensions reinstalls
@@ -104,6 +105,8 @@ services:
       - "9678:9678"
       - "9876:9876"
       - "9757:9757"
+      # Remix websocket for live reload
+      - "8002:8002"
     depends_on:
       - db
     # Overrides default command so things don't shut down after the process ends.
@@ -131,10 +134,7 @@ services:
     restart: unless-stopped
     networks:
       - default
-    command:
-      postgres -c logging_collector=on -c log_destination=stderr -c
-      log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c
-      log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
+    command: postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
 
 networks:
   default:
@@ -142,9 +142,7 @@ networks:
 
 volumes:
   # Postgres' data
-  db-volume:
-
-  # Node modules
+  db-volume: # Node modules
   nm_root:
   nm_app_client:
   nm_app_config:
@@ -153,5 +151,5 @@ volumes:
   nm_app_graphql:
   nm_app_server:
   nm_app_worker:
-  # used for keeeping vscode-extensions while rebuilding
-  # vscode-extensions:
+    # used for keeeping vscode-extensions while rebuilding
+    # vscode-extensions:

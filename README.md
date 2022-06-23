@@ -148,7 +148,7 @@ And please give some love to our featured sponsors 🤩:
 
 Graphile Starter is a full-stack [GraphQL](https://graphql.org/learn/) and
 [React](https://reactjs.org/) project, with server-side rendering (SSR) and
-routing thanks to [Next.js](https://nextjs.org/). The backend is a beautiful
+routing thanks to [Remix](https://remix.run/). The backend is a beautiful
 pairing of Node.js and PostgreSQL running on Express.js, enabled by
 [PostGraphile](https://www.graphile.org/postgraphile/) in library mode. The
 frontend uses the [AntD](https://ant.design/) design framework to accelerate
@@ -165,6 +165,11 @@ There are four tenets to Graphile Starter:
 
 Graphile Starter is easy to start and everything is pre-configured as much as
 possible.
+
+NOTE: The migration from `graphile/starter`'s NextJS project is incomplete, but
+this provides a good base for beginning a new Postgraphile/Remix project.
+GraphQL queries, subscriptions, and other core elements all work as expected.
+Some account management and all organization features are missing.
 
 **Speedy development**: hot reloading, easy debugging, Graphile's
 [idempotent migration system](https://github.com/graphile/migrate),
