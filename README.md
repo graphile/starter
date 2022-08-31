@@ -16,6 +16,9 @@ this provides a good base for beginning a new Postgraphile/Remix project.
 GraphQL queries, subscriptions, and other core elements all work as expected.
 Some account management and all organization features are missing.
 
+NOTE #2: A frontend migration to Tailwind + DaisyUI can be found under branch
+`tailwind`.
+
 ---
 
 # Original Readme
