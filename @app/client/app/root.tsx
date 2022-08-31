@@ -11,7 +11,6 @@ import {
   ScrollRestoration,
   useCatch,
 } from "@remix-run/react";
-import nprogressStyles from "nprogress/nprogress.css";
 import { useState } from "react";
 import { AuthenticityTokenProvider, useHydrated } from "remix-utils";
 
@@ -20,7 +19,7 @@ import { initApollo, resetWebsocketConnection } from "~/context/apollo.client";
 import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
 import { jsonTyped, useLoaderDataTyped } from "~/utils/remix-typed";
 
-import compiledStyles from "./css/main.css";
+import compiledStyles from "./styles/app.css";
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "New Remix App",
@@ -56,10 +55,6 @@ export function links() {
     {
       rel: "stylesheet",
       href: compiledStyles,
-    },
-    {
-      rel: "stylesheet",
-      href: nprogressStyles,
     },
   ];
 }

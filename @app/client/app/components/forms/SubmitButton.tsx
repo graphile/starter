@@ -1,17 +1,24 @@
-import type { ButtonProps } from "antd";
-import { Button } from "antd";
+import classNames from "classnames";
+import React from "react";
 import { useIsSubmitting } from "remix-validated-form";
 
-export const SubmitButton = ({ children, ...rest }: ButtonProps) => {
+export const SubmitButton = ({
+  children,
+  className,
+  ...rest
+}: React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>) => {
   const isSubmitting = useIsSubmitting();
   return (
-    <Button
-      htmlType="submit"
+    <button
+      type="submit"
       disabled={isSubmitting}
-      loading={isSubmitting}
+      className={classNames("btn", className, { loading: isSubmitting })}
       {...rest}
     >
       {children}
-    </Button>
+    </button>
   );
 };

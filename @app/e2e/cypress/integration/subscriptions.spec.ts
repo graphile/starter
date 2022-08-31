@@ -27,7 +27,7 @@ context("Subscriptions", () => {
     // Assertion
     cy.url().should("equal", Cypress.env("ROOT_URL") + "/"); // Should be on homepage
     cy.getCy("header-login-button").should("not.exist"); // Should be logged in
-    cy.getCy("layout-dropdown-user").should("contain", "Test User"); // Should be logged in
+    cy.getCy("layout-dropdown-user").should("contain", "TU"); // Should be logged in
 
     // Subscription
     cy.getCy("header-unverified-warning").should("exist");
@@ -63,7 +63,7 @@ context("Subscriptions", () => {
     // Assertions
     cy.url().should("equal", Cypress.env("ROOT_URL") + "/"); // Should be on homepage
     cy.getCy("header-login-button").should("not.exist");
-    cy.getCy("layout-dropdown-user").should("contain", "Test User"); // Should be logged in
+    cy.getCy("layout-dropdown-user").should("contain", "TU"); // Should be logged in
 
     // Subscription
     cy.getCy("header-unverified-warning").should("exist");

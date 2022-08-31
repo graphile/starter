@@ -1,6 +1,5 @@
-import { GithubOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-import React from "react";
+import { Link } from "@remix-run/react";
+import { FaGithub } from "react-icons/fa";
 
 export interface SocialLoginOptionsProps {
   next: string;
@@ -16,14 +15,14 @@ export function SocialLoginOptions({
   buttonTextFromService = defaultButtonTextFromService,
 }: SocialLoginOptionsProps) {
   return (
-    <Button
-      block
-      size="large"
-      icon={<GithubOutlined />}
-      href={`/auth/github?next=${encodeURIComponent(next)}`}
-      type="primary"
+    <Link
+      className="btn btn-primary"
+      to={`/auth/github?next=${encodeURIComponent(next)}`}
     >
+      <span className="mx-1 text-lg tems-center flex">
+        <FaGithub />
+      </span>
       {buttonTextFromService("GitHub")}
-    </Button>
+    </Link>
   );
 }

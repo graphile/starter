@@ -1,14 +1,13 @@
-import { formItemLayout, getCodeFromError, tailFormItemLayout } from "@app/lib";
+import { getCodeFromError } from "@app/lib";
 import { json } from "@remix-run/node";
 import { useActionData } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
-import { Alert, Form, PageHeader } from "antd";
 import { useState } from "react";
 import { AuthenticityTokenInput } from "remix-utils";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import * as z from "zod";
 
-import { PasswordStrength } from "~/components";
+import { ErrorAlert, PasswordStrength, SuccessAlert } from "~/components";
 import { FormInput } from "~/components/forms/FormInput";
 import { SubmitButton } from "~/components/forms/SubmitButton";
 import { validateCsrfToken } from "~/utils/csrf";
@@ -26,8 +25,8 @@ export async function loader({ request, context }: TypedDataFunctionArgs) {
 }
 
 const securitySchema = z.object({
-  oldPassword: z.string().nonempty("Please input your passphrase"),
-  newPassword: z.string().nonempty("Please confirm your passphrase"),
+  oldPassword: z.string().nonempty("Please enter your current passphrase"),
+  newPassword: z.string().nonempty("Please enter your new passphrase"),
 });
 
 const securityFormValidator = withZod(securitySchema);
@@ -81,80 +80,56 @@ export default function Passphrase() {
 
   const [passwordStrength, setPasswordStrength] = useState<number>(0);
   const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
-  const [passwordFocused, setPasswordFocused] = useState(false);
   const [passwordDirty, setPasswordDirty] = useState(false);
 
-  // TODO: ant design inputs cannot be reset from the outside with `form.reset()`
-
   return (
-    <div>
-      <PageHeader title="Change passphrase" />
-      <ValidatedForm
-        validator={securityFormValidator}
-        method="post"
-        style={{ width: "100%" }}
+    <ValidatedForm
+      validator={securityFormValidator}
+      method="post"
+      resetAfterSubmit
+      onReset={() => setPasswordDirty(false)}
+      className="flex flex-col max-w-lg w-full gap-y-5"
+    >
+      <AuthenticityTokenInput />
+      <h1 className="text-2xl text-center mb-4">Change Passphrase</h1>
+      <FormInput
+        name="oldPassword"
+        label="Old passphrase"
+        required
+        type="password"
+        autoComplete="current-password"
+      />
+      <FormInput
+        name="newPassword"
+        label="New passphrase"
+        required
+        type="password"
+        onChange={(e) => {
+          setPasswordStrengthInfo(
+            e.target.value,
+            setPasswordStrength,
+            setPasswordSuggestions
+          );
+          setPasswordDirty(true);
+        }}
+        autoComplete="new-password"
       >
-        <AuthenticityTokenInput />
-        <FormInput
-          name="oldPassword"
-          label="Old passphrase"
-          required
-          type="password"
-          autoComplete="current-password"
-          {...formItemLayout}
+        <PasswordStrength
+          passwordStrength={passwordStrength}
+          suggestions={passwordSuggestions}
+          isDirty={passwordDirty}
         />
-        <FormInput
-          name="newPassword"
-          label="New passphrase"
-          required
-          type="password"
-          onChange={(e) => {
-            setPasswordStrengthInfo(
-              e.target.value,
-              setPasswordStrength,
-              setPasswordSuggestions
-            );
-            setPasswordDirty(true);
-          }}
-          onFocus={() => setPasswordFocused(true)}
-          onBlur={() => setPasswordFocused(false)}
-          autoComplete="new-password"
-          {...formItemLayout}
-        >
-          <PasswordStrength
-            passwordStrength={passwordStrength}
-            suggestions={passwordSuggestions}
-            isDirty={passwordDirty}
-            isFocussed={passwordFocused}
-          />
-        </FormInput>
-        {error ? (
-          <Form.Item>
-            <Alert
-              type="error"
-              message={`Changing passphrase failed`}
-              description={
-                <span>
-                  {message}
-                  {code ? (
-                    <span>
-                      {" "}
-                      (Error code: <code>ERR_{code}</code>)
-                    </span>
-                  ) : null}
-                </span>
-              }
-            />
-          </Form.Item>
-        ) : success ? (
-          <Form.Item>
-            <Alert type="success" message={`Password changed!`} />
-          </Form.Item>
-        ) : null}
-        <Form.Item {...tailFormItemLayout}>
-          <SubmitButton htmlType="submit">Change Passphrase</SubmitButton>
-        </Form.Item>
-      </ValidatedForm>
-    </div>
+      </FormInput>
+      {error ? (
+        <ErrorAlert
+          title="Changing passphrase failed"
+          message={message}
+          code={code}
+        />
+      ) : success ? (
+        <SuccessAlert title="Passphrase updated" />
+      ) : null}
+      {!success && <SubmitButton>Change Passphrase</SubmitButton>}
+    </ValidatedForm>
   );
 }

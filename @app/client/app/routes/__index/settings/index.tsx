@@ -1,14 +1,17 @@
-import { formItemLayout, getCodeFromError, tailFormItemLayout } from "@app/lib";
+import { getCodeFromError } from "@app/lib";
 import { json } from "@remix-run/node";
 import { useActionData } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
-import { Alert, Form, PageHeader } from "antd";
 import { AuthenticityTokenInput } from "remix-utils";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import * as z from "zod";
 
-import { FormInput } from "~/components/forms/FormInput";
-import { SubmitButton } from "~/components/forms/SubmitButton";
+import {
+  ErrorAlert,
+  FormInput,
+  SubmitButton,
+  SuccessAlert,
+} from "~/components";
 import { validateCsrfToken } from "~/utils/csrf";
 import type { GraphqlQueryErrorResult } from "~/utils/errors";
 import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
@@ -82,62 +85,37 @@ export default function Profile() {
     useActionData<GraphqlQueryErrorResult & { success?: true }>() ?? {};
 
   return (
-    <div>
-      <PageHeader title="Edit profile" />
-
-      <ValidatedForm
-        validator={profileFormValidator}
-        method="post"
-        style={{ width: "100%" }}
-        defaultValues={{
-          name: user?.name ?? undefined,
-          username: user?.username ?? undefined,
-        }}
-      >
-        <AuthenticityTokenInput />
-        <FormInput
-          name="name"
-          label="Name"
-          required
-          type="text"
-          autoComplete="name"
-          {...formItemLayout}
-        />
-        <FormInput
-          name="username"
-          label="Username"
-          required
-          type="text"
-          autoComplete="username"
-          {...formItemLayout}
-        />
-        {error ? (
-          <Form.Item>
-            <Alert
-              type="error"
-              message={`Updating username`}
-              description={
-                <span>
-                  {message}
-                  {code ? (
-                    <span>
-                      {" "}
-                      (Error code: <code>ERR_{code}</code>)
-                    </span>
-                  ) : null}
-                </span>
-              }
-            />
-          </Form.Item>
-        ) : success ? (
-          <Form.Item>
-            <Alert type="success" message={`Profile updated`} />
-          </Form.Item>
-        ) : null}
-        <Form.Item {...tailFormItemLayout}>
-          <SubmitButton htmlType="submit">Update Profile</SubmitButton>
-        </Form.Item>
-      </ValidatedForm>
-    </div>
+    <ValidatedForm
+      validator={profileFormValidator}
+      method="post"
+      defaultValues={{
+        name: user?.name ?? undefined,
+        username: user?.username ?? undefined,
+      }}
+      className="flex flex-col max-w-lg w-full gap-y-5"
+    >
+      <AuthenticityTokenInput />
+      <h1 className="text-2xl text-center mb-4">Edit Profile</h1>
+      <FormInput
+        name="name"
+        label="Name"
+        required
+        type="text"
+        autoComplete="name"
+      />
+      <FormInput
+        name="username"
+        label="Username"
+        required
+        type="text"
+        autoComplete="username"
+      />
+      {error ? (
+        <ErrorAlert title="Updating username" message={message} code={code} />
+      ) : success ? (
+        <SuccessAlert title="Profile updated" />
+      ) : null}
+      <SubmitButton>Update Profile</SubmitButton>
+    </ValidatedForm>
   );
 }

@@ -3,20 +3,17 @@ import { getCodeFromError } from "@app/lib";
 import { json } from "@remix-run/node";
 import { Link, useActionData, useSearchParams } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
-import { Alert, Col, Form, Row } from "antd";
 import { AuthenticityTokenInput } from "remix-utils";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import * as z from "zod";
 
-import { FormInput } from "~/components/forms/FormInput";
-import { SubmitButton } from "~/components/forms/SubmitButton";
+import { ErrorAlert, FormInput, SubmitButton } from "~/components";
 import { validateCsrfToken } from "~/utils/csrf";
 import type { GraphqlQueryErrorResult } from "~/utils/errors";
 import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
 import { redirectTyped } from "~/utils/remix-typed";
 import { isSafe } from "~/utils/uri";
 import { requireNoUser } from "~/utils/users";
-
 export const handle = { hideLogin: true, title: "Login" };
 
 export const loader = async ({ context }: TypedDataFunctionArgs) => {
@@ -78,69 +75,44 @@ export default function LoginEmail() {
     useActionData<GraphqlQueryErrorResult>() ?? {};
 
   return (
-    <Row justify="center" style={{ marginTop: 32 }}>
-      <Col xs={24} sm={12}>
-        <Row>
-          <ValidatedForm
-            validator={loginFormValidator}
-            method="post"
-            style={{ width: "100%" }}
-          >
-            <AuthenticityTokenInput />
-            <input type="hidden" name="redirectTo" value={next} />
-            <FormInput
-              name="username"
-              placeholder="E-mail or Username"
-              required
-              type="text"
-              autoComplete="username"
-              size="large"
-              prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-              data-cy="loginpage-input-username"
-            />
-            <FormInput
-              name="password"
-              placeholder="Passphrase"
-              required
-              type="password"
-              autoComplete="current-password"
-              size="large"
-              prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-              data-cy="loginpage-input-password"
-            />
-            <Form.Item>
-              <Link to="/forgot">Forgotten passphrase?</Link>
-            </Form.Item>
-            {error ? (
-              <Form.Item>
-                <Alert
-                  type="error"
-                  message={`Sign in failed`}
-                  description={
-                    <span>
-                      {message}
-                      {code ? (
-                        <span>
-                          {" "}
-                          (Error code: <code>ERR_{code}</code>)
-                        </span>
-                      ) : null}
-                    </span>
-                  }
-                />
-              </Form.Item>
-            ) : null}
-            <Form.Item>
-              <SubmitButton type="primary" data-cy="loginpage-button-submit">
-                Sign in
-              </SubmitButton>
-              <Link style={{ marginLeft: 16 }} to="/login">
-                Use a different sign in method
-              </Link>
-            </Form.Item>
-          </ValidatedForm>
-        </Row>
-      </Col>
-    </Row>
+    <ValidatedForm
+      validator={loginFormValidator}
+      method="post"
+      className="flex flex-col max-w-lg w-full gap-y-5"
+    >
+      <AuthenticityTokenInput />
+      <input type="hidden" name="redirectTo" value={next} />
+      <FormInput
+        name="username"
+        placeholder="E-mail or Username"
+        required
+        type="text"
+        autoComplete="username"
+        inputPrefix={<UserOutlined />}
+        data-cy="loginpage-input-username"
+      />
+      <FormInput
+        name="password"
+        placeholder="Passphrase"
+        required
+        type="password"
+        autoComplete="current-password"
+        inputPrefix={<LockOutlined />}
+        data-cy="loginpage-input-password"
+      />
+      <Link className="link mb-6" to="/forgot">
+        Forgotten passphrase?
+      </Link>
+      {error ? (
+        <ErrorAlert title="Login failed" message={message} code={code} />
+      ) : null}
+
+      <div className="flex justify-between align-center">
+        <SubmitButton data-cy="loginpage-button-submit">Sign in</SubmitButton>
+        <Link className="link self-center" to="/login">
+          Use a different sign in method
+        </Link>
+      </div>
+    </ValidatedForm>
   );
 }

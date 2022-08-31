@@ -1,17 +1,10 @@
-import { InfoCircleOutlined } from "@ant-design/icons";
-import { Col, Popover, Progress, Row } from "antd";
-import React, { useEffect, useState } from "react";
+import classNames from "classnames";
+import { HiOutlineInformationCircle } from "react-icons/hi";
 
 export interface PasswordStrengthProps {
-  passwordStrength: number;
+  passwordStrength: number; // 0-4
   suggestions: string[];
   isDirty: boolean;
-  isFocussed: boolean;
-}
-
-function strengthToPercent(strength: number): number {
-  // passwordStrength is a value 0-4
-  return (strength + 1) * 2 * 10;
 }
 
 export function PasswordStrength({
@@ -21,72 +14,44 @@ export function PasswordStrength({
     "No need for symbols, digits, or uppercase letters",
   ],
   isDirty = false,
-  isFocussed = false,
 }: PasswordStrengthProps) {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    // Auto-display popup
-    if (isFocussed && isDirty && suggestions.length > 0) {
-      setVisible(true);
-    }
-    // Auto-hide when there's no suggestions
-    if (suggestions.length === 0) {
-      setVisible(false);
-    }
-  }, [isDirty, isFocussed, suggestions]);
-
-  // Blur on password field focus loss
-  useEffect(() => {
-    if (!isFocussed) {
-      setVisible(false);
-    }
-  }, [isFocussed]);
-
   if (!isDirty) return null;
 
-  const handleVisibleChange = (visible: boolean) => {
-    setVisible(visible);
-  };
-
-  const content = (
-    <ul>
-      {suggestions.map((suggestion, key) => {
-        return <li key={key}>{suggestion}</li>;
-      })}
-    </ul>
-  );
-
   return (
-    <Row style={{ lineHeight: "2rem" }}>
-      <Col span={20} offset={1}>
-        <Progress
-          percent={strengthToPercent(passwordStrength)}
-          status={passwordStrength < 2 ? "exception" : undefined}
-        />
-      </Col>
-      <Col span={3}>
-        <Popover
-          placement="bottomRight"
-          title={"Password Hints"}
-          content={content}
-          trigger="click"
-          visible={visible}
-          onVisibleChange={handleVisibleChange}
-        >
-          <div
-            style={{
-              width: "100%",
-              textAlign: "right",
-              padding: "0 13px",
-            }}
+    <div className="flex flex-row justify-between">
+      <div className="basis-3/4">
+        <progress
+          className={classNames(
+            ["progress progress-primary w-full my-2"],
+            passwordStrength < 2 ? "progress-error" : "progress-success"
+          )}
+          value={passwordStrength + 1}
+          max="5"
+        ></progress>
+      </div>
+      {suggestions.length > 0 && (
+        <div className="dropdown dropdown-end dropdown-hover">
+          <label
+            tabIndex={0}
+            className="btn btn-circle btn-ghost btn-xs text-info text-lg"
           >
-            <InfoCircleOutlined
-              style={suggestions.length > 0 ? {} : { visibility: "hidden" }}
-            />
+            <HiOutlineInformationCircle />
+          </label>
+          <div
+            tabIndex={0}
+            className="card compact dropdown-content shadow bg-base-100 rounded-box w-80"
+          >
+            <div className="card-body">
+              <h2 className="card-title">Password Suggestions</h2>
+              <ul className="list-disc list-inside">
+                {suggestions.map((suggestion, key) => {
+                  return <li key={key}>{suggestion}</li>;
+                })}
+              </ul>
+            </div>
           </div>
-        </Popover>
-      </Col>
-    </Row>
+        </div>
+      )}
+    </div>
   );
 }

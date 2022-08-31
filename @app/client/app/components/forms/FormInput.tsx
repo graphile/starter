@@ -1,56 +1,62 @@
-import type { ColProps, InputProps } from "antd";
-import { Form, Input } from "antd";
+import classNames from "classnames";
 import { useField } from "remix-validated-form";
 
 type FormInputProps = {
   name: string;
   label?: React.ReactNode;
   required?: boolean;
-  labelCol?: ColProps;
-  wrapperCol?: ColProps;
   children?: React.ReactNode;
+  inputPrefix?: React.ReactNode;
 };
 
 export const FormInput = ({
   name,
   label,
   required,
-  labelCol,
-  wrapperCol,
   children,
+  inputPrefix,
+  className,
   ...rest
-}: FormInputProps & InputProps) => {
+}: FormInputProps &
+  React.DetailedHTMLProps<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  >) => {
   const { getInputProps, error } = useField(name);
 
-  return (
-    <>
-      <Form.Item
-        validateStatus={error ? "error" : ""}
-        help={error}
-        label={label}
-        name={name}
-        labelCol={labelCol}
-        wrapperCol={wrapperCol}
-        required={required}
-      >
-        <Input required={required} {...getInputProps({ id: name, ...rest })} />
-        {children}
-      </Form.Item>
-    </>
+  const inputElement = (
+    <input
+      className={classNames([
+        "input input-bordered",
+        { "w-full pl-10": !!inputPrefix },
+        { "input-error": !!error },
+        className,
+      ])}
+      {...getInputProps({ id: name, ...rest })}
+    />
   );
 
-  // return (
-  //   <>
-  //     <FormControl isInvalid={!!error} isRequired={isRequired}>
-  //       <FormLabel htmlFor={name}>{label}</FormLabel>
-  //       <Input
-  //         {...getInputProps({
-  //           id: name,
-  //           ...rest,
-  //         })}
-  //       />
-  //       {error && <FormErrorMessage>{error}</FormErrorMessage>}
-  //     </FormControl>
-  //   </>
-  // );
+  return (
+    <div className="form-control">
+      {!!label && (
+        <label className="label" htmlFor={name}>
+          {label}
+        </label>
+      )}
+      {inputPrefix ? (
+        <div className="relative">
+          <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+            {inputPrefix}
+          </div>
+          {inputElement}
+        </div>
+      ) : (
+        inputElement
+      )}
+      <div className="min-h-6">
+        {error && <p className="mt-1 text-sm text-error">{error}</p>}
+      </div>
+      {children}
+    </div>
+  );
 };

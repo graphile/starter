@@ -9,7 +9,7 @@ interface Props {
 }
 
 function SubscriptionReloadInternal({ query, variables }: Props) {
-  let { refresh } = useDataRefresh();
+  const { refresh } = useDataRefresh();
   useSubscription(query, {
     variables,
     onSubscriptionData: () => {

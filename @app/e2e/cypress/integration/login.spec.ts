@@ -25,7 +25,7 @@ context("Login", () => {
     // Assertion
     cy.url().should("equal", Cypress.env("ROOT_URL") + "/"); // Should be on homepage
     cy.getCy("header-login-button").should("not.exist"); // Should be logged in
-    cy.getCy("layout-dropdown-user").should("contain", "Test User"); // Should be logged in
+    cy.getCy("layout-dropdown-user").should("contain", "TU"); // Should be logged in
   });
 
   it("fails on bad password", () => {
@@ -56,6 +56,6 @@ context("Login", () => {
     cy.getCy("loginpage-button-submit").click();
     cy.url().should("equal", Cypress.env("ROOT_URL") + "/"); // Should be on homepage
     cy.getCy("header-login-button").should("not.exist"); // Should be logged in
-    cy.getCy("layout-dropdown-user").should("contain", "Test User"); // Should be logged in
+    cy.getCy("layout-dropdown-user").should("contain", "TU"); // Should be logged in
   });
 });

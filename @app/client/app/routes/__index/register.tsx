@@ -1,15 +1,14 @@
-import { QuestionCircleOutlined } from "@ant-design/icons";
-import { formItemLayout, getCodeFromError, tailFormItemLayout } from "@app/lib";
+import { getCodeFromError } from "@app/lib";
 import { json } from "@remix-run/node";
 import { useActionData, useSearchParams } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
-import { Alert, Form, Row, Tooltip } from "antd";
 import { useState } from "react";
+import { HiOutlineQuestionMarkCircle, HiOutlineXCircle } from "react-icons/hi";
 import { AuthenticityTokenInput } from "remix-utils";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import * as z from "zod";
 
-import { PasswordStrength } from "~/components";
+import { ErrorAlert, PasswordStrength } from "~/components";
 import { FormInput } from "~/components/forms/FormInput";
 import { SubmitButton } from "~/components/forms/SubmitButton";
 import { validateCsrfToken } from "~/utils/csrf";
@@ -140,120 +139,99 @@ export default function Register() {
 
   const [passwordStrength, setPasswordStrength] = useState<number>(0);
   const [passwordSuggestions, setPasswordSuggestions] = useState<string[]>([]);
-  const [passwordFocused, setPasswordFocused] = useState(false);
   const [passwordDirty, setPasswordDirty] = useState(false);
 
   return (
-    <Row justify="center" style={{ marginTop: 32 }}>
-      <ValidatedForm
-        validator={registerFormValidator}
-        method="post"
-        style={{ width: "100%" }}
-        noValidate
+    <ValidatedForm
+      validator={registerFormValidator}
+      method="post"
+      className="flex flex-col max-w-lg w-full gap-y-1"
+      noValidate
+    >
+      <AuthenticityTokenInput />
+      <input type="hidden" name="redirectTo" value={next} />
+      <FormInput
+        name="name"
+        label={
+          <span data-cy="registerpage-name-label" className="flex">
+            Name&nbsp;
+            <span
+              className="tooltip flex items-center w-5"
+              data-tip="What is your name?"
+            >
+              <HiOutlineQuestionMarkCircle />
+            </span>
+          </span>
+        }
+        required
+        type="text"
+        autoComplete="name"
+        data-cy="registerpage-input-name"
+      />
+      <FormInput
+        name="username"
+        label={
+          <span className="flex">
+            Username&nbsp;
+            <span
+              className="tooltip flex items-center w-5"
+              data-tip="What do you want others to call you?"
+            >
+              <HiOutlineQuestionMarkCircle />
+            </span>
+          </span>
+        }
+        required
+        type="text"
+        autoComplete="username"
+        data-cy="registerpage-input-username"
+      />
+      <FormInput
+        name="email"
+        label="E-mail"
+        required
+        type="email"
+        autoComplete="email"
+        data-cy="registerpage-input-email"
+      />
+      <FormInput
+        name="password"
+        label="Passphrase"
+        required
+        type="password"
+        onChange={(e) => {
+          setPasswordStrengthInfo(
+            e.target.value,
+            setPasswordStrength,
+            setPasswordSuggestions
+          );
+          setPasswordDirty(true);
+        }}
+        autoComplete="new-password"
+        data-cy="registerpage-input-password"
       >
-        <AuthenticityTokenInput />
-        <input type="hidden" name="redirectTo" value={next} />
-        <FormInput
-          name="name"
-          label={
-            <span data-cy="registerpage-name-label">
-              Name&nbsp;
-              <Tooltip title="What is your name?">
-                <QuestionCircleOutlined />
-              </Tooltip>
-            </span>
-          }
-          required
-          type="text"
-          autoComplete="name"
-          data-cy="registerpage-input-name"
-          {...formItemLayout}
+        <PasswordStrength
+          passwordStrength={passwordStrength}
+          suggestions={passwordSuggestions}
+          isDirty={passwordDirty}
         />
-        <FormInput
-          name="username"
-          label={
-            <span>
-              Username&nbsp;
-              <Tooltip title="What do you want others to call you?">
-                <QuestionCircleOutlined />
-              </Tooltip>
-            </span>
-          }
-          required
-          type="text"
-          autoComplete="username"
-          data-cy="registerpage-input-username"
-          {...formItemLayout}
-        />
-        <FormInput
-          name="email"
-          label="E-mail"
-          required
-          type="email"
-          autoComplete="email"
-          data-cy="registerpage-input-email"
-          {...formItemLayout}
-        />
-        <FormInput
-          name="password"
-          label="Passphrase"
-          required
-          type="password"
-          onChange={(e) => {
-            setPasswordStrengthInfo(
-              e.target.value,
-              setPasswordStrength,
-              setPasswordSuggestions
-            );
-            setPasswordDirty(true);
-          }}
-          onFocus={() => setPasswordFocused(true)}
-          onBlur={() => setPasswordFocused(false)}
-          autoComplete="new-password"
-          data-cy="registerpage-input-password"
-          {...formItemLayout}
-        >
-          <PasswordStrength
-            passwordStrength={passwordStrength}
-            suggestions={passwordSuggestions}
-            isDirty={passwordDirty}
-            isFocussed={passwordFocused}
-          />
-        </FormInput>
-        <FormInput
-          name="confirm"
-          label="Confirm passphrase"
-          required
-          type="password"
-          autoComplete="new-password"
-          data-cy="registerpage-input-password2"
-          {...formItemLayout}
-        />
-        {error ? (
-          <Form.Item>
-            <Alert
-              type="error"
-              message={`Registration failed`}
-              description={
-                <span>
-                  {message}
-                  {code ? (
-                    <span>
-                      {" "}
-                      (Error code: <code>ERR_{code}</code>)
-                    </span>
-                  ) : null}
-                </span>
-              }
-            />
-          </Form.Item>
-        ) : null}
-        <Form.Item {...tailFormItemLayout}>
-          <SubmitButton data-cy="registerpage-submit-button">
-            Register
-          </SubmitButton>
-        </Form.Item>
-      </ValidatedForm>
-    </Row>
+      </FormInput>
+      <FormInput
+        name="confirm"
+        label="Confirm passphrase"
+        required
+        type="password"
+        autoComplete="new-password"
+        data-cy="registerpage-input-password2"
+      />
+      {error ? (
+        <ErrorAlert title="Registration failed" message={message} code={code} />
+      ) : null}
+      <div className="flex justify-start align-center">
+        <SubmitButton data-cy="registerpage-submit-button">
+          Register
+        </SubmitButton>
+      </div>
+    </ValidatedForm>
   );
 }

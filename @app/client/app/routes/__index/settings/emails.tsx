@@ -1,15 +1,15 @@
 import type { EmailsForm_UserEmailFragment } from "@app/graphql";
-import { formItemLayout, getCodeFromError, tailFormItemLayout } from "@app/lib";
+import { getCodeFromError } from "@app/lib";
 import { Form, useActionData } from "@remix-run/react";
 import { json } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
-import { Alert, Avatar, Button, Form as AntForm, List, PageHeader } from "antd";
 import { useState } from "react";
+import { HiOutlineMail } from "react-icons/hi";
 import { AuthenticityTokenInput } from "remix-utils";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import * as z from "zod";
 
-import { P, Strong } from "~/components";
+import { WarningAlert } from "~/components";
 import { FormInput } from "~/components/forms/FormInput";
 import { SubmitButton } from "~/components/forms/SubmitButton";
 import { validateCsrfToken } from "~/utils/csrf";
@@ -78,6 +78,89 @@ export async function action({ request, context }: TypedDataFunctionArgs) {
   }
 }
 
+// function Email({
+//   email,
+//   hasOtherEmails,
+// }: {
+//   email: EmailsForm_UserEmailFragment;
+//   hasOtherEmails: boolean;
+// }) {
+//   const canDelete = !email.isPrimary && hasOtherEmails;
+//   return (
+//     <List.Item
+//       data-cy={`settingsemails-emailitem-${email.email.replace(
+//         /[^a-zA-Z0-9]/g,
+//         "-"
+//       )}`}
+//       key={email.id}
+//       actions={[
+//         email.isPrimary && (
+//           <span data-cy="settingsemails-indicator-primary">Primary</span>
+//         ),
+//         canDelete && (
+//           <Form style={{ display: "inline" }} method="post">
+//             <AuthenticityTokenInput />
+//             <input type="hidden" name="emailId" value={email.id} />
+//             <input type="hidden" name="subaction" value="delete" />
+//             <button type="submit" data-cy="settingsemails-button-delete">
+//               Delete
+//             </button>
+//           </Form>
+//         ),
+//         !email.isVerified && (
+//           <Form style={{ display: "inline" }} method="post">
+//             <AuthenticityTokenInput />
+//             <input type="hidden" name="emailId" value={email.id} />
+//             <input type="hidden" name="subaction" value="resend_verification" />
+//             <button type="submit">Resend verification</button>
+//           </Form>
+//         ),
+//         email.isVerified && !email.isPrimary && (
+//           <Form style={{ display: "inline" }} method="post">
+//             <AuthenticityTokenInput />
+//             <input type="hidden" name="emailId" value={email.id} />
+//             <input type="hidden" name="subaction" value="make_primary" />
+//             <button type="submit" data-cy="settingsemails-button-makeprimary">
+//               Make primary
+//             </button>
+//           </Form>
+//         ),
+//       ].filter((_) => _)}
+//     >
+//       <List.Item.Meta
+//         avatar={
+//           <Avatar size="large" style={{ backgroundColor: "transparent" }}>
+//             ✉️
+//           </Avatar>
+//         }
+//         title={
+//           <span>
+//             {" "}
+//             {email.email}{" "}
+//             <span
+//               title={
+//                 email.isVerified
+//                   ? "Verified"
+//                   : "Pending verification (please check your inbox / spam folder"
+//               }
+//             >
+//               {" "}
+//               {email.isVerified ? (
+//                 "✅"
+//               ) : (
+//                 <small style={{ color: "red" }}>(unverified)</small>
+//               )}{" "}
+//             </span>{" "}
+//           </span>
+//         }
+//         description={`Added ${new Date(
+//           Date.parse(email.createdAt)
+//         ).toLocaleString()}`}
+//       />
+//     </List.Item>
+//   );
+// }
+
 function Email({
   email,
   hasOtherEmails,
@@ -87,55 +170,20 @@ function Email({
 }) {
   const canDelete = !email.isPrimary && hasOtherEmails;
   return (
-    <List.Item
-      data-cy={`settingsemails-emailitem-${email.email.replace(
-        /[^a-zA-Z0-9]/g,
-        "-"
-      )}`}
-      key={email.id}
-      actions={[
-        email.isPrimary && (
-          <span data-cy="settingsemails-indicator-primary">Primary</span>
-        ),
-        canDelete && (
-          <Form style={{ display: "inline" }} method="post">
-            <AuthenticityTokenInput />
-            <input type="hidden" name="emailId" value={email.id} />
-            <input type="hidden" name="subaction" value="delete" />
-            <button type="submit" data-cy="settingsemails-button-delete">
-              Delete
-            </button>
-          </Form>
-        ),
-        !email.isVerified && (
-          <Form style={{ display: "inline" }} method="post">
-            <AuthenticityTokenInput />
-            <input type="hidden" name="emailId" value={email.id} />
-            <input type="hidden" name="subaction" value="resend_verification" />
-            <button type="submit">Resend verification</button>
-          </Form>
-        ),
-        email.isVerified && !email.isPrimary && (
-          <Form style={{ display: "inline" }} method="post">
-            <AuthenticityTokenInput />
-            <input type="hidden" name="emailId" value={email.id} />
-            <input type="hidden" name="subaction" value="make_primary" />
-            <button type="submit" data-cy="settingsemails-button-makeprimary">
-              Make primary
-            </button>
-          </Form>
-        ),
-      ].filter((_) => _)}
-    >
-      <List.Item.Meta
-        avatar={
-          <Avatar size="large" style={{ backgroundColor: "transparent" }}>
-            ✉️
-          </Avatar>
-        }
-        title={
-          <span>
-            {" "}
+    <>
+      <div
+        data-cy={`settingsemails-emailitem-${email.email.replace(
+          /[^a-zA-Z0-9]/g,
+          "-"
+        )}`}
+        key={email.id}
+        className="flex flex-row items-center gap-x-3 border-b py-3 border-base-content/60"
+      >
+        <div className="text-2xl flex-shrink-0">
+          <HiOutlineMail />
+        </div>
+        <div className="flex-grow">
+          <p>
             {email.email}{" "}
             <span
               title={
@@ -148,16 +196,62 @@ function Email({
               {email.isVerified ? (
                 "✅"
               ) : (
-                <small style={{ color: "red" }}>(unverified)</small>
+                <small className="text-error">(unverified)</small>
               )}{" "}
-            </span>{" "}
+            </span>
+          </p>
+          <p className="text-base-content/70">
+            Added {new Date(Date.parse(email.createdAt)).toLocaleString()}
+          </p>
+        </div>
+        {email.isPrimary && (
+          <span
+            data-cy="settingsemails-indicator-primary"
+            className="text-base-content/70"
+          >
+            Primary
           </span>
-        }
-        description={`Added ${new Date(
-          Date.parse(email.createdAt)
-        ).toLocaleString()}`}
-      />
-    </List.Item>
+        )}
+        {canDelete && (
+          <Form style={{ display: "inline" }} method="post">
+            <AuthenticityTokenInput />
+            <input type="hidden" name="emailId" value={email.id} />
+            <input type="hidden" name="subaction" value="delete" />
+            <button
+              type="submit"
+              data-cy="settingsemails-button-delete"
+              className="link link-secondary"
+            >
+              Delete
+            </button>
+          </Form>
+        )}
+        {!email.isVerified && (
+          <Form style={{ display: "inline" }} method="post">
+            <AuthenticityTokenInput />
+            <input type="hidden" name="emailId" value={email.id} />
+            <input type="hidden" name="subaction" value="resend_verification" />
+            <button type="submit" className="link link-secondary">
+              Resend verification
+            </button>
+          </Form>
+        )}
+        {email.isVerified && !email.isPrimary && (
+          <Form style={{ display: "inline" }} method="post">
+            <AuthenticityTokenInput />
+            <input type="hidden" name="emailId" value={email.id} />
+            <input type="hidden" name="subaction" value="make_primary" />
+            <button
+              type="submit"
+              data-cy="settingsemails-button-makeprimary"
+              className="link link-secondary"
+            >
+              Make primary
+            </button>
+          </Form>
+        )}
+      </div>
+    </>
   );
 }
 
@@ -169,62 +263,50 @@ export default function ManageEmails() {
     useActionData<GraphqlQueryErrorResult>() ?? {};
 
   return (
-    <div>
+    <div className="max-w-3xl w-full flex flex-col gap-y-5">
+      <h1 className="text-2xl text-center mb-4">Email Addresses</h1>
       {user.isVerified ? null : (
-        <div style={{ marginBottom: "0.5rem" }}>
-          <Alert
-            type="warning"
-            showIcon
-            message="No verified emails"
-            description={`
-            You do not have any verified email addresses, this will make
-            account recovery impossible and may limit your available
-            functionality within this application. Please complete email
-            verification.
-            `}
-          />
-        </div>
+        <WarningAlert title="No verified emails">
+          You do not have any verified email addresses, this will make account
+          recovery impossible and may limit your available functionality within
+          this application. Please complete email verification.
+        </WarningAlert>
       )}
-      <PageHeader title="Email addresses" />
-      <P>
-        <Strong>
+      <p>
+        <strong>
           Account notices will be sent your primary email address.
-        </Strong>{" "}
+        </strong>{" "}
         Additional email addresses may be added to help with account recovery
         (or to change your primary email), but they cannot be used until
         verified.
-      </P>
-      <List
-        bordered
-        size="large"
-        dataSource={user.userEmails.nodes}
-        renderItem={(email) => (
+      </p>
+      <div>
+        {user.userEmails.nodes.map((email) => (
           <Email
+            key={email.id}
             email={email}
             hasOtherEmails={user.userEmails.nodes.length > 1}
           />
-        )}
-        footer={
-          !showAddEmailForm ? (
-            <div>
-              <Button
-                type="primary"
-                onClick={() => setShowAddEmailForm(true)}
-                data-cy="settingsemails-button-addemail"
-              >
-                Add email
-              </Button>
-            </div>
-          ) : (
-            <AddEmailForm
-              onComplete={() => setShowAddEmailForm(false)}
-              message={message}
-              code={code}
-              error={error}
-            />
-          )
-        }
-      />
+        ))}
+      </div>
+      {!showAddEmailForm ? (
+        <div>
+          <button
+            className="btn btn-primary"
+            onClick={() => setShowAddEmailForm(true)}
+            data-cy="settingsemails-button-addemail"
+          >
+            Add email
+          </button>
+        </div>
+      ) : (
+        <AddEmailForm
+          onComplete={() => setShowAddEmailForm(false)}
+          message={message}
+          code={code}
+          error={error}
+        />
+      )}
     </div>
   );
 }
@@ -252,32 +334,29 @@ function AddEmailForm({ onComplete, error, code, message }: AddEmailFormProps) {
         type="email"
         autoComplete="email"
         data-cy="settingsemails-input-email"
-        {...formItemLayout}
       />
       {error ? (
-        <AntForm.Item>
-          <Alert
-            type="error"
-            message="Error adding email"
-            description={
+        <div className="alert alert-error">
+          <span>
+            <span className="text-xl">Error adding email</span>
+            {message}
+            {code ? (
               <span>
-                {message}
-                {code ? (
-                  <span>
-                    {" "}
-                    (Error code: <code>ERR_{code}</code>)
-                  </span>
-                ) : null}
+                {" "}
+                (Error code: <code>ERR_{code}</code>)
               </span>
-            }
-          />
-        </AntForm.Item>
+            ) : null}
+          </span>
+        </div>
       ) : null}
-      <AntForm.Item {...tailFormItemLayout}>
-        <SubmitButton type="primary" data-cy="settingsemails-button-submit">
+      <div className="flex justify-between">
+        <SubmitButton data-cy="settingsemails-button-submit">
           Add email
         </SubmitButton>
-      </AntForm.Item>
+        <div className="link link-secondary" onClick={() => onComplete()}>
+          Cancel
+        </div>
+      </div>
     </ValidatedForm>
   );
 }

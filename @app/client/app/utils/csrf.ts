@@ -18,10 +18,10 @@ export async function validateCsrfToken(
       "The body of the request was read before calling verifyAuthenticityToken. Ensure you clone it before reading it."
     );
   }
-  // We clone the request to ensure we don't modify the original request.
-  // This allow us to parse the body of the request and let the original request
+  // We clone the request to ensure we don't modify the original request. This
+  // allow us to parse the body of the request and let the original request
   // still be used and parsed without errors.
-  let formData = await request.clone().formData();
+  const formData = await request.clone().formData();
 
   const formToken = formData.get(sessionKey) as string | undefined;
 
@@ -32,8 +32,7 @@ export async function validateCsrfToken(
     });
   }
 
-  // if the body csrf token doesn't match the session csrf token, throw an
-  // error
+  // if the body csrf token doesn't match the session csrf token, throw an error
   if (!context.validateCsrfToken(formToken)) {
     throw unprocessableEntity({
       message: "Can't verify CSRF token authenticity.",

@@ -2,11 +2,11 @@ import { getCodeFromError } from "@app/lib";
 import { json } from "@remix-run/node";
 import { useActionData, useSearchParams } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
-import { Alert, Col, Form, Row } from "antd";
 import { AuthenticityTokenInput } from "remix-utils";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import * as z from "zod";
 
+import { ErrorAlert, SuccessAlert } from "~/components";
 import { FormInput } from "~/components/forms/FormInput";
 import { SubmitButton } from "~/components/forms/SubmitButton";
 import { validateCsrfToken } from "~/utils/csrf";
@@ -14,7 +14,7 @@ import type { GraphqlQueryErrorResult } from "~/utils/errors";
 import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
 import { jsonTyped, useLoaderDataTyped } from "~/utils/remix-typed";
 
-export const handle = { hideLogin: true, title: "Login" };
+export const handle = { hideLogin: true, title: "Verify Email" };
 
 export const loader = async ({ request, context }: TypedDataFunctionArgs) => {
   const url = new URL(request.url);
@@ -78,59 +78,38 @@ export default function Verify() {
   const { success: loaderSuccess } = useLoaderDataTyped<typeof loader>();
 
   return (
-    <Row justify="center" style={{ marginTop: 32 }}>
-      <Col xs={24} sm={12}>
-        <Row>
-          {success || loaderSuccess ? (
-            <Alert
-              type="success"
-              showIcon
-              message="Email Verified"
-              description="Thank you for verifying your email address. You may now close this window."
+    <div className="max-w-lg w-full">
+      {success || loaderSuccess ? (
+        <SuccessAlert title="Email Verified">
+          Thank you for verifying your email address. You may now close this
+          window
+        </SuccessAlert>
+      ) : (
+        <ValidatedForm
+          defaultValues={{ token }}
+          validator={verifyFormValidator}
+          method="post"
+          className="flex flex-col gap-y-5"
+        >
+          <AuthenticityTokenInput />
+          <input type="hidden" name="id" value={id} />
+          <FormInput
+            name="token"
+            label="Please enter verification code"
+            placeholder="Verification code"
+            required
+            type="text"
+          />
+          {error ? (
+            <ErrorAlert
+              title="Verification failed"
+              message={message}
+              code={code}
             />
-          ) : (
-            <ValidatedForm
-              defaultValues={{ token }}
-              validator={verifyFormValidator}
-              method="post"
-              style={{ width: "100%" }}
-            >
-              <AuthenticityTokenInput />
-              <input type="hidden" name="id" value={id} />
-              <FormInput
-                name="token"
-                label="Please enter verification code"
-                placeholder="Verification code"
-                required
-                type="text"
-                size="large"
-              />
-              {error ? (
-                <Form.Item>
-                  <Alert
-                    type="error"
-                    message={`Token validation failed`}
-                    description={
-                      <span>
-                        {message}
-                        {code ? (
-                          <span>
-                            {" "}
-                            (Error code: <code>ERR_{code}</code>)
-                          </span>
-                        ) : null}
-                      </span>
-                    }
-                  />
-                </Form.Item>
-              ) : null}
-              <Form.Item>
-                <SubmitButton type="primary">Submit</SubmitButton>
-              </Form.Item>
-            </ValidatedForm>
-          )}
-        </Row>
-      </Col>
-    </Row>
+          ) : null}
+          <SubmitButton>Submit</SubmitButton>
+        </ValidatedForm>
+      )}
+    </div>
   );
 }

@@ -7,10 +7,10 @@
   "sideEffects": false,
   "scripts": {
     "build": "yarn run build:css && remix build",
-    "build:css": "lessc --js app/styles/main.less app/css/main.css",
-    "dev": "remix build && run-p dev:*",
+    "build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
+    "dev": "run-p dev:*",
+    "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
     "dev:remix": "remix watch",
-    "dev:less": "watch 'yarn run build:css' ./app/styles",
     "start": "cross-env NODE_ENV=production node ./build/index.js"
   },
   "dependencies": {
@@ -27,27 +27,30 @@
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
     "antd": "4.15.6",
+    "classnames": "2.3.1",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "graphql": "15.5.0",
     "graphql-ws": "4.5.1",
-    "less": "4.1.2",
     "morgan": "^1.10.0",
-    "nprogress": "0.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-icons": "4.4.0",
     "remix-utils": "3.0.0",
     "remix-validated-form": "4.3.0",
-    "watch": "^1.0.2",
     "zod": "3.14.4",
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {
     "@remix-run/dev": "1.5.1",
     "@remix-run/eslint-config": "1.5.1",
+    "autoprefixer": "10.4.7",
+    "daisyui": "2.17.0",
     "eslint": "^8.11.0",
     "npm-run-all": "^4.1.5",
+    "postcss": "8.4.14",
+    "tailwindcss": "3.1.4",
     "typescript": "^4.5.5"
   },
   "engines": {
