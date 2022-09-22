@@ -44,7 +44,10 @@ export default async function installRemix(app: Express) {
       async function graphqlSdk() {
         const schema = await postgraphileInstance.getGraphQLSchema();
         const client = {
-          async request<T = any, V = Record<string, any>>(
+          async request<
+            T = any,
+            V extends Record<string, any> = Record<string, any>
+          >(
             document: DocumentNode,
             variables?: V,
             requestHeaders?: HeadersInit

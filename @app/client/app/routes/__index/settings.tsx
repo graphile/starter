@@ -1,10 +1,10 @@
 import { Link, Outlet, useLocation } from "@remix-run/react";
+import type { LoaderArgs } from "@remix-run/server-runtime";
 import { Layout, Menu, Typography } from "antd";
 import type { TextProps } from "antd/lib/typography/Text";
 
 import { StandardWidth, Warn } from "~/components";
 import { useUser } from "~/utils/hooks";
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
 import { requireUser } from "~/utils/users";
 
 import { contentMinHeight } from "../__index";
@@ -14,7 +14,7 @@ const { Sider, Content } = Layout;
 
 export const handle = { noPad: true };
 
-export const loader = async ({ request, context }: TypedDataFunctionArgs) => {
+export const loader = async ({ request, context }: LoaderArgs) => {
   await requireUser(request, context);
   return null;
 };

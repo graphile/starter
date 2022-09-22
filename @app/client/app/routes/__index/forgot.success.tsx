@@ -1,12 +1,12 @@
 import { useSearchParams } from "@remix-run/react";
+import type { LoaderArgs } from "@remix-run/server-runtime";
 import { Alert } from "antd";
 
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
 import { requireNoUser } from "~/utils/users";
 
 export const handle = { hideLogin: true, title: "Forgot Password" };
 
-export const loader = async ({ context }: TypedDataFunctionArgs) => {
+export const loader = async ({ context }: LoaderArgs) => {
   await requireNoUser(context);
   return null;
 };

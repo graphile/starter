@@ -1,10 +1,11 @@
-import { validateCsrfToken } from "~/utils/csrf";
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
-import { redirectTyped } from "~/utils/remix-typed";
+import type { ActionArgs } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 
-export const action = async ({ request, context }: TypedDataFunctionArgs) => {
+import { validateCsrfToken } from "~/utils/csrf";
+
+export const action = async ({ request, context }: ActionArgs) => {
   await validateCsrfToken(request, context);
   const sdk = await context.graphqlSdk;
   await sdk.Logout();
-  return redirectTyped("/");
+  return redirect("/");
 };

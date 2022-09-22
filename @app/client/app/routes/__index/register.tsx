@@ -1,7 +1,9 @@
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { formItemLayout, getCodeFromError, tailFormItemLayout } from "@app/lib";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useActionData, useSearchParams } from "@remix-run/react";
+import { redirect } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
 import { Alert, Form, Row, Tooltip } from "antd";
 import { useState } from "react";
@@ -15,19 +17,17 @@ import { SubmitButton } from "~/components/forms/SubmitButton";
 import { validateCsrfToken } from "~/utils/csrf";
 import type { GraphqlQueryErrorResult } from "~/utils/errors";
 import { setPasswordStrengthInfo } from "~/utils/passwords";
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
-import { redirectTyped } from "~/utils/remix-typed";
 import { isSafe } from "~/utils/uri";
 import { requireNoUser } from "~/utils/users";
 
 export const handle = { hideLogin: true, title: "Register" };
 
-export const loader = async ({ context }: TypedDataFunctionArgs) => {
+export const loader = async ({ context }: LoaderArgs) => {
   await requireNoUser(context);
   return null;
 };
 
-export const action = async ({ request, context }: TypedDataFunctionArgs) => {
+export const action = async ({ request, context }: ActionArgs) => {
   await validateCsrfToken(request, context);
   const sdk = await context.graphqlSdk;
   const fieldValues = await registerFormValidator.validate(
@@ -41,8 +41,8 @@ export const action = async ({ request, context }: TypedDataFunctionArgs) => {
   const { name, username, email, password, redirectTo } = fieldValues.data;
   try {
     await sdk.Register({ name, username, email, password });
-    return redirectTyped(redirectTo ?? "/");
-  } catch (e) {
+    return redirect(redirectTo ?? "/");
+  } catch (e: any) {
     const { password, confirm, ...restSubmittedValues } =
       fieldValues.submittedData;
     const code = getCodeFromError(e);

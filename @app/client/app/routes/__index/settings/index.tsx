@@ -1,6 +1,8 @@
 import { formItemLayout, getCodeFromError, tailFormItemLayout } from "@app/lib";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useActionData } from "@remix-run/react";
+import { useActionData, useLoaderData } from "@remix-run/react";
+import { redirect } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
 import { Alert, Form, PageHeader } from "antd";
 import { AuthenticityTokenInput } from "remix-utils";
@@ -11,21 +13,15 @@ import { FormInput } from "~/components/forms/FormInput";
 import { SubmitButton } from "~/components/forms/SubmitButton";
 import { validateCsrfToken } from "~/utils/csrf";
 import type { GraphqlQueryErrorResult } from "~/utils/errors";
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
-import {
-  jsonTyped,
-  redirectTyped,
-  useLoaderDataTyped,
-} from "~/utils/remix-typed";
 import { requireUser } from "~/utils/users";
 
 export const handle = { title: "Settings: Profile" };
 
-export async function loader({ request, context }: TypedDataFunctionArgs) {
+export async function loader({ request, context }: LoaderArgs) {
   await requireUser(request, context);
   const sdk = await context.graphqlSdk;
   const { currentUser } = await sdk.SettingsProfile();
-  return jsonTyped(currentUser);
+  return json(currentUser);
 }
 
 const profileSchema = z.object({
@@ -35,7 +31,7 @@ const profileSchema = z.object({
 
 const profileFormValidator = withZod(profileSchema);
 
-export async function action({ request, context }: TypedDataFunctionArgs) {
+export async function action({ request, context }: ActionArgs) {
   await validateCsrfToken(request, context);
   const sdk = await context.graphqlSdk;
   const fieldValues = await profileFormValidator.validate(
@@ -47,7 +43,7 @@ export async function action({ request, context }: TypedDataFunctionArgs) {
   const { name, username } = fieldValues.data;
   const { currentUser } = await sdk.SettingsProfile();
   if (currentUser == null) {
-    throw redirectTyped(
+    throw redirect(
       `/login?next=${encodeURIComponent(new URL(request.url).pathname)}`
     );
   }
@@ -56,7 +52,7 @@ export async function action({ request, context }: TypedDataFunctionArgs) {
       id: currentUser.id,
       patch: { name, username },
     });
-  } catch (e) {
+  } catch (e: any) {
     const code = getCodeFromError(e);
     if (code === "NUNIQ") {
       return validationError({
@@ -76,7 +72,7 @@ export async function action({ request, context }: TypedDataFunctionArgs) {
 }
 
 export default function Profile() {
-  const user = useLoaderDataTyped<typeof loader>();
+  const user = useLoaderData<typeof loader>();
 
   const { message, code, error, success } =
     useActionData<GraphqlQueryErrorResult & { success?: true }>() ?? {};

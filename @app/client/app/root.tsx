@@ -1,7 +1,8 @@
 import type { ApolloClient } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client";
 import { CurrentUserUpdatedDocument } from "@app/graphql";
-import type { MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -10,6 +11,7 @@ import {
   Scripts,
   ScrollRestoration,
   useCatch,
+  useLoaderData,
 } from "@remix-run/react";
 import nprogressStyles from "nprogress/nprogress.css";
 import { useState } from "react";
@@ -17,10 +19,9 @@ import { AuthenticityTokenProvider, useHydrated } from "remix-utils";
 
 import { SubscriptionReload } from "~/components";
 import { initApollo, resetWebsocketConnection } from "~/context/apollo.client";
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
-import { jsonTyped, useLoaderDataTyped } from "~/utils/remix-typed";
 
 import compiledStyles from "./css/main.css";
+
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "New Remix App",
@@ -33,7 +34,7 @@ export type BROWSER_ENV = {
   CSRF_TOKEN: string;
 };
 
-export const loader = async ({ context }: TypedDataFunctionArgs) => {
+export async function loader({ context }: LoaderArgs) {
   const { cspNonce, graphqlSdk, csrfToken } = context;
   const sdk = await graphqlSdk;
   const data = await sdk.Shared();
@@ -43,13 +44,13 @@ export const loader = async ({ context }: TypedDataFunctionArgs) => {
     T_AND_C_URL: process.env.T_AND_C_URL!,
     CSRF_TOKEN: csrfToken,
   };
-  return jsonTyped({
+  return json({
     user,
     cspNonce,
     csrfToken,
     ENV,
   });
-};
+}
 
 export function links() {
   return [
@@ -66,9 +67,17 @@ export function links() {
 
 export default function App() {
   const [client, setClient] = useState<ApolloClient<any> | undefined>();
-  const { cspNonce, csrfToken, ENV, user } =
-    useLoaderDataTyped<typeof loader>();
+  const loaderData = useLoaderData<typeof loader>();
+  let { cspNonce } = loaderData;
+  const { csrfToken, ENV, user } = loaderData;
   const [userId, setUserId] = useState<string | undefined>(user?.id);
+
+  // Don't update nonce when rendering on the client - it is stripped from the
+  // DOM as soon as the page loads per spec. See
+  // https://html.spec.whatwg.org/multipage/urls-and-fetching.html#nonce-attributes
+  if (typeof document !== "undefined") {
+    cspNonce = "";
+  }
 
   const hydrated = useHydrated();
   let outlet = <Outlet />;

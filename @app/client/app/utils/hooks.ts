@@ -1,14 +1,9 @@
 import type { User } from "@app/graphql";
 import { useMatches } from "@remix-run/react";
+import type { SerializeFrom } from "@remix-run/server-runtime";
 import { useMemo } from "react";
 
 import type { loader } from "~/root";
-
-import type {
-  DataFunctionTyped,
-  InferLoaderData,
-  JsonValue,
-} from "./remix-typed";
 
 /**
  * This base hook is used in other hooks to quickly search for specific data
@@ -27,10 +22,8 @@ function useMatchesData<T = Record<string, unknown>>(
   return route?.data as unknown as T;
 }
 
-export function useMatchesDataTyped<
-  DataFunction extends DataFunctionTyped<JsonValue>
->(id: string) {
-  return useMatchesData<InferLoaderData<DataFunction>>(id);
+export function useMatchesDataTyped<DataFunction>(id: string) {
+  return useMatchesData<SerializeFrom<DataFunction>>(id);
 }
 
 export function useRootMatchesData() {

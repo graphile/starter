@@ -1,7 +1,9 @@
 import { UserOutlined } from "@ant-design/icons";
 import { getCodeFromError } from "@app/lib";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useActionData } from "@remix-run/react";
+import { redirect } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
 import { Alert, Form } from "antd";
 import { AuthenticityTokenInput } from "remix-utils";
@@ -12,18 +14,16 @@ import { FormInput } from "~/components/forms/FormInput";
 import { SubmitButton } from "~/components/forms/SubmitButton";
 import { validateCsrfToken } from "~/utils/csrf";
 import type { GraphqlQueryErrorResult } from "~/utils/errors";
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
-import { redirectTyped } from "~/utils/remix-typed";
 import { requireNoUser } from "~/utils/users";
 
 export const handle = { hideLogin: true, title: "Forgot Password" };
 
-export const loader = async ({ context }: TypedDataFunctionArgs) => {
+export const loader = async ({ context }: LoaderArgs) => {
   await requireNoUser(context);
   return null;
 };
 
-export const action = async ({ request, context }: TypedDataFunctionArgs) => {
+export const action = async ({ request, context }: ActionArgs) => {
   await validateCsrfToken(request, context);
   const sdk = await context.graphqlSdk;
   const fieldValues = await forgotPasswordFormValidator.validate(
@@ -37,8 +37,8 @@ export const action = async ({ request, context }: TypedDataFunctionArgs) => {
   const { email } = fieldValues.data;
   try {
     await sdk.ForgotPassword({ email });
-    return redirectTyped(`/forgot/success?email=${encodeURIComponent(email)}`);
-  } catch (e) {
+    return redirect(`/forgot/success?email=${encodeURIComponent(email)}`);
+  } catch (e: any) {
     const code = getCodeFromError(e);
     return json<GraphqlQueryErrorResult>({
       message: e.message,
