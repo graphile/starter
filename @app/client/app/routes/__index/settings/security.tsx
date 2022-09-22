@@ -1,6 +1,8 @@
 import { getCodeFromError } from "@app/lib";
 import { json } from "@remix-run/node";
 import { useActionData } from "@remix-run/react";
+import type { ActionArgs, LoaderArgs } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
 import { useState } from "react";
 import { AuthenticityTokenInput } from "remix-utils";
@@ -13,13 +15,11 @@ import { SubmitButton } from "~/components/forms/SubmitButton";
 import { validateCsrfToken } from "~/utils/csrf";
 import type { GraphqlQueryErrorResult } from "~/utils/errors";
 import { setPasswordStrengthInfo } from "~/utils/passwords";
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
-import { redirectTyped } from "~/utils/remix-typed";
 import { requireUser } from "~/utils/users";
 
 export const handle = { title: "Settings: Profile" };
 
-export async function loader({ request, context }: TypedDataFunctionArgs) {
+export async function loader({ request, context }: LoaderArgs) {
   await requireUser(request, context);
   return null;
 }
@@ -31,7 +31,7 @@ const securitySchema = z.object({
 
 const securityFormValidator = withZod(securitySchema);
 
-export async function action({ request, context }: TypedDataFunctionArgs) {
+export async function action({ request, context }: ActionArgs) {
   await validateCsrfToken(request, context);
   const sdk = await context.graphqlSdk;
   const fieldValues = await securityFormValidator.validate(
@@ -43,10 +43,10 @@ export async function action({ request, context }: TypedDataFunctionArgs) {
   const { oldPassword, newPassword } = fieldValues.data;
   try {
     await sdk.ChangePassword({ oldPassword, newPassword });
-  } catch (e) {
+  } catch (e: any) {
     const code = getCodeFromError(e);
     if (code === "LOGIN") {
-      throw redirectTyped(
+      throw redirect(
         `/login?next=${encodeURIComponent(new URL(request.url).pathname)}`
       );
     }

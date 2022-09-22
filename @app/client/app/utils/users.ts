@@ -1,12 +1,11 @@
 import type { LoaderContext } from "@app/lib";
-
-import { redirectTyped } from "~/utils/remix-typed";
+import { redirect } from "@remix-run/server-runtime";
 
 export async function requireNoUser(context: LoaderContext) {
   const sdk = await context.graphqlSdk;
   const { currentUser } = await sdk.Shared();
   if (currentUser != null) {
-    throw redirectTyped("/");
+    throw redirect("/");
   }
   return null;
 }
@@ -19,7 +18,7 @@ export async function requireUser(
   const sdk = await context.graphqlSdk;
   const { currentUser } = await sdk.Shared();
   if (currentUser == null) {
-    throw redirectTyped(`/login?next=${encodeURIComponent(redirectTo)}`);
+    throw redirect(`/login?next=${encodeURIComponent(redirectTo)}`);
   }
   return null;
 }

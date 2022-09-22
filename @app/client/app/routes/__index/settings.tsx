@@ -1,15 +1,15 @@
 import { NavLink, Outlet } from "@remix-run/react";
+import type { LoaderArgs } from "@remix-run/server-runtime";
 import { useCallback, useRef } from "react";
 import { HiMenu } from "react-icons/hi";
 
 import { Warn } from "~/components";
 import { useUser } from "~/utils/hooks";
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
 import { requireUser } from "~/utils/users";
 
 export const handle = { fullWidth: true };
 
-export const loader = async ({ request, context }: TypedDataFunctionArgs) => {
+export const loader = async ({ request, context }: LoaderArgs) => {
   await requireUser(request, context);
   return null;
 };

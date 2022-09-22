@@ -14,13 +14,13 @@ import { createClient } from "graphql-ws";
 // Adapted from graphile starter `withApollo`
 
 let wsClient: Client | null = null;
-let _rootURL: string | null = null;
 
 function createWsClient() {
-  if (!_rootURL) {
+  const { ROOT_URL } = window.ENV;
+  if (!ROOT_URL) {
     throw new Error("No ROOT_URL");
   }
-  const url = `${_rootURL.replace(/^http/, "ws")}/graphql`;
+  const url = `${ROOT_URL.replace(/^http/, "ws")}/graphql`;
   return createClient({
     url,
   });
@@ -34,12 +34,7 @@ export function resetWebsocketConnection(): void {
 }
 
 function makeClientSideLink() {
-  const ROOT_URL = window.ENV.ROOT_URL;
-  const CSRF_TOKEN = window.ENV.CSRF_TOKEN;
-  if (_rootURL) {
-    throw new Error("Must only makeClientSideLink once");
-  }
-  _rootURL = ROOT_URL;
+  const { CSRF_TOKEN, ROOT_URL } = window.ENV;
   const httpLink = new HttpLink({
     uri: `${ROOT_URL}/graphql`,
     credentials: "same-origin",

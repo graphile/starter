@@ -1,6 +1,11 @@
 import { getCodeFromError } from "@app/lib";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useActionData, useSearchParams } from "@remix-run/react";
+import {
+  useActionData,
+  useLoaderData,
+  useSearchParams,
+} from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
 import { AuthenticityTokenInput } from "remix-utils";
 import { ValidatedForm, validationError } from "remix-validated-form";
@@ -11,12 +16,11 @@ import { FormInput } from "~/components/forms/FormInput";
 import { SubmitButton } from "~/components/forms/SubmitButton";
 import { validateCsrfToken } from "~/utils/csrf";
 import type { GraphqlQueryErrorResult } from "~/utils/errors";
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
-import { jsonTyped, useLoaderDataTyped } from "~/utils/remix-typed";
+import { extractGraphqlErrorFromFormAction } from "~/utils/errors";
 
 export const handle = { hideLogin: true, title: "Verify Email" };
 
-export const loader = async ({ request, context }: TypedDataFunctionArgs) => {
+export const loader = async ({ request, context }: LoaderArgs) => {
   const url = new URL(request.url);
   const id = url.searchParams.get("id");
   const token = url.searchParams.get("token");
@@ -24,13 +28,13 @@ export const loader = async ({ request, context }: TypedDataFunctionArgs) => {
     const sdk = await context.graphqlSdk;
     const result = await sdk.VerifyEmail({ id, token });
     if (result.verifyEmail?.success) {
-      return jsonTyped({ success: true });
+      return json({ success: true });
     }
   }
-  return jsonTyped({ success: false });
+  return json({ success: false });
 };
 
-export const action = async ({ request, context }: TypedDataFunctionArgs) => {
+export const action = async ({ request, context }: ActionArgs) => {
   await validateCsrfToken(request, context);
   const sdk = await context.graphqlSdk;
   const fieldValues = await verifyFormValidator.validate(
@@ -43,14 +47,14 @@ export const action = async ({ request, context }: TypedDataFunctionArgs) => {
   try {
     const result = await sdk.VerifyEmail({ id, token });
     if (result.verifyEmail?.success) {
-      return jsonTyped({ success: true });
+      return json({ success: true });
     }
     return validationError({
       fieldErrors: {
         token: "Incorrect token, please check and try again",
       },
     });
-  } catch (e) {
+  } catch (e: any) {
     const code = getCodeFromError(e);
     return json<GraphqlQueryErrorResult>({
       message: e.message,
@@ -72,10 +76,15 @@ export default function Verify() {
   const id = searchParams.get("id") ?? "";
   const token = searchParams.get("token") ?? "";
 
-  const { success, message, code, error } =
-    useActionData<GraphqlQueryErrorResult & { success?: true }>() ?? {};
+  const actionData = useActionData<typeof action>();
 
-  const { success: loaderSuccess } = useLoaderDataTyped<typeof loader>();
+  const success =
+    actionData && "success" in actionData ? actionData.success : false;
+
+  const { message, code, error } =
+    extractGraphqlErrorFromFormAction(actionData);
+
+  const { success: loaderSuccess } = useLoaderData<typeof loader>();
 
   return (
     <div className="max-w-lg w-full">

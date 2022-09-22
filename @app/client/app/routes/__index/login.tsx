@@ -1,14 +1,14 @@
 import { Link, useSearchParams } from "@remix-run/react";
+import type { LoaderArgs } from "@remix-run/server-runtime";
 import { HiOutlineUser, HiOutlineUserAdd } from "react-icons/hi";
 
 import { SocialLoginOptions } from "~/components";
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
 import { isSafe } from "~/utils/uri";
 import { requireNoUser } from "~/utils/users";
 
 export const handle = { hideLogin: true, title: "Login" };
 
-export const loader = async ({ context }: TypedDataFunctionArgs) => {
+export const loader = async ({ context }: LoaderArgs) => {
   await requireNoUser(context);
   return null;
 };

@@ -1,6 +1,11 @@
 import type { EmailsForm_UserEmailFragment } from "@app/graphql";
 import { getCodeFromError } from "@app/lib";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import type {
+  ActionArgs,
+  LoaderArgs,
+  SerializeFrom,
+} from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
 import { useState } from "react";
@@ -14,17 +19,14 @@ import { FormInput } from "~/components/forms/FormInput";
 import { SubmitButton } from "~/components/forms/SubmitButton";
 import { validateCsrfToken } from "~/utils/csrf";
 import type { GraphqlQueryErrorResult } from "~/utils/errors";
-import type { TypedDataFunctionArgs } from "~/utils/remix-typed";
-import { jsonTyped, useLoaderDataTyped } from "~/utils/remix-typed";
 import { requireUser } from "~/utils/users";
-
 export const handle = { title: "Settings: Emails" };
 
-export async function loader({ request, context }: TypedDataFunctionArgs) {
+export async function loader({ request, context }: LoaderArgs) {
   await requireUser(request, context);
   const sdk = await context.graphqlSdk;
   const { currentUser } = await sdk.SettingsEmails();
-  return jsonTyped(currentUser!);
+  return json(currentUser!);
 }
 
 const emailId = z.object({
@@ -39,11 +41,10 @@ const addEmail = z.object({
 
 const addEmailValidator = withZod(addEmail);
 
-export async function action({ request, context }: TypedDataFunctionArgs) {
+export async function action({ request, context }: ActionArgs) {
   await validateCsrfToken(request, context);
   const sdk = await context.graphqlSdk;
   const data = await request.formData();
-  console.log(data);
   const subaction = data.get("subaction");
   if (subaction === "add") {
     const validationResult = await addEmailValidator.validate(data);
@@ -52,7 +53,7 @@ export async function action({ request, context }: TypedDataFunctionArgs) {
     }
     try {
       await sdk.AddEmail({ email: validationResult.data.email });
-    } catch (e) {
+    } catch (e: any) {
       const code = getCodeFromError(e);
       return json<GraphqlQueryErrorResult>({
         message: e.message,
@@ -165,7 +166,7 @@ function Email({
   email,
   hasOtherEmails,
 }: {
-  email: EmailsForm_UserEmailFragment;
+  email: SerializeFrom<EmailsForm_UserEmailFragment>;
   hasOtherEmails: boolean;
 }) {
   const canDelete = !email.isPrimary && hasOtherEmails;
@@ -256,7 +257,7 @@ function Email({
 }
 
 export default function ManageEmails() {
-  const user = useLoaderDataTyped<typeof loader>();
+  const user = useLoaderData<typeof loader>();
   const [showAddEmailForm, setShowAddEmailForm] = useState(false);
 
   const { message, code, error } =
@@ -301,7 +302,10 @@ export default function ManageEmails() {
         </div>
       ) : (
         <AddEmailForm
-          onComplete={() => setShowAddEmailForm(false)}
+          // prevent race condition when removing email form from DOM at
+          // same time as form validation - see
+          // https://github.com/airjp73/remix-validated-form/issues/178
+          onComplete={() => setTimeout(() => setShowAddEmailForm(false))}
           message={message}
           code={code}
           error={error}

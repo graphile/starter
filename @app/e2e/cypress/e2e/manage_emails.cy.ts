@@ -3,6 +3,17 @@
 context("Manage emails", () => {
   beforeEach(() => cy.serverCommand("clearTestUsers"));
 
+  it("can navigate to manage emails page", () => {
+    // Disable ResizeObserver errors
+    Cypress.on(
+      "uncaught:exception",
+      (err: any) =>
+        !err.message.includes("ResizeObserver loop limit exceeded") as
+          | false
+          | void
+    );
+  });
+
   it("can navigate to manage emails page on desktop", () => {
     cy.viewport("macbook-13");
     // Setup

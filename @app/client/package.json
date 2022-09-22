@@ -6,27 +6,28 @@
   "license": "",
   "sideEffects": false,
   "scripts": {
-    "build": "yarn run build:css && remix build",
+    "build": "yarn run typecheck && yarn run build:css && remix build",
     "build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
     "dev": "run-p dev:*",
     "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
     "dev:remix": "remix watch",
-    "start": "cross-env NODE_ENV=production node ./build/index.js"
+    "start": "cross-env NODE_ENV=production node ./build/index.js",
+    "typecheck": "tsc -b"
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
-    "@apollo/client": "3.6.7",
+    "@apollo/client": "3.6.9",
     "@app/config": "0.0.0",
     "@app/graphql": "0.0.0",
     "@app/lib": "0.0.0",
-    "@remix-run/express": "1.5.1",
-    "@remix-run/node": "1.5.1",
-    "@remix-run/react": "1.5.1",
-    "@remix-run/server-runtime": "1.5.1",
+    "@remix-run/express": "1.7.0",
+    "@remix-run/node": "1.7.0",
+    "@remix-run/react": "1.7.0",
+    "@remix-run/server-runtime": "1.7.0",
     "@remix-validated-form/with-zod": "2.0.1",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
-    "antd": "4.15.6",
+    "antd": "4.23.1",
     "classnames": "2.3.1",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
@@ -38,20 +39,20 @@
     "react-dom": "^17.0.2",
     "react-icons": "4.4.0",
     "remix-utils": "3.0.0",
-    "remix-validated-form": "4.3.0",
-    "zod": "3.14.4",
+    "remix-validated-form": "4.5.5",
+    "zod": "3.19.1",
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {
-    "@remix-run/dev": "1.5.1",
-    "@remix-run/eslint-config": "1.5.1",
+    "@remix-run/dev": "1.7.0",
+    "@remix-run/eslint-config": "1.7.0",
     "autoprefixer": "10.4.7",
     "daisyui": "2.17.0",
     "eslint": "^8.11.0",
     "npm-run-all": "^4.1.5",
     "postcss": "8.4.14",
     "tailwindcss": "3.1.4",
-    "typescript": "^4.5.5"
+    "typescript": "4.7.4"
   },
   "engines": {
     "node": ">=14"
