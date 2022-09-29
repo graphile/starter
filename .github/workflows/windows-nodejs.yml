@@ -24,7 +24,7 @@ jobs:
           choco install postgresql14 --force --params '/Password:postgres'
       - name: yarn, lint, build and test
         run: |
-          $env:PATH += ";C:\Program Files\PostgreSQL\12\bin"
+          $env:PATH += ";C:\Program Files\PostgreSQL\14\bin"
           cp .env.ci .env
           yarn --frozen-lockfile
           yarn setup
