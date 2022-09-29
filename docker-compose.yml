@@ -111,7 +111,7 @@ services:
 
   # This runs the database that everything else connects to
   db:
-    image: postgres:11
+    image: postgres:14
     env_file:
       - docker/.env
 
