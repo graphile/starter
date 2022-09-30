@@ -13,6 +13,11 @@ jobs:
       POSTGRES_PASSWORD: postgres
 
     steps:
+      # Force LF line endings - necessary to have prettier not complain
+      - name: Prepare git
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
       - name: Checkout
         uses: actions/checkout@v2
       - name: Use Node.js 16
