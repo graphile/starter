@@ -20,9 +20,7 @@ jobs:
         ports:
           - "0.0.0.0:5432:5432"
         # needed because the postgres container does not provide a healthcheck
-        options:
-          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
-          --health-retries 5
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout
@@ -37,7 +35,7 @@ jobs:
           sudo bash -c "echo deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main >> /etc/apt/sources.list.d/pgdg.list"
           wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
           sudo apt-get update
-          sudo apt-get -yqq install postgresql-client-11
+          sudo apt-get -yqq install postgresql-client-14
       - name: setup database
         run: |
           cp .env.ci .env
@@ -47,25 +45,22 @@ jobs:
           CI: true
       - name: "Run docker server build"
         run:
-          docker build --file production.Dockerfile --build-arg
-          ROOT_URL="http://localhost:5678" --build-arg TARGET="server" --tag
-          gs-server .
+          docker build --file production.Dockerfile --build-arg ROOT_URL="http://localhost:5678" --build-arg
+          TARGET="server" --tag gs-server .
       - name: "Run docker worker build"
         run:
-          docker build --file production.Dockerfile --build-arg
-          ROOT_URL="http://localhost:5678" --build-arg TARGET="worker" --tag
-          gs-worker .
+          docker build --file production.Dockerfile --build-arg ROOT_URL="http://localhost:5678" --build-arg
+          TARGET="worker" --tag gs-worker .
       - name: "ifconfig -a"
         run: "ifconfig -a"
       - name: "Start docker server"
         run:
-          docker run --rm -d --init -p 5678:5678 --env-file .env -e
-          NODE_ENV=production -e DATABASE_HOST=172.17.0.1 --name gs-server
-          gs-server
+          docker run --rm -d --init -p 5678:5678 --env-file .env -e NODE_ENV=production -e DATABASE_HOST=172.17.0.1
+          --name gs-server gs-server
       - name: "Start docker worker"
         run:
-          docker run --rm -d --init --env-file .env -e NODE_ENV=production -e
-          DATABASE_HOST=172.17.0.1 --name gs-worker gs-worker
+          docker run --rm -d --init --env-file .env -e NODE_ENV=production -e DATABASE_HOST=172.17.0.1 --name gs-worker
+          gs-worker
       - name: "Test docker"
         run: node .github/workflows/test-docker.js
       - name: "Tear down docker"

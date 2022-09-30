@@ -13,22 +13,41 @@ jobs:
       POSTGRES_PASSWORD: postgres
 
     steps:
+      # Force LF line endings - necessary to have prettier not complain
+      - name: Prepare git
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
       - name: Checkout
         uses: actions/checkout@v2
       - name: Use Node.js 16
         uses: actions/setup-node@v1
         with:
           node-version: "16"
-      - name: Install PostgreSQL 14
+      - name: Start Postgres 14
         run: |
-          choco install postgresql14 --force --params '/Password:postgres'
-      - name: yarn, lint, build and test
+          sc config postgresql-x64-14 start=auto
+          net start postgresql-x64-14
+      - name: Setup environment
+        # Windows postgres auth is 'postgres'/'root' - see
+        # https://github.com/actions/runner-images/blob/main/images/win/Windows2022-Readme.md#postgresql
         run: |
-          $env:PATH += ";C:\Program Files\PostgreSQL\12\bin"
           cp .env.ci .env
-          yarn --frozen-lockfile
-          yarn setup
-          yarn build
-          yarn lint
-          yarn test --ci
-          yarn depcheck
+          echo "ROOT_DATABASE_URL=postgres://postgres:root@localhost/template1" >> .env
+
+      # These all need to be separate steps on Windows because a failure of a
+      # command doesn't fail the whole job step - see
+      # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell
+
+      - name: yarn
+        run: yarn --frozen-lockfile
+      - name: setup
+        run: yarn setup
+      - name: build
+        run: yarn build
+      - name: lint
+        run: yarn lint
+      - name: test
+        run: yarn test --ci
+      - name: depcheck
+        run: yarn depcheck
