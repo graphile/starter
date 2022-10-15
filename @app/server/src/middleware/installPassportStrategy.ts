@@ -53,6 +53,7 @@ const setReturnTo: RequestHandler = (req, _res, next) => {
   if (
     returnTo &&
     returnTo[0] === "/" &&
+    returnTo[1] !== "/" && // Prevent protocol-relative URLs
     !returnTo.match(BLOCKED_REDIRECT_PATHS)
   ) {
     req.session.returnTo = returnTo;
