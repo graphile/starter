@@ -262,8 +262,11 @@ export function getPostGraphileOptions({
           }),
 
         logout: () => {
-          req.logout();
-          return Promise.resolve();
+          return new Promise((resolve) => {
+            req.logout(() => {
+              resolve();
+            });
+          });
         },
       };
     },

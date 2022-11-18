@@ -7,13 +7,13 @@
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest --passWithNoTests"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.7.0",
-    "@apollo/client": "^3.5.10",
+    "@ant-design/icons": "^4.8.0",
+    "@apollo/client": "^3.7.1",
     "@app/graphql": "0.0.0",
     "antd": "4.19.3",
     "next": "^12.1.1",
     "react": "^17.0.2",
-    "tslib": "^2.3.1"
+    "tslib": "^2.4.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
