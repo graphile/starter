@@ -67,13 +67,12 @@ export function OrganizationSettingsLayout({
             <Menu.Item key={pageHref}>
               <Link
                 href={pageHref}
+                data-cy={pages[pageHref].cy}
                 as={pageHref.replace("[slug]", organization.slug)}
               >
-                <a data-cy={pages[pageHref].cy}>
-                  <Text {...pages[pageHref].titleProps}>
-                    {pages[pageHref].title}
-                  </Text>
-                </a>
+                <Text {...pages[pageHref].titleProps}>
+                  {pages[pageHref].title}
+                </Text>
               </Link>
             </Menu.Item>
           ))}
