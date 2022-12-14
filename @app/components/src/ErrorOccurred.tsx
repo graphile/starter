@@ -12,9 +12,7 @@ export function ErrorOccurred() {
         later, or if this keeps happening then let us know.
       </P>
       <P>
-        <Link href="/">
-          <a>Go to the homepage</a>
-        </Link>
+        <Link href="/">Go to the homepage</Link>
       </P>
     </div>
   );

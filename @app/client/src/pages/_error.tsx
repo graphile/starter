@@ -22,11 +22,7 @@ function SocialAuthError({ provider }: SocialAuthErrorProps) {
     <div>
       <H2>This application is not configured for that auth provider</H2>
       <P>
-        Please try and{" "}
-        <Link href="/login">
-          <a>login with another method</a>
-        </Link>
-        .
+        Please try and <Link href="/login">login with another method</Link>.
       </P>
       {isDev && (
         <Alert
