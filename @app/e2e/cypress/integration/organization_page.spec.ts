@@ -16,7 +16,7 @@ context("Organization page", () => {
 
     // Assertions
     cy.url().should("equal", Cypress.env("ROOT_URL") + "/o/test-organization");
-    cy.getCy("layout-header-title").contains("Test Organization");
+    cy.getCy("layout-header-titlelink").contains("Test Organization");
     cy.getCy("layout-header-titlelink")
       .invoke("attr", "href")
       .should("equal", "/o/test-organization");
@@ -52,7 +52,7 @@ context("Organization page", () => {
 
     // Assertions
     cy.url().should("equal", Cypress.env("ROOT_URL") + "/o/test-organization");
-    cy.getCy("layout-header-title").contains("Test Organization");
+    cy.getCy("layout-header-titlelink").contains("Test Organization");
     cy.getCy("layout-header-titlelink")
       .invoke("attr", "href")
       .should("equal", "/o/test-organization");

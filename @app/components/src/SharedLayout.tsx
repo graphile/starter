@@ -185,7 +185,6 @@ export function SharedLayout({
                 textAlign: "center",
                 lineHeight: "64px",
               }}
-              data-cy="layout-header-title"
             >
               {titleHref ? (
                 <Link
