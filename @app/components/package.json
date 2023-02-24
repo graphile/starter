@@ -13,7 +13,7 @@
     "antd": "4.15.6",
     "next": "^10.2.3",
     "react": "^17.0.2",
-    "tslib": "^2.2.0"
+    "tslib": "^2.4.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
