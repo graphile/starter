@@ -1,10 +1,12 @@
-import { gql, makeExtendSchemaPlugin } from "graphile-utils";
-
-import { OurGraphQLContext } from "../middleware/installPostGraphile";
+import { Resolvers, gql, makeExtendSchemaPlugin } from "graphile-utils";
+import { access, SafeError } from "grafast";
+import { PgClassExpressionStep } from "@dataplan/pg";
+import type {} from "../middleware/installPostGraphile";
 import { ERROR_MESSAGE_OVERRIDES } from "../utils/handleErrors";
+import { Plans } from "graphile-utils";
 
-const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
-  typeDefs: gql`
+const PassportLoginPlugin = makeExtendSchemaPlugin((build) => {
+  const typeDefs = gql`
     input RegisterInput {
       username: String!
       email: String!
@@ -14,7 +16,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
     }
 
     type RegisterPayload {
-      user: User! @pgField
+      user: User!
     }
 
     input LoginInput {
@@ -23,7 +25,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
     }
 
     type LoginPayload {
-      user: User! @pgField
+      user: User!
     }
 
     type LogoutPayload {
@@ -84,13 +86,41 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
       """
       resetPassword(input: ResetPasswordInput!): ResetPasswordPayload
     }
-  `,
-  resolvers: {
+  `;
+  const userSource = build.input.pgSources.find((s) => s.name === "users");
+  const currentUserIdSource = build.input.pgSources.find(
+    (s) => s.name === "current_user_id"
+  );
+  if (!userSource || !currentUserIdSource) {
+    throw new Error(
+      "Couldn't find either the 'users' or 'current_user_id' source"
+    );
+  }
+  const plans: Plans = {
+    RegisterPayload: {
+      user($obj) {
+        const $userId = access($obj, "userId");
+        return userSource.get({ id: $userId });
+      },
+    },
+    LoginPayload: {
+      user() {
+        const $userId = currentUserIdSource.execute() as PgClassExpressionStep<
+          any,
+          any,
+          any,
+          any,
+          any
+        >;
+        return userSource.get({ id: $userId });
+      },
+    },
+  };
+  const resolvers: Resolvers = {
     Mutation: {
-      async register(_mutation, args, context: OurGraphQLContext, resolveInfo) {
-        const { selectGraphQLResultFromTable } = resolveInfo.graphile;
+      async register(_mutation, args, context: Grafast.Context) {
         const { username, password, email, name, avatarUrl } = args.input;
-        const { rootPgPool, login, pgClient } = context;
+        const { rootPgPool, login, pgSettings } = context;
         try {
           // Create a user and create a session for it in the proccess
           const {
@@ -123,28 +153,15 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
           }
 
           if (details.session_id) {
-            // Store into transaction
-            await pgClient.query(
-              `select set_config('jwt.claims.session_id', $1, true)`,
-              [details.session_id]
-            );
+            // Update pgSettings so future queries will use the new session
+            pgSettings!["jwt.claims.session_id"] = details.session_id;
 
             // Tell Passport.js we're logged in
             await login({ session_id: details.session_id });
           }
 
-          // Fetch the data that was requested from GraphQL, and return it
-          const sql = build.pgSql;
-          const [row] = await selectGraphQLResultFromTable(
-            sql.fragment`app_public.users`,
-            (tableAlias, sqlBuilder) => {
-              sqlBuilder.where(
-                sql.fragment`${tableAlias}.id = ${sql.value(details.user_id)}`
-              );
-            }
-          );
           return {
-            data: row,
+            userId: details.user_id,
           };
         } catch (e: any) {
           const { code } = e;
@@ -155,6 +172,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
             ...Object.keys(ERROR_MESSAGE_OVERRIDES),
           ];
           if (safeErrorCodes.includes(code)) {
+            // TODO: make SafeError
             throw e;
           } else {
             console.error(
@@ -167,10 +185,9 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
           }
         }
       },
-      async login(_mutation, args, context: OurGraphQLContext, resolveInfo) {
-        const { selectGraphQLResultFromTable } = resolveInfo.graphile;
+      async login(_mutation, args, context: Grafast.Context) {
         const { username, password } = args.input;
-        const { rootPgPool, login, pgClient } = context;
+        const { rootPgPool, login, pgSettings } = context;
         try {
           // Call our login function to find out if the username/password combination exists
           const {
@@ -191,29 +208,15 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
             await login({ session_id: session.uuid });
           }
 
-          // Get session_id from PG
-          await pgClient.query(
-            `select set_config('jwt.claims.session_id', $1, true)`,
-            [session.uuid]
-          );
+          // Update pgSettings so future queries will use the new session
+          pgSettings!["jwt.claims.session_id"] = session.uuid;
 
-          // Fetch the data that was requested from GraphQL, and return it
-          const sql = build.pgSql;
-          const [row] = await selectGraphQLResultFromTable(
-            sql.fragment`app_public.users`,
-            (tableAlias, sqlBuilder) => {
-              sqlBuilder.where(
-                sql.fragment`${tableAlias}.id = app_public.current_user_id()`
-              );
-            }
-          );
-          return {
-            data: row,
-          };
+          return {};
         } catch (e: any) {
           const code = e.extensions?.code ?? e.code;
           const safeErrorCodes = ["LOCKD", "CREDS"];
           if (safeErrorCodes.includes(code)) {
+            // TODO: throw SafeError
             throw e;
           } else {
             console.error(e);
@@ -224,21 +227,18 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
         }
       },
 
-      async logout(_mutation, _args, context: OurGraphQLContext, _resolveInfo) {
-        const { pgClient, logout } = context;
-        await pgClient.query("select app_public.logout();");
+      async logout(_mutation, _args, context: Grafast.Context) {
+        const { pgSettings, withPgClient, logout } = context;
+        await withPgClient(pgSettings, (pgClient) =>
+          pgClient.query({ text: "select app_public.logout();" })
+        );
         await logout();
         return {
           success: true,
         };
       },
 
-      async resetPassword(
-        _mutation,
-        args,
-        context: OurGraphQLContext,
-        _resolveInfo
-      ) {
+      async resetPassword(_mutation, args, context: Grafast.Context) {
         const { rootPgPool } = context;
         const { userId, resetToken, newPassword, clientMutationId } =
           args.input;
@@ -261,7 +261,12 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
         };
       },
     },
-  },
-}));
+  };
+  return {
+    typeDefs,
+    plans,
+    resolvers,
+  };
+});
 
 export default PassportLoginPlugin;
