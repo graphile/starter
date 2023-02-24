@@ -39,7 +39,7 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "dependencies": {
     "abort-controller": "^3.0.0",
-    "graphql": "^15.4.0",
+    "graphql": "16.1.0-experimental-stream-defer.6",
     "lerna": "^4.0.0",
     "string-width": "^5.0.0"
   },
@@ -79,7 +79,7 @@
     "update-dotenv": "^1.1.1"
   },
   "resolutions": {
-    "graphql": "15.x",
+    "graphql": "16.1.0-experimental-stream-defer.6",
     "pg-connection-string": "2.x"
   },
   "workspaces": {
