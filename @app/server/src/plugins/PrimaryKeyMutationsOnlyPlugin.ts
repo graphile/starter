@@ -1,24 +1,27 @@
-import { Plugin } from "graphile-build";
+import type {} from "postgraphile";
 
-type PgConstraint = any;
-
-const PrimaryKeyMutationsOnlyPlugin: Plugin = (builder) => {
-  builder.hook(
-    "build",
-    (build) => {
-      build.pgIntrospectionResultsByKind.constraint.forEach(
-        (constraint: PgConstraint) => {
-          if (!constraint.tags.omit && constraint.type !== "p") {
-            constraint.tags.omit = ["update", "delete"];
+const PrimaryKeyMutationsOnlyPlugin: GraphileConfig.Plugin = {
+  name: "PrimaryKeyMutationsOnlyPlugin",
+  version: "0.0.0",
+  gather: {
+    hooks: {
+      pgIntrospection_introspection(info, event) {
+        const { introspection } = event;
+        for (const pgConstraint of introspection.constraints) {
+          if (pgConstraint.contype === "u") {
+            const tags = pgConstraint.getTags();
+            const newBehavior = ["-update", "-delete"];
+            if (typeof tags.behavior === "string") {
+              newBehavior.push(tags.behavior);
+            } else if (Array.isArray(tags.behavior)) {
+              newBehavior.push(...(tags.behavior as string[]));
+            }
+            tags.behavior = newBehavior;
           }
         }
-      );
-      return build;
+      },
     },
-    [],
-    [],
-    ["PgIntrospection"]
-  );
+  },
 };
 
 export default PrimaryKeyMutationsOnlyPlugin;
