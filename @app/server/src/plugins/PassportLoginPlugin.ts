@@ -95,7 +95,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
           // Create a user and create a session for it in the proccess
           const {
             rows: [details],
-          } = await rootPgPool.query(
+          } = await rootPgPool.query<{ user_id: number; session_id: string }>(
             `
             with new_user as (
               select users.* from app_private.really_create_user(
@@ -117,9 +117,9 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
           );
 
           if (!details || !details.user_id) {
-            const e = new Error("Registration failed");
-            e["code"] = "FFFFF";
-            throw e;
+            throw new SafeError("Registration failed", {
+              code: "FFFFF",
+            });
           }
 
           if (details.session_id) {
@@ -161,9 +161,9 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
               "Unrecognised error in PassportLoginPlugin; replacing with sanitized version"
             );
             console.error(e);
-            const error = new Error("Registration failed");
-            error["code"] = code;
-            throw error;
+            throw new SafeError("Registration failed", {
+              code,
+            });
           }
         }
       },
@@ -181,9 +181,9 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
           );
 
           if (!session) {
-            const error = new Error("Incorrect username/password");
-            error["code"] = "CREDS";
-            throw error;
+            throw new SafeError("Incorrect username/password", {
+              code: "CREDS",
+            });
           }
 
           if (session.uuid) {
@@ -217,9 +217,9 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
             throw e;
           } else {
             console.error(e);
-            const error = new Error("Login failed");
-            error["code"] = e.code;
-            throw error;
+            throw new SafeError("Login failed", {
+              code,
+            });
           }
         }
       },

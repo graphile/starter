@@ -23,14 +23,14 @@ export function extractError(
 
 export function getExceptionFromError(
   error: null | Error | ApolloError | GraphQLError
-): Error | null {
+): (Error & { code?: string }) | null {
   // @ts-ignore
   const graphqlError: GraphQLError = extractError(error);
   const exception =
     graphqlError &&
     graphqlError.extensions &&
     graphqlError.extensions.exception;
-  return exception || graphqlError || error;
+  return (exception || graphqlError || error) as Error | null;
 }
 
 export function getCodeFromError(
