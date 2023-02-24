@@ -20,8 +20,7 @@ export default function installPostGraphile(app: Express) {
     })
   );
 
-  // TODO: rename!
-  app.set("postgraphileMiddleware", pgl);
+  app.set("pgl", pgl);
 
   const serv = pgl.createServ(grafserv);
   serv.addTo(app, httpServer);
