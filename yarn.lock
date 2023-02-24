@@ -149,7 +149,7 @@ __metadata:
     next: ^10.2.3
     react: ^17.0.2
     tslib: ^2.5.0
-    typescript: ^4.9.5
+    typescript: ^5.0.0-beta
   languageName: unknown
   linkType: soft
 
@@ -225,7 +225,7 @@ __metadata:
     react: ^17.0.2
     react-dom: ^17.0.2
     tslib: ^2.5.0
-    typescript: ^4.9.5
+    typescript: ^5.0.0-beta
     zxcvbn: ^4.4.2
   languageName: unknown
   linkType: soft
@@ -4487,7 +4487,7 @@ __metadata:
     ts-jest: ^29.0.5
     ts-loader: ^8.4.0
     ts-node: ^10.9.1
-    typescript: ^4.9.5
+    typescript: ^5.0.0-beta
     update-dotenv: ^1.1.1
   languageName: unknown
   linkType: soft
@@ -17459,23 +17459,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.9.5":
-  version: 4.9.5
-  resolution: "typescript@npm:4.9.5"
+"typescript@npm:^5.0.0-beta":
+  version: 5.0.0-dev.20230226
+  resolution: "typescript@npm:5.0.0-dev.20230226"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: ee000bc26848147ad423b581bd250075662a354d84f0e06eb76d3b892328d8d4440b7487b5a83e851b12b255f55d71835b008a66cbf8f255a11e4400159237db
+  checksum: 967639fbe5e009b6d43906d068de4806993487b4ee2c0a5965847e4cf6778fa955ee5729cefe051eb7ad3b309ccd9b067686b0b873f828fe14c9f359980b44c2
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.9.5#~builtin<compat/typescript>":
-  version: 4.9.5
-  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"
+"typescript@patch:typescript@^5.0.0-beta#~builtin<compat/typescript>":
+  version: 5.0.0-dev.20230226
+  resolution: "typescript@patch:typescript@npm%3A5.0.0-dev.20230226#~builtin<compat/typescript>::version=5.0.0-dev.20230226&hash=1f5320"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: ab417a2f398380c90a6cf5a5f74badd17866adf57f1165617d6a551f059c3ba0a3e4da0d147b3ac5681db9ac76a303c5876394b13b3de75fdd5b1eaa06181c9d
+  checksum: 2dde7c48d25823f83ff3eca41c7e7e96fade656f686ac12a009971abcc16793afeda3d23da337b6e45cb2193c60d431ac4a90d92aa70f2b76890143ace23fe89
   languageName: node
   linkType: hard
 
