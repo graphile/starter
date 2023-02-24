@@ -12520,10 +12520,10 @@ postcss@^8.1.10:
     nanoid "^3.1.23"
     source-map-js "^0.6.2"
 
-postgraphile@^5.0.0-0.24:
-  version "5.0.0-0.24"
-  resolved "https://registry.yarnpkg.com/postgraphile/-/postgraphile-5.0.0-0.24.tgz#92db4e15e99821501ed56bcf7d8d8a6b48427c27"
-  integrity sha512-B2T9qGxuRJWqk/64pYCS74ijWkW3s0VDCTfq4kYkDrrPcpCrm82eXHe9JTbQV2AJMz44/VIfpigZp/2sG5roeg==
+postgraphile@^5.0.0-0.25:
+  version "5.0.0-0.25"
+  resolved "https://registry.yarnpkg.com/postgraphile/-/postgraphile-5.0.0-0.25.tgz#7535d61477281df0d8c4ef11aa37fec3e96451b1"
+  integrity sha512-+pUyv9aLXxYL9bvnzR5baxxQNqzcQfbHlB7KZ66VB6S0aQZF6Gv67BC2a3hgA1aW43XwkFkgvJYkzJS2qSO3Jg==
   dependencies:
     "@dataplan/pg" "0.0.1-0.19"
     "@graphile/lru" "^5.0.0-0.1"
