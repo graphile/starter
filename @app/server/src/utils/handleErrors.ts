@@ -35,7 +35,7 @@ const pluck = (err: any): { [key: string]: any } => {
       memo[key] = value;
     }
     return memo;
-  }, {});
+  }, Object.create(null) as Record<string, any>);
 };
 
 /**
@@ -90,7 +90,7 @@ function conflictFieldsFromError(err: any) {
 
 export function maskError(error: GraphQLError): GraphQLError {
   const { message: rawMessage, originalError } = error;
-  const code = originalError ? originalError["code"] : null;
+  const code = originalError ? (originalError as any)["code"] : null;
   const localPluck = ERROR_MESSAGE_OVERRIDES[code] || pluck;
   const exception = localPluck(originalError || error);
   return new GraphQLError(
