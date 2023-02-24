@@ -1,27 +1,13 @@
-import { Build } from "graphile-build";
-import { QueryBuilder, SQL } from "graphile-build-pg";
 import {
-  embed /*, AugmentedGraphQLFieldResolver */,
-  gql,
-  makeExtendSchemaPlugin,
-} from "graphile-utils";
-// graphile-utils doesn't export this yet
-import { GraphQLResolveInfo } from "graphql";
-
-import { OurGraphQLContext } from "../graphile.config";
-type GraphileHelpers = any;
-type AugmentedGraphQLFieldResolver<
-  TSource,
-  TContext,
-  TArgs = { [argName: string]: any }
-> = (
-  parent: TSource,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo & {
-    graphile: GraphileHelpers;
-  }
-) => any;
+  access,
+  context,
+  listen,
+  lambda,
+  SafeError,
+  ExecutableStep,
+} from "grafast";
+import { gql, makeExtendSchemaPlugin } from "graphile-utils";
+import { PgClassExpressionStep } from "@dataplan/pg";
 
 /*
  * PG NOTIFY events are sent via a channel, this function helps us determine
@@ -31,27 +17,13 @@ type AugmentedGraphQLFieldResolver<
  * NOTE: channels are limited to 63 characters in length (this is a PostgreSQL
  * limitation).
  */
-const currentUserTopicFromContext = async (
-  _args: {},
-  context: { [key: string]: any },
-  _resolveInfo: GraphQLResolveInfo
-) => {
-  let userId: number | null = null;
-  if (context.sessionId /* fail fast */) {
-    // We have the users session ID, but to get their actual ID we need to ask the database.
-    const {
-      rows: [user],
-    } = await context.pgClient.query(
-      "select app_public.current_user_id() as id"
-    );
-    userId = user?.id;
-  }
+function currentUserTopicByUserId(userId: number | null) {
   if (userId) {
     return `graphql:user:${userId}`;
   } else {
-    throw new Error("You're not logged in");
+    throw new SafeError("You're not logged in");
   }
-};
+}
 
 /*
  * This plugin adds a number of custom subscriptions to our schema. By making
@@ -67,10 +39,25 @@ const currentUserTopicFromContext = async (
  * And see the database trigger function `app_public.tg__graphql_subscription()`.
  */
 const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
-  const { pgSql: sql } = build;
+  const currentUserIdSource = build.input.pgSources.find(
+    (s) => s.name === "current_user_id"
+  );
+  if (!currentUserIdSource) {
+    throw new Error("Couldn't find current_user_id source");
+  }
+  const usersSource = build.input.pgSources.find(
+    (s) =>
+      !s.parameters &&
+      s.extensions?.pg?.schemaName === "app_public" &&
+      s.extensions.pg.name === "users"
+  );
+  if (!usersSource) {
+    throw new Error("Couldn't find source for app_public.users");
+  }
+
   return {
     typeDefs: gql`
-       type UserSubscriptionPayload {
+      type UserSubscriptionPayload {
         user: User # Populated by our resolver below
         event: String # Part of the NOTIFY payload
       }
@@ -79,14 +66,35 @@ const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
         """
         Triggered when the logged in user's record is updated in some way.
         """
-        currentUserUpdated: UserSubscriptionPayload @pgSubscription(topic: ${embed(
-          currentUserTopicFromContext
-        )})
+        currentUserUpdated: UserSubscriptionPayload
       }
     `,
-    resolvers: {
+    plans: {
+      Subscription: {
+        currentUserUpdated() {
+          const $pgSubscriber = context().get("pgSubscriber");
+          // We have the users session ID, but to get their actual ID we need to ask the database.
+          const $userId =
+            currentUserIdSource.execute() as PgClassExpressionStep<
+              any,
+              any,
+              any,
+              any,
+              any
+            >;
+          const $topic = lambda($userId, currentUserTopicByUserId);
+          return listen(
+            $pgSubscriber,
+            $topic,
+            (e) => e as ExecutableStep<TgGraphQLSubscriptionPayload>
+          );
+        },
+      },
       UserSubscriptionPayload: {
-        user: recordByIdFromTable(build, sql.fragment`app_public.users`),
+        user($obj) {
+          const $id = access($obj, "subject");
+          return usersSource.get({ id: $id });
+        },
       },
     },
   };
@@ -96,35 +104,6 @@ const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
 interface TgGraphQLSubscriptionPayload {
   event: string;
   subject: string | null;
-}
-
-/*
- * This function handles the boilerplate of fetching a record from the database
- * which has the 'id' equal to the 'subject' from the PG NOTIFY event payload
- * (see `tg__graphql_subscription()` trigger function in the database).
- */
-
-function recordByIdFromTable(
-  build: Build,
-  sqlTable: SQL
-): AugmentedGraphQLFieldResolver<TgGraphQLSubscriptionPayload, any> {
-  const { pgSql: sql } = build;
-  return async (
-    event: TgGraphQLSubscriptionPayload,
-    _args: {},
-    _context: OurGraphQLContext,
-    { graphile: { selectGraphQLResultFromTable } }
-  ) => {
-    const rows = await selectGraphQLResultFromTable(
-      sqlTable,
-      (tableAlias: SQL, sqlBuilder: QueryBuilder) => {
-        sqlBuilder.where(
-          sql.fragment`${tableAlias}.id = ${sql.value(event.subject)}`
-        );
-      }
-    );
-    return rows[0];
-  };
 }
 
 export default SubscriptionsPlugin;
