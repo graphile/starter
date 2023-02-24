@@ -1,5 +1,5 @@
 import PgPubsub from "@graphile/pg-pubsub";
-import GraphilePro from "@graphile/pro"; // Requires license key
+// TODO: import GraphilePro from "@graphile/pro"; // Requires license key
 import PgSimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
 import { Express, Request, Response } from "express";
 import { NodePlugin } from "graphile-build";
@@ -63,7 +63,11 @@ const pluginHook = makePluginHook([
   PgPubsub,
 
   // If we have a Graphile Pro license, then enable the plugin
-  ...(process.env.GRAPHILE_LICENSE ? [GraphilePro] : []),
+  ...(process.env.GRAPHILE_LICENSE
+    ? [
+        /* GraphilePro */
+      ]
+    : []),
 ]);
 
 interface IPostGraphileOptionsOptions {
