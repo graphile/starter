@@ -16,11 +16,11 @@
     "tslib": "^2.4.0"
   },
   "devDependencies": {
-    "@graphql-codegen/add": "^2.0.1",
-    "@graphql-codegen/cli": "^1.17.9",
-    "@graphql-codegen/typescript": "^1.17.10",
-    "@graphql-codegen/typescript-operations": "^1.17.8",
-    "@graphql-codegen/typescript-react-apollo": "2.2.5",
+    "@graphql-codegen/add": "^4.0.1",
+    "@graphql-codegen/cli": "^3.2.1",
+    "@graphql-codegen/typescript": "^3.0.1",
+    "@graphql-codegen/typescript-operations": "^3.0.1",
+    "@graphql-codegen/typescript-react-apollo": "3.3.7",
     "cross-env": "^7.0.2",
     "jest": "^27.0.1"
   }
