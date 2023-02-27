@@ -18,6 +18,7 @@ import { makePgConfig } from "@dataplan/pg/adaptors/pg";
 import { PgRBACPlugin } from "graphile-build-pg";
 import { postgraphilePresetAmber } from "postgraphile/presets/amber";
 import {
+  PgV4InflectionPlugin,
   PgV4NoIgnoreIndexesPlugin,
   PgV4SmartTagsPlugin,
 } from "postgraphile/presets/v4";
@@ -90,6 +91,10 @@ export function getPreset({
       // TODO: migrate `@omit` to `@behavior` and remove this.
       // Convert `@omit` to `@behavior`
       PgV4SmartTagsPlugin,
+
+      // TODO: remove this
+      // Use same inflection rules as V4
+      PgV4InflectionPlugin,
 
       // PostGraphile adds a `query: Query` field to `Query` for Relay 1
       // compatibility. We don't need that.
