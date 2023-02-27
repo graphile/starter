@@ -40,6 +40,7 @@ function parseError(
       ? codeAsFloat
       : 500;
 
+  console.error("An unknown error occurred", error);
   return {
     message: "An unknown error occurred",
     status: httpCode,
