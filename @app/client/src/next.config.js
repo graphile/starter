@@ -92,6 +92,9 @@ if (!process.env.ROOT_URL) {
           externals: [
             ...(externals || []),
             isServer ? { "pg-native": "pg/lib/client" } : null,
+            { "node:buffer": "node:buffer" },
+            { "node:crypto": "node:crypto" },
+            { "node:http": "node:http" },
           ].filter((_) => _),
         };
       },
