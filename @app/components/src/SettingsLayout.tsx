@@ -70,7 +70,7 @@ export function SettingsLayout({
   children,
 }: SettingsLayoutProps) {
   const href = pages[inHref] ? inHref : Object.keys(pages)[0];
-  const page = pages[href];
+  const page = pages[href as keyof typeof pages];
   // `useRouter()` sometimes returns null
   const router: NextRouter | null = useRouter();
   const fullHref =
@@ -89,25 +89,27 @@ export function SettingsLayout({
           <Layout style={{ minHeight: contentMinHeight }} hasSider>
             <Sider>
               <Menu selectedKeys={[href]}>
-                {Object.keys(pages).map((pageHref) => (
-                  <Menu.Item key={pageHref}>
-                    <Link href={pageHref}>
-                      <a data-cy={pages[pageHref].cy}>
-                        <Warn
-                          okay={
-                            !currentUser ||
-                            currentUser.isVerified ||
-                            !pages[pageHref].warnIfUnverified
-                          }
-                        >
-                          <Text {...pages[pageHref].titleProps}>
-                            {pages[pageHref].title}
-                          </Text>
-                        </Warn>
-                      </a>
-                    </Link>
-                  </Menu.Item>
-                ))}
+                {(Object.keys(pages) as (keyof typeof pages)[]).map(
+                  (pageHref) => (
+                    <Menu.Item key={pageHref}>
+                      <Link href={pageHref}>
+                        <a data-cy={pages[pageHref].cy}>
+                          <Warn
+                            okay={
+                              !currentUser ||
+                              currentUser.isVerified ||
+                              !pages[pageHref].warnIfUnverified
+                            }
+                          >
+                            <Text {...pages[pageHref].titleProps}>
+                              {pages[pageHref].title}
+                            </Text>
+                          </Warn>
+                        </a>
+                      </Link>
+                    </Menu.Item>
+                  )
+                )}
               </Menu>
             </Sider>
             <Content>
