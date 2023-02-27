@@ -36,11 +36,15 @@ export default async function installHelmet(app: Express) {
     ) {
       throw new Error(`contentSecurityPolicy must be an object`);
     }
-    // Dev needs 'unsafe-eval' due to
-    // https://github.com/vercel/next.js/issues/14221
     options.contentSecurityPolicy.directives!["script-src"] = [
       "'self'",
+
+      // Dev needs 'unsafe-eval' due to
+      // https://github.com/vercel/next.js/issues/14221
       "'unsafe-eval'",
+
+      // Ruru needs 'unsafe-inline'
+      "'unsafe-inline'",
     ];
   }
   if (isDevOrTest || !!process.env.ENABLE_GRAPHIQL) {

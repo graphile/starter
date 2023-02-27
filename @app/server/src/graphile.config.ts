@@ -81,6 +81,8 @@ export function getPreset({
 
     grafserv: {
       maskError,
+
+      graphiqlPath: "/graphiql",
     },
 
     extends: [
