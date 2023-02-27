@@ -65,15 +65,15 @@ const Home: NextPage = () => {
           </Paragraph>
 
           <Title level={4}>
-            <a href="/graphiql">
+            <a href="/ruru">
               Graph<em>i</em>QL
             </a>
           </Title>
           <Paragraph>
             You can browse the GraphQL API and even issue GraphQL queries using
             the built in Graph<em>i</em>QL interface located at{" "}
-            <a href="/graphiql">
-              <code>/graphiql</code>
+            <a href="/ruru">
+              <code>/ruru</code>
             </a>
             .
           </Paragraph>
@@ -141,7 +141,7 @@ const Home: NextPage = () => {
           <Paragraph>
             When you're happy, you can add database changes to{" "}
             <code>current.sql</code> and see them reflected in the GraphiQL
-            interface a <a href="/graphiql">/graphiql</a>.
+            interface a <a href="/ruru">/ruru</a>.
           </Paragraph>
 
           <Divider />

@@ -42,7 +42,7 @@ async function main() {
     );
     console.log(
       `  GraphiQL: ${chalk.bold.underline(
-        `http://localhost:${actualPort}/graphiql`
+        `http://localhost:${actualPort}/ruru`
       )}`
     );
     console.log();

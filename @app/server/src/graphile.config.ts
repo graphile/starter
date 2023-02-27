@@ -148,6 +148,8 @@ export function getPreset({
 
       // Automatically update GraphQL schema when database changes
       watch: isDev,
+      graphqlPath: "/graphql",
+      graphiqlPath: "/ruru",
     },
 
     gather: {

@@ -30,9 +30,16 @@ export default function installHelmet(app: Express) {
             contentSecurityPolicy: {
               directives: {
                 ...CSP_DIRECTIVES,
-                // Dev needs 'unsafe-eval' due to
-                // https://github.com/vercel/next.js/issues/14221
-                "script-src": ["'self'", "'unsafe-eval'"],
+                "script-src": [
+                  "'self'",
+
+                  // Dev needs 'unsafe-eval' due to
+                  // https://github.com/vercel/next.js/issues/14221
+                  "'unsafe-eval'",
+
+                  // Ruru needs 'unsafe-inline'
+                  "'unsafe-inline'",
+                ],
               },
             },
           }
