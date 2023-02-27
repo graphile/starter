@@ -24,7 +24,7 @@
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "jest": "^27.0.1",
-    "postgraphile": "^5.0.0-0.27",
+    "postgraphile": "^5.0.0-0.28",
     "typescript": "^5.0.0-beta"
   }
 }
