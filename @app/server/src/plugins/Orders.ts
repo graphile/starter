@@ -40,7 +40,7 @@ const StarterCustomOrdersPlugin: GraphileConfig.Plugin = {
           !isPgRowSortEnum ||
           !pgCodec ||
           pgCodec.extensions?.pg?.schemaName !== "app_public" ||
-          pgCodec.extensions?.pg?.typeName !== "organization_memberships"
+          pgCodec.extensions?.pg?.name !== "organization_memberships"
         ) {
           return values;
         }

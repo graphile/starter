@@ -1,3 +1,5 @@
+import "grafserv/express/v4";
+
 // TODO: import GraphilePro from "@graphile/pro"; // Requires license key
 import { PgSimplifyInflectionPreset } from "@graphile/simplify-inflection";
 // import { Express, Request, Response } from "express";
@@ -112,7 +114,7 @@ export function getPreset({
     /*
      * Plugins we don't want in our schema
      */
-    skipPlugins: [
+    disablePlugins: [
       // Disable the 'Node' interface
       "NodePlugin",
     ],
@@ -129,25 +131,17 @@ export function getPreset({
     ],
 
     grafserv: {
-      // On production we still want to start even if the database isn't available.
-      // On development, we want to deal nicely with issues in the database.
-      // For these reasons, we're going to keep retryOnInitFail enabled for both environments.
-      retryOnInitFail: !isTest,
-
       // Add websocket support to the PostGraphile server; you still need to use a subscriptions plugin such as
       // @graphile/pg-pubsub
-      subscriptions: true,
+      websockets: true,
 
       // websocketMiddlewares,
 
       // enableQueryBatching: On the client side, use something like apollo-link-batch-http to make use of this
-      enableQueryBatching: true,
+      // TODO: enableQueryBatching: true,
 
       // Enable GraphiQL in development
       graphiql: isDev || !!process.env.ENABLE_GRAPHIQL,
-
-      // Allow EXPLAIN in development (you can replace this with a callback function if you want more control)
-      explain: isDev,
 
       // Custom error handling
       maskError,
@@ -167,6 +161,11 @@ export function getPreset({
 
       // setofFunctionsContainNulls=false: reduces the number of nulls in your schema
       pgForbidSetofFunctionsToReturnNull: true,
+
+      // On production we still want to start even if the database isn't available.
+      // On development, we want to deal nicely with issues in the database.
+      // For these reasons, we're going to keep retryOnInitFail enabled for both environments.
+      retryOnInitFail: !isTest,
     },
 
     // Disable query logging - we're using morgan
@@ -206,6 +205,9 @@ export function getPreset({
     // TODO: exportGqlSchemaPath: isDev ? `${__dirname}/../../../../data/schema.graphql` : undefined,
 
     grafast: {
+      // Allow EXPLAIN in development (you can replace this with a callback function if you want more control)
+      explain: isDev,
+
       async context(ctx, currentContext) {
         const req = ctx.expressv4?.req;
         /*

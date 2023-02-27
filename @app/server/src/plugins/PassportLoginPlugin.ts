@@ -1,4 +1,4 @@
-import { gql, makeExtendSchemaPlugin } from "graphile-utils";
+import { Resolvers, gql, makeExtendSchemaPlugin } from "graphile-utils";
 import { access, SafeError } from "grafast";
 import { PgClassExpressionStep } from "@dataplan/pg";
 import type {} from "../middleware/installPostGraphile";
@@ -116,9 +116,9 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => {
       },
     },
   };
-  const resolvers = {
+  const resolvers: Resolvers = {
     Mutation: {
-      async register(_mutation, args, context: Grafast.Context, resolveInfo) {
+      async register(_mutation, args, context: Grafast.Context) {
         const { username, password, email, name, avatarUrl } = args.input;
         const { rootPgPool, login, pgSettings } = context;
         try {
