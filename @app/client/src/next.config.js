@@ -88,13 +88,22 @@ if (!process.env.ROOT_URL) {
               /^(node-gyp-build|bufferutil|utf-8-validate)$/
             ),
             new AntDDayjsWebpackPlugin(),
+            ...(isServer
+              ? []
+              : [
+                  // Don't try and bundle Grafast on the client for heaven's sake
+                  new webpack.NormalModuleReplacementPlugin(
+                    /GraphileApolloLink.js/,
+                    "./GraphileApolloLink.client.js"
+                  ),
+                ]),
           ],
           externals: [
             ...(externals || []),
             isServer ? { "pg-native": "pg/lib/client" } : null,
-            { "node:buffer": "node:buffer" },
-            { "node:crypto": "node:crypto" },
-            { "node:http": "node:http" },
+            { "node:buffer": "buffer" },
+            { "node:crypto": "crypto" },
+            { "node:http": "http" },
           ].filter((_) => _),
         };
       },
