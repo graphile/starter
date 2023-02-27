@@ -89,11 +89,11 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => {
   `;
   const userSource = build.input.pgSources.find((s) => s.name === "users");
   const currentUserIdSource = build.input.pgSources.find(
-    (s) => s.name === "currentUserId"
+    (s) => s.name === "current_user_id"
   );
   if (!userSource || !currentUserIdSource) {
     throw new Error(
-      "Couldn't find either the 'users' or 'currentUserId' source"
+      "Couldn't find either the 'users' or 'current_user_id' source"
     );
   }
   const plans: Plans = {

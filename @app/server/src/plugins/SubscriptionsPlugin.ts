@@ -40,10 +40,10 @@ function currentUserTopicByUserId(userId: number | null) {
  */
 const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
   const currentUserIdSource = build.input.pgSources.find(
-    (s) => s.name === "currentUserId"
+    (s) => s.name === "current_user_id"
   );
   if (!currentUserIdSource) {
-    throw new Error("Couldn't find currentUserId source");
+    throw new Error("Couldn't find current_user_id source");
   }
   const usersSource = build.input.pgSources.find((s) => s.name === "users");
   if (!usersSource) {
