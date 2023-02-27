@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client";
+import { NetworkStatus, useApolloClient } from "@apollo/client";
 import { Skeleton } from "antd";
 import Router from "next/router";
 import React, { useEffect } from "react";
@@ -26,7 +26,7 @@ export function Redirect({ href, as, layout }: RedirectProps) {
           loading: true,
           data: undefined,
           error: undefined,
-          networkStatus: 0,
+          networkStatus: NetworkStatus.loading,
           client,
           refetch: (async () => {
             throw new Error("Redirecting...");
