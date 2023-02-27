@@ -4,19 +4,39 @@
     "composite": false,
     "incremental": false,
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "noEmit": true,
     "esModuleInterop": true,
     "declaration": false,
     "declarationMap": false,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "module": "esnext",
+    "moduleResolution": "node"
   },
-  "exclude": ["node_modules"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
   "references": [
-    { "path": "../../config" },
-    { "path": "../../graphql" },
-    { "path": "../../components" },
-    { "path": "../../lib" }
+    {
+      "path": "../../config"
+    },
+    {
+      "path": "../../graphql"
+    },
+    {
+      "path": "../../components"
+    },
+    {
+      "path": "../../lib"
+    }
   ]
 }
