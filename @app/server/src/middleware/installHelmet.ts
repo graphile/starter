@@ -38,9 +38,11 @@ export default async function installHelmet(app: Express) {
     }
     // Dev needs 'unsafe-eval' due to
     // https://github.com/vercel/next.js/issues/14221
+    // Ruru needs 'unsafe-inline'
     options.contentSecurityPolicy.directives!["script-src"] = [
       "'self'",
       "'unsafe-eval'",
+      "'unsafe-inline'",
     ];
   }
   if (isDevOrTest || !!process.env.ENABLE_GRAPHIQL) {
