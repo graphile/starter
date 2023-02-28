@@ -74,7 +74,7 @@
     "prettier": "^2.8.4",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.0.5",
-    "ts-loader": "^8.4.0",
+    "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.0-beta",
     "update-dotenv": "^1.1.1"
