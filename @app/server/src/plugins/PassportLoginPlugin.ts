@@ -3,6 +3,13 @@ import { gql, makeExtendSchemaPlugin } from "graphile-utils";
 import { OurGraphQLContext } from "../middleware/installPostGraphile";
 import { ERROR_MESSAGE_OVERRIDES } from "../utils/handleErrors";
 
+// TODO: replace this with grafast.SafeError
+class SafeError extends Error {
+  constructor(message: string, public extensions: Record<string, any>) {
+    super(message);
+  }
+}
+
 const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
   typeDefs: gql`
     input RegisterInput {
