@@ -3895,9 +3895,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"My_Project_Here@workspace:.":
+"ROOT@workspace:.":
   version: 0.0.0-use.local
-  resolution: "My_Project_Here@workspace:."
+  resolution: "ROOT@workspace:."
   dependencies:
     "@babel/core": ^7.14.3
     "@babel/preset-env": ^7.14.2
