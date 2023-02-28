@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.19",
-    "graphql": "^15.4.0",
+    "graphql": "^15.8.0",
     "graphql-ws": "^4.5.1",
     "next": "^10.2.3",
     "next-with-apollo": "^5.1.1",
@@ -24,7 +24,7 @@
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "jest": "^27.5.1",
-    "postgraphile": "^4.12.1",
+    "postgraphile": "^4.13.0",
     "typescript": "^4.9.5"
   }
 }
