@@ -13,10 +13,10 @@
     "@app/config": "0.0.0",
     "@app/graphql": "0.0.0",
     "@app/lib": "0.0.0",
-    "@types/lodash": "^4.14.170",
-    "@types/node": "^15.6.1",
+    "@types/lodash": "^4.14.191",
+    "@types/node": "^15.14.9",
     "@types/nprogress": "^0.2.0",
-    "@types/react": "^17.0.8",
+    "@types/react": "^17.0.53",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
     "antd": "4.15.6",
@@ -34,11 +34,11 @@
     "react-dom": "^17.0.2",
     "slugify": "^1.5.3",
     "tls": "^0.0.1",
-    "webpack": "^4.43.0"
+    "webpack": "^4.46.0"
   },
   "devDependencies": {
-    "babel-plugin-import": "^1.13.0",
+    "babel-plugin-import": "^1.13.6",
     "cross-env": "^7.0.2",
-    "jest": "^27.0.1"
+    "jest": "^27.5.1"
   }
 }
