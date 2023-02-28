@@ -111,7 +111,7 @@ __metadata:
     "@types/lodash": ^4.14.191
     "@types/node": ^15.14.9
     "@types/nprogress": ^0.2.0
-    "@types/react": 17.0.53
+    "@types/react": 17.0.8
     "@zeit/next-css": ^1.0.1
     "@zeit/next-less": ^1.0.1
     antd: 4.24.8
@@ -4384,14 +4384,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:17.0.53":
-  version: 17.0.53
-  resolution: "@types/react@npm:17.0.53"
+"@types/react@npm:17.0.8":
+  version: 17.0.8
+  resolution: "@types/react@npm:17.0.8"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: dacfde02c260fd98bed2eb775ed0c7ce1397be4c0844f907a50763b081a4008f81f57071889a16eb1350ddcf0927f3cf1a6541702c8ad03de3c70383ef931e3f
+  checksum: 6398dc200623dbf213747f3a1cf9f3c3bcac29b519e49c9fcb81d2665dadb21155c485381cddbb04b483a5bf3ddddefaff1a1a6ef4fa5080b1b9b144c789673e
   languageName: node
   linkType: hard
 
