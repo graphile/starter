@@ -6,9 +6,9 @@
     "build": "tsc -b",
     "start": "node -r @app/config/env dist/index.js",
     "dev": "nodemon --signal SIGINT --watch 'dist/**/*.js' -x \"node --inspect=9678 -r @app/config/env -r source-map-support/register\" dist/index.js",
-    "schema:export": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" ts-node scripts/schema-export.ts",
+    "schema:export": "cross-env NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" ts-node scripts/schema-export.ts",
     "cloudflare:import": "(echo \"export const cloudflareIps: string[] = [\"; (curl -Ls https://www.cloudflare.com/ips-v4 | sort | sed -e \"s/^/  \\\"/\" -e \"s/$/\\\",/\"); echo \"];\") > src/cloudflare.ts",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" jest"
   },
   "dependencies": {
     "@app/client": "0.0.0",
