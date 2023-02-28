@@ -11,7 +11,6 @@ module.exports = (dir) => {
     roots: [`<rootDir>`],
 
     rootDir: dir,
-    name: package.name,
     displayName: package.name,
   };
 };

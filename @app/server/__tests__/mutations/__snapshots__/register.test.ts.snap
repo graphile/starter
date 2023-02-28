@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Register 2`] = `
-Object {
-  "data": Object {
-    "register": Object {
-      "user": Object {
+{
+  "data": {
+    "register": {
+      "user": {
         "avatarUrl": null,
         "createdAt": "[timestamp-1]",
         "id": "[id-1]",

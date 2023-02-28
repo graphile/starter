@@ -16,7 +16,7 @@ import {
   setPasswordInfo,
   tailFormItemLayout,
 } from "@app/lib";
-import { Alert, Button, Form, Input, Tooltip } from "antd";
+import { Alert, Button, Form, Input, InputRef, Tooltip } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { NextPage } from "next";
 import Router from "next/router";
@@ -135,7 +135,7 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
     [form]
   );
 
-  const focusElement = useRef<Input>(null);
+  const focusElement = useRef<InputRef>(null);
   useEffect(
     () => void (focusElement.current && focusElement.current!.focus()),
     [focusElement]
