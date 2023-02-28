@@ -20,7 +20,6 @@
     "depcheck": "lerna exec --stream \"yarn depcheck --ignores=\"@app/config,@app/client,tslib,webpack,babel-plugin-import,source-map-support,@graphql-codegen/*,*eslint*,@typescript-eslint/*,graphql-toolkit,net,tls,dayjs\" --ignore-dirs=\".next\"\"",
     "dev": "yarn && lerna run codegen --stream && tsc -b && concurrently --kill-others --names \"TSC,WATCH,RUN,TEST\" --prefix \"({name})\" --prefix-colors \"yellow.bold,yellow.bold,cyan.bold,greenBright.bold\" \"tsc -b --watch --preserveWatchOutput\" \"lerna run --parallel watch\" \"lerna run --parallel dev\" \"yarn test:watch --delay 10\"",
     "build": "lerna run build",
-    "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
     "clean": "node ./scripts/clean.js",
     "reset": "yarn clean && node ./scripts/delete-env-file.js",
     "--shortcuts to run commands in workspaces--": "",
