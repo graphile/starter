@@ -18,3 +18,13 @@ import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+Cypress.on("uncaught:exception", (err) => {
+  // This error can be ignored: https://stackoverflow.com/a/50387233/2067611
+  // > This error means that ResizeObserver was not able to deliver
+  // > all observations within a single animation frame.
+  // > It is benign (your site will not break).
+  if (err.message.includes("ResizeObserver loop limit exceeded")) {
+    return false;
+  }
+});
