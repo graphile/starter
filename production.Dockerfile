@@ -7,16 +7,17 @@ ARG TARGET="server"
 ################################################################################
 # Build stage 1 - `yarn build`
 
-FROM node:12-alpine as builder
+FROM node:16-alpine as builder
 # Import our shared args
 ARG NODE_ENV
 ARG ROOT_URL
 
 # Cache node_modules for as long as possible
-COPY package.json yarn.lock /app/
+COPY package.json yarn.lock .yarnrc.yml /app/
+COPY .yarn/ /app/.yarn/
 COPY @app/ /app/@app/
 WORKDIR /app/
-RUN yarn install --immutable --production=false --no-progress
+RUN yarn workspaces focus --all
 
 COPY tsconfig.json /app/
 # Folders must be copied separately, files can be copied all at once
@@ -29,13 +30,14 @@ RUN yarn run build
 ################################################################################
 # Build stage 2 - COPY the relevant things (multiple steps)
 
-FROM node:12-alpine as clean
+FROM node:16-alpine as clean
 # Import our shared args
 ARG NODE_ENV
 ARG ROOT_URL
 
 # Copy over selectively just the tings we need, try and avoid the rest
-COPY --from=builder /app/package.json /app/yarn.lock /app/
+COPY --from=builder /app/package.json /app/yarn.lock /app/.yarnrc.yml /app/
+COPY --from=builder /app/.yarn/ /app/.yarn/
 COPY --from=builder /app/@app/config/ /app/@app/config/
 COPY --from=builder /app/@app/db/ /app/@app/db/
 COPY --from=builder /app/@app/graphql/ /app/@app/graphql/
@@ -66,7 +68,7 @@ RUN rm -Rf /app/node_modules /app/@app/*/node_modules
 ################################################################################
 # Build stage FINAL - COPY everything, once, and then do a clean `yarn install`
 
-FROM node:12-alpine
+FROM node:16-alpine
 
 EXPOSE $PORT
 WORKDIR /app/
@@ -74,7 +76,7 @@ WORKDIR /app/
 COPY --from=clean /app/ /app/
 
 # Install yarn ASAP because it's the slowest
-RUN yarn install --immutable --production=true --no-progress
+RUN yarn workspaces focus --all --production
 
 # Import our shared args
 ARG PORT
