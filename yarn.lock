@@ -3987,14 +3987,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pg@npm:*, @types/pg@npm:>=6 <9":
-  version: 8.6.0
-  resolution: "@types/pg@npm:8.6.0"
+"@types/pg@npm:*, @types/pg@npm:>=6 <9, @types/pg@npm:^8.6.6":
+  version: 8.6.6
+  resolution: "@types/pg@npm:8.6.6"
   dependencies:
     "@types/node": "*"
     pg-protocol: "*"
     pg-types: ^2.2.0
-  checksum: eef962bbb1838f355efc8789ac6ee5219adb25e49ecd95cf32e374eb9a3caab1f10760d539b400a0c40e21f1a2720e82929a2264b58194fc68cd220627c3b1fc
+  checksum: ac145553a8ad2f357feacad1bceaf5d6ce904eb9d66233b84c469a2b4fa3738d4ebdf29b7ea45387be2d07f915fd873a229f90a2f766d7c377afa7c41fbcf8d1
   languageName: node
   linkType: hard
 
@@ -4006,17 +4006,6 @@ __metadata:
     pg-protocol: ^1.2.0
     pg-types: ^2.2.0
   checksum: f398cad6a3a965eda71fa273a58013c4d5db6fda210e154e084206c3bf17c9b27c894e58af231f8b08fc606ecb71f1f58a17df218753530f51bbebf239efbfb3
-  languageName: node
-  linkType: hard
-
-"@types/pg@npm:^8.6.6":
-  version: 8.6.6
-  resolution: "@types/pg@npm:8.6.6"
-  dependencies:
-    "@types/node": "*"
-    pg-protocol: "*"
-    pg-types: ^2.2.0
-  checksum: ac145553a8ad2f357feacad1bceaf5d6ce904eb9d66233b84c469a2b4fa3738d4ebdf29b7ea45387be2d07f915fd873a229f90a2f766d7c377afa7c41fbcf8d1
   languageName: node
   linkType: hard
 
