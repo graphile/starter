@@ -16,7 +16,5 @@
     "reset:volumes": "node ./scripts/clean-volumes.js",
     "rebuild": "yarn compose build",
     "down": "yarn compose down --remove-orphans"
-  },
-  "dependencies": {},
-  "devDependencies": {}
+  }
 }
