@@ -36,8 +36,9 @@ export default async (app: Express) => {
   getWebsocketMiddlewares(app).push(passportSessionMiddleware);
 
   app.get("/logout", (req, res) => {
-    req.logout();
-    res.redirect("/");
+    req.logout(() => {
+      res.redirect("/");
+    });
   });
 
   if (process.env.GITHUB_KEY) {
