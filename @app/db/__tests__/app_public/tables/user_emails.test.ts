@@ -33,7 +33,7 @@ it("can add an email (unverified), receive code, verify email (and marks account
     expect(email).toBeTruthy();
     expect(email.user_id).toEqual(user.id);
     expect(snapshotSafe(email)).toMatchInlineSnapshot(`
-      Object {
+      {
         "created_at": "[DATE]",
         "email": "newemail@example.com",
         "id": "[ID]",

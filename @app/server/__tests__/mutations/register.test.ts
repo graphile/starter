@@ -57,7 +57,7 @@ test("Register", async () => {
       expect(json.data!.register).toBeTruthy();
       expect(json.data!.register.user).toBeTruthy();
       expect(sanitize(json.data!.register.user)).toMatchInlineSnapshot(`
-        Object {
+        {
           "avatarUrl": null,
           "createdAt": "[timestamp-1]",
           "id": "[id-1]",
