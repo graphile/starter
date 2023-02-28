@@ -49,7 +49,7 @@ const Settings_Security: NextPage = () => {
         });
         setError(null);
         setSuccess(true);
-      } catch (e) {
+      } catch (e: any) {
         const errcode = getCodeFromError(e);
         if (errcode === "WEAKP") {
           form.setFields([
@@ -96,7 +96,7 @@ const Settings_Security: NextPage = () => {
 
       try {
         await forgotPassword({ variables: { email } });
-      } catch (e) {
+      } catch (e: any) {
         setResetError(resetError);
       }
       setResetInProgress(false);

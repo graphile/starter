@@ -218,7 +218,7 @@ function AddEmailForm({ error, setError, onComplete }: AddEmailFormProps) {
         setError(null);
         await addEmail({ variables: { email: values.email } });
         onComplete();
-      } catch (e) {
+      } catch (e: any) {
         setError(e);
       }
     },

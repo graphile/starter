@@ -31,7 +31,7 @@ const ForgotPassword: NextPage = () => {
           });
           // Success: refetch
           setSuccessfulEmail(email);
-        } catch (e) {
+        } catch (e: any) {
           setError(e);
         }
       })();

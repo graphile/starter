@@ -72,7 +72,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = (
         if (newSlug && newSlug !== organization.slug) {
           Router.push(`/o/[slug]/settings`, `/o/${newSlug}/settings`);
         }
-      } catch (e) {
+      } catch (e: any) {
         setError(e);
       }
     },
