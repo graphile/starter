@@ -17,7 +17,7 @@ COPY package.json yarn.lock .yarnrc.yml /app/
 COPY .yarn/ /app/.yarn/
 COPY @app/ /app/@app/
 WORKDIR /app/
-RUN yarn install --immutable --production=false --no-progress
+RUN yarn install --immutable
 
 COPY tsconfig.json /app/
 # Folders must be copied separately, files can be copied all at once
@@ -76,7 +76,7 @@ WORKDIR /app/
 COPY --from=clean /app/ /app/
 
 # Install yarn ASAP because it's the slowest
-RUN yarn install --immutable --production=true --no-progress
+RUN yarn workspaces focus --all --production
 
 # Import our shared args
 ARG PORT
