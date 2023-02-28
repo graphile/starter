@@ -1,5 +1,6 @@
 {
-  "name": "My_Project_Here",
+  "name": "ROOT",
+  "projectName": "My_Project_Here",
   "version": "3.0.1",
   "private": true,
   "description": "Description of project here",
@@ -7,20 +8,19 @@
     "setup": "yarn && yarn setup:env auto && yarn setup:db && yarn setup:packages",
     "setup:env": "node ./scripts/setup_env.js",
     "setup:db": "node ./scripts/setup_db.js",
-    "setup:packages": "lerna run setup",
+    "setup:packages": "yarn workspaces foreach --verbose --topological --exclude ROOT --exclude docker-helpers run setup",
     "start": "node ./scripts/start.js",
-    "pretest": "lerna run pretest",
+    "pretest": "yarn workspaces foreach --verbose --topological --exclude ROOT --exclude docker-helpers run pretest",
     "test": "node scripts/test.js",
-    "posttest": "lerna run posttest",
+    "posttest": "yarn workspaces foreach --verbose --topological --exclude ROOT --exclude docker-helpers run posttest",
     "test:watch": "node scripts/test.js --watch",
     "lint": "tsc -b && yarn prettier:all --check && yarn eslint .",
     "lint:fix": "yarn eslint --fix . && yarn prettier:all --write",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx,.graphql",
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,graphql,md}\"",
-    "depcheck": "lerna exec --stream \"yarn depcheck --ignores=\"@app/config,@app/client,tslib,webpack,babel-plugin-import,source-map-support,@graphql-codegen/*,*eslint*,@typescript-eslint/*,graphql-toolkit,net,tls,dayjs\" --ignore-dirs=\".next\"\"",
-    "dev": "yarn && lerna run codegen --stream && tsc -b && concurrently --kill-others --names \"TSC,WATCH,RUN,TEST\" --prefix \"({name})\" --prefix-colors \"yellow.bold,yellow.bold,cyan.bold,greenBright.bold\" \"tsc -b --watch --preserveWatchOutput\" \"lerna run --parallel watch\" \"lerna run --parallel dev\" \"yarn test:watch --delay 10\"",
-    "build": "lerna run build",
-    "licenses": "yarn --silent licenses generate-disclaimer > LICENSES.md",
+    "depcheck": "yarn workspaces foreach --verbose --topological --exclude ROOT --exclude docker-helpers exec depcheck --ignores=\"@app/config,@app/client,tslib,webpack,babel-plugin-import,source-map-support,@graphql-codegen/*,*eslint*,@typescript-eslint/*,graphql-toolkit,net,tls,dayjs,@types/jest,babel-jest,jest,mock-req,mock-res,nodemon,ts-jest,ts-loader,ts-node,update-dotenv\" --ignore-dirs=\".next\"",
+    "dev": "yarn && yarn workspaces foreach --verbose --topological --exclude ROOT --exclude docker-helpers run codegen && tsc -b && concurrently --kill-others --names \"TSC,WATCH,RUN,TEST\" --prefix \"({name})\" --prefix-colors \"yellow.bold,yellow.bold,cyan.bold,greenBright.bold\" \"tsc -b --watch --preserveWatchOutput\" \"yarn workspaces foreach --verbose --parallel --exclude ROOT --exclude docker-helpers run watch\" \"yarn workspaces foreach --verbose --parallel --exclude ROOT --exclude docker-helpers run dev\" \"yarn test:watch --delay 10\"",
+    "build": "yarn workspaces foreach --verbose --topological --exclude ROOT --exclude docker-helpers run build",
     "clean": "node ./scripts/clean.js",
     "reset": "yarn clean && node ./scripts/delete-env-file.js",
     "--shortcuts to run commands in workspaces--": "",
@@ -39,9 +39,7 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "dependencies": {
     "abort-controller": "^3.0.0",
-    "graphql": "^15.4.0",
-    "lerna": "^4.0.0",
-    "string-width": "^5.0.0"
+    "graphql": "^15.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
@@ -69,7 +67,9 @@
     "jest": "^27.0.1",
     "mock-req": "^0.2.0",
     "mock-res": "^0.5.0",
+    "node-fetch": "^2.6.1",
     "nodemon": "^2.0.7",
+    "pg": "^8.6.0",
     "prettier": "^2.8.4",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.1",
@@ -105,5 +105,6 @@
         }
       }
     ]
-  }
+  },
+  "packageManager": "yarn@3.4.1"
 }

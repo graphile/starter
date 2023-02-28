@@ -9,7 +9,7 @@ function spawnSync(cmd, args, options) {
     stdio: ["pipe", "inherit", "inherit"],
     env: {
       ...process.env,
-      YARN_SILENT: "1",
+      // YARN_SILENT: "1",
       npm_config_loglevel: "silent",
     },
     shell: true,
