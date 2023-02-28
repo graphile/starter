@@ -13,7 +13,7 @@ ARG NODE_ENV
 ARG ROOT_URL
 
 # Cache node_modules for as long as possible
-COPY lerna.json package.json yarn.lock /app/
+COPY package.json yarn.lock /app/
 COPY @app/ /app/@app/
 WORKDIR /app/
 RUN yarn install --immutable --production=false --no-progress
@@ -35,7 +35,7 @@ ARG NODE_ENV
 ARG ROOT_URL
 
 # Copy over selectively just the tings we need, try and avoid the rest
-COPY --from=builder /app/lerna.json /app/package.json /app/yarn.lock /app/
+COPY --from=builder /app/package.json /app/yarn.lock /app/
 COPY --from=builder /app/@app/config/ /app/@app/config/
 COPY --from=builder /app/@app/db/ /app/@app/db/
 COPY --from=builder /app/@app/graphql/ /app/@app/graphql/

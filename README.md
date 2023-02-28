@@ -515,8 +515,9 @@ drop role dbname;
 
 ## Custom packages
 
-When running `yarn setup`, this command will also invoke `lerna run setup`. This
-allows you to add custom setup hooks necessary for your individual packages.
+When running `yarn setup`, this command will also invoke
+`yarn workspaces foreach run setup`. This allows you to add custom setup hooks
+necessary for your individual packages.
 
 Add a line like the following to your `scripts` section in your `package.json`:
 
