@@ -156,7 +156,7 @@ export default (
             throw e;
           }
           done(null, { session_id: session.uuid });
-        } catch (e) {
+        } catch (e: any) {
           done(e);
         }
       }
@@ -166,7 +166,7 @@ export default (
   app.get(`/auth/${service}`, setReturnTo, async (req, res, next) => {
     try {
       await preRequest(req);
-    } catch (e) {
+    } catch (e: any) {
       next(e);
       return;
     }
@@ -186,7 +186,7 @@ export default (
   app.get(`/auth/${service}/callback`, async (req, res, next) => {
     try {
       await postRequest(req);
-    } catch (e) {
+    } catch (e: any) {
       next(e);
       return;
     }

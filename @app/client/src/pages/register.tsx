@@ -66,7 +66,7 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
         resetWebsocketConnection();
         client.resetStore();
         Router.push(next);
-      } catch (e) {
+      } catch (e: any) {
         const code = getCodeFromError(e);
         const exception = getExceptionFromError(e);
         const fields: any = exception && exception["fields"];

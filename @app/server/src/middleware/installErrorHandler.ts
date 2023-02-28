@@ -86,7 +86,7 @@ export default function (app: Express) {
           res.status(406).send("Not Acceptable");
         },
       });
-    } catch (e) {
+    } catch (e: any) {
       next(e);
     }
   };

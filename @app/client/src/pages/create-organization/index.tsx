@@ -43,7 +43,7 @@ const CreateOrganizationPage: NextPage = () => {
               },
             });
           }
-        } catch (e) {
+        } catch (e: any) {
           /* NOOP */
         } finally {
           setSlugCheckIsValid(true);
@@ -77,7 +77,7 @@ const CreateOrganizationPage: NextPage = () => {
         });
         setFormError(null);
         setOrganization(data?.createOrganization?.organization || null);
-      } catch (e) {
+      } catch (e: any) {
         setFormError(e);
       }
     },

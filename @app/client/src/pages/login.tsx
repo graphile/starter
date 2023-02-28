@@ -150,7 +150,7 @@ function LoginForm({
         resetWebsocketConnection();
         client.resetStore();
         Router.push(onSuccessRedirectTo);
-      } catch (e) {
+      } catch (e: any) {
         const code = getCodeFromError(e);
         if (code === "CREDS") {
           form.setFields([

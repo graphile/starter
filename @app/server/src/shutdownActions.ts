@@ -20,7 +20,7 @@ export function makeShutdownActions(): ShutdownAction[] {
       // Ensure that all actions are called, even if a previous action throws an error
       try {
         return fn();
-      } catch (e) {
+      } catch (e: any) {
         return Promise.reject(e);
       }
     });

@@ -68,7 +68,7 @@ const OrganizationSettingsPageInner: FC<OrganizationSettingsPageInnerProps> = (
       });
       message.info(`Organization '${organization.name}' successfully deleted`);
       router.push("/");
-    } catch (e) {
+    } catch (e: any) {
       setError(e);
       return;
     }

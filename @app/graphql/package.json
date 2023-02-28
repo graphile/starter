@@ -13,7 +13,7 @@
   "dependencies": {
     "@apollo/client": "^3.3.19",
     "react": "^17.0.2",
-    "tslib": "^2.2.0"
+    "tslib": "^2.5.0"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^2.0.1",
@@ -22,6 +22,6 @@
     "@graphql-codegen/typescript-operations": "^1.17.8",
     "@graphql-codegen/typescript-react-apollo": "2.2.5",
     "cross-env": "^7.0.2",
-    "jest": "^27.0.1"
+    "jest": "^27.5.1"
   }
 }
