@@ -262,10 +262,9 @@ export function getPostGraphileOptions({
           }),
 
         logout: () => {
-          // @ts-ignore The types lie and say a callback is needed here; but actually the function doesn't even accept a callback
-          req.logout();
-          req.user = undefined;
-          return Promise.resolve();
+          return new Promise((resolve, reject) =>
+            req.logout((err) => (err ? reject(err) : resolve()))
+          );
         },
       };
     },
