@@ -50,6 +50,7 @@
     "@typescript-eslint/parser": "^5.54.0",
     "babel-jest": "^29.4.3",
     "concurrently": "^7.6.0",
+    "cross-env": "^7.0.3",
     "depcheck": "^1.4.3",
     "dotenv": "^16.0.3",
     "eslint": "^8.35.0",
