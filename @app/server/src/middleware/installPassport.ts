@@ -36,9 +36,10 @@ export default async (app: Express) => {
   getWebsocketMiddlewares(app).push(passportSessionMiddleware);
 
   app.get("/logout", (req, res) => {
-    req.logout(() => {
-      res.redirect("/");
-    });
+    // @ts-ignore The types lie and say a callback is needed here; but actually the function doesn't even accept a callback
+    req.logout();
+    req.user = undefined;
+    res.redirect("/");
   });
 
   if (process.env.GITHUB_KEY) {
