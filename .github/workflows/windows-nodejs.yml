@@ -40,7 +40,7 @@ jobs:
       # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell
 
       - name: yarn
-        run: yarn --frozen-lockfile
+        run: yarn --immutable
       - name: setup
         run: yarn setup
       - name: build

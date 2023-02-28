@@ -43,7 +43,7 @@ jobs:
       - name: yarn, lint, build and test
         run: |
           cp .env.ci .env
-          yarn --frozen-lockfile
+          yarn --immutable
           CONFIRM_DROP=1 yarn setup
           yarn build
           yarn lint

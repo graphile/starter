@@ -32,7 +32,7 @@ jobs:
       - name: Setup DB
         run: |
           cp .env.ci .env
-          yarn --frozen-lockfile
+          yarn --immutable
           CONFIRM_DROP=1 yarn setup
       - name: "Run pgRITA checks"
         uses: pgrita/action@main
