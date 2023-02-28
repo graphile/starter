@@ -17,7 +17,7 @@ COPY package.json yarn.lock .yarnrc.yml /app/
 COPY .yarn/ /app/.yarn/
 COPY @app/ /app/@app/
 WORKDIR /app/
-RUN yarn install --immutable
+RUN yarn workspaces focus --all
 
 COPY tsconfig.json /app/
 # Folders must be copied separately, files can be copied all at once
