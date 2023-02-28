@@ -16,7 +16,7 @@
     "@types/lodash": "^4.14.191",
     "@types/node": "^15.14.9",
     "@types/nprogress": "^0.2.0",
-    "@types/react": "^17.0.53",
+    "@types/react": "17.0.8",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
     "antd": "4.15.6",
