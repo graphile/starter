@@ -41,7 +41,7 @@
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "next": "^10.2.3",
-    "passport": "^0.4.1",
+    "passport": "^0.6.0",
     "passport-github2": "^0.1.12",
     "pg": "^8.9.0",
     "postgraphile": "^4.13.0",
