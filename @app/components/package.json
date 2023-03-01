@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
-    "@apollo/client": "3.7.9",
+    "@apollo/client": "3.4.17",
     "@app/graphql": "0.0.0",
     "antd": "5.2.3",
     "next": "^13.2.3",
