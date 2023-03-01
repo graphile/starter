@@ -43,7 +43,7 @@ if (typeof window !== "undefined") {
   });
   Router.events.on("routeChangeError", (err: Error | string) => {
     NProgress.done();
-    if (err["cancelled"]) {
+    if ((err as any)["cancelled"]) {
       // No worries; you deliberately cancelled it
     } else {
       notification.open({
