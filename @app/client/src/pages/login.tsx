@@ -25,10 +25,6 @@ import Router from "next/router";
 import { Store } from "rc-field-form/lib/interface";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-function hasErrors(fieldsError: Object) {
-  return Object.keys(fieldsError).some((field) => fieldsError[field]);
-}
-
 interface LoginProps {
   next: string | null;
 }
@@ -176,7 +172,7 @@ function LoginForm({
   );
 
   const handleValuesChange = useCallback(() => {
-    setSubmitDisabled(hasErrors(form.getFieldsError().length !== 0));
+    setSubmitDisabled(form.getFieldsError().length !== 0);
   }, [form]);
 
   const code = getCodeFromError(error);
