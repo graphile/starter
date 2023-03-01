@@ -3,13 +3,6 @@ import { gql, makeExtendSchemaPlugin } from "graphile-utils";
 import { OurGraphQLContext } from "../middleware/installPostGraphile";
 import { ERROR_MESSAGE_OVERRIDES } from "../utils/handleErrors";
 
-// TODO: replace this with grafast.SafeError
-class SafeError extends Error {
-  constructor(message: string, public extensions: Record<string, any>) {
-    super(message);
-  }
-}
-
 const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
   typeDefs: gql`
     input RegisterInput {
@@ -124,7 +117,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
           );
 
           if (!details || !details.user_id) {
-            throw new SafeError("Registration failed", {
+            throw Object.assign(new Error("Registration failed"), {
               code: "FFFFF",
             });
           }
@@ -168,7 +161,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
               "Unrecognised error in PassportLoginPlugin; replacing with sanitized version"
             );
             console.error(e);
-            throw new SafeError("Registration failed", {
+            throw Object.assign(new Error("Registration failed"), {
               code,
             });
           }
@@ -188,7 +181,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
           );
 
           if (!session) {
-            throw new SafeError("Incorrect username/password", {
+            throw Object.assign(new Error("Incorrect username/password"), {
               code: "CREDS",
             });
           }
@@ -224,7 +217,7 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
             throw e;
           } else {
             console.error(e);
-            throw new SafeError("Login failed", {
+            throw Object.assign(new Error("Login failed"), {
               code,
             });
           }
