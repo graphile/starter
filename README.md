@@ -235,7 +235,7 @@ containers.
 
 Requires:
 
-- Node.js v14+ must be installed
+- Node.js v16+ must be installed
 - PostgreSQL v10+ server must be available
 - `pg_dump` command must be available (or you can remove this functionality)
 - VSCode is recommended, but any editor will do
