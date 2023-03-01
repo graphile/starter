@@ -1,6 +1,5 @@
-import express, { Express } from "express";
-import { IncomingMessage, Server } from "http";
-import { Middleware } from "postgraphile";
+import express, { Express, NextFunction } from "express";
+import { IncomingMessage, Server, ServerResponse } from "http";
 import { Duplex } from "stream";
 
 import { cloudflareIps } from "./cloudflare";
@@ -34,6 +33,13 @@ export function getWebsocketMiddlewares(
   app: Express
 ): Middleware<express.Request, express.Response>[] {
   return app.get("websocketMiddlewares");
+}
+
+export interface Middleware<
+  Request extends IncomingMessage,
+  Response extends ServerResponse
+> {
+  (req: Request, res: Response, next: NextFunction): void;
 }
 
 export async function makeApp({

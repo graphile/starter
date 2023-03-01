@@ -6,8 +6,10 @@ import {
   Operation,
 } from "@apollo/client";
 import { Request, Response } from "express";
-import { execute, getOperationAST } from "graphql";
-import { HttpRequestHandler } from "postgraphile";
+import { getOperationAST } from "graphql";
+import { execute, hookArgs, isAsyncIterable } from "grafast";
+import type { PostGraphileInstance } from "postgraphile";
+import type {} from "grafserv/express/v4";
 
 export interface GraphileApolloLinkInterface {
   /** The request object. */
@@ -17,10 +19,7 @@ export interface GraphileApolloLinkInterface {
   res: Response;
 
   /** The instance of the express middleware returned by calling `postgraphile()` */
-  postgraphileMiddleware: HttpRequestHandler<Request, Response>;
-
-  /** An optional rootValue to use inside resolvers. */
-  rootValue?: any;
+  pgl: PostGraphileInstance;
 }
 
 /**
@@ -36,7 +35,7 @@ export class GraphileApolloLink extends ApolloLink {
     operation: Operation,
     _forward?: NextLink
   ): Observable<FetchResult> | null {
-    const { postgraphileMiddleware, req, res, rootValue } = this.options;
+    const { pgl, req, res } = this.options;
     return new Observable((observer) => {
       (async () => {
         try {
@@ -53,22 +52,28 @@ export class GraphileApolloLink extends ApolloLink {
             }
             return;
           }
-          const schema = await postgraphileMiddleware.getGraphQLSchema();
-          const data =
-            await postgraphileMiddleware.withPostGraphileContextFromReqRes(
-              req,
-              res,
-              {},
-              (context) =>
-                execute(
-                  schema,
-                  document,
-                  rootValue || {},
-                  context,
-                  variableValues,
-                  operationName
-                )
-            );
+          const schema = await pgl.getSchema();
+          const args = {
+            schema,
+            document,
+            variableValues,
+            operationName,
+          };
+          await hookArgs(
+            args,
+            {
+              expressv4: {
+                req,
+                res,
+              },
+            },
+            pgl.getResolvedPreset()
+          );
+          const data = await execute(args);
+          if (isAsyncIterable(data)) {
+            data.return?.();
+            throw new Error("Iterable not supported by GraphileApolloLink");
+          }
           if (!observer.closed) {
             observer.next(data);
             observer.complete();
