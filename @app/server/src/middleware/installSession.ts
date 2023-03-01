@@ -1,5 +1,5 @@
 import ConnectPgSimple from "connect-pg-simple";
-import ConnectRedis from "connect-redis";
+import RedisStore from "connect-redis";
 import { Express, RequestHandler } from "express";
 import session from "express-session";
 import * as redis from "redis";
@@ -7,7 +7,6 @@ import * as redis from "redis";
 import { getWebsocketMiddlewares } from "../app";
 import { getRootPgPool } from "./installDatabasePools";
 
-const RedisStore = ConnectRedis(session);
 const PgStore = ConnectPgSimple(session);
 
 const MILLISECOND = 1;

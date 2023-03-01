@@ -3,7 +3,6 @@ import {
   fromEmail,
   projectName,
 } from "@app/config";
-import chalk from "chalk";
 import { promises as fsp } from "fs";
 import { Task } from "graphile-worker";
 import { htmlToText } from "html-to-text";
@@ -59,7 +58,10 @@ const task: Task = async (inPayload) => {
   } else if (isDev) {
     const url = nodemailer.getTestMessageUrl(info);
     if (url) {
-      console.log(`Development email preview: ${chalk.blue.underline(url)}`);
+      // Hex codes here equivalent to chalk.blue.underline
+      console.log(
+        `Development email preview: \x1B[34m\x1B[4m${url}\x1B[24m\x1B[39m`
+      );
     }
   }
 };
