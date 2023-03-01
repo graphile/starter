@@ -1,6 +1,5 @@
 import { awsRegion } from "@app/config";
 import * as aws from "aws-sdk";
-import chalk from "chalk";
 import { promises as fsp } from "fs";
 import * as nodemailer from "nodemailer";
 
@@ -17,6 +16,7 @@ let logged = false;
 export default function getTransport(): Promise<nodemailer.Transporter> {
   if (!transporterPromise) {
     transporterPromise = (async () => {
+      const { default: chalk } = await import("chalk");
       if (isTest) {
         return nodemailer.createTransport({
           jsonTransport: true,

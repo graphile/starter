@@ -3,7 +3,6 @@ import {
   fromEmail,
   projectName,
 } from "@app/config";
-import chalk from "chalk";
 import { promises as fsp } from "fs";
 import { Task } from "graphile-worker";
 import { htmlToText } from "html-to-text";
@@ -59,6 +58,7 @@ const task: Task = async (inPayload) => {
   } else if (isDev) {
     const url = nodemailer.getTestMessageUrl(info);
     if (url) {
+      const { default: chalk } = await import("chalk");
       console.log(`Development email preview: ${chalk.blue.underline(url)}`);
     }
   }

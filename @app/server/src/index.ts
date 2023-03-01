@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-import chalk from "chalk";
 import { createServer } from "http";
 
 import { getShutdownActions, makeApp } from "./app";
@@ -9,6 +8,8 @@ import { getShutdownActions, makeApp } from "./app";
 const packageJson = require("../../../package.json");
 
 async function main() {
+  const { default: chalk } = await import("chalk");
+
   // Create our HTTP server
   const httpServer = createServer();
 
