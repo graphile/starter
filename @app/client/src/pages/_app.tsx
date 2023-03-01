@@ -84,7 +84,7 @@ class MyApp extends App<{ apollo: ApolloClient<any> }> {
           },
           components: {
             Layout: {
-              colorBgHeader: "#f5faff",
+              colorBgHeader: "#fff",
             },
           },
         }}
