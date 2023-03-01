@@ -1,29 +1,27 @@
-import { Express, Request, Response } from "express";
-import { enhanceHttpServerWithSubscriptions, postgraphile } from "postgraphile";
+import { Express } from "express";
+import { postgraphile } from "postgraphile";
+import { grafserv } from "grafserv/express/v4";
 
-import { getHttpServer, getWebsocketMiddlewares } from "../app";
-import { getPostGraphileOptions } from "../graphile.config";
+import { getHttpServer } from "../app";
+import { getPreset } from "../graphile.config";
 import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
 
 export default function installPostGraphile(app: Express) {
-  const websocketMiddlewares = getWebsocketMiddlewares(app);
+  // const websocketMiddlewares = getWebsocketMiddlewares(app);
   const authPgPool = getAuthPgPool(app);
   const rootPgPool = getRootPgPool(app);
   const httpServer = getHttpServer(app);
-  const middleware = postgraphile<Request, Response>(
-    authPgPool,
-    "app_public",
-    getPostGraphileOptions({
-      websocketMiddlewares,
+
+  const pgl = postgraphile(
+    getPreset({
+      authPgPool,
+      //websocketMiddlewares,
       rootPgPool,
     })
   );
 
-  app.set("postgraphileMiddleware", middleware);
+  app.set("pgl", pgl);
 
-  app.use(middleware);
-
-  if (httpServer) {
-    enhanceHttpServerWithSubscriptions(httpServer, middleware);
-  }
+  const serv = pgl.createServ(grafserv);
+  serv.addTo(app, httpServer);
 }
