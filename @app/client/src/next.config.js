@@ -18,8 +18,6 @@ if (!process.env.ROOT_URL) {
       distDir: `../.next`,
       trailingSlash: false,
       webpack(config, { webpack, dev, isServer }) {
-        if (dev) config.devtool = "cheap-module-source-map";
-
         const makeSafe = (externals) => {
           if (Array.isArray(externals)) {
             return externals.map((ext) => {
