@@ -17,7 +17,6 @@
     "@graphile/pg-pubsub": "^4.13.0",
     "@graphile/pro": "^1.0.4",
     "@types/connect-pg-simple": "^7.0.0",
-    "@types/connect-redis": "^0.0.20",
     "@types/csurf": "^1.11.2",
     "@types/express-session": "^1.17.6",
     "@types/helmet": "^4.0.0",
