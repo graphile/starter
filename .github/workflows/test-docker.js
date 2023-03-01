@@ -1,4 +1,3 @@
-const fetch = require("node-fetch");
 const AbortController = require("abort-controller");
 const { execSync } = require("child_process");
 
@@ -14,6 +13,7 @@ async function main() {
         controller.abort();
       }, 3000);
       try {
+        const { default: fetch } = await import("node-fetch");
         response = await fetch("http://localhost:5678", {
           signal: controller.signal,
         });
