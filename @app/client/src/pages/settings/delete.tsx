@@ -6,7 +6,8 @@ import {
   useSharedQuery,
 } from "@app/graphql";
 import { getCodeFromError } from "@app/lib";
-import { Alert, Button, Modal, PageHeader, Typography } from "antd";
+import { PageHeader } from "@ant-design/pro-layout";
+import { Alert, Button, Modal, Typography } from "antd";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
@@ -160,9 +161,8 @@ const Settings_Accounts: NextPage = () => {
           <ErrorAlert error={error} />
         )
       ) : null}
-
       <Modal
-        visible={confirmOpen}
+        open={confirmOpen}
         onCancel={closeModal}
         onOk={doIt}
         okText="Send delete account email"
@@ -182,7 +182,7 @@ const Settings_Accounts: NextPage = () => {
         </P>
       </Modal>
       <Modal
-        visible={deleted}
+        open={deleted}
         closable={false}
         title="Account deleted"
         footer={

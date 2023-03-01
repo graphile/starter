@@ -1,4 +1,5 @@
-import "antd/dist/antd.less";
+// import "antd/dist/antd.less";
+
 import "nprogress/nprogress.css";
 import "../styles.less";
 

@@ -18,7 +18,8 @@ import {
   setPasswordInfo,
   tailFormItemLayout,
 } from "@app/lib";
-import { Alert, Button, Form, Input, PageHeader } from "antd";
+import { PageHeader } from "@ant-design/pro-layout";
+import { Alert, Button, Form, Input } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { NextPage } from "next";
 import Link from "next/link";

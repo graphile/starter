@@ -14,7 +14,8 @@ import {
   useDeleteOrganizationMutation,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { Alert, Button, message, PageHeader, Popconfirm } from "antd";
+import { PageHeader } from "@ant-design/pro-layout";
+import { Alert, Button, message, Popconfirm } from "antd";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useState } from "react";

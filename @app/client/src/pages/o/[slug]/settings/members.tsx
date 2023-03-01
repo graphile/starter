@@ -17,6 +17,7 @@ import {
   useTransferOrganizationOwnershipMutation,
 } from "@app/graphql";
 import { formItemLayout, tailFormItemLayout } from "@app/lib";
+import { PageHeader } from "@ant-design/pro-layout";
 import {
   Button,
   Card,
@@ -24,7 +25,6 @@ import {
   Input,
   List,
   message,
-  PageHeader,
   Popconfirm,
   Typography,
 } from "antd";

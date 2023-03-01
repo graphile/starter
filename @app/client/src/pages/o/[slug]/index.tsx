@@ -8,7 +8,8 @@ import {
   OrganizationPage_OrganizationFragment,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { Col, Empty, PageHeader, Row } from "antd";
+import { PageHeader } from "@ant-design/pro-layout";
+import { Col, Empty, Row } from "antd";
 import { NextPage } from "next";
 import React, { FC } from "react";
 
