@@ -1,7 +1,3 @@
-import { Task } from "graphile-worker";
-import { template as lodashTemplate } from "lodash";
-// @ts-ignore
-import mjml2html = require("mjml");
 import {
   emailLegalText as legalText,
   fromEmail,
@@ -9,7 +5,10 @@ import {
 } from "@app/config";
 import chalk from "chalk";
 import { promises as fsp } from "fs";
+import { Task } from "graphile-worker";
 import { htmlToText } from "html-to-text";
+import { template as lodashTemplate } from "lodash";
+import mjml2html from "mjml";
 import * as nodemailer from "nodemailer";
 
 import getTransport from "../transport";

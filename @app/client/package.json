@@ -15,7 +15,7 @@
     "@app/graphql": "0.0.0",
     "@app/lib": "0.0.0",
     "@types/lodash": "^4.14.191",
-    "@types/node": "^15.14.9",
+    "@types/node": "^18.14.2",
     "@types/nprogress": "^0.2.0",
     "@types/react": "18.0.28",
     "antd": "5.2.3",

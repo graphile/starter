@@ -211,7 +211,7 @@ __metadata:
     "@app/graphql": 0.0.0
     "@app/lib": 0.0.0
     "@types/lodash": ^4.14.191
-    "@types/node": ^15.14.9
+    "@types/node": ^18.14.2
     "@types/nprogress": ^0.2.0
     "@types/react": 18.0.28
     antd: 5.2.3
@@ -341,7 +341,7 @@ __metadata:
     "@types/express-session": ^1.17.6
     "@types/helmet": ^4.0.0
     "@types/morgan": ^1.9.4
-    "@types/node": ^15.14.9
+    "@types/node": ^18.14.2
     "@types/passport": ^1.0.12
     "@types/passport-github2": ^1.2.5
     "@types/pg": ^8.6.6
@@ -387,15 +387,15 @@ __metadata:
   resolution: "@app/worker@workspace:@app/worker"
   dependencies:
     "@app/config": 0.0.0
-    "@types/html-to-text": ^6.0.0
+    "@types/html-to-text": ^9.0.0
     "@types/lodash": ^4.14.191
     "@types/mjml": ^4.7.0
     "@types/nodemailer": ^6.4.7
-    aws-sdk: ^2.1324.0
+    aws-sdk: ^2.1325.0
     chalk: ^4.1.2
     cross-env: ^7.0.3
     graphile-worker: ^0.13.0
-    html-to-text: ^7.1.3
+    html-to-text: ^9.0.4
     jest: ^29.4.3
     lodash: ^4.17.21
     mjml: ^4.13.0
@@ -3545,6 +3545,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@selderee/plugin-htmlparser2@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@selderee/plugin-htmlparser2@npm:0.10.0"
+  dependencies:
+    domhandler: ^5.0.3
+    selderee: ^0.10.0
+  checksum: 37b5e059f0091754348c288bf630b372d20bc999a84483a3dc6688ab84c743ddc286f95bc7d69253add48640e7145511b412678f2c954b83f63a87967dc3f569
+  languageName: node
+  linkType: hard
+
 "@sinclair/typebox@npm:^0.25.16":
   version: 0.25.24
   resolution: "@sinclair/typebox@npm:0.25.24"
@@ -3799,10 +3809,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/html-to-text@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@types/html-to-text@npm:6.0.0"
-  checksum: 85fb99c0be8b2858472f9f978750a4c0951f39c03d4039d19ff9dde6111f30b2e1a60fa29cf504299f7aedd83e59cca252a005a81ab91e9764df90f9cf458298
+"@types/html-to-text@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@types/html-to-text@npm:9.0.0"
+  checksum: 2ba21524f6e2ec9d097df9e575355ce6e228c32b3bca3721ecf745cfab1827f79c4df42b0775ec1e5072f6a2e90b64493494a12675c207549b4cb316e2f5da3d
   languageName: node
   linkType: hard
 
@@ -3938,7 +3948,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
+"@types/node@npm:*, @types/node@npm:^18.14.2":
   version: 18.14.2
   resolution: "@types/node@npm:18.14.2"
   checksum: 53c07e721f6ae33de71306f6a0b75dae6066a4f55bd5484c93bd59ff25f0c5f004ceafeef509a4d0cb9e24a247efc34d50489bcc1b05a53ecc68e2fc088e65cb
@@ -3949,13 +3959,6 @@ __metadata:
   version: 14.18.36
   resolution: "@types/node@npm:14.18.36"
   checksum: da7f479b3fc996d585e60b8329987c6e310ddbf051e14f2d900ce04f7768f42fa7b760f0eb376008d3eca130ce9431018fb5c9e44027dcb7bb139c547e44b9c5
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^15.14.9":
-  version: 15.14.9
-  resolution: "@types/node@npm:15.14.9"
-  checksum: 49f7f0522a3af4b8389aee660e88426490cd54b86356672a1fedb49919a8797c00d090ec2dcc4a5df34edc2099d57fc2203d796c4e7fbd382f2022ccd789eee7
   languageName: node
   linkType: hard
 
@@ -5158,9 +5161,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aws-sdk@npm:^2.1324.0":
-  version: 2.1324.0
-  resolution: "aws-sdk@npm:2.1324.0"
+"aws-sdk@npm:^2.1325.0":
+  version: 2.1325.0
+  resolution: "aws-sdk@npm:2.1325.0"
   dependencies:
     buffer: 4.9.2
     events: 1.1.1
@@ -5172,7 +5175,7 @@ __metadata:
     util: ^0.12.4
     uuid: 8.0.0
     xml2js: 0.4.19
-  checksum: 6ef9dbb9a2b4b1c48ce13cad6012e6aafe39ba7fea6e9443fc40bacf5dfb31b00480321b8dfcbcc9762c846b50fe82b434d58e9e58204d51eb6622932b6d5420
+  checksum: 1ee4cb3c146f6547975b0da3bc9ebf44347f28c2d5ef9a208400207042e7d4895e07629fbf77b71be9ddca946f2eac90b2031b6315297a11a4fb8d04a78656a5
   languageName: node
   linkType: hard
 
@@ -6685,7 +6688,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge@npm:^4.2.2":
+"deepmerge@npm:^4.2.2, deepmerge@npm:^4.3.0":
   version: 4.3.0
   resolution: "deepmerge@npm:4.3.0"
   checksum: c7980eb5c5be040b371f1df0d566473875cfabed9f672ccc177b81ba8eee5686ce2478de2f1d0076391621cbe729e5eacda397179a59ef0f68901849647db126
@@ -8862,17 +8865,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-to-text@npm:^7.1.3":
-  version: 7.1.3
-  resolution: "html-to-text@npm:7.1.3"
+"html-to-text@npm:^9.0.4":
+  version: 9.0.4
+  resolution: "html-to-text@npm:9.0.4"
   dependencies:
-    deepmerge: ^4.2.2
-    he: ^1.2.0
-    htmlparser2: ^6.1.0
-    minimist: ^1.2.6
-  bin:
-    html-to-text: bin/cli.js
-  checksum: 5c5e24e94139f02b457d8921808af0828571cf73c39fc29589305ee1e5355318c38f4671133ff1db3dc5fe2a9ff5df31071fbb6e49b4d0ba61506775caa8c40e
+    "@selderee/plugin-htmlparser2": ^0.10.0
+    deepmerge: ^4.3.0
+    dom-serializer: ^2.0.0
+    htmlparser2: ^8.0.1
+    selderee: ^0.10.0
+  checksum: 5431f7fa5501ba05cdc7e7eb90b9d3f7607e9779f313abc6a48bf493e144947f3bde63426679ca153e085ca77d7c0983bb2cf160a30b68b1598d1fb174a0ca05
   languageName: node
   linkType: hard
 
@@ -10483,6 +10485,13 @@ __metadata:
   version: 1.6.0
   resolution: "lazy-ass@npm:1.6.0"
   checksum: 5a3ebb17915b03452320804466345382a6c25ac782ec4874fecdb2385793896cd459be2f187dc7def8899180c32ee0ab9a1aa7fe52193ac3ff3fe29bb0591729
+  languageName: node
+  linkType: hard
+
+"leac@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "leac@npm:0.6.0"
+  checksum: a7a722cfc2ddfd6fb2620e5dee3ac8e9b0af4eb04325f3c8286a820de78becba3010a4d7026ff5189bb159eb7a851c3a1ac73e076eb0d54fcee0adaf695291ba
   languageName: node
   linkType: hard
 
@@ -12236,6 +12245,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parseley@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "parseley@npm:0.11.0"
+  dependencies:
+    leac: ^0.6.0
+    peberminta: ^0.8.0
+  checksum: cbd4762bf72c2456ddd722a8f3d757dfc6c178aa0819fc26be5549fcebf258fdee5f3acd210481054735e0ecb6fee47ba542b1f17560f941b9401fdd6ddf2e8c
+  languageName: node
+  linkType: hard
+
 "parseurl@npm:^1.3.2, parseurl@npm:~1.3.3":
   version: 1.3.3
   resolution: "parseurl@npm:1.3.3"
@@ -12372,6 +12391,13 @@ __metadata:
   version: 0.0.1
   resolution: "pause@npm:0.0.1"
   checksum: e96ee581b68085e6f2ba5adbcb4d4a41fe88e5b514061e76df2fe1905f0f65f4fe5a843b538e9551122c6b9184ff4be266c2ee0ea4614702f9a3d04466d9f462
+  languageName: node
+  linkType: hard
+
+"peberminta@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "peberminta@npm:0.8.0"
+  checksum: 77d8c02b708c23c8b3893c42e33c29f8c485caa77b691ca5c1cc41fc8706e833d669e54a90c7cd7a18a01151b902ad13b0047d0290bc6cc51b5825c40692bdd5
   languageName: node
   linkType: hard
 
@@ -13984,6 +14010,15 @@ __metadata:
   version: 1.1.0
   resolution: "scuid@npm:1.1.0"
   checksum: cd094ac3718b0070a222f9a499b280c698fdea10268cc163fa244421099544c1766dd893fdee0e2a8eba5d53ab9d0bcb11067bedff166665030fa6fda25a096b
+  languageName: node
+  linkType: hard
+
+"selderee@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "selderee@npm:0.10.0"
+  dependencies:
+    parseley: ^0.11.0
+  checksum: 8ecd535fe8a0359f729d4ba48c3a45121a6f5570fec3138774648084ebce63174717dfb028400490e5e7fda0c46a322a53ec656af69f4a17f34ece85685eb80f
   languageName: node
   linkType: hard
 
