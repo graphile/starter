@@ -172,7 +172,9 @@ function LoginForm({
   );
 
   const handleValuesChange = useCallback(() => {
-    setSubmitDisabled(form.getFieldsError().length !== 0);
+    setSubmitDisabled(
+      form.getFieldsError().some((fieldError) => fieldError.errors.length > 0)
+    );
   }, [form]);
 
   const code = getCodeFromError(error);
