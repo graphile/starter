@@ -17,7 +17,7 @@
     "@types/mjml": "^4.7.0",
     "@types/nodemailer": "^6.4.7",
     "aws-sdk": "^2.1325.0",
-    "chalk": "^4.1.2",
+    "chalk": "^5.2.0",
     "cross-env": "^7.0.3",
     "graphile-worker": "^0.13.0",
     "html-to-text": "^9.0.4",

@@ -8,10 +8,10 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
-    "@apollo/client": "3.4.17",
+    "@apollo/client": "3.7.9",
     "@app/graphql": "0.0.0",
     "antd": "5.2.3",
-    "next": "^13.2.2",
+    "next": "^13.2.3",
     "react": "^18.2.0",
     "tslib": "^2.5.0"
   },
