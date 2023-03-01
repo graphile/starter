@@ -69,7 +69,7 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
       } catch (e: any) {
         const code = getCodeFromError(e);
         const exception = getExceptionFromError(e);
-        const fields = exception?.["fields"];
+        const fields = exception?.extensions?.fields ?? exception?.fields;
         if (code === "WEAKP") {
           form.setFields([
             {
