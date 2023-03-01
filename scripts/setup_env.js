@@ -9,7 +9,6 @@ const {
   readDotenv,
   runSync,
 } = require("./_setup_utils");
-const inquirer = require("inquirer");
 
 runMain(async () => {
   await checkGit();
@@ -52,6 +51,7 @@ runMain(async () => {
       when: !config.ROOT_DATABASE_URL,
     },
   ];
+  const { default: inquirer } = await import("inquirer");
   const answers = await inquirer.prompt(questions);
 
   await withDotenvUpdater(answers, (add) =>

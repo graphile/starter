@@ -7,7 +7,6 @@ const {
   runSync,
   projectName,
 } = require("./_setup_utils");
-const inquirer = require("inquirer");
 const dotenv = require("dotenv");
 const pg = require("pg");
 
@@ -34,6 +33,7 @@ runMain(async () => {
   } = process.env;
 
   if (!CONFIRM_DROP) {
+    const { default: inquirer } = await import("inquirer");
     const confirm = await inquirer.prompt([
       {
         type: "confirm",
