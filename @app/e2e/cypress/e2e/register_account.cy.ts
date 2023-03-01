@@ -1,6 +1,8 @@
 /// <reference types="Cypress" />
 
 context("RegisterAccount", () => {
+  beforeEach(() => cy.serverCommand("clearTestUsers"));
+
   it("can navigate to registration page", () => {
     // Setup
     cy.visit(Cypress.env("ROOT_URL"));
