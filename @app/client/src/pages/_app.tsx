@@ -3,7 +3,7 @@ import "../styles.css";
 
 import { ApolloClient, ApolloProvider } from "@apollo/client";
 import { withApollo } from "@app/lib";
-import { notification } from "antd";
+import { ConfigProvider, notification } from "antd";
 import App from "next/app";
 import Router from "next/router";
 import NProgress from "nprogress";
@@ -70,10 +70,29 @@ class MyApp extends App<{ apollo: ApolloClient<any> }> {
   render() {
     const { Component, pageProps, apollo } = this.props;
 
+    const footerBackground = "#f5faff";
     return (
-      <ApolloProvider client={apollo}>
-        <Component {...pageProps} />
-      </ApolloProvider>
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#3055ee",
+            colorBgBase: footerBackground,
+            colorText: "#0a0a0a",
+            // @body-background: @layout-footer-background;
+          },
+          components: {
+            Layout: {
+              colorBgHeader: "#fff",
+              colorBgBase: "#fff",
+              // @layout-footer-background: #f5faff; // #4680b4;
+            },
+          },
+        }}
+      >
+        <ApolloProvider client={apollo}>
+          <Component {...pageProps} />
+        </ApolloProvider>
+      </ConfigProvider>
     );
   }
 }
