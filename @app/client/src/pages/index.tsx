@@ -121,12 +121,6 @@ const Home: NextPage = () => {
             </a>
             .
           </Paragraph>
-          <Paragraph>
-            <Text strong>WARNING</Text>: <code>graphile-migrate</code> is
-            experimental, you may want to find a different migration solution
-            before putting it into production (your sponsorship will help make
-            this project stable faster).
-          </Paragraph>
 
           <Title level={4}>isAdmin</Title>
           <Paragraph>
