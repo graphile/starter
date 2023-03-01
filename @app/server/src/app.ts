@@ -1,6 +1,5 @@
-import express, { Express } from "express";
-import { Server } from "http";
-import { Middleware } from "postgraphile";
+import express, { Express, NextFunction } from "express";
+import { IncomingMessage, Server, ServerResponse } from "http";
 
 import { cloudflareIps } from "./cloudflare";
 import * as middleware from "./middleware";
@@ -8,8 +7,8 @@ import { makeShutdownActions, ShutdownAction } from "./shutdownActions";
 import { sanitizeEnv } from "./utils";
 
 // Server may not always be supplied, e.g. where mounting on a sub-route
-export function getHttpServer(app: Express): Server | void {
-  return app.get("httpServer");
+export function getHttpServer(app: Express): Server | null {
+  return app.get("httpServer") ?? null;
 }
 
 export function getShutdownActions(app: Express): ShutdownAction[] {
@@ -20,6 +19,13 @@ export function getWebsocketMiddlewares(
   app: Express
 ): Middleware<express.Request, express.Response>[] {
   return app.get("websocketMiddlewares");
+}
+
+export interface Middleware<
+  Request extends IncomingMessage,
+  Response extends ServerResponse
+> {
+  (req: Request, res: Response, next: NextFunction): void;
 }
 
 export async function makeApp({

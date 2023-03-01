@@ -88,24 +88,20 @@ function conflictFieldsFromError(err: any) {
   return undefined;
 }
 
-export default function handleErrors(
-  errors: readonly GraphQLError[]
-): Array<any> {
-  return errors.map((error) => {
-    const { message: rawMessage, originalError } = error;
-    const code = originalError ? (originalError as any)["code"] : null;
-    const localPluck = ERROR_MESSAGE_OVERRIDES[code] || pluck;
-    const exception = localPluck(originalError || error);
-    return new GraphQLError(
-      exception.message || rawMessage,
-      error.nodes,
-      error.source,
-      error.positions,
-      error.path,
-      error.originalError,
-      {
-        exception,
-      }
-    );
-  });
+export default function maskError(error: GraphQLError): GraphQLError {
+  const { message: rawMessage, originalError } = error;
+  const code = originalError ? (originalError as any)["code"] : null;
+  const localPluck = ERROR_MESSAGE_OVERRIDES[code] || pluck;
+  const exception = localPluck(originalError || error);
+  return new GraphQLError(
+    exception.message || rawMessage,
+    error.nodes,
+    error.source,
+    error.positions,
+    error.path,
+    error.originalError,
+    {
+      exception,
+    }
+  );
 }
