@@ -1,7 +1,5 @@
-// import "antd/dist/antd.less";
-
 import "nprogress/nprogress.css";
-import "../styles.less";
+import "../styles.css";
 
 import { ApolloClient, ApolloProvider } from "@apollo/client";
 import { withApollo } from "@app/lib";
