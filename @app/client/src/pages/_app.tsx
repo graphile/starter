@@ -1,3 +1,4 @@
+import "antd/dist/reset.css";
 import "nprogress/nprogress.css";
 import "../styles.css";
 
@@ -74,17 +75,16 @@ class MyApp extends App<{ apollo: ApolloClient<any> }> {
     return (
       <ConfigProvider
         theme={{
+          // Customize your theme via the theme editor: https://ant.design/theme-editor
           token: {
+            colorBgBase: "#ffffff",
+            colorTextBase: "#0a0a0a",
             colorPrimary: "#3055ee",
-            colorBgBase: footerBackground,
-            colorText: "#0a0a0a",
-            // @body-background: @layout-footer-background;
+            colorBgLayout: "#fff",
           },
           components: {
             Layout: {
-              colorBgHeader: "#fff",
-              colorBgBase: "#fff",
-              // @layout-footer-background: #f5faff; // #4680b4;
+              colorBgHeader: "#f5faff",
             },
           },
         }}
