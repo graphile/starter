@@ -37,7 +37,7 @@
     "graphile-build-pg": "^4.13.0",
     "graphile-utils": "^4.13.0",
     "graphile-worker": "^0.13.0",
-    "helmet": "^4.6.0",
+    "helmet": "^6.0.1",
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "next": "^13.2.2",

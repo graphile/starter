@@ -359,7 +359,7 @@ __metadata:
     graphile-utils: ^4.13.0
     graphile-worker: ^0.13.0
     graphql: ^15.8.0
-    helmet: ^4.6.0
+    helmet: ^6.0.1
     jest: ^29.4.3
     lodash: ^4.17.21
     mock-req: ^0.2.0
@@ -4651,6 +4651,7 @@ __metadata:
   resolution: "ROOT@workspace:."
   dependencies:
     "@babel/core": ^7.21.0
+    "@babel/plugin-syntax-import-assertions": ^7.20.0
     "@babel/preset-env": ^7.20.2
     "@babel/preset-typescript": ^7.21.0
     "@types/jest": ^29.4.0
@@ -8821,17 +8822,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"helmet@npm:*":
+"helmet@npm:*, helmet@npm:^6.0.1":
   version: 6.0.1
   resolution: "helmet@npm:6.0.1"
   checksum: 1ca20d0b7888b6208130bbb50d183e68d53bb5fa0caead2106226d6d53216dfc893b4b5c07528304e342884f75d87702003b80884b065cb5dcbc705fb4a6ad52
-  languageName: node
-  linkType: hard
-
-"helmet@npm:^4.6.0":
-  version: 4.6.0
-  resolution: "helmet@npm:4.6.0"
-  checksum: 139ad678d1cab207b043c206f50f6744eff2ef1f463e4626d36718b45b337485c77d10260ef9d89d292fa678da5153d86b08172b3b365cc8e680241015ed3a49
   languageName: node
   linkType: hard
 
