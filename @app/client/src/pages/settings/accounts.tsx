@@ -65,8 +65,8 @@ function UnlinkAccountButton({ id }: { id: string }) {
         onCancel={handleCloseModal}
         onOk={handleUnlink}
       >
-        If you unlink this account you won't be able to log in with it any more;
-        please make sure your email is valid.
+        If you unlink this account you won&apos;t be able to log in with it any
+        more; please make sure your email is valid.
       </Modal>
       <a key="unlink" onClick={handleOpenModal}>
         {deleting ? <Spin /> : "Unlink"}
