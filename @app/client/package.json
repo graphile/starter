@@ -33,7 +33,6 @@
     "webpack": "^5.75.0"
   },
   "devDependencies": {
-    "babel-plugin-import": "^1.13.6",
     "cross-env": "^7.0.3",
     "jest": "^29.4.3"
   }
