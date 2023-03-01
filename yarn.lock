@@ -4638,6 +4638,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.6.0
     eslint-plugin-simple-import-sort: ^10.0.0
     eslint_d: ^12.2.1
+    glob: ^9.1.0
     graphql: ^15.8.0
     inquirer: ^9.1.4
     jest: ^29.4.3
@@ -8471,6 +8472,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"glob@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "glob@npm:9.1.0"
+  dependencies:
+    fs.realpath: ^1.0.0
+    minimatch: ^7.4.0
+    minipass: ^4.2.4
+    path-scurry: ^1.5.0
+  checksum: f7950386ea24b66571fca1ea42536bda4f5c4e009699b4f01d48a76f1e6c670c9b1083c57ae644200b2cc6ab741864bf263f83b994426f2df2d36b642bd1ed6b
+  languageName: node
+  linkType: hard
+
 "global-dirs@npm:^3.0.0":
   version: 3.0.1
   resolution: "global-dirs@npm:3.0.1"
@@ -10828,7 +10841,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^7.7.1":
+"lru-cache@npm:^7.14.1, lru-cache@npm:^7.7.1":
   version: 7.18.1
   resolution: "lru-cache@npm:7.18.1"
   checksum: ab0ec1360c552f1ffa54b1eaf0026126c5116a07bee156b92d1e971f4c8c88e9160f0fad4ab6fed4e0fdea84f25a4590ece085bc57ed9ab1d90b17f0b138c556
@@ -11053,6 +11066,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:^7.4.0":
+  version: 7.4.1
+  resolution: "minimatch@npm:7.4.1"
+  dependencies:
+    brace-expansion: ^2.0.1
+  checksum: fd930530878ba08e5a57eacc0e69fbc980d4c1dfeb98c6c5eba3a05a10b1f6d8dd4ecca59442a1909107b7ef891b43c005720c1a8ed1a02db962fd0327bf9557
+  languageName: node
+  linkType: hard
+
 "minimist@npm:^1.2.0, minimist@npm:^1.2.6":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
@@ -11120,7 +11142,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minipass@npm:^4.0.0":
+"minipass@npm:^4.0.0, minipass@npm:^4.0.2, minipass@npm:^4.2.4":
   version: 4.2.4
   resolution: "minipass@npm:4.2.4"
   checksum: c664f2ae4401408d1e7a6e4f50aca45f87b1b0634bc9261136df5c378e313e77355765f73f59c4a5abcadcdf43d83fcd3eb14e4a7cdcce8e36508e2290345753
@@ -12484,6 +12506,16 @@ __metadata:
   dependencies:
     path-root-regex: ^0.1.0
   checksum: ff88aebfc1c59ace510cc06703d67692a11530989920427625e52b66a303ca9b3d4059b0b7d0b2a73248d1ad29bcb342b8b786ec00592f3101d38a45fd3b2e08
+  languageName: node
+  linkType: hard
+
+"path-scurry@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "path-scurry@npm:1.5.0"
+  dependencies:
+    lru-cache: ^7.14.1
+    minipass: ^4.0.2
+  checksum: d576186d8a5845edaf2344949e333ecfddf391f9dcffbfe7679006f523b6a92fb751e272c4446dfd17124ba4d63867afd3e77f6afd1bd829767111d98d5d8d94
   languageName: node
   linkType: hard
 
