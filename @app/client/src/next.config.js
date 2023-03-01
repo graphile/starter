@@ -24,11 +24,11 @@ if (!process.env.ROOT_URL) {
           if (Array.isArray(externals)) {
             return externals.map((ext) => {
               if (typeof ext === "function") {
-                return (context, request, callback) => {
-                  if (/^@app\//.test(request)) {
+                return (obj, callback) => {
+                  if (/^@app\//.test(obj.request)) {
                     callback();
                   } else {
-                    return ext(context, request, callback);
+                    return ext(obj, callback);
                   }
                 };
               } else {
