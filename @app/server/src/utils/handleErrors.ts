@@ -35,7 +35,7 @@ const pluck = (err: any): { [key: string]: any } => {
       memo[key] = value;
     }
     return memo;
-  }, {});
+  }, Object.create(null) as Record<string, any>);
 };
 
 /**
@@ -92,17 +92,20 @@ export default function handleErrors(
   errors: readonly GraphQLError[]
 ): Array<any> {
   return errors.map((error) => {
-    const { message: rawMessage, locations, path, originalError } = error;
-    const code = originalError ? originalError["code"] : null;
+    const { message: rawMessage, originalError } = error;
+    const code = originalError ? (originalError as any)["code"] : null;
     const localPluck = ERROR_MESSAGE_OVERRIDES[code] || pluck;
     const exception = localPluck(originalError || error);
-    return {
-      message: exception.message || rawMessage,
-      locations,
-      path,
-      extensions: {
+    return new GraphQLError(
+      exception.message || rawMessage,
+      error.nodes,
+      error.source,
+      error.positions,
+      error.path,
+      error.originalError,
+      {
         exception,
-      },
-    };
+      }
+    );
   });
 }

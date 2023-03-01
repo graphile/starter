@@ -1,4 +1,5 @@
 import { GithubFilled } from "@ant-design/icons";
+import { PageHeader } from "@ant-design/pro-layout";
 import {
   ErrorAlert,
   SettingsLayout,
@@ -12,11 +13,11 @@ import {
   useSharedQuery,
   useUnlinkUserAuthenticationMutation,
 } from "@app/graphql";
-import { Avatar, Card, List, Modal, PageHeader, Spin } from "antd";
+import { Avatar, Card, List, Modal, Spin } from "antd";
 import { NextPage } from "next";
 import React, { useCallback, useState } from "react";
 
-const AUTH_NAME_LOOKUP = {
+const AUTH_NAME_LOOKUP: Record<string, string | undefined> = {
   github: "GitHub",
   facebook: "Facebook",
   twitter: "Twitter",
@@ -25,7 +26,7 @@ function authName(service: string) {
   return AUTH_NAME_LOOKUP[service] || service;
 }
 
-const AUTH_ICON_LOOKUP = {
+const AUTH_ICON_LOOKUP: Record<string, JSX.Element | undefined> = {
   github: <GithubFilled />,
 };
 function authAvatar(service: string) {
@@ -60,12 +61,12 @@ function UnlinkAccountButton({ id }: { id: string }) {
     <>
       <Modal
         title="Are you sure?"
-        visible={modalOpen}
+        open={modalOpen}
         onCancel={handleCloseModal}
         onOk={handleUnlink}
       >
-        If you unlink this account you won't be able to log in with it any more;
-        please make sure your email is valid.
+        If you unlink this account you won&apos;t be able to log in with it any
+        more; please make sure your email is valid.
       </Modal>
       <a key="unlink" onClick={handleOpenModal}>
         {deleting ? <Spin /> : "Unlink"}

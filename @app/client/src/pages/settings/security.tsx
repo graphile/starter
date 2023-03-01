@@ -1,3 +1,4 @@
+import { PageHeader } from "@ant-design/pro-layout";
 import { ApolloError } from "@apollo/client";
 import {
   ErrorAlert,
@@ -18,7 +19,7 @@ import {
   setPasswordInfo,
   tailFormItemLayout,
 } from "@app/lib";
-import { Alert, Button, Form, Input, PageHeader } from "antd";
+import { Alert, Button, Form, Input } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { NextPage } from "next";
 import Link from "next/link";
@@ -112,7 +113,7 @@ const Settings_Security: NextPage = () => {
   }, [setPasswordIsFocussed]);
   const [passwordIsDirty, setPasswordIsDirty] = useState(false);
   const handleValuesChange = useCallback(
-    (changedValues) => {
+    (changedValues: any) => {
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
         changedValues,
@@ -135,9 +136,9 @@ const Settings_Security: NextPage = () => {
           <P>
             You registered your account through social login, so you do not
             currently have a passphrase. If you would like a passphrase, press
-            the button below to request a passphrase reset email to '{email}'
-            (you can choose a different email by making it primary in{" "}
-            <Link href="/settings/emails">email settings</Link>).
+            the button below to request a passphrase reset email to &lsquo;
+            {email}&rsquo; (you can choose a different email by making it
+            primary in <Link href="/settings/emails">email settings</Link>).
           </P>
           <Button onClick={handleResetPassword} disabled={resetInProgress}>
             Reset passphrase

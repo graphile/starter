@@ -52,7 +52,7 @@ const VerifyPage: NextPage<IProps> = (props) => {
           value={token}
           onChange={(e) => setIdAndToken([id, e.target.value])}
         />
-        {error ? <p>{error.message || error}</p> : null}
+        {error ? <p>{error.message || String(error)}</p> : null}
         <button>Submit</button>
       </form>
     );

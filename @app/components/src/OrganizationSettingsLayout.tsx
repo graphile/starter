@@ -51,7 +51,9 @@ export function OrganizationSettingsLayout({
   children,
 }: OrganizationSettingsLayoutProps) {
   const pages = useMemo(() => makePages(organization), [organization]);
-  const href = pages[inHref] ? inHref : Object.keys(pages)[0];
+  const href = pages[inHref as keyof typeof pages]
+    ? inHref
+    : Object.keys(pages)[0];
   /*
   const page = pages[href];
   // `useRouter()` sometimes returns null
@@ -63,17 +65,16 @@ export function OrganizationSettingsLayout({
     <Layout style={{ minHeight: contentMinHeight }} hasSider>
       <Sider>
         <Menu selectedKeys={[href]}>
-          {Object.keys(pages).map((pageHref) => (
+          {(Object.keys(pages) as (keyof typeof pages)[]).map((pageHref) => (
             <Menu.Item key={pageHref}>
               <Link
                 href={pageHref}
+                data-cy={pages[pageHref].cy}
                 as={pageHref.replace("[slug]", organization.slug)}
               >
-                <a data-cy={pages[pageHref].cy}>
-                  <Text {...pages[pageHref].titleProps}>
-                    {pages[pageHref].title}
-                  </Text>
-                </a>
+                <Text {...pages[pageHref].titleProps}>
+                  {pages[pageHref].title}
+                </Text>
               </Link>
             </Menu.Item>
           ))}

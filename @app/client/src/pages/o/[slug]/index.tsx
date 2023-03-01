@@ -1,3 +1,4 @@
+import { PageHeader } from "@ant-design/pro-layout";
 import {
   ButtonLink,
   SharedLayout,
@@ -8,7 +9,7 @@ import {
   OrganizationPage_OrganizationFragment,
   useOrganizationPageQuery,
 } from "@app/graphql";
-import { Col, Empty, PageHeader, Row } from "antd";
+import { Col, Empty, Row } from "antd";
 import { NextPage } from "next";
 import React, { FC } from "react";
 

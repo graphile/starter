@@ -69,7 +69,7 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
       } catch (e: any) {
         const code = getCodeFromError(e);
         const exception = getExceptionFromError(e);
-        const fields: any = exception && exception["fields"];
+        const fields = exception?.extensions?.fields ?? exception?.fields;
         if (code === "WEAKP") {
           form.setFields([
             {
@@ -150,7 +150,7 @@ const Register: NextPage<RegisterProps> = ({ next: rawNext }) => {
     setPasswordIsFocussed(false);
   }, [setPasswordIsFocussed]);
   const handleValuesChange = useCallback(
-    (changedValues) => {
+    (changedValues: any) => {
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
         changedValues

@@ -45,7 +45,6 @@ COPY --from=builder /app/@app/lib/ /app/@app/lib/
 COPY --from=builder /app/@app/components/package.json /app/@app/components/
 COPY --from=builder /app/@app/components/dist/ /app/@app/components/dist/
 COPY --from=builder /app/@app/client/package.json /app/@app/client/package.json
-COPY --from=builder /app/@app/client/assets/ /app/@app/client/assets/
 COPY --from=builder /app/@app/client/src/next.config.js /app/@app/client/src/next.config.js
 COPY --from=builder /app/@app/client/.next /app/@app/client/.next
 COPY --from=builder /app/@app/server/package.json /app/@app/server/

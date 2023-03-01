@@ -11,7 +11,13 @@ interface ParsedError {
   code?: string;
 }
 
-function parseError(error: Error): ParsedError {
+function parseError(
+  error: Error & {
+    code?: string;
+    statusCode?: number;
+    status?: number;
+  }
+): ParsedError {
   /*
    * Because an error may contain confidential information or information that
    * might help attackers, by default we don't output the error message at all.
@@ -28,12 +34,13 @@ function parseError(error: Error): ParsedError {
 
   // TODO: process certain errors
   const code = error["statusCode"] || error["status"] || error["code"];
-  const codeAsFloat = parseInt(code, 10);
+  const codeAsFloat = code ? parseInt(String(code), 10) : NaN;
   const httpCode =
     isFinite(codeAsFloat) && codeAsFloat >= 400 && codeAsFloat < 600
       ? codeAsFloat
       : 500;
 
+  console.error("An unknown error occurred", error);
   return {
     message: "An unknown error occurred",
     status: httpCode,

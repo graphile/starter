@@ -11,8 +11,8 @@
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" jest"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.9",
-    "react": "^17.0.2",
+    "@apollo/client": "3.4.17",
+    "react": "^18.2.0",
     "tslib": "^2.5.0"
   },
   "devDependencies": {

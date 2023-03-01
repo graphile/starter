@@ -67,7 +67,10 @@ const task: Task = async (inPayload) => {
 
 export default task;
 
-const templatePromises = {};
+const templatePromises: Record<
+  string,
+  Promise<(variables: Record<string, any>) => string>
+> = {};
 function loadTemplate(template: string) {
   if (isDev || !templatePromises[template]) {
     templatePromises[template] = (async () => {

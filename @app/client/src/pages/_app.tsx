@@ -1,10 +1,10 @@
-import "antd/dist/antd.less";
+import "antd/dist/reset.css";
 import "nprogress/nprogress.css";
-import "../styles.less";
+import "../styles.css";
 
 import { ApolloClient, ApolloProvider } from "@apollo/client";
 import { withApollo } from "@app/lib";
-import { notification } from "antd";
+import { ConfigProvider, notification } from "antd";
 import App from "next/app";
 import Router from "next/router";
 import NProgress from "nprogress";
@@ -43,7 +43,7 @@ if (typeof window !== "undefined") {
   });
   Router.events.on("routeChangeError", (err: Error | string) => {
     NProgress.done();
-    if (err["cancelled"]) {
+    if ((err as any)["cancelled"]) {
       // No worries; you deliberately cancelled it
     } else {
       notification.open({
@@ -72,9 +72,26 @@ class MyApp extends App<{ apollo: ApolloClient<any> }> {
     const { Component, pageProps, apollo } = this.props;
 
     return (
-      <ApolloProvider client={apollo}>
-        <Component {...pageProps} />
-      </ApolloProvider>
+      <ConfigProvider
+        theme={{
+          // Customize your theme via the theme editor: https://ant.design/theme-editor
+          token: {
+            colorBgBase: "#ffffff",
+            colorTextBase: "#0a0a0a",
+            colorPrimary: "#3055ee",
+            colorBgLayout: "#fff",
+          },
+          components: {
+            Layout: {
+              colorBgHeader: "#fff",
+            },
+          },
+        }}
+      >
+        <ApolloProvider client={apollo}>
+          <Component {...pageProps} />
+        </ApolloProvider>
+      </ConfigProvider>
     );
   }
 }

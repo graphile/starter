@@ -22,9 +22,9 @@ const Home: NextPage = () => {
             Welcome to the PostGraphile starter
           </Title>
           <Paragraph>
-            This project can serve as a basis for your own project. We've added
-            many features that most projects require, but you're free to remove
-            them or replace them with whatever you need.
+            This project can serve as a basis for your own project. We&apos;ve
+            added many features that most projects require, but you&apos;re free
+            to remove them or replace them with whatever you need.
           </Paragraph>
 
           <Paragraph>
@@ -56,7 +56,8 @@ const Home: NextPage = () => {
           <Title level={4}>Emails</Title>
           <Paragraph>
             <strong>
-              In development we don't send any emails to real email addresses
+              In development we don&apos;t send any emails to real email
+              addresses
             </strong>
             , instead all emails are sent to{" "}
             <a href="http://ethereal.email">ethereal.email</a> where you can
@@ -110,8 +111,8 @@ const Home: NextPage = () => {
             causing issues.
           </Paragraph>
           <Paragraph>
-            We've committed the first migration for you (which builds the user
-            system), but should you wish to customize this user system the
+            We&apos;ve committed the first migration for you (which builds the
+            user system), but should you wish to customize this user system the
             easiest way is to run <code>yarn db uncommit</code> which will undo
             this initial migration and move its content back to current.sql for
             you to modify. Please see{" "}
@@ -129,17 +130,18 @@ const Home: NextPage = () => {
 
           <Title level={4}>isAdmin</Title>
           <Paragraph>
-            The <code>isAdmin</code> flag doesn't do anything in this starter,
-            but you can use it in your own applications should you need it.
+            The <code>isAdmin</code> flag doesn&apos;t do anything in this
+            starter, but you can use it in your own applications should you need
+            it.
           </Paragraph>
 
           <Title level={4}>What now?</Title>
           <Paragraph>
-            To get started, click "Sign in" at the top right, then choose
-            "Create One" to create a new account.
+            To get started, click &ldquo;Sign in&rdquo; at the top right, then
+            choose &ldquo;Create One&rdquo; to create a new account.
           </Paragraph>
           <Paragraph>
-            When you're happy, you can add database changes to{" "}
+            When you&apos;re happy, you can add database changes to{" "}
             <code>current.sql</code> and see them reflected in the GraphiQL
             interface a <a href="/graphiql">/graphiql</a>.
           </Paragraph>
@@ -150,15 +152,15 @@ const Home: NextPage = () => {
 
           <Paragraph>
             <Text mark>You can read this later.</Text> The important things were
-            above; below is additional information worth a read when you're done
-            experimenting.
+            above; below is additional information worth a read when you&apos;re
+            done experimenting.
           </Paragraph>
 
           <Title level={4}>Making it yours</Title>
           <Paragraph>
-            This project isn't intended to be <code>git clone</code>'d; instead
-            you should start a new git repository with the code from the latest
-            release:
+            This project isn&apos;t intended to be <code>git clone</code>
+            &apos;d; instead you should start a new git repository with the code
+            from the latest release:
           </Paragraph>
           <ol>
             <Li>
@@ -177,7 +179,9 @@ const Home: NextPage = () => {
                   <code>git add .</code>
                 </Li>
                 <Li>
-                  <code>git commit -m "PostGraphile starter base"</code>
+                  <code>
+                    git commit -m &quot;PostGraphile starter base&quot;
+                  </code>
                 </Li>
               </ul>
             </Li>
@@ -210,12 +214,13 @@ const Home: NextPage = () => {
               going Pro
             </a>{" "}
             as one option for protecting your PostGraphile API; another is to
-            use "stored operations" (a.k.a. "persisted queries").
+            use &ldquo;stored operations&rdquo; (a.k.a. &ldquo;persisted
+            queries&rdquo;).
           </Paragraph>
 
           <Title level={4}>Realtime</Title>
           <Paragraph>
-            We've configured PostGraphile with{" "}
+            We&apos;ve configured PostGraphile with{" "}
             <Text code>@graphile/pg-pubsub</Text> to enable realtime events from
             the DB; and Apollo is configured to consume them. For example, if
             you register with email/password you may notice the red dot at the
@@ -227,25 +232,25 @@ const Home: NextPage = () => {
           <Title level={4}>Server-side rendering (SSR)</Title>
           <Paragraph>
             If you disable JS and reload the page you should see the content is
-            still displayed (this "server-side rendering" is important to
-            ensuring that your users have the best low-latency experience of
-            your website, and that the majority of search engines can index its
-            content).
+            still displayed (this &ldquo;server-side rendering&rdquo; is
+            important to ensuring that your users have the best low-latency
+            experience of your website, and that the majority of search engines
+            can index its content).
           </Paragraph>
 
           <Title level={4}>Duplicate emails</Title>
           <Paragraph>
             To prevent people blocking legitimate users from registering, we
             only prevent the same email address being used multiple times when
-            it has been verified by someone. It's up to your application to turn
-            features off/etc when the user does not have any verified email
+            it has been verified by someone. It&apos;s up to your application to
+            turn features off/etc when the user does not have any verified email
             addresses (should you desire this).
           </Paragraph>
 
           <Title level={4}>Email in production</Title>
           <Paragraph>
-            We've configured the project to use Amazon SES to send emails in
-            production (you will need to create the relevant resources and
+            We&apos;ve configured the project to use Amazon SES to send emails
+            in production (you will need to create the relevant resources and
             provide the relevant secrets to use this); however it can easily be
             reconfigured to use your email transport service of choice.
           </Paragraph>
@@ -253,8 +258,8 @@ const Home: NextPage = () => {
           <Title level={4}>Validation</Title>
           <Paragraph>
             We use{" "}
-            <a href="https://ant.design/components/form/">AntD's forms</a>, so
-            validation is provided via these. We've shown how to connect
+            <a href="https://ant.design/components/form/">AntD&apos;s forms</a>,
+            so validation is provided via these. We&apos;ve shown how to connect
             server-side errors into the form validation, for example try
             registering a new account using the email address of an account{" "}
             <strong>that has already been verified</strong>.
@@ -264,10 +269,10 @@ const Home: NextPage = () => {
             One-time clone: no such thing as breaking changes
           </Title>
           <Paragraph>
-            It's expected that you'll do a one-time clone of this project to
-            base your project off, and that you will not keep your project up to
-            date with this one. As such, we can make any changes we like to this
-            project without breaking your project.
+            It&apos;s expected that you&apos;ll do a one-time clone of this
+            project to base your project off, and that you will not keep your
+            project up to date with this one. As such, we can make any changes
+            we like to this project without breaking your project.
           </Paragraph>
         </Col>
         <Col xs={24} sm={8}>
@@ -275,7 +280,7 @@ const Home: NextPage = () => {
           <Paragraph strong>A message from Benjie</Paragraph>
           <Paragraph>
             I really hope that this project wows you 😍 and saves you huge
-            amounts of time. I've certainly poured a lot of time into it!
+            amounts of time. I&apos;ve certainly poured a lot of time into it!
           </Paragraph>
           <Paragraph>
             Without support from the community Jem and I could not keep building

@@ -22,11 +22,7 @@ function SocialAuthError({ provider }: SocialAuthErrorProps) {
     <div>
       <H2>This application is not configured for that auth provider</H2>
       <P>
-        Please try and{" "}
-        <Link href="/login">
-          <a>login with another method</a>
-        </Link>
-        .
+        Please try and <Link href="/login">login with another method</Link>.
       </P>
       {isDev && (
         <Alert
@@ -34,9 +30,9 @@ function SocialAuthError({ provider }: SocialAuthErrorProps) {
           message="Development Only Error"
           description={
             <div>
-              You seem to be trying to log in with the '<code>{provider}</code>'
-              OAuth provider. You should check that{" "}
-              <code>{`${provider}_key`.toUpperCase()}</code> and any other
+              You seem to be trying to log in with the &lsquo;
+              <code>{provider}</code>&rsquo; OAuth provider. You should check
+              that <code>{`${provider}_key`.toUpperCase()}</code> and any other
               required variables are set in your environment (e.g.{" "}
               <code>.env</code> file). If they are, check the provider is
               configured in{" "}

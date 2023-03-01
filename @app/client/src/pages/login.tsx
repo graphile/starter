@@ -16,17 +16,14 @@ import {
   getCodeFromError,
   resetWebsocketConnection,
 } from "@app/lib";
-import { Alert, Button, Form, Input, InputRef } from "antd";
+import type { InputRef } from "antd";
+import { Alert, Button, Form, Input } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { NextPage } from "next";
 import Link from "next/link";
 import Router from "next/router";
 import { Store } from "rc-field-form/lib/interface";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-
-function hasErrors(fieldsError: Object) {
-  return Object.keys(fieldsError).some((field) => fieldsError[field]);
-}
 
 interface LoginProps {
   next: string | null;
@@ -95,11 +92,10 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
                       size="large"
                       block
                       type="default"
+                      data-cy="loginpage-button-register"
                       href={`/register?next=${encodeURIComponent(next)}`}
                     >
-                      <a data-cy="loginpage-button-register">
-                        Create an account
-                      </a>
+                      Create an account
                     </ButtonLink>
                   </Col>
                 </Row>
@@ -176,7 +172,11 @@ function LoginForm({
   );
 
   const handleValuesChange = useCallback(() => {
-    setSubmitDisabled(hasErrors(form.getFieldsError().length !== 0));
+    setTimeout(() => {
+      setSubmitDisabled(
+        form.getFieldsError().some((fieldError) => fieldError.errors.length > 0)
+      );
+    }, 0);
   }, [form]);
 
   const code = getCodeFromError(error);
@@ -216,9 +216,7 @@ function LoginForm({
         />
       </Form.Item>
       <Form.Item>
-        <Link href="/forgot">
-          <a>Forgotten passphrase?</a>
-        </Link>
+        <Link href="/forgot">Forgotten passphrase?</Link>
       </Form.Item>
 
       {error ? (

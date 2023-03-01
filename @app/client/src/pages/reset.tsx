@@ -108,7 +108,7 @@ const ResetPage: NextPage<IProps> = ({
   );
   const [passwordIsDirty, setPasswordIsDirty] = useState(false);
   const handleValuesChange = useCallback(
-    (changedValues) => {
+    (changedValues: any) => {
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
         changedValues

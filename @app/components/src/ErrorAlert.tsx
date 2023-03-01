@@ -42,7 +42,8 @@ export function ErrorAlert({ error }: ErrorAlertProps) {
       title="Unexpected error occurred"
       subTitle={
         <span>
-          We're really sorry, but an unexpected error occurred. Please{" "}
+          We&apos;re really sorry, but an unexpected error occurred. Please{" "}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a href="/">return to the homepage</a> and try again.
         </span>
       }

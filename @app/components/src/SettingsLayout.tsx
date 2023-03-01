@@ -70,7 +70,7 @@ export function SettingsLayout({
   children,
 }: SettingsLayoutProps) {
   const href = pages[inHref] ? inHref : Object.keys(pages)[0];
-  const page = pages[href];
+  const page = pages[href as keyof typeof pages];
   // `useRouter()` sometimes returns null
   const router: NextRouter | null = useRouter();
   const fullHref =
@@ -89,10 +89,10 @@ export function SettingsLayout({
           <Layout style={{ minHeight: contentMinHeight }} hasSider>
             <Sider>
               <Menu selectedKeys={[href]}>
-                {Object.keys(pages).map((pageHref) => (
-                  <Menu.Item key={pageHref}>
-                    <Link href={pageHref}>
-                      <a data-cy={pages[pageHref].cy}>
+                {(Object.keys(pages) as (keyof typeof pages)[]).map(
+                  (pageHref) => (
+                    <Menu.Item key={pageHref}>
+                      <Link href={pageHref} data-cy={pages[pageHref].cy}>
                         <Warn
                           okay={
                             !currentUser ||
@@ -104,10 +104,10 @@ export function SettingsLayout({
                             {pages[pageHref].title}
                           </Text>
                         </Warn>
-                      </a>
-                    </Link>
-                  </Menu.Item>
-                ))}
+                      </Link>
+                    </Menu.Item>
+                  )
+                )}
               </Menu>
             </Sider>
             <Content>

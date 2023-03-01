@@ -23,19 +23,25 @@ export function extractError(
 
 export function getExceptionFromError(
   error: null | Error | ApolloError | GraphQLError
-): Error | null {
+):
+  | (Error & {
+      code?: string;
+      fields?: string[];
+      extensions?: { code?: string; fields?: string[] };
+    })
+  | null {
   // @ts-ignore
   const graphqlError: GraphQLError = extractError(error);
   const exception =
     graphqlError &&
     graphqlError.extensions &&
     graphqlError.extensions.exception;
-  return exception || graphqlError || error;
+  return (exception || graphqlError || error) as Error | null;
 }
 
 export function getCodeFromError(
   error: null | Error | ApolloError | GraphQLError
 ): null | string {
   const err = getExceptionFromError(error);
-  return (err && err["code"]) || null;
+  return err?.extensions?.code ?? err?.code ?? null;
 }

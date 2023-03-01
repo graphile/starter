@@ -175,9 +175,7 @@ export function SharedLayout({
         </Head>
         <Row justify="space-between">
           <Col span={6}>
-            <Link href="/">
-              <a>{projectName}</a>
-            </Link>
+            <Link href="/">{projectName}</Link>
           </Col>
           <Col span={12}>
             <H3
@@ -187,11 +185,14 @@ export function SharedLayout({
                 textAlign: "center",
                 lineHeight: "64px",
               }}
-              data-cy="layout-header-title"
             >
               {titleHref ? (
-                <Link href={titleHref} as={titleHrefAs}>
-                  <a data-cy="layout-header-titlelink">{title}</a>
+                <Link
+                  href={titleHref}
+                  as={titleHrefAs}
+                  data-cy="layout-header-titlelink"
+                >
+                  {title}
                 </Link>
               ) : (
                 title
@@ -210,38 +211,33 @@ export function SharedLayout({
                             href={`/o/[slug]`}
                             as={`/o/${organization?.slug}`}
                           >
-                            <a>
-                              {organization?.name}
-                              {isOwner ? (
-                                <span>
-                                  {" "}
-                                  <CrownOutlined />
-                                </span>
-                              ) : (
-                                ""
-                              )}
-                            </a>
+                            {organization?.name}
+                            {isOwner ? (
+                              <span>
+                                {" "}
+                                <CrownOutlined />
+                              </span>
+                            ) : (
+                              ""
+                            )}
                           </Link>
                         </Menu.Item>
                       )
                     )}
-                    <Menu.Item>
-                      <Link href="/create-organization">
-                        <a data-cy="layout-link-create-organization">
-                          Create organization
-                        </a>
+                    <Menu.Item key="_create-organization">
+                      <Link
+                        href="/create-organization"
+                        data-cy="layout-link-create-organization"
+                      >
+                        Create organization
                       </Link>
                     </Menu.Item>
-                    <Menu.Item>
-                      <Link href="/settings">
-                        <a data-cy="layout-link-settings">
-                          <Warn okay={data.currentUser.isVerified}>
-                            Settings
-                          </Warn>
-                        </a>
+                    <Menu.Item key="_settings">
+                      <Link href="/settings" data-cy="layout-link-settings">
+                        <Warn okay={data.currentUser.isVerified}>Settings</Warn>
                       </Link>
                     </Menu.Item>
-                    <Menu.Item>
+                    <Menu.Item key="_logout">
                       <a onClick={handleLogout}>Logout</a>
                     </Menu.Item>
                   </Menu>
@@ -266,8 +262,11 @@ export function SharedLayout({
                 </span>
               </Dropdown>
             ) : forbidsLoggedIn ? null : (
-              <Link href={`/login?next=${encodeURIComponent(currentUrl)}`}>
-                <a data-cy="header-login-button">Sign in</a>
+              <Link
+                href={`/login?next=${encodeURIComponent(currentUrl)}`}
+                data-cy="header-login-button"
+              >
+                Sign in
               </Link>
             )}
           </Col>

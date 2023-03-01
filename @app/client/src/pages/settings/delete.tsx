@@ -1,3 +1,4 @@
+import { PageHeader } from "@ant-design/pro-layout";
 import { ApolloError } from "@apollo/client";
 import { ErrorAlert, P, SettingsLayout } from "@app/components";
 import {
@@ -6,7 +7,7 @@ import {
   useSharedQuery,
 } from "@app/graphql";
 import { getCodeFromError } from "@app/lib";
-import { Alert, Button, Modal, PageHeader, Typography } from "antd";
+import { Alert, Button, Modal, Typography } from "antd";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
@@ -98,8 +99,8 @@ const Settings_Accounts: NextPage = () => {
                 <Text mark>
                   Press this button and your account will be deleted.
                 </Text>{" "}
-                We're sorry to see you go, please don't hesitate to reach out
-                and let us know why you no longer want your account.
+                We&apos;re sorry to see you go, please don&apos;t hesitate to
+                reach out and let us know why you no longer want your account.
               </P>
               <Button onClick={confirmDeletion} danger disabled={deleting}>
                 PERMANENTLY DELETE MY ACCOUNT
@@ -113,9 +114,9 @@ const Settings_Accounts: NextPage = () => {
           message="Confirm deletion via email link"
           description={
             <P>
-              You've been sent an email with a confirmation link in it, you must
-              click it to confirm that you are the account holder so that you
-              may continue deleting your account.
+              You&apos;ve been sent an email with a confirmation link in it, you
+              must click it to confirm that you are the account holder so that
+              you may continue deleting your account.
             </P>
           }
         />
@@ -160,9 +161,8 @@ const Settings_Accounts: NextPage = () => {
           <ErrorAlert error={error} />
         )
       ) : null}
-
       <Modal
-        visible={confirmOpen}
+        open={confirmOpen}
         onCancel={closeModal}
         onOk={doIt}
         okText="Send delete account email"
@@ -172,17 +172,17 @@ const Settings_Accounts: NextPage = () => {
         confirmLoading={doingIt}
       >
         <P>
-          Before we can delete your account, we need to confirm it's definitely
-          you. We'll send you an email with a link in it, which when clicked
-          will give you the option to delete your account.
+          Before we can delete your account, we need to confirm it&apos;s
+          definitely you. We&apos;ll send you an email with a link in it, which
+          when clicked will give you the option to delete your account.
         </P>
         <P>
-          You should not trigger this unless you're sure you want to delete your
-          account.
+          You should not trigger this unless you&apos;re sure you want to delete
+          your account.
         </P>
       </Modal>
       <Modal
-        visible={deleted}
+        open={deleted}
         closable={false}
         title="Account deleted"
         footer={

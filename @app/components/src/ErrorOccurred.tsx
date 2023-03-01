@@ -8,13 +8,11 @@ export function ErrorOccurred() {
     <div>
       <H2>Something Went Wrong</H2>
       <P>
-        We're not sure what happened there; how embarrassing! Please try again
-        later, or if this keeps happening then let us know.
+        We&apos;re not sure what happened there; how embarrassing! Please try
+        again later, or if this keeps happening then let us know.
       </P>
       <P>
-        <Link href="/">
-          <a>Go to the homepage</a>
-        </Link>
+        <Link href="/">Go to the homepage</Link>
       </P>
     </div>
   );
