@@ -1,5 +1,4 @@
 require("@app/config");
-const compose = require("lodash/flowRight");
 
 if (!process.env.ROOT_URL) {
   if (process.argv[1].endsWith("/depcheck")) {
@@ -14,7 +13,7 @@ if (!process.env.ROOT_URL) {
   // You *must not* use `process.env` in here, because we need to check we have
   // those variables. To enforce this, we've deliberately shadowed process.
   module.exports = () => {
-    return compose()({
+    return {
       poweredByHeader: false,
       distDir: `../.next`,
       trailingSlash: false,
@@ -58,11 +57,11 @@ if (!process.env.ROOT_URL) {
               "process.env.T_AND_C_URL":
                 "(typeof window !== 'undefined' ? window.__GRAPHILE_APP__.T_AND_C_URL : process.env.T_AND_C_URL)",
             }),
-            new webpack.IgnorePlugin(
+            new webpack.IgnorePlugin({
               // These modules are server-side only; we don't want webpack
               // attempting to bundle them into the client.
-              /^(node-gyp-build|bufferutil|utf-8-validate)$/
-            ),
+              resourceRegExp: /^(node-gyp-build|bufferutil|utf-8-validate)$/,
+            }),
             ...(isServer
               ? []
               : [
@@ -82,6 +81,6 @@ if (!process.env.ROOT_URL) {
           ].filter((_) => _),
         };
       },
-    });
+    };
   };
 })();
