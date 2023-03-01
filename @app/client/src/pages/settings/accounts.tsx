@@ -1,4 +1,5 @@
 import { GithubFilled } from "@ant-design/icons";
+import { PageHeader } from "@ant-design/pro-layout";
 import {
   ErrorAlert,
   SettingsLayout,
@@ -12,7 +13,6 @@ import {
   useSharedQuery,
   useUnlinkUserAuthenticationMutation,
 } from "@app/graphql";
-import { PageHeader } from "@ant-design/pro-layout";
 import { Avatar, Card, List, Modal, Spin } from "antd";
 import { NextPage } from "next";
 import React, { useCallback, useState } from "react";

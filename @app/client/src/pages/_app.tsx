@@ -71,7 +71,6 @@ class MyApp extends App<{ apollo: ApolloClient<any> }> {
   render() {
     const { Component, pageProps, apollo } = this.props;
 
-    const footerBackground = "#f5faff";
     return (
       <ConfigProvider
         theme={{

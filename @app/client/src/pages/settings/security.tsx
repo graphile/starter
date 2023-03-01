@@ -1,3 +1,4 @@
+import { PageHeader } from "@ant-design/pro-layout";
 import { ApolloError } from "@apollo/client";
 import {
   ErrorAlert,
@@ -18,7 +19,6 @@ import {
   setPasswordInfo,
   tailFormItemLayout,
 } from "@app/lib";
-import { PageHeader } from "@ant-design/pro-layout";
 import { Alert, Button, Form, Input } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { NextPage } from "next";

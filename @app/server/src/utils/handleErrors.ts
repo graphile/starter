@@ -92,7 +92,7 @@ export default function handleErrors(
   errors: readonly GraphQLError[]
 ): Array<any> {
   return errors.map((error) => {
-    const { message: rawMessage, locations, path, originalError } = error;
+    const { message: rawMessage, originalError } = error;
     const code = originalError ? (originalError as any)["code"] : null;
     const localPluck = ERROR_MESSAGE_OVERRIDES[code] || pluck;
     const exception = localPluck(originalError || error);
