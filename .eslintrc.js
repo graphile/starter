@@ -26,6 +26,10 @@ module.exports = {
         "cypress/globals": true,
       },
     },
+    {
+      files: ["@app/client/**", "@app/components/**"],
+      extends: ["next"],
+    },
   ],
   parserOptions: {
     ecmaVersion: 2018,
@@ -37,6 +41,9 @@ module.exports = {
   settings: {
     react: {
       version: "detect",
+    },
+    next: {
+      rootDir: "@app/client/",
     },
   },
   env: {
