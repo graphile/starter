@@ -215,7 +215,6 @@ __metadata:
     "@types/nprogress": ^0.2.0
     "@types/react": 18.0.28
     antd: 5.2.3
-    antd-dayjs-webpack-plugin: ^1.0.6
     cross-env: ^7.0.3
     dayjs: ^1.11.7
     graphql: ^15.8.0
@@ -238,7 +237,6 @@ __metadata:
   resolution: "@app/components@workspace:@app/components"
   dependencies:
     "@ant-design/icons": ^5.0.1
-    "@ant-design/pro-layout": ^7.8.3
     "@apollo/client": 3.4.17
     "@app/graphql": 0.0.0
     antd: 5.2.3
@@ -4850,15 +4848,6 @@ __metadata:
   version: 5.2.0
   resolution: "ansi-styles@npm:5.2.0"
   checksum: d7f4e97ce0623aea6bc0d90dcd28881ee04cba06c570b97fd3391bd7a268eedfd9d5e2dd4fdcbdd82b8105df5faf6f24aaedc08eaf3da898e702db5948f63469
-  languageName: node
-  linkType: hard
-
-"antd-dayjs-webpack-plugin@npm:^1.0.6":
-  version: 1.0.6
-  resolution: "antd-dayjs-webpack-plugin@npm:1.0.6"
-  peerDependencies:
-    dayjs: "*"
-  checksum: ed930b14dfc8798988730f8fa557b5ade37130189200525b36fbad2c870d675b8eb9f0fff54207ea653ebad74d45d8b42b54c42c7383ae869a3ac44e925b9cfa
   languageName: node
   linkType: hard
 
