@@ -17,7 +17,7 @@ import { Avatar, Card, List, Modal, Spin } from "antd";
 import { NextPage } from "next";
 import React, { useCallback, useState } from "react";
 
-const AUTH_NAME_LOOKUP = {
+const AUTH_NAME_LOOKUP: Record<string, string | undefined> = {
   github: "GitHub",
   facebook: "Facebook",
   twitter: "Twitter",
@@ -26,7 +26,7 @@ function authName(service: string) {
   return AUTH_NAME_LOOKUP[service] || service;
 }
 
-const AUTH_ICON_LOOKUP = {
+const AUTH_ICON_LOOKUP: Record<string, JSX.Element | undefined> = {
   github: <GithubFilled />,
 };
 function authAvatar(service: string) {

@@ -113,7 +113,7 @@ const Settings_Security: NextPage = () => {
   }, [setPasswordIsFocussed]);
   const [passwordIsDirty, setPasswordIsDirty] = useState(false);
   const handleValuesChange = useCallback(
-    (changedValues) => {
+    (changedValues: any) => {
       setPasswordInfo(
         { setPasswordStrength, setPasswordSuggestions },
         changedValues,
