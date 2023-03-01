@@ -1,5 +1,6 @@
 import { Express } from "express";
-import helmet from "helmet";
+import helmet, { HelmetOptions } from "helmet";
+import { ContentSecurityPolicyOptions } from "node_modules/helmet/dist/types/middlewares/content-security-policy";
 
 const tmpRootUrl = process.env.ROOT_URL;
 
@@ -23,26 +24,23 @@ const CSP_DIRECTIVES = {
 };
 
 export default function installHelmet(app: Express) {
-  app.use(
-    helmet(
-      isDevOrTest
-        ? {
-            contentSecurityPolicy: {
-              directives: {
-                ...CSP_DIRECTIVES,
-                // Dev needs 'unsafe-eval' due to
-                // https://github.com/vercel/next.js/issues/14221
-                "script-src": ["'self'", "'unsafe-eval'"],
-              },
-            },
-          }
-        : {
-            contentSecurityPolicy: {
-              directives: {
-                ...CSP_DIRECTIVES,
-              },
-            },
-          }
-    )
-  );
+  const options: HelmetOptions = {
+    contentSecurityPolicy: {
+      directives: {
+        ...CSP_DIRECTIVES,
+      },
+    },
+  };
+  if (isDevOrTest) {
+    // Dev needs 'unsafe-eval' due to
+    // https://github.com/vercel/next.js/issues/14221
+    (options.contentSecurityPolicy as ContentSecurityPolicyOptions).directives![
+      "script-src"
+    ] = ["'self'", "'unsafe-eval'"];
+  }
+  if (isDevOrTest || !!process.env.ENABLE_GRAPHIQL) {
+    // Enables prettier script and SVG icon in GraphiQL
+    options.crossOriginEmbedderPolicy = false;
+  }
+  app.use(helmet(options));
 }
