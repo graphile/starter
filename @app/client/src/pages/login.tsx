@@ -16,7 +16,8 @@ import {
   getCodeFromError,
   resetWebsocketConnection,
 } from "@app/lib";
-import { Alert, Button, Form, Input, InputRef } from "antd";
+import type { InputRef } from "antd";
+import { Alert, Button, Form, Input } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { NextPage } from "next";
 import Link from "next/link";
@@ -95,11 +96,10 @@ const Login: NextPage<LoginProps> = ({ next: rawNext }) => {
                       size="large"
                       block
                       type="default"
+                      data-cy="loginpage-button-register"
                       href={`/register?next=${encodeURIComponent(next)}`}
                     >
-                      <a data-cy="loginpage-button-register">
-                        Create an account
-                      </a>
+                      Create an account
                     </ButtonLink>
                   </Col>
                 </Row>
@@ -216,9 +216,7 @@ function LoginForm({
         />
       </Form.Item>
       <Form.Item>
-        <Link href="/forgot">
-          <a>Forgotten passphrase?</a>
-        </Link>
+        <Link href="/forgot">Forgotten passphrase?</Link>
       </Form.Item>
 
       {error ? (

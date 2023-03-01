@@ -92,20 +92,18 @@ export function SettingsLayout({
                 {(Object.keys(pages) as (keyof typeof pages)[]).map(
                   (pageHref) => (
                     <Menu.Item key={pageHref}>
-                      <Link href={pageHref}>
-                        <a data-cy={pages[pageHref].cy}>
-                          <Warn
-                            okay={
-                              !currentUser ||
-                              currentUser.isVerified ||
-                              !pages[pageHref].warnIfUnverified
-                            }
-                          >
-                            <Text {...pages[pageHref].titleProps}>
-                              {pages[pageHref].title}
-                            </Text>
-                          </Warn>
-                        </a>
+                      <Link href={pageHref} data-cy={pages[pageHref].cy}>
+                        <Warn
+                          okay={
+                            !currentUser ||
+                            currentUser.isVerified ||
+                            !pages[pageHref].warnIfUnverified
+                          }
+                        >
+                          <Text {...pages[pageHref].titleProps}>
+                            {pages[pageHref].title}
+                          </Text>
+                        </Warn>
                       </Link>
                     </Menu.Item>
                   )
