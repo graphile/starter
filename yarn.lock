@@ -217,7 +217,7 @@ __metadata:
     antd: 5.2.3
     cross-env: ^7.0.3
     dayjs: ^1.11.7
-    graphql: ^15.8.0
+    graphql: ^16.1.0-experimental-stream-defer.6
     jest: ^29.4.3
     lodash: ^4.17.21
     net: ^1.0.2
@@ -310,7 +310,7 @@ __metadata:
     "@types/zxcvbn": ^4.4.1
     cross-env: ^7.0.3
     express: ^4.18.2
-    graphql: ^15.8.0
+    graphql: ^16.1.0-experimental-stream-defer.6
     graphql-ws: ^5.11.3
     jest: ^29.4.3
     next: ^13.2.3
@@ -354,7 +354,7 @@ __metadata:
     graphile-build-pg: ^5.0.0-0.30
     graphile-utils: ^5.0.0-0.30
     graphile-worker: ^0.13.0
-    graphql: ^15.8.0
+    graphql: ^16.1.0-experimental-stream-defer.6
     helmet: ^6.0.1
     jest: ^29.4.3
     lodash: ^4.17.21
@@ -4648,7 +4648,7 @@ __metadata:
     eslint-plugin-simple-import-sort: ^10.0.0
     eslint_d: ^12.2.1
     glob: ^9.1.0
-    graphql: ^15.8.0
+    graphql: ^16.1.0-experimental-stream-defer.6
     inquirer: ^9.1.4
     jest: ^29.4.3
     mock-req: ^0.2.0
@@ -8879,10 +8879,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:15.x":
-  version: 15.8.0
-  resolution: "graphql@npm:15.8.0"
-  checksum: 423325271db8858428641b9aca01699283d1fe5b40ef6d4ac622569ecca927019fce8196208b91dd1d8eb8114f00263fe661d241d0eb40c10e5bfd650f86ec5e
+"graphql@npm:16.1.0-experimental-stream-defer.6":
+  version: 16.1.0-experimental-stream-defer.6
+  resolution: "graphql@npm:16.1.0-experimental-stream-defer.6"
+  checksum: 55cbcde8e1fb01dcf482c5cfafa0ad18995bb92397b4e8824ae2b0cd2f10eea6a7445342979d8d28874c2bf2fea1cacbfed8cc0e8ce918a6a87e8275d764e1c4
   languageName: node
   linkType: hard
 
