@@ -58,8 +58,10 @@ const task: Task = async (inPayload) => {
   } else if (isDev) {
     const url = nodemailer.getTestMessageUrl(info);
     if (url) {
-      const { default: chalk } = await import("chalk");
-      console.log(`Development email preview: ${chalk.blue.underline(url)}`);
+      // Hex codes here equivalent to chalk.blue.underline
+      console.log(
+        `Development email preview: \x1B[34m\x1B[4m${url}\x1B[24m\x1B[39m`
+      );
     }
   }
 };

@@ -16,7 +16,6 @@ let logged = false;
 export default function getTransport(): Promise<nodemailer.Transporter> {
   if (!transporterPromise) {
     transporterPromise = (async () => {
-      const { default: chalk } = await import("chalk");
       if (isTest) {
         return nodemailer.createTransport({
           jsonTransport: true,
@@ -35,9 +34,10 @@ export default function getTransport(): Promise<nodemailer.Transporter> {
           console.log();
           console.log();
           console.log(
-            chalk.bold(
-              " ✉️ Emails in development are sent via ethereal.email; your credentials follow:"
-            )
+            // Escapes equivalent to chalk.bold
+            "\x1B[1m" +
+              " ✉️ Emails in development are sent via ethereal.email; your credentials follow:" +
+              "\x1B[22m"
           );
           console.log("  Site:     https://ethereal.email/login");
           console.log(`  Username: ${account.user}`);
