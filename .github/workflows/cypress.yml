@@ -45,7 +45,7 @@ jobs:
       - name: Setup
         run: |
           cp .env.ci .env
-          yarn --frozen-lockfile
+          yarn --immutable
           yarn setup
           yarn build
       - name: Start server in background

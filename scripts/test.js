@@ -9,7 +9,7 @@ function spawnSync(cmd, args, options) {
     stdio: ["pipe", "inherit", "inherit"],
     env: {
       ...process.env,
-      YARN_SILENT: "1",
+      // YARN_SILENT: "1",
       npm_config_loglevel: "silent",
     },
     shell: true,
@@ -86,7 +86,7 @@ function main() {
       [
         {
           name: "jest",
-          command: `cross-env NODE_OPTIONS=\"--inspect=9876\" jest -i ${watchMode}`,
+          command: `cross-env NODE_OPTIONS="--inspect=9876" jest -i ${watchMode}`,
           prefixColor: "greenBright",
         },
         {

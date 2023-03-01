@@ -31,7 +31,7 @@ async function main() {
     console.log();
     console.log(
       chalk.green(
-        `${chalk.bold(packageJson.name)} listening on port ${chalk.bold(
+        `${chalk.bold(packageJson.projectName)} listening on port ${chalk.bold(
           actualPort
         )}`
       )

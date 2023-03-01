@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`currentUser when logged in 1`] = `
-Object {
-  "data": Object {
-    "currentUser": Object {
+{
+  "data": {
+    "currentUser": {
       "id": "[id-1]",
     },
   },
@@ -11,8 +11,8 @@ Object {
 `;
 
 exports[`currentUser when logged out 1`] = `
-Object {
-  "data": Object {
+{
+  "data": {
     "currentUser": null,
   },
 }

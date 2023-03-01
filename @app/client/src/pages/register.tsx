@@ -16,7 +16,7 @@ import {
   setPasswordInfo,
   tailFormItemLayout,
 } from "@app/lib";
-import type { InputRef } from 'antd'
+import type { InputRef } from "antd";
 import { Alert, Button, Form, Input, Tooltip } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { NextPage } from "next";

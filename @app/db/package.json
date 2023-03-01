@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "gm": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" graphile-migrate",
+    "gm": "cross-env NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" graphile-migrate",
     "migrate": "yarn gm migrate",
     "watch": "yarn gm watch",
     "commit": "yarn gm commit",
@@ -11,17 +11,17 @@
     "reset": "yarn gm reset",
     "dump": "yarn gm migrate && yarn gm reset --shadow --erase && yarn gm migrate --shadow --forceActions",
     "wipe-if-demo": "./scripts/wipe-if-demo",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS -r @app/config/env\" jest"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" jest"
   },
   "dependencies": {
     "cross-env": "^7.0.3",
-    "graphile-migrate": "^1.4.0"
+    "graphile-migrate": "^1.4.1"
   },
   "devDependencies": {
-    "@types/pg": "^8.6.5",
+    "@types/pg": "^8.6.6",
     "graphile-worker": "^0.13.0",
-    "jest": "^27.4.7",
-    "lodash": "^4.17.15",
-    "pg": "^8.8.0"
+    "jest": "^29.4.3",
+    "lodash": "^4.17.21",
+    "pg": "^8.9.0"
   }
 }

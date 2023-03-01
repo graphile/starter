@@ -48,7 +48,7 @@ describe("when account doesn't already exist", () => {
       expect(user.is_admin).toEqual(false);
       expect(user.is_verified).toEqual(true);
       expect(snapshotSafe(user)).toMatchInlineSnapshot(`
-        Object {
+        {
           "avatar_url": "http://example.com/avatar.jpg",
           "created_at": "[DATE]",
           "id": "[ID]",
@@ -112,7 +112,7 @@ describe("when account doesn't already exist", () => {
         {}
       );
       await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
-        `"new row for relation \\"user_emails\\" violates check constraint \\"user_emails_email_check\\""`
+        `"new row for relation "user_emails" violates check constraint "user_emails_email_check""`
       );
       await expect(promise).rejects.toMatchObject({
         code: "23514",

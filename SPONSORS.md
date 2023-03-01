@@ -9,9 +9,8 @@ Graphile ecosystem. Find out
 - Surge
 - Netflix
 - The Guild
-- Chad Furman
 - Qwick
-- Fanatics
+- Chad Furman
 - Dovetail
 - Enzuzo
 - Stellate
@@ -19,56 +18,53 @@ Graphile ecosystem. Find out
 ## Leaders
 
 - Joe Dennis
-- Robert Claypool
 - Politics Rewired
+- Robert Claypool
 - domonda
 - nigelrmtaylor
 - DocIQ
-- Ian Stewart
 - Principia Mentis
+- Ian Stewart
 - Luxor Labs
 - HR-ON
-- PostHog
 - Axinom
 - Taiste
+- PostHog
 - Notably
 - Nathanael Beisiegel
 - latch.bio
-- IaSQL
 - nullachtvierzehn
+- Ayog Healthcare
+- Severin Ibarluzea
 
 ## Supporters
 
 - Postlight
-- nick
+- stlbucket
 - Sam Levin
 - Matt Bretl
 - Chris Watland
 - svarmony
 - James Rascoe
-- Daniel Einspanjer
 - Simon Elliott
-- stlbucket
 - CJ Lazell
+- Daniel Einspanjer
 - Mark
 - Philipp Litzenberger
 - Mansoor Razzaq
+- Alvin Ali Khaled
 - Keith Layne
 - Olli Selamaa
 - Paul Melnikow
 - Jimmy Liu
 - Kadi Kraman
 - Stéphane Klein
-- Alvin Ali Khaled
 - Splitgraph
-- OnThisSpot
+- Benjamin Berman
 - Zymego
 - ARK
-- Sen Palanisami
-- Benjamin Berman
 - CartoLab
 - IFCHOR GROUP
-- Zentered
 - Nicolas Penot
 - Gamma Peak
 - liteflow-labs

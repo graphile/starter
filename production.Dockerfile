@@ -13,10 +13,11 @@ ARG NODE_ENV
 ARG ROOT_URL
 
 # Cache node_modules for as long as possible
-COPY lerna.json package.json yarn.lock /app/
+COPY package.json yarn.lock .yarnrc.yml /app/
+COPY .yarn/ /app/.yarn/
 COPY @app/ /app/@app/
 WORKDIR /app/
-RUN yarn install --frozen-lockfile --production=false --no-progress
+RUN yarn workspaces focus --all
 
 COPY tsconfig.json /app/
 # Folders must be copied separately, files can be copied all at once
@@ -35,7 +36,8 @@ ARG NODE_ENV
 ARG ROOT_URL
 
 # Copy over selectively just the tings we need, try and avoid the rest
-COPY --from=builder /app/lerna.json /app/package.json /app/yarn.lock /app/
+COPY --from=builder /app/package.json /app/yarn.lock /app/.yarnrc.yml /app/
+COPY --from=builder /app/.yarn/ /app/.yarn/
 COPY --from=builder /app/@app/config/ /app/@app/config/
 COPY --from=builder /app/@app/db/ /app/@app/db/
 COPY --from=builder /app/@app/graphql/ /app/@app/graphql/
@@ -74,7 +76,7 @@ WORKDIR /app/
 COPY --from=clean /app/ /app/
 
 # Install yarn ASAP because it's the slowest
-RUN yarn install --frozen-lockfile --production=true --no-progress
+RUN yarn workspaces focus --all --production
 
 # Import our shared args
 ARG PORT
