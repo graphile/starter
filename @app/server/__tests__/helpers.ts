@@ -1,18 +1,21 @@
-import { Request, Response } from "express";
-import { ExecutionResult, graphql, GraphQLSchema } from "graphql";
-import { Pool, PoolClient } from "pg";
 import {
-  createPostGraphileSchema,
-  PostGraphileOptions,
-  withPostGraphileContext,
-} from "postgraphile";
+  ExecutionArgs,
+  ExecutionResult,
+  GraphQLSchema,
+  parse,
+  validate,
+} from "graphql";
+import { Pool, PoolClient } from "pg";
+import { PostGraphileInstance, postgraphile } from "postgraphile";
+import { hookArgs, execute } from "grafast";
+import { makeWithPgClientViaPgClientAlreadyInTransaction } from "@dataplan/pg/adaptors/pg";
 
 import {
   createSession,
   createUsers,
   poolFromUrl,
 } from "../../__tests__/helpers";
-import { getPostGraphileOptions } from "../src/middleware/installPostGraphile";
+import { getPreset } from "../src/graphile.config";
 
 export * from "../../__tests__/helpers";
 
@@ -96,7 +99,7 @@ export function sanitize(json: any): any {
 // Contains the PostGraphile schema and rootPgPool
 interface ICtx {
   rootPgPool: Pool;
-  options: PostGraphileOptions<Request, Response>;
+  pgl: PostGraphileInstance;
   schema: GraphQLSchema;
 }
 let ctx: ICtx | null = null;
@@ -106,17 +109,14 @@ export const setup = async () => {
     connectionString: process.env.TEST_DATABASE_URL,
   });
 
-  const options = getPostGraphileOptions({ rootPgPool });
-  const schema = await createPostGraphileSchema(
-    rootPgPool,
-    "app_public",
-    options
-  );
+  const preset = getPreset({ rootPgPool, authPgPool: rootPgPool });
+  const pgl = postgraphile(preset);
+  const schema = await pgl.getSchema();
 
   // Store the context
   ctx = {
     rootPgPool,
-    options,
+    pgl,
     schema,
   };
 };
@@ -146,9 +146,10 @@ export const runGraphQLQuery = async function runGraphQLQuery(
   ) => void | ExecutionResult | Promise<void | ExecutionResult> = () => {} // Place test assertions in this function
 ) {
   if (!ctx) throw new Error("No ctx!");
-  const { schema, rootPgPool, options } = ctx;
+  const { schema, rootPgPool, pgl } = ctx;
+  const resolvedPreset = pgl.getResolvedPreset();
   const req = new MockReq({
-    url: options.graphqlRoute || "/graphql",
+    url: resolvedPreset.grafserv?.graphqlPath || "/graphql",
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -159,92 +160,88 @@ export const runGraphQLQuery = async function runGraphQLQuery(
   const res: any = { req };
   req.res = res;
 
-  const {
-    pgSettings: pgSettingsGenerator,
-    additionalGraphQLContextFromRequest,
-  } = options;
-  const pgSettings =
-    (typeof pgSettingsGenerator === "function"
-      ? await pgSettingsGenerator(req)
-      : pgSettingsGenerator) || {};
+  // TODO: pgForceTransaction: true,
+  let checkResult: ExecutionResult | void;
+  const document = parse(query);
+  const errors = validate(schema, document);
+  if (errors.length > 0) {
+    throw errors[0];
+  }
+  const args: ExecutionArgs = {
+    schema,
+    document,
+    contextValue: {
+      __TESTING: true,
+    },
+    variableValues: variables,
+  };
+  await hookArgs(args, { node: { req, res } }, resolvedPreset);
 
   // Because we're connected as the database owner, we should manually switch to
   // the authenticator role
-  if (!pgSettings.role) {
-    pgSettings.role = process.env.DATABASE_AUTHENTICATOR;
+  const context = args.contextValue as Grafast.Context;
+  if (!context.pgSettings?.role) {
+    context.pgSettings = context.pgSettings ?? {};
+    context.pgSettings.role = process.env.DATABASE_AUTHENTICATOR as string;
   }
 
-  await withPostGraphileContext(
-    {
-      ...options,
-      pgPool: rootPgPool,
-      pgSettings,
-      pgForceTransaction: true,
-    },
-    async (context) => {
-      let checkResult;
-      const { pgClient } = context;
-      try {
-        // This runs our GraphQL query, passing the replacement client
-        const additionalContext = additionalGraphQLContextFromRequest
-          ? await additionalGraphQLContextFromRequest(req, res)
-          : null;
-        const result = await graphql(
-          schema,
-          query,
-          null,
-          {
-            ...context,
-            ...additionalContext,
-            __TESTING: true,
-          },
-          variables
-        );
-        // Expand errors
-        if (result.errors) {
-          if (options.handleErrors) {
-            result.errors = options.handleErrors(result.errors);
-          } else {
-            // This does a similar transform that PostGraphile does to errors.
-            // It's not the same. Sorry.
-            result.errors = result.errors.map((rawErr) => {
-              const e = Object.create(rawErr);
-              Object.defineProperty(e, "originalError", {
-                value: rawErr.originalError,
-                enumerable: false,
-              });
+  const pgClient = await rootPgPool.connect();
+  try {
+    await pgClient.query("begin");
 
-              if (e.originalError) {
-                Object.keys(e.originalError).forEach((k) => {
-                  try {
-                    e[k] = e.originalError[k];
-                  } catch (err) {
-                    // Meh.
-                  }
-                });
+    // Override withPgClient with a transactional version for the tests
+    const withPgClient = makeWithPgClientViaPgClientAlreadyInTransaction(
+      pgClient,
+      true
+    );
+    context.withPgClient = withPgClient;
+
+    const result = (await execute(args, resolvedPreset)) as ExecutionResult;
+    // Expand errors
+    if (result.errors) {
+      if (resolvedPreset.grafserv?.maskError) {
+        result.errors = result.errors.map(resolvedPreset.grafserv.maskError);
+      } else {
+        // This does a similar transform that PostGraphile does to errors.
+        // It's not the same. Sorry.
+        result.errors = result.errors.map((rawErr) => {
+          const e = Object.create(rawErr);
+          Object.defineProperty(e, "originalError", {
+            value: rawErr.originalError,
+            enumerable: false,
+          });
+
+          if (e.originalError) {
+            Object.keys(e.originalError).forEach((k) => {
+              try {
+                e[k] = e.originalError[k];
+              } catch (err) {
+                // Meh.
               }
-              return e;
             });
           }
-        }
-
-        // This is were we call the `checker` so you can do your assertions.
-        // Also note that we pass the `replacementPgClient` so that you can
-        // query the data in the database from within the transaction before it
-        // gets rolled back.
-        checkResult = await checker(result, {
-          pgClient,
+          return e;
         });
-
-        // You don't have to keep this, I just like knowing when things change!
-        expect(sanitize(result)).toMatchSnapshot();
-
-        return checkResult == null ? result : checkResult;
-      } finally {
-        // Rollback the transaction so no changes are written to the DB - this
-        // makes our tests fairly deterministic.
-        await pgClient.query("rollback");
       }
     }
-  );
+
+    // This is were we call the `checker` so you can do your assertions.
+    // Also note that we pass the `replacementPgClient` so that you can
+    // query the data in the database from within the transaction before it
+    // gets rolled back.
+    checkResult = await checker(result, {
+      pgClient,
+    });
+
+    // You don't have to keep this, I just like knowing when things change!
+    expect(sanitize(result)).toMatchSnapshot();
+
+    return checkResult == null ? result : checkResult;
+  } finally {
+    try {
+      await pgClient.query("rollback");
+    } finally {
+      pgClient.release();
+    }
+  }
 };
