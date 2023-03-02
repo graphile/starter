@@ -8,7 +8,7 @@ import {
 // graphile-utils doesn't export this yet
 import { GraphQLResolveInfo } from "graphql";
 
-import { OurGraphQLContext } from "../middleware/installPostGraphile";
+import { OurGraphQLContext } from "../graphile.config";
 type GraphileHelpers = any;
 type AugmentedGraphQLFieldResolver<
   TSource,

@@ -3,7 +3,7 @@ import { lexicographicSortSchema, printSchema } from "graphql";
 import { Pool } from "pg";
 import { createPostGraphileSchema } from "postgraphile";
 
-import { getPostGraphileOptions } from "../src/middleware/installPostGraphile";
+import { getPostGraphileOptions } from "../src/graphile.config";
 
 async function main() {
   const rootPgPool = new Pool({

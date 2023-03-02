@@ -12,7 +12,7 @@ import {
   createUsers,
   poolFromUrl,
 } from "../../__tests__/helpers";
-import { getPostGraphileOptions } from "../src/middleware/installPostGraphile";
+import { getPostGraphileOptions } from "../src/graphile.config";
 
 export * from "../../__tests__/helpers";
 
