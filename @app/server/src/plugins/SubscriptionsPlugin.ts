@@ -36,6 +36,7 @@ const currentUserTopicFromContext = async (
   context: { [key: string]: any },
   _resolveInfo: GraphQLResolveInfo
 ) => {
+  let userId: number | null = null;
   if (context.sessionId /* fail fast */) {
     // We have the users session ID, but to get their actual ID we need to ask the database.
     const {
@@ -43,11 +44,13 @@ const currentUserTopicFromContext = async (
     } = await context.pgClient.query(
       "select app_public.current_user_id() as id"
     );
-    if (user) {
-      return `graphql:user:${user.id}`;
-    }
+    userId = user?.id;
   }
-  throw new Error("You're not logged in");
+  if (userId) {
+    return `graphql:user:${userId}`;
+  } else {
+    throw new Error("You're not logged in");
+  }
 };
 
 /*
@@ -73,7 +76,9 @@ const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
       }
 
       extend type Subscription {
-        """Triggered when the logged in user's record is updated in some way."""
+        """
+        Triggered when the logged in user's record is updated in some way.
+        """
         currentUserUpdated: UserSubscriptionPayload @pgSubscription(topic: ${embed(
           currentUserTopicFromContext
         )})

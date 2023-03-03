@@ -9,6 +9,7 @@ export default function installPostGraphile(app: Express) {
   const websocketMiddlewares = getWebsocketMiddlewares(app);
   const authPgPool = getAuthPgPool(app);
   const rootPgPool = getRootPgPool(app);
+  const httpServer = getHttpServer(app);
   const middleware = postgraphile<Request, Response>(
     authPgPool,
     "app_public",
@@ -22,7 +23,6 @@ export default function installPostGraphile(app: Express) {
 
   app.use(middleware);
 
-  const httpServer = getHttpServer(app);
   if (httpServer) {
     enhanceHttpServerWithSubscriptions(httpServer, middleware);
   }

@@ -40,7 +40,12 @@ export class GraphileApolloLink extends ApolloLink {
     return new Observable((observer) => {
       (async () => {
         try {
-          const op = getOperationAST(operation.query, operation.operationName);
+          const {
+            operationName,
+            variables: variableValues,
+            query: document,
+          } = operation;
+          const op = getOperationAST(document, operationName);
           if (!op || op.operation !== "query") {
             if (!observer.closed) {
               /* Only do queries (not subscriptions) on server side */
@@ -57,11 +62,11 @@ export class GraphileApolloLink extends ApolloLink {
               (context) =>
                 execute(
                   schema,
-                  operation.query,
+                  document,
                   rootValue || {},
                   context,
-                  operation.variables,
-                  operation.operationName
+                  variableValues,
+                  operationName
                 )
             );
           if (!observer.closed) {

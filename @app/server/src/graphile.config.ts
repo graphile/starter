@@ -249,12 +249,12 @@ export function getPostGraphileOptions({
 
         // Use this to tell Passport.js we're logged in
         login: (user: any) =>
-          new Promise((resolve, reject) => {
+          new Promise<void>((resolve, reject) => {
             req.login(user, (err) => (err ? reject(err) : resolve()));
           }),
 
         logout: () => {
-          return new Promise((resolve, reject) =>
+          return new Promise<void>((resolve, reject) =>
             req.logout((err) => (err ? reject(err) : resolve()))
           );
         },

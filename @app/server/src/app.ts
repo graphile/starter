@@ -8,8 +8,8 @@ import { makeShutdownActions, ShutdownAction } from "./shutdownActions";
 import { sanitizeEnv } from "./utils";
 
 // Server may not always be supplied, e.g. where mounting on a sub-route
-export function getHttpServer(app: Express): Server | void {
-  return app.get("httpServer");
+export function getHttpServer(app: Express): Server | null {
+  return app.get("httpServer") ?? null;
 }
 
 export function getShutdownActions(app: Express): ShutdownAction[] {
