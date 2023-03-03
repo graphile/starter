@@ -1,10 +1,10 @@
-import { gql, makeExtendSchemaPlugin } from "graphile-utils";
+import { gql, makeExtendSchemaPlugin, Resolvers } from "graphile-utils";
 
 import { OurGraphQLContext } from "../graphile.config";
 import { ERROR_MESSAGE_OVERRIDES } from "../utils/handleErrors";
 
-const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
-  typeDefs: gql`
+const PassportLoginPlugin = makeExtendSchemaPlugin((build) => {
+  const typeDefs = gql`
     input RegisterInput {
       username: String!
       email: String!
@@ -84,8 +84,8 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
       """
       resetPassword(input: ResetPasswordInput!): ResetPasswordPayload
     }
-  `,
-  resolvers: {
+  `;
+  const resolvers: Resolvers = {
     Mutation: {
       async register(_mutation, args, context: OurGraphQLContext, resolveInfo) {
         const { selectGraphQLResultFromTable } = resolveInfo.graphile;
@@ -261,7 +261,11 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => ({
         };
       },
     },
-  },
-}));
+  };
+  return {
+    typeDefs,
+    resolvers,
+  };
+});
 
 export default PassportLoginPlugin;
