@@ -40,7 +40,7 @@ services:
     depends_on:
       - db
     #* Overrides default command so things don't shut down after the process ends.
-    command: yarn start
+    command: sh -c "yarn && yarn start"
 
   # extends server, is made for live developing
   dev:

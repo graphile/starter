@@ -268,7 +268,7 @@ This project is designed to work with `yarn`. If you don't have `yarn`
 installed, you can install it with `npm install -g yarn`. The Docker setup
 already has `yarn` & `npm` installed and configured.
 
-To get started, please run:
+To get started, please run `yarn`, followed by:
 
 | Local mode   | OR  | Docker mode                     |
 | ------------ | :-: | ------------------------------- |
