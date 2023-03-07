@@ -72,6 +72,16 @@ ROOT_DATABASE_URL=postgres://postgres:${password}@db/postgres
     "chmod o+rwx /var/run/docker.sock && chown -R node /work/node_modules /work/@app/*/node_modules",
   ]);
 
+  // Run a yarn install to allow yarn commands to run
+  runSync(yarnCmd, [
+    "compose",
+    "run",
+    "-e",
+    `PROJECT_NAME=${projectName}`,
+    "server",
+    "yarn",
+  ]);
+
   // Run setup as normal
   runSync(yarnCmd, [
     "compose",
