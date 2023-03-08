@@ -61,7 +61,8 @@ ROOT_DATABASE_URL=postgres://postgres:${password}@db/postgres
   runSync(yarnCmd, ["down"]);
   runSync(yarnCmd, ["db:up"]);
 
-  // Fix permissions
+  // Fix permissions as the node_modules directories might be mounted docker
+  // volumes and they are in that case owned by root
   runSync(yarnCmd, [
     "compose",
     "run",
@@ -69,7 +70,7 @@ ROOT_DATABASE_URL=postgres://postgres:${password}@db/postgres
     "sudo",
     "bash",
     "-c",
-    "chmod o+rwx /var/run/docker.sock && chown -R node /work/node_modules /work/@app/*/node_modules",
+    "chmod o+rwx /var/run/docker.sock && chown -R node:node /work/node_modules /work/@app/*/node_modules",
   ]);
 
   // Run a yarn install to allow yarn commands to run
