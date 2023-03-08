@@ -97,7 +97,7 @@ type CreateOrganizationPayload {
   """An edge for our `Organization`. May be used by Relay 1."""
   organizationEdge(
     """The method to use when ordering `Organization`."""
-    orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
+    orderBy: [OrganizationsOrderBy!]! = [PRIMARY_KEY_ASC]
   ): OrganizationsEdge
 
   """
@@ -140,7 +140,7 @@ type CreateUserEmailPayload {
   """An edge for our `UserEmail`. May be used by Relay 1."""
   userEmailEdge(
     """The method to use when ordering `UserEmail`."""
-    orderBy: [UserEmailsOrderBy!] = [PRIMARY_KEY_ASC]
+    orderBy: [UserEmailsOrderBy!]! = [PRIMARY_KEY_ASC]
   ): UserEmailsEdge
 }
 
@@ -194,7 +194,6 @@ type DeleteUserAuthenticationPayload {
   unchanged and unused. May be used by a client to track mutations.
   """
   clientMutationId: String
-  deletedUserAuthenticationNodeId: ID
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
@@ -225,7 +224,6 @@ type DeleteUserEmailPayload {
   unchanged and unused. May be used by a client to track mutations.
   """
   clientMutationId: String
-  deletedUserEmailNodeId: ID
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
@@ -241,7 +239,7 @@ type DeleteUserEmailPayload {
   """An edge for our `UserEmail`. May be used by Relay 1."""
   userEmailEdge(
     """The method to use when ordering `UserEmail`."""
-    orderBy: [UserEmailsOrderBy!] = [PRIMARY_KEY_ASC]
+    orderBy: [UserEmailsOrderBy!]! = [PRIMARY_KEY_ASC]
   ): UserEmailsEdge
 }
 
@@ -338,7 +336,7 @@ type MakeEmailPrimaryPayload {
   """An edge for our `UserEmail`. May be used by Relay 1."""
   userEmailEdge(
     """The method to use when ordering `UserEmail`."""
-    orderBy: [UserEmailsOrderBy!] = [PRIMARY_KEY_ASC]
+    orderBy: [UserEmailsOrderBy!]! = [PRIMARY_KEY_ASC]
   ): UserEmailsEdge
 }
 
@@ -751,13 +749,19 @@ type PageInfo {
 type Query {
   """The currently logged in user (or null if not logged in)."""
   currentUser: User
+
+  """Get a single `Organization`."""
   organization(id: UUID!): Organization
+
+  """Get a single `Organization`."""
   organizationBySlug(slug: String!): Organization
 
   """
   Given an invitation UUID (and, if required, the code that was emailed to you), retrieves the `Organization` that you were invited to.
   """
   organizationForInvitation(code: String, invitationId: UUID!): Organization
+
+  """Get a single `OrganizationMembership`."""
   organizationMembership(id: UUID!): OrganizationMembership
 
   """Reads and enables pagination through a set of `Organization`."""
@@ -788,9 +792,17 @@ type Query {
     """The method to use when ordering `Organization`."""
     orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): OrganizationsConnection
+
+  """Get a single `User`."""
   user(id: UUID!): User
+
+  """Get a single `UserAuthentication`."""
   userAuthentication(id: UUID!): UserAuthentication
+
+  """Get a single `User`."""
   userByUsername(username: String!): User
+
+  """Get a single `UserEmail`."""
   userEmail(id: UUID!): UserEmail
 }
 
@@ -938,7 +950,7 @@ type TransferOrganizationBillingContactPayload {
   """An edge for our `Organization`. May be used by Relay 1."""
   organizationEdge(
     """The method to use when ordering `Organization`."""
-    orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
+    orderBy: [OrganizationsOrderBy!]! = [PRIMARY_KEY_ASC]
   ): OrganizationsEdge
 
   """
@@ -970,7 +982,7 @@ type TransferOrganizationOwnershipPayload {
   """An edge for our `Organization`. May be used by Relay 1."""
   organizationEdge(
     """The method to use when ordering `Organization`."""
-    orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
+    orderBy: [OrganizationsOrderBy!]! = [PRIMARY_KEY_ASC]
   ): OrganizationsEdge
 
   """
@@ -1013,7 +1025,7 @@ type UpdateOrganizationPayload {
   """An edge for our `Organization`. May be used by Relay 1."""
   organizationEdge(
     """The method to use when ordering `Organization`."""
-    orderBy: [OrganizationsOrderBy!] = [PRIMARY_KEY_ASC]
+    orderBy: [OrganizationsOrderBy!]! = [PRIMARY_KEY_ASC]
   ): OrganizationsEdge
 
   """
@@ -1058,7 +1070,7 @@ type UpdateUserPayload {
   """An edge for our `User`. May be used by Relay 1."""
   userEdge(
     """The method to use when ordering `User`."""
-    orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
+    orderBy: [UsersOrderBy!]! = [PRIMARY_KEY_ASC]
   ): UsersEdge
 }
 
