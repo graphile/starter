@@ -62,6 +62,10 @@ export class GraphileApolloLink extends ApolloLink {
           await hookArgs(
             args,
             {
+              node: {
+                req,
+                res,
+              },
               expressv4: {
                 req,
                 res,
