@@ -174,7 +174,11 @@ export const runGraphQLQuery = async function runGraphQLQuery(
     },
     variableValues: variables,
   };
-  await hookArgs(args, { node: { req, res } }, resolvedPreset);
+  await hookArgs(
+    args,
+    { node: { req, res }, expressv4: { req, res } },
+    resolvedPreset
+  );
 
   // Because we're connected as the database owner, we should manually switch to
   // the authenticator role
