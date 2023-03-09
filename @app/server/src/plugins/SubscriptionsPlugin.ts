@@ -65,23 +65,24 @@ const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
     `,
     plans: {
       Subscription: {
-        currentUserUpdated() {
-          const $pgSubscriber = context().get("pgSubscriber");
-          // We have the users session ID, but to get their actual ID we need to ask the database.
-          const $userId =
-            currentUserIdSource.execute() as PgClassExpressionStep<
-              any,
-              any,
-              any,
-              any,
-              any
-            >;
-          const $topic = lambda($userId, currentUserTopicByUserId);
-          return listen($pgSubscriber, $topic, (e) =>
-            object({
-              currentUserUpdated: jsonParse<TgGraphQLSubscriptionPayload>(e),
-            })
-          );
+        currentUserUpdated: {
+          subscribePlan() {
+            const $pgSubscriber = context().get("pgSubscriber");
+            // We have the users session ID, but to get their actual ID we need to ask the database.
+            const $userId =
+              currentUserIdSource.execute() as PgClassExpressionStep<
+                any,
+                any,
+                any,
+                any,
+                any
+              >;
+            const $topic = lambda($userId, currentUserTopicByUserId);
+            return listen($pgSubscriber, $topic, (e) => e);
+          },
+          plan($e) {
+            return jsonParse<TgGraphQLSubscriptionPayload>($e);
+          },
         },
       },
       UserSubscriptionPayload: {
