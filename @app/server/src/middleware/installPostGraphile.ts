@@ -30,6 +30,7 @@ export default async function installPostGraphile(app: Express) {
   if (onUpgrade) {
     const upgradeHandlers = getUpgradeHandlers(app);
     upgradeHandlers.push({
+      name: "PostGraphile",
       check: serv.shouldHandleUpgrade.bind(serv),
       upgrade: onUpgrade,
     });

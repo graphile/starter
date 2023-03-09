@@ -17,6 +17,7 @@ export function getShutdownActions(app: Express): ShutdownAction[] {
 }
 
 type UpgradeHandlers = Array<{
+  name: string;
   check: (
     req: IncomingMessage,
     socket: Duplex,

@@ -49,6 +49,7 @@ export default async function installSSR(app: Express) {
     const onUpgrade = nextApp.getUpgradeHandler();
     const upgradeHandlers = getUpgradeHandlers(app);
     upgradeHandlers.push({
+      name: "Next.js",
       check(req) {
         return req.url?.startsWith("/_next/") ?? false;
       },
