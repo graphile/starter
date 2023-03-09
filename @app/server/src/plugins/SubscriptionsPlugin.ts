@@ -8,6 +8,7 @@ import {
 } from "grafast";
 import { gql, makeExtendSchemaPlugin } from "graphile-utils";
 import { PgClassExpressionStep } from "@dataplan/pg";
+import { jsonParse } from "@dataplan/json";
 
 /*
  * PG NOTIFY events are sent via a channel, this function helps us determine
@@ -71,23 +72,26 @@ const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
     `,
     plans: {
       Subscription: {
-        currentUserUpdated() {
-          const $pgSubscriber = context().get("pgSubscriber");
-          // We have the users session ID, but to get their actual ID we need to ask the database.
-          const $userId =
-            currentUserIdSource.execute() as PgClassExpressionStep<
-              any,
-              any,
-              any,
-              any,
-              any
-            >;
-          const $topic = lambda($userId, currentUserTopicByUserId);
-          return listen(
-            $pgSubscriber,
-            $topic,
-            (e) => e as ExecutableStep<TgGraphQLSubscriptionPayload>
-          );
+        currentUserUpdated: {
+          subscribePlan() {
+            const $pgSubscriber = context().get("pgSubscriber");
+            // We have the users session ID, but to get their actual ID we need to ask the database.
+            const $userId =
+              currentUserIdSource.execute() as PgClassExpressionStep<
+                any,
+                any,
+                any,
+                any,
+                any
+              >;
+            const $topic = lambda($userId, currentUserTopicByUserId);
+            return listen($pgSubscriber, $topic, (e) =>
+              jsonParse<TgGraphQLSubscriptionPayload>(e)
+            );
+          },
+          plan($e) {
+            return $e;
+          },
         },
       },
       UserSubscriptionPayload: {
@@ -104,6 +108,7 @@ const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
 interface TgGraphQLSubscriptionPayload {
   event: string;
   subject: string | null;
+  [key: string]: string | null;
 }
 
 export default SubscriptionsPlugin;
