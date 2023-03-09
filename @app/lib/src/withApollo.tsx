@@ -41,7 +41,7 @@ class WebSocketLink extends ApolloLink {
                     : ""
                 )
               );
-            } else {
+            } else if (Array.isArray(err)) {
               sink.error(
                 new Error(
                   (err as GraphQLError[])
@@ -49,6 +49,12 @@ class WebSocketLink extends ApolloLink {
                     .join(", ")
                 )
               );
+            } else {
+              console.error(
+                "Error was neither a list nor an instanceof Error?",
+                err
+              );
+              sink.error(err);
             }
           },
         }
