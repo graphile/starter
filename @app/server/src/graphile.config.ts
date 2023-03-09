@@ -57,13 +57,11 @@ const isDev = process.env.NODE_ENV === "development";
 //const isTest = process.env.NODE_ENV === "test";
 
 interface IPostGraphileOptionsOptions {
-  // websocketMiddlewares?: Middleware<Request, Response>[];
   authPgPool: Pool;
   rootPgPool: Pool;
 }
 
 export function getPreset({
-  // websocketMiddlewares,
   authPgPool,
   rootPgPool,
 }: IPostGraphileOptionsOptions) {
@@ -94,7 +92,6 @@ export function getPreset({
         // Add websocket support to the PostGraphile server; you still need to use a subscriptions plugin such as
         // @graphile/pg-pubsub
         subscriptions: true,
-        // websocketMiddlewares,
 
         // dynamicJson: instead of inputting/outputting JSON as strings, input/output raw JSON objects
         dynamicJson: true,
