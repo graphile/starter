@@ -2,6 +2,7 @@
 import { Express } from "express";
 import next from "next";
 import { parse } from "url";
+import { getHttpServer, getUpgradeHandlers } from "../app";
 
 if (!process.env.NODE_ENV) {
   throw new Error("No NODE_ENV envvar! Try `export NODE_ENV=development`");
@@ -42,4 +43,16 @@ export default async function installSSR(app: Express) {
       },
     });
   });
+
+  // Now handle websockets
+  if (isDev) {
+    const onUpgrade = nextApp.getUpgradeHandler();
+    const upgradeHandlers = getUpgradeHandlers(app);
+    upgradeHandlers.push({
+      check(req) {
+        return req.url?.startsWith("/_next/") ?? false;
+      },
+      upgrade: onUpgrade,
+    });
+  }
 }
