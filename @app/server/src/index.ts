@@ -8,6 +8,8 @@ import { Duplex } from "stream";
 // @ts-ignore
 const packageJson = require("../../../package.json");
 
+const isDev = process.env.NODE_ENV === "development";
+
 async function main() {
   const { default: chalk } = await import("chalk");
 
@@ -26,6 +28,10 @@ async function main() {
     socket: Duplex,
     head: Buffer
   ) {
+    if (isDev && httpServer.listeners("upgrade").length > 1) {
+      console.error(httpServer.listeners("upgrade").map((f) => f.toString()));
+      throw new Error(`ERROR: more than one upgrade listener!`);
+    }
     try {
       for (const upgradeHandler of upgradeHandlers) {
         if (await upgradeHandler.check(req, socket, head)) {
@@ -44,7 +50,12 @@ async function main() {
     }
   }
 
-  httpServer.addListener("upgrade", handleUpgrade);
+  if (upgradeHandlers.length > 0) {
+    if (isDev && httpServer.listeners("upgrade").length > 0) {
+      throw new Error(`ERROR: we already have an upgrade listener!`);
+    }
+    httpServer.addListener("upgrade", handleUpgrade);
+  }
 
   // And finally, we open the listen port
   const PORT = parseInt(process.env.PORT || "", 10) || 3000;
