@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-import { createServer } from "http";
+import { IncomingMessage, createServer } from "http";
 
-import { getShutdownActions, makeApp } from "./app";
+import { getShutdownActions, getUpgradeHandlers, makeApp } from "./app";
+import { Duplex } from "stream";
 
 // @ts-ignore
 const packageJson = require("../../../package.json");
@@ -18,6 +19,32 @@ async function main() {
 
   // Add our application to our HTTP server
   httpServer.addListener("request", app);
+
+  const upgradeHandlers = getUpgradeHandlers(app);
+  async function handleUpgrade(
+    req: IncomingMessage,
+    socket: Duplex,
+    head: Buffer
+  ) {
+    try {
+      for (const upgradeHandler of upgradeHandlers) {
+        if (await upgradeHandler.check(req, socket, head)) {
+          upgradeHandler.upgrade(req, socket, head);
+          return;
+        }
+      }
+      // No handler matched:
+      socket.destroy();
+    } catch (e) {
+      console.error(
+        `Error occurred whilst trying to handle 'upgrade' event:`,
+        e
+      );
+      socket.destroy();
+    }
+  }
+
+  httpServer.addListener("upgrade", handleUpgrade);
 
   // And finally, we open the listen port
   const PORT = parseInt(process.env.PORT || "", 10) || 3000;
@@ -52,6 +79,8 @@ async function main() {
   // Nodemon SIGUSR2 handling
   const shutdownActions = getShutdownActions(app);
   shutdownActions.push(() => {
+    httpServer.removeListener("request", app);
+    httpServer.removeListener("upgrade", handleUpgrade);
     httpServer.close();
   });
 }

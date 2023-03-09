@@ -5,6 +5,7 @@ import { cloudflareIps } from "./cloudflare";
 import * as middleware from "./middleware";
 import { makeShutdownActions, ShutdownAction } from "./shutdownActions";
 import { sanitizeEnv } from "./utils";
+import { Duplex } from "stream";
 
 // Server may not always be supplied, e.g. where mounting on a sub-route
 export function getHttpServer(app: Express): Server | null {
@@ -13,6 +14,18 @@ export function getHttpServer(app: Express): Server | null {
 
 export function getShutdownActions(app: Express): ShutdownAction[] {
   return app.get("shutdownActions");
+}
+
+type UpgradeHandlers = Array<{
+  check: (
+    req: IncomingMessage,
+    socket: Duplex,
+    head: Buffer
+  ) => boolean | Promise<boolean>;
+  upgrade: (req: IncomingMessage, socket: Duplex, head: Buffer) => void;
+}>;
+export function getUpgradeHandlers(app: Express): UpgradeHandlers {
+  return app.get("upgradeHandlers");
 }
 
 export function getWebsocketMiddlewares(
@@ -88,6 +101,16 @@ export async function makeApp({
    * we might not come up cleanly again (inside nodemon).
    */
   app.set("shutdownActions", shutdownActions);
+
+  /*
+   * Since multiple things in our server might want to handle websockets and
+   * this is handled in node via the 'upgrade' event which should have one handler
+   * only, we need a centralised location to listen for upgrade events that then
+   * decides which handler to dispatch the event to. This array stores these
+   * handlers.
+   */
+  const upgradeHandlers: UpgradeHandlers = [];
+  app.set("upgradeHandlers", upgradeHandlers);
 
   /*
    * When we're using websockets, we may want them to have access to
