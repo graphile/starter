@@ -2,7 +2,8 @@
 import { Express } from "express";
 import next from "next";
 import { parse } from "url";
-import { getHttpServer, getUpgradeHandlers } from "../app";
+import { getUpgradeHandlers } from "../app";
+import { createServer } from "http";
 
 if (!process.env.NODE_ENV) {
   throw new Error("No NODE_ENV envvar! Try `export NODE_ENV=development`");
@@ -11,13 +12,17 @@ if (!process.env.NODE_ENV) {
 const isDev = process.env.NODE_ENV === "development";
 
 export default async function installSSR(app: Express) {
-  // @ts-ignore Next had a bad typing file, they claim `export default` but should have `export =`
-  // Ref: https://unpkg.com/next@9.0.3/dist/server/next.js
+  const fakeHttpServer = createServer();
   const nextApp = next({
     dev: isDev,
     dir: `${__dirname}/../../../client/src`,
     quiet: !isDev,
     // Don't specify 'conf' key
+
+    // Trick Next.js into adding its upgrade handler here, so we can extract
+    // it. Calling `getUpgradeHandler()` is insufficient because that doesn't
+    // handle the assets.
+    httpServer: fakeHttpServer,
   });
   const handlerPromise = (async () => {
     await nextApp.prepare();
@@ -45,15 +50,22 @@ export default async function installSSR(app: Express) {
   });
 
   // Now handle websockets
-  if (isDev) {
-    const onUpgrade = nextApp.getUpgradeHandler();
+  if (!(nextApp as any).getServer) {
+    console.warn(
+      `Our Next.js workaround for getting the upgrade handler without giving Next.js dominion over all websockets might no longer work - nextApp.getServer (private API) is no more.`
+    );
+  } else {
+    await (nextApp as any).getServer();
+  }
+  const nextJsUpgradeHandler = fakeHttpServer.listeners("upgrade")[0] as any;
+  if (nextJsUpgradeHandler) {
     const upgradeHandlers = getUpgradeHandlers(app);
     upgradeHandlers.push({
       name: "Next.js",
       check(req) {
-        return req.url?.startsWith("/_next/") ?? false;
+        return req.url?.includes("/_next/") ?? false;
       },
-      upgrade: onUpgrade,
+      upgrade: nextJsUpgradeHandler,
     });
   }
 }
