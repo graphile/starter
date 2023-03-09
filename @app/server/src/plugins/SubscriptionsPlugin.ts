@@ -1,11 +1,4 @@
-import {
-  access,
-  context,
-  listen,
-  lambda,
-  SafeError,
-  ExecutableStep,
-} from "grafast";
+import { access, context, listen, lambda, object, SafeError } from "grafast";
 import { gql, makeExtendSchemaPlugin } from "graphile-utils";
 import { PgClassExpressionStep } from "@dataplan/pg";
 import { jsonParse } from "@dataplan/json";
@@ -72,26 +65,23 @@ const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
     `,
     plans: {
       Subscription: {
-        currentUserUpdated: {
-          subscribePlan() {
-            const $pgSubscriber = context().get("pgSubscriber");
-            // We have the users session ID, but to get their actual ID we need to ask the database.
-            const $userId =
-              currentUserIdSource.execute() as PgClassExpressionStep<
-                any,
-                any,
-                any,
-                any,
-                any
-              >;
-            const $topic = lambda($userId, currentUserTopicByUserId);
-            return listen($pgSubscriber, $topic, (e) =>
-              jsonParse<TgGraphQLSubscriptionPayload>(e)
-            );
-          },
-          plan($e) {
-            return $e;
-          },
+        currentUserUpdated() {
+          const $pgSubscriber = context().get("pgSubscriber");
+          // We have the users session ID, but to get their actual ID we need to ask the database.
+          const $userId =
+            currentUserIdSource.execute() as PgClassExpressionStep<
+              any,
+              any,
+              any,
+              any,
+              any
+            >;
+          const $topic = lambda($userId, currentUserTopicByUserId);
+          return listen($pgSubscriber, $topic, (e) =>
+            object({
+              currentUserUpdated: jsonParse<TgGraphQLSubscriptionPayload>(e),
+            })
+          );
         },
       },
       UserSubscriptionPayload: {
