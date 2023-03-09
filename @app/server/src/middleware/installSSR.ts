@@ -1,8 +1,9 @@
 import { Express } from "express";
+import { createServer } from "http";
 import next from "next";
 import { parse } from "url";
+
 import { getUpgradeHandlers } from "../app";
-import { createServer } from "http";
 
 if (!process.env.NODE_ENV) {
   throw new Error("No NODE_ENV envvar! Try `export NODE_ENV=development`");

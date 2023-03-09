@@ -1,4 +1,5 @@
 import { Express, Request, Response } from "express";
+import { createServer } from "http";
 import { enhanceHttpServerWithSubscriptions, postgraphile } from "postgraphile";
 
 import {
@@ -8,7 +9,6 @@ import {
 } from "../app";
 import { getPostGraphileOptions } from "../graphile.config";
 import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
-import { createServer } from "http";
 
 export default async function installPostGraphile(app: Express) {
   const websocketMiddlewares = getWebsocketMiddlewares(app);

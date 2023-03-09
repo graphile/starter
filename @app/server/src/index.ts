@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-import { IncomingMessage, createServer } from "http";
+import { createServer, IncomingMessage } from "http";
+import { Duplex } from "stream";
 
 import { getShutdownActions, getUpgradeHandlers, makeApp } from "./app";
-import { Duplex } from "stream";
 
 // @ts-ignore
 const packageJson = require("../../../package.json");
