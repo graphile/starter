@@ -41,13 +41,23 @@ class WebSocketLink extends ApolloLink {
                     : ""
                 )
               );
-            } else {
+            } else if (Array.isArray(err)) {
               sink.error(
                 new Error(
                   (err as GraphQLError[])
                     .map(({ message }) => message)
                     .join(", ")
                 )
+              );
+            } else {
+              console.error(
+                "Error was neither a list nor an instanceof Error?",
+                err
+              );
+              sink.error(
+                new Error(`Unknown error occurred in the websocket client.`, {
+                  cause: err,
+                })
               );
             }
           },
