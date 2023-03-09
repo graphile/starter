@@ -76,6 +76,9 @@ export function getPreset({
         pool: authPgPool,
 
         schemas: ["app_public"],
+
+        // Enable LISTEN/NOTIFY (for subscriptions)
+        pubsub: true,
       }),
     ],
 
