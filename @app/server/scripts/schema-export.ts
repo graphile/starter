@@ -1,20 +1,19 @@
 import { writeFileSync } from "fs";
 import { lexicographicSortSchema, printSchema } from "graphql";
 import { Pool } from "pg";
-import { createPostGraphileSchema } from "postgraphile";
+import { makeSchema } from "postgraphile";
 
-import { getPostGraphileOptions } from "../src/graphile.config";
+import { getPreset } from "../src/graphile.config";
 
 async function main() {
   const rootPgPool = new Pool({
     connectionString: process.env.DATABASE_URL!,
   });
   try {
-    const schema = await createPostGraphileSchema(
-      process.env.AUTH_DATABASE_URL!,
-      "app_public",
-      getPostGraphileOptions({ rootPgPool })
+    const { schema } = await makeSchema(
+      getPreset({ rootPgPool, authPgPool: rootPgPool })
     );
+
     const sorted = lexicographicSortSchema(schema);
     writeFileSync(
       `${__dirname}/../../../data/schema.graphql`,
