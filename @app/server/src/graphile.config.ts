@@ -23,6 +23,14 @@ export interface OurGraphQLContext {
   logout(): Promise<void>;
 }
 
+declare global {
+  namespace Express {
+    interface User {
+      session_id: string;
+    }
+  }
+}
+
 const TagsFilePlugin = makePgSmartTagsFromFilePlugin(
   // We're using JSONC for VSCode compatibility; also using an explicit file
   // path keeps the tests happy.
