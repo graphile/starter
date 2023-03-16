@@ -23,7 +23,15 @@ const MAXIMUM_SESSION_DURATION_IN_MILLISECONDS =
   parseInt(process.env.MAXIMUM_SESSION_DURATION_IN_MILLISECONDS || "", 10) ||
   3 * DAY;
 
-export default (app: Express) => {
+async function createRedisStore() {
+  const client = redis.createClient({
+    url: process.env.REDIS_URL,
+  });
+  await client.connect();
+  return new RedisStore({ client });
+}
+
+export default async (app: Express) => {
   const rootPgPool = getRootPgPool(app);
 
   const store = process.env.REDIS_URL
@@ -33,11 +41,7 @@ export default (app: Express) => {
        *
        * https://medium.com/mtholla/managing-node-js-express-sessions-with-redis-94cd099d6f2f
        */
-      new RedisStore({
-        client: redis.createClient({
-          url: process.env.REDIS_URL,
-        }),
-      })
+      await createRedisStore()
     : /*
        * Using PostgreSQL for session storage is easy to set up, but increases
        * the load on your database. We recommend that you graduate to using
