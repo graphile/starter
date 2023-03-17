@@ -6,22 +6,28 @@ import { makeSchema } from "postgraphile";
 import { getPreset } from "../src/graphile.config";
 
 async function main() {
-  const rootPgPool = new Pool({
-    connectionString: process.env.DATABASE_URL!,
+  const authPgPool = new Pool({
+    connectionString: process.env.AUTH_DATABASE_URL!,
   });
-  try {
-    const { schema } = await makeSchema(
-      getPreset({ rootPgPool, authPgPool: rootPgPool })
-    );
+  const preset = {
+    extends: [getPreset({ authPgPool })],
+    schema: {
+      // Turn off built-in schema exporting
+      exportSchemaSDLPath: undefined,
+      exportSchemaIntrospectionResultPath: undefined,
+    },
+  };
 
+  try {
+    const { schema } = await makeSchema(preset);
     const sorted = lexicographicSortSchema(schema);
     writeFileSync(
       `${__dirname}/../../../data/schema.graphql`,
-      printSchema(sorted)
+      printSchema(sorted) + "\n"
     );
     console.log("GraphQL schema exported");
   } finally {
-    rootPgPool.end();
+    authPgPool.end();
   }
 }
 
