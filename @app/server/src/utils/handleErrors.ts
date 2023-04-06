@@ -11,7 +11,7 @@ const ERROR_PROPERTIES_TO_EXPOSE =
         "severity",
         "detail",
         "hint",
-        "positon",
+        "position",
         "internalPosition",
         "internalQuery",
         "where",
