@@ -1,6 +1,6 @@
 import { PgClassExpressionStep } from "@dataplan/pg";
-import { access, SafeError } from "grafast";
-import { gql, makeExtendSchemaPlugin,Plans,Resolvers  } from "graphile-utils";
+import { access } from "grafast";
+import { gql, makeExtendSchemaPlugin, Plans, Resolvers } from "graphile-utils";
 
 import type {} from "../middleware/installPostGraphile";
 import { ERROR_MESSAGE_OVERRIDES } from "../utils/handleErrors";
@@ -87,11 +87,10 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => {
       resetPassword(input: ResetPasswordInput!): ResetPasswordPayload
     }
   `;
-  const userSource = build.input.pgSources.find((s) => s.name === "users");
-  const currentUserIdSource = build.input.pgSources.find(
-    (s) => s.name === "current_user_id"
-  );
-  if (!userSource || !currentUserIdSource) {
+  const userResource = build.input.pgRegistry.pgResources.users;
+  const currentUserIdResource =
+    build.input.pgRegistry.pgResources.current_user_id;
+  if (!userResource || !currentUserIdResource) {
     throw new Error(
       "Couldn't find either the 'users' or 'current_user_id' source"
     );
@@ -100,19 +99,14 @@ const PassportLoginPlugin = makeExtendSchemaPlugin((build) => {
     RegisterPayload: {
       user($obj) {
         const $userId = access($obj, "userId");
-        return userSource.get({ id: $userId });
+        return userResource.get({ id: $userId });
       },
     },
     LoginPayload: {
       user() {
-        const $userId = currentUserIdSource.execute() as PgClassExpressionStep<
-          any,
-          any,
-          any,
-          any,
-          any
-        >;
-        return userSource.get({ id: $userId });
+        const $userId =
+          currentUserIdResource.execute() as PgClassExpressionStep<any, any>;
+        return userResource.get({ id: $userId });
       },
     },
   };

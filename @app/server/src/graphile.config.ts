@@ -1,4 +1,4 @@
-import { makePgConfig } from "@dataplan/pg/adaptors/pg";
+import { makePgService } from "@dataplan/pg/adaptors/pg";
 // TODO: import GraphilePro from "@graphile/pro"; // Requires license key
 import { PgSimplifyInflectionPreset } from "@graphile/simplify-inflection";
 import { Request } from "express";
@@ -73,8 +73,8 @@ export function getPreset({
   rootPgPool,
 }: IPostGraphileOptionsOptions) {
   const preset: GraphileConfig.Preset = {
-    pgConfigs: [
-      makePgConfig({
+    pgServices: [
+      makePgService({
         // This is so that PostGraphile installs the watch fixtures
         superuserConnectionString: process.env.DATABASE_URL,
 

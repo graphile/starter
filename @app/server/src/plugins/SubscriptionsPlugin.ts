@@ -33,19 +33,18 @@ function currentUserTopicByUserId(userId: number | null) {
  * And see the database trigger function `app_public.tg__graphql_subscription()`.
  */
 const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
-  const currentUserIdSource = build.input.pgSources.find(
-    (s) => s.name === "current_user_id"
-  );
-  if (!currentUserIdSource) {
+  const currentUserIdResource =
+    build.input.pgRegistry.pgResources.current_user_id;
+  if (!currentUserIdResource) {
     throw new Error("Couldn't find current_user_id source");
   }
-  const usersSource = build.input.pgSources.find(
+  const usersResource = Object.values(build.input.pgRegistry.pgResources).find(
     (s) =>
       !s.parameters &&
       s.extensions?.pg?.schemaName === "app_public" &&
       s.extensions.pg.name === "users"
   );
-  if (!usersSource) {
+  if (!usersResource) {
     throw new Error("Couldn't find source for app_public.users");
   }
 
@@ -70,10 +69,7 @@ const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
             const $pgSubscriber = context().get("pgSubscriber");
             // We have the users session ID, but to get their actual ID we need to ask the database.
             const $userId =
-              currentUserIdSource.execute() as PgClassExpressionStep<
-                any,
-                any,
-                any,
+              currentUserIdResource.execute() as PgClassExpressionStep<
                 any,
                 any
               >;
@@ -88,7 +84,7 @@ const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
       UserSubscriptionPayload: {
         user($obj) {
           const $id = access($obj, "subject");
-          return usersSource.get({ id: $id });
+          return usersResource.get({ id: $id });
         },
       },
     },
