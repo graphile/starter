@@ -7,7 +7,7 @@ import {
 } from "@apollo/client";
 import { Request, Response } from "express";
 import { execute, hookArgs, isAsyncIterable } from "grafast";
-import type {} from "grafserv/express/v4";
+import type {} from "postgraphile/grafserv/express/v4";
 import { getOperationAST } from "graphql";
 import type { PostGraphileInstance } from "postgraphile";
 
