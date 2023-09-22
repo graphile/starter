@@ -89,7 +89,7 @@ function makeServerSideLink(req: any, res: any) {
   return new GraphileApolloLink({
     req,
     res,
-    postgraphileMiddleware: req.app.get("postgraphileMiddleware"),
+    pgl: req.app.get("pgl"),
   });
 }
 

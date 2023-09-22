@@ -20,7 +20,7 @@
     "@types/react": "18.0.28",
     "antd": "5.2.3",
     "dayjs": "^1.11.7",
-    "graphql": "^15.8.0",
+    "graphql": "^16.1.0-experimental-stream-defer.6",
     "lodash": "^4.17.21",
     "net": "^1.0.2",
     "next": "^13.2.3",
