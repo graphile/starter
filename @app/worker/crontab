@@ -1,6 +1,6 @@
 # Put your repeating tasks in this file.
 #
-# See: https://github.com/graphile/worker#recurring-tasks-crontab
+# See: https://worker.graphile.org/docs/cron
 #
 # ┌───────────── UTC minute (0 - 59)
 # │ ┌───────────── UTC hour (0 - 23)
