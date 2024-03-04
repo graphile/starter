@@ -397,7 +397,7 @@ __metadata:
     lodash: ^4.17.21
     mjml: ^4.13.0
     mkdirp: ^2.1.3
-    nodemailer: ^6.9.1
+    nodemailer: ^6.9.9
     tslib: ^2.5.0
   languageName: unknown
   linkType: soft
@@ -12005,10 +12005,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^6.9.1":
-  version: 6.9.1
-  resolution: "nodemailer@npm:6.9.1"
-  checksum: b1b9670afc170b4454665abae3fc9acd7e781adb9f579d1c2cd991bf75c647ebe345593f8a057e48d7bf9e4c9a9218869f87db8fb7171c614f557000ab654572
+"nodemailer@npm:^6.9.9":
+  version: 6.9.11
+  resolution: "nodemailer@npm:6.9.11"
+  checksum: 496741f440fb7e4077ce9604c8ccab05b91db23fbedc15deebcae0642e1ead6539a9c7e2ae9f6352821ebfdad7ab091fbb16b4f00bb226ef5418da6a74b180be
   languageName: node
   linkType: hard
 
