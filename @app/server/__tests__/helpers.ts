@@ -25,8 +25,8 @@ export async function createUserAndLogIn() {
   const pool = poolFromUrl(process.env.TEST_DATABASE_URL!);
   const client = await pool.connect();
   try {
-    const [user] = await createUsers(pool, 1, true);
-    const session = await createSession(pool, user.id);
+    const [user] = await createUsers(client, 1, true);
+    const session = await createSession(client, user.id);
     return { user, session };
   } finally {
     client.release();

@@ -1,6 +1,6 @@
 import { Pool, PoolClient } from "pg";
 
-const pools = {};
+const pools: { [key: string]: Pool } = {};
 
 if (!process.env.TEST_DATABASE_URL) {
   throw new Error("Cannot run tests without a TEST_DATABASE_URL");
