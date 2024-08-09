@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:eaf2866060caa0bba319236017c15a40d37a7815
+--! Hash: sha1:fed7686b198e84812a6712d8b4da5add87a5f38f
 
 --! split: 0001-reset.sql
 /*
@@ -1369,10 +1369,11 @@ begin
   where not exists(
     select 1
     from app_public.users
-    where users.username = (
+    -- Compare using lowercase, as username column is case-insensitive
+    where lower(users.username) = (
       case
-      when i = 0 then v_username
-      else v_username || i::text
+      when i = 0 then lower(v_username)
+      else lower(v_username) || i::text
       end
     )
   )
