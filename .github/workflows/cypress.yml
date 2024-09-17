@@ -57,12 +57,12 @@ jobs:
         with:
           wait-on: http://localhost:5678
           working-directory: "@app/e2e"
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots
           path: "@app/e2e/cypress/screenshots"
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-videos
