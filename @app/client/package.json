@@ -30,7 +30,7 @@
     "react-dom": "^18.2.0",
     "slugify": "^1.6.5",
     "tls": "^0.0.1",
-    "webpack": "^5.76.0"
+    "webpack": "^5.94.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
