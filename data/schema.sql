@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.4 (Ubuntu 13.4-0ubuntu0.21.04.1)
--- Dumped by pg_dump version 13.4 (Ubuntu 13.4-0ubuntu0.21.04.1)
+-- Dumped from database version 13rc1 (Debian 13~rc1-1.pgdg100+1)
+-- Dumped by pg_dump version 13.4 (Debian 13.4-3)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -451,10 +451,11 @@ begin
   where not exists(
     select 1
     from app_public.users
-    where users.username = (
+    -- Compare using lowercase, as username column is case-insensitive
+    where lower(users.username) = (
       case
-      when i = 0 then v_username
-      else v_username || i::text
+      when i = 0 then lower(v_username)
+      else lower(v_username) || i::text
       end
     )
   )
@@ -2497,7 +2498,7 @@ GRANT USAGE ON SCHEMA app_public TO graphile_starter_visitor;
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
 --
 
-REVOKE ALL ON SCHEMA public FROM postgres;
+REVOKE ALL ON SCHEMA public FROM ark_starter;
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO graphile_starter;
 GRANT USAGE ON SCHEMA public TO graphile_starter_visitor;
