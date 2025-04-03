@@ -15,7 +15,8 @@ if (!process.env.ROOT_URL) {
   module.exports = () => {
     return {
       poweredByHeader: false,
-      distDir: `../.next`,
+      distDir: `.next`, // Change this from "../.next" to ".next"
+      // distDir: `../.next`,
       trailingSlash: false,
       webpack(config, { webpack, dev, isServer }) {
         const makeSafe = (externals) => {

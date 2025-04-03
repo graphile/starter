@@ -3,8 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "cd src && cross-env NODE_ENV=production NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" next build",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" jest"
+    "dev": "cd src && cross-env NODE_ENV=development NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=@app/config/env\" next dev --turbopack",
+    "build": "cd src && cross-env NODE_ENV=production NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=@app/config/env\" next build",
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=@app/config/env\" jest"
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
@@ -23,7 +24,7 @@
     "graphql": "^15.8.0",
     "lodash": "^4.17.21",
     "net": "^1.0.2",
-    "next": "^13.2.3",
+    "next": "^15.2.4",
     "nprogress": "^0.2.0",
     "rc-field-form": "~1.27.4",
     "react": "^18.2.0",
