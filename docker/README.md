@@ -8,9 +8,9 @@ If you don't `export UID` then Docker on Linux may create the files and folders
 as root. We strongly advise you `export UID`.
 
 PostgreSQL logs from Docker on stdout can be overwhelming, so we recommend to
-only start the `db` services in detached mode: `docker-compose up -d db`.
+only start the `db` services in detached mode: `docker compose up -d db`.
 
-To see logs on your `stdout` you can use: `docker-compose logs db` anytime.
+To see logs on your `stdout` you can use: `docker compose logs db` anytime.
 
 We've enabled `log_truncate_on_rotation` but you may need to prune these
 periodically. See
@@ -20,7 +20,7 @@ Our Docker setup seems to trigger more watch events than the local one, so it
 seems to do more redundant work/produce more output. A PR to fix this would be
 welcome!
 
-## Using and developing with included `docker-compose` setup
+## Using and developing with included `docker compose` setup
 
 This feature was the result of a herculean effort from @JoeSchr.
 
@@ -29,9 +29,9 @@ This feature was the result of a herculean effort from @JoeSchr.
 The docker environment (`docker-compose.yml`) is set up so you can almost work
 with this repo like you would directly.
 
-There is a `server` docker-compose service which has `node` and `yarn` already
+There is a `server` docker compose service which has `node` and `yarn` already
 installed. Once you have everything setup you can simply start it via
-`docker-compose up`, or use the the alias `yarn docker start`, which does some
+`docker compose up`, or use the the alias `yarn docker start`, which does some
 more useful stuff as well. The `yarn docker` commands are provided by
 `docker/package.json`.
 
@@ -63,11 +63,11 @@ $ psql "postgres://$DATABASE_OWNER:$DATABASE_OWNER_PASSWORD@localhost:6543/$DATA
 
 ```sh
 # make sure everything is ready to start and no ports are blocked
-$ docker-compose down
+$ docker compose down
 # start dev (and linked db) service in detached mode (so we can continue typing)
-$ docker-compose up -d dev
+$ docker compose up -d dev
 # attach to dev container shell
-$ docker-compose exec dev bash
+$ docker compose exec dev bash
 # commit migration from inside container
 @dev $ yarn db commit
 # develop on client with hot reloading
@@ -89,7 +89,7 @@ $ yarn docker dev
 # when it prompts you to do so, open `http://localhost:5678` in your browser
 ```
 
-### About `dev` docker-compose service
+### About `dev` docker compose service
 
 There is another "secret" service, `dev`, inside `docker-compose.yml` which
 extends `server`, our normal `node.js` server service container.
@@ -185,5 +185,5 @@ including all your `ssh` creds.
 
 ## Troubleshooting
 
-If you run `docker-compose run server` (rather than `docker-compose up server`)
+If you run `docker compose run server` (rather than `docker compose up server`)
 the ports won't be exposed, so you cannot view your server.

@@ -33,7 +33,7 @@
     "server": "yarn workspace @app/server",
     "worker": "yarn workspace @app/worker",
     "docker": "yarn workspace docker-helpers",
-    "docker-compose": "yarn workspace docker-helpers compose"
+    "docker compose": "yarn workspace docker-helpers compose"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",

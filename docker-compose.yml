@@ -1,4 +1,3 @@
-version: "3.5"
 services:
   server:
     build:
@@ -17,7 +16,7 @@ services:
       - docker/.env
     volumes:
       - .:/work
-      # let's us run docker & docker-compose from inside container (used for yarn setup)
+      # let's us run docker & docker compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
       - nm_root:/work/node_modules
       - nm_app_client:/work/@app/client/node_modules
@@ -62,7 +61,7 @@ services:
       #* same as service: server
       - .:/work
 
-      # let's us run docker & docker-compose from inside container (used for yarn setup)
+      # let's us run docker & docker compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
       - nm_root:/work/node_modules
       - nm_app_client:/work/@app/client/node_modules

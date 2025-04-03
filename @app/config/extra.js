@@ -1,6 +1,6 @@
 // These are the connection strings for the DB and the test DB.
 // NOTE: in production you probably want to add ?ssl=true to force SSL usage.
-// NOTE: these used to be in `.env` but now it is used by docker-compose we can't use expansions
+// NOTE: these used to be in `.env` but now it is used by docker compose we can't use expansions
 const { resolve } = require("path");
 
 function fixFilePaths(connectionString) {
