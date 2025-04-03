@@ -24,7 +24,7 @@
     "@types/zxcvbn": "^4.4.1",
     "cross-env": "^7.0.3",
     "express": "^4.20.0",
-    "jest": "^29.4.3",
+    "jest": "^29.7.0",
     "postgraphile": "^4.13.0",
     "typescript": "^5.0.0-beta"
   }
