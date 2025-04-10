@@ -29,7 +29,7 @@ function makeClient() {
   // TODO: use GraphileApolloLink
   const httpLink = new HttpLink({
     // this needs to be an absolute url, as relative urls cannot be used in SSR
-    uri: `${ROOT_URL}/graphql`,
+    uri: `${ROOT_URL}/api/graphql`,
     credentials: "same-origin",
     headers: {
       // "CSRF-Token": CSRF_TOKEN,

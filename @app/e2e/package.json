@@ -10,8 +10,8 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "cypress": "^14.2.1",
+    "cypress": "^14.3.0",
     "jest": "^29.7.0",
-    "webpack": "^5.98.0"
+    "webpack": "^5.99.5"
   }
 }
