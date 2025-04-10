@@ -23,12 +23,10 @@ services:
       - nm_app_config:/work/@app/config/node_modules
       - nm_app_db:/work/@app/db/node_modules
       - nm_app_e2e:/work/@app/e2e/node_modules
-      - nm_app_graphql:/work/@app/graphql/node_modules
+      - nm_app_graphql:/work/@/appgraphqlgenerated/node_modules
       - nm_app_server:/work/@app/server/node_modules
       - nm_app_worker:/work/@app/worker/node_modules
     working_dir: /work
-    networks:
-      - default
     ports:
       # The main server
       - "5678:5678"
@@ -68,7 +66,7 @@ services:
       - nm_app_config:/work/@app/config/node_modules
       - nm_app_db:/work/@app/db/node_modules
       - nm_app_e2e:/work/@app/e2e/node_modules
-      - nm_app_graphql:/work/@app/graphql/node_modules
+      - nm_app_graphql:/work/@/appgraphqlgenerated/node_modules
       - nm_app_server:/work/@app/server/node_modules
       - nm_app_worker:/work/@app/worker/node_modules
 
@@ -93,8 +91,6 @@ services:
       # - $HOME:/root/.home-localhost:ro
 
     working_dir: /work
-    networks:
-      - default
     ports:
       # The main server
       - "5678:5678"
@@ -109,7 +105,7 @@ services:
 
   # This runs the database that everything else connects to
   db:
-    image: postgres:14
+    image: postgres:latest
     env_file:
       - docker/.env
 
@@ -122,21 +118,15 @@ services:
     working_dir: /
 
     volumes:
+      # docker volume rm starter_db-volume
       - db-volume:/var/lib/postgresql/data
       - ./data:/data
     ports:
       - "6543:5432"
     restart: unless-stopped
-    networks:
-      - default
     command:
-      postgres -c logging_collector=on -c log_destination=stderr -c
-      log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c
-      log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
-
-networks:
-  default:
-    # No metadata required right now.
+      postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/var/lib/postgresql/data/logs -c
+      log_rotation_age=60 -c log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
 
 volumes:
   # Postgres' data

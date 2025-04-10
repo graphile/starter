@@ -390,7 +390,7 @@ similar) and you are trying to connect to Amazon RDS or DigitalOcean databases
 (or probably other managed databases), make sure to replace
 `/data/amazon-rds-ca-cert.pem` with the CA certificate of your own database.
 This file is copied into your Docker image during build time and can therefore
-be referenced in your env variables `DATABASE_URL` and `AUTH_DATABASE_URL`:  
+be referenced in your env variables `DATABASE_URL` and `AUTH_DATABASE_URL`:
 `DATABASE_URL="postgres://name:password@host:port/dbname?ssl=true&sslrootcert=/app/data/amazon-rds-ca-cert.pem"`
 
 ## Production build for local mode

@@ -12,6 +12,20 @@ if (!connectionString) {
   process.exit(1);
 }
 
+console.log(
+  [
+    "HERERERE",
+    process.env.PG_DUMP || "pg_dump",
+    "--no-sync",
+    "--schema-only",
+    "--no-owner",
+    "--exclude-schema=graphile_migrate",
+    "--exclude-schema=graphile_worker",
+    "--file=../../data/schema.sql",
+    connectionString.replace("6543", "5432"),
+  ].join(" ")
+);
+
 spawn(
   process.env.PG_DUMP || "pg_dump",
   [
@@ -21,7 +35,7 @@ spawn(
     "--exclude-schema=graphile_migrate",
     "--exclude-schema=graphile_worker",
     "--file=../../data/schema.sql",
-    connectionString,
+    connectionString.replace("6543", "5432"),
   ],
   {
     stdio: "inherit",

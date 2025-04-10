@@ -3,10 +3,10 @@ import { IncomingMessage, Server } from "http";
 import { Middleware } from "postgraphile";
 import { Duplex } from "stream";
 
-import { cloudflareIps } from "./cloudflare";
-import * as middleware from "./middleware";
-import { makeShutdownActions, ShutdownAction } from "./shutdownActions";
-import { sanitizeEnv } from "./utils";
+import { cloudflareIps } from "./cloudflare.js";
+import * as middleware from "./middleware/index.js";
+import { makeShutdownActions, ShutdownAction } from "./shutdownActions.js";
+import { sanitizeEnv } from "./utils/index.js";
 
 // Server may not always be supplied, e.g. where mounting on a sub-route
 export function getHttpServer(app: Express): Server | null {
@@ -49,8 +49,9 @@ export async function makeApp({
   const shutdownActions = makeShutdownActions();
 
   if (isDev) {
-    shutdownActions.push(() => {
-      require("inspector").close();
+    shutdownActions.push(async () => {
+      const inspector = await import("inspector");
+      inspector.close();
     });
   }
 
@@ -121,21 +122,21 @@ export async function makeApp({
    * express middleware. These helpers may be asynchronous, but they should
    * operate very rapidly to enable quick as possible server startup.
    */
-  await middleware.installDatabasePools(app);
+  middleware.installDatabasePools(app);
   await middleware.installWorkerUtils(app);
   await middleware.installHelmet(app);
-  await middleware.installSameOrigin(app);
+  middleware.installSameOrigin(app);
   await middleware.installSession(app);
-  await middleware.installCSRFProtection(app);
+  middleware.installCSRFProtection(app);
   await middleware.installPassport(app);
-  await middleware.installLogging(app);
+  middleware.installLogging(app);
   if (process.env.FORCE_SSL) {
-    await middleware.installForceSSL(app);
+    middleware.installForceSSL(app);
   }
   // These are our assets: images/etc; served out of the /@app/server/public folder (if present)
-  await middleware.installSharedStatic(app);
+  middleware.installSharedStatic(app);
   if (isTest || isDev) {
-    await middleware.installCypressServerCommand(app);
+    middleware.installCypressServerCommand(app);
   }
   await middleware.installPostGraphile(app);
   await middleware.installSSR(app);
@@ -143,7 +144,7 @@ export async function makeApp({
   /*
    * Error handling middleware
    */
-  await middleware.installErrorHandler(app);
+  middleware.installErrorHandler(app);
 
   return app;
 }

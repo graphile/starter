@@ -1,7 +1,7 @@
 import { Express } from "express";
 import { makeWorkerUtils, WorkerUtils } from "graphile-worker";
 
-import { getRootPgPool } from "./installDatabasePools";
+import { getRootPgPool } from "./installDatabasePools.js";
 
 export function getWorkerUtils(app: Express): WorkerUtils {
   return app.get("workerUtils");

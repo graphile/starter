@@ -28,12 +28,11 @@
     "components": "yarn workspace @app/components",
     "db": "yarn workspace @app/db",
     "e2e": "yarn workspace @app/e2e",
-    "graphql": "yarn workspace @app/graphql",
-    "lib": "yarn workspace @app/lib",
+    "graphql": "yarn workspace @/appgraphqlgenerated",
     "server": "yarn workspace @app/server",
     "worker": "yarn workspace @app/worker",
     "docker": "yarn workspace docker-helpers",
-    "docker compose": "yarn workspace docker-helpers compose"
+    "docker-compose": "yarn workspace docker-helpers compose"
   },
   "author": "Benjie Gillam <code@benjiegillam.com>",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -91,9 +90,11 @@
       "@app/*",
       "docker"
     ],
-    "nohoist": [
-      "**/cypress"
-    ]
+    "installConfig": {
+      "hoistingLimits": [
+        "**/cypress"
+      ]
+    }
   },
   "prettier": {
     "trailingComma": "es5",

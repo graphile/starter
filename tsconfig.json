@@ -3,12 +3,14 @@
     "composite": true,
     "incremental": true,
     "noEmitOnError": true,
-
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "preserve",
-    "lib": ["dom", "es2017"],
+    "lib": [
+      "dom",
+      "es2017"
+    ],
     "target": "esnext",
     "module": "nodenext",
     "moduleResolution": "nodenext",
@@ -24,25 +26,31 @@
     "preserveWatchOutput": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-
     "noEmit": true,
     "declaration": true,
     "declarationMap": true,
     "baseUrl": ".",
     "paths": {
-      "@app/*": ["@app/*"]
+      "@app/*": [
+        "@app/*"
+      ]
     }
   },
   "include": [],
-  "exclude": ["@app/e2e"],
+  "exclude": [
+    "@app/e2e"
+  ],
   "references": [
-    { "path": "@app/config" },
-    { "path": "@app/components" },
-    { "path": "@app/graphql" },
-    { "path": "@app/server" },
-    { "path": "@app/worker" }
+    {
+      "path": "@app/config"
+    },
+    {
+      "path": "@app/server"
+    },
+    {
+      "path": "@app/worker"
+    }
   ]
 }

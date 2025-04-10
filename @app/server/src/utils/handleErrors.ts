@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { camelCase } from "lodash";
+import camelCase from "lodash/camelCase.js";
 
 const isDev = process.env.NODE_ENV === "development";
 const isTest = process.env.NODE_ENV === "test";
@@ -7,20 +7,20 @@ const isTest = process.env.NODE_ENV === "test";
 const ERROR_PROPERTIES_TO_EXPOSE =
   isDev || isTest
     ? [
-        "code",
-        "severity",
-        "detail",
-        "hint",
-        "position",
-        "internalPosition",
-        "internalQuery",
-        "where",
-        "schema",
-        "table",
-        "column",
-        "dataType",
-        "constraint",
-      ]
+      "code",
+      "severity",
+      "detail",
+      "hint",
+      "position",
+      "internalPosition",
+      "internalQuery",
+      "where",
+      "schema",
+      "table",
+      "column",
+      "dataType",
+      "constraint",
+    ]
     : ["code"];
 
 // This would be better as a macro...
@@ -29,7 +29,7 @@ const pluck = (err: any): { [key: string]: any } => {
     const value =
       key === "code"
         ? // err.errcode is equivalent to err.code; replace it
-          err.code || err.errcode
+        err.code || err.errcode
         : err[key];
     if (value != null) {
       memo[key] = value;

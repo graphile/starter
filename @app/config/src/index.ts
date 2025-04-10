@@ -1,5 +1,5 @@
-// @ts-ignore
-const packageJson = require("../../../package.json");
+// @ts-expect-error
+import packageJson from "../../../package.json" with { type: "json" };
 
 // TODO: customise this with your own settings!
 

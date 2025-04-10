@@ -1,6 +1,6 @@
 import { Express, RequestHandler } from "express";
 
-import { getWebsocketMiddlewares } from "../app";
+import { getWebsocketMiddlewares } from "../app.js";
 
 declare module "express-serve-static-core" {
   interface Request {

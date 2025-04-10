@@ -12,11 +12,11 @@ import {
   createUsers,
   poolFromUrl,
 } from "../../__tests__/helpers";
-import { getPostGraphileOptions } from "../src/graphile.config";
+import { getPostGraphileOptions } from "../src/graphile-config";
 
 export * from "../../__tests__/helpers";
 
-const MockReq = require("mock-req");
+import MockReq from "mock-req";
 
 export async function createUserAndLogIn() {
   const pool = poolFromUrl(process.env.TEST_DATABASE_URL!);
@@ -143,7 +143,7 @@ export const runGraphQLQuery = async function runGraphQLQuery(
   checker: (
     result: ExecutionResult,
     context: { pgClient: PoolClient }
-  ) => void | ExecutionResult | Promise<void | ExecutionResult> = () => {} // Place test assertions in this function
+  ) => void | ExecutionResult | Promise<void | ExecutionResult> = () => { } // Place test assertions in this function
 ) {
   if (!ctx) throw new Error("No ctx!");
   const { schema, rootPgPool, options } = ctx;

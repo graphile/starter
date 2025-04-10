@@ -1,19 +1,14 @@
-import csrf from "csurf";
-import { Express } from "express";
+import { Express, Request, Response, NextFunction } from "express";
+import { createCsrfMiddleware } from "@edge-csrf/express";
 
 export default (app: Express) => {
-  const csrfProtection = csrf({
-    // Store to the session rather than a Cookie
-    cookie: false,
-
-    // Extract the CSRF Token from the `CSRF-Token` header.
-    value(req) {
-      const csrfToken = req.headers["csrf-token"];
-      return typeof csrfToken === "string" ? csrfToken : "";
+  const csrf = createCsrfMiddleware({
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
     },
   });
 
-  app.use((req, res, next) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     if (
       req.method === "POST" &&
       req.path === "/graphql" &&
@@ -21,9 +16,9 @@ export default (app: Express) => {
         req.headers.origin === process.env.ROOT_URL)
     ) {
       // Bypass CSRF for GraphiQL
-      next();
-    } else {
-      csrfProtection(req, res, next);
+      return next();
     }
+
+    csrf(req, res, next);
   });
 };
