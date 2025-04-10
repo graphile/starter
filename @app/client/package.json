@@ -9,11 +9,12 @@
     "start": "cross-env NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=../config/env\" next start",
     "lint": "cross-env NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=../config/env\" next lint",
     "codegen": "graphql-codegen --config codegen.yml",
-    "codegen:build": "yarn codegen && tsc -b",
-    "codegen:watch": "yarn codegen --watch",
+    "codegen:build": "npm run codegen && tsc -b",
+    "codegen:watch": "npm run codegen --watch",
     "codegen:test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=../config/env\" jest"
   },
   "dependencies": {
+    "@app/config": "../config",
     "@ant-design/icons": "^6.0.0",
     "@ant-design/nextjs-registry": "^1.0.2",
     "@ant-design/pro-layout": "^7.22.4",

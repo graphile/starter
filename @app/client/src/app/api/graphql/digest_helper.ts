@@ -22,11 +22,11 @@ export function getNormalizedDigest(req: NextRequest): NormalizedRequestDigest {
     async getBody() {
       const body = await req.text();
       const json = body ? JSON.parse(body) : {}; // Empty object if the body is empty
-      console.log("json", json);
+      // console.log("json", json);
       return { type: "json", json };
     },
     requestContext: {},
   };
-  console.log("digest", digest);
+  // console.log("digest", digest);
   return normalizeRequest(digest);
 }

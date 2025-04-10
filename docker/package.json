@@ -4,17 +4,17 @@
   "version": "0.0.0",
   "scripts": {
     "setup": "node ./scripts/yarn-setup.js",
-    "start": "yarn compose up server",
-    "bash": "yarn compose exec server bash",
-    "dev": "yarn compose:exec:dev bash",
-    "dev:start": "yarn compose:exec:dev yarn start",
-    "reset": "yarn down && yarn rebuild && yarn compose run server yarn reset && yarn down --volumes && yarn reset:volumes && rm -f .env",
+    "start": "npm run compose up server",
+    "bash": "npm run compose exec server bash",
+    "dev": "npm run compose:exec:dev bash",
+    "dev:start": "npm run compose:exec:dev npm run start",
+    "reset": "npm run down && npm run rebuild && npm run compose run server npm run reset && npm run down --volumes && npm run reset:volumes && rm -f .env",
     "--DOCKER HELPERS--": "",
-    "db:up": "yarn compose up -d db",
+    "db:up": "npm run compose up -d db",
     "compose": "docker compose -f ../docker-compose.yml",
-    "compose:exec:dev": "yarn down && yarn compose up -d dev && yarn compose exec dev ",
+    "compose:exec:dev": "npm run down && npm run compose up -d dev && npm run compose exec dev ",
     "reset:volumes": "node ./scripts/clean-volumes.js",
-    "rebuild": "yarn compose build",
-    "down": "yarn compose down --remove-orphans"
+    "rebuild": "npm run compose build",
+    "down": "npm run compose down --remove-orphans"
   }
 }

@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "cy": "cross-env NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" cypress",
-    "open": "yarn cy open",
-    "run": "yarn cy run",
+    "open": "npm run cy open",
+    "run": "npm run cy run",
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" jest --passWithNoTests"
   },
   "devDependencies": {

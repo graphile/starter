@@ -51,11 +51,11 @@ const serv = pgl.createServ(grafserv);
 export async function POST(req: NextRequest) {
   try {
     const normalizedDigest = getNormalizedDigest(req);
-    console.log("normalizedDigest", normalizedDigest);
+    // console.log("normalizedDigest", normalizedDigest);
     const handlerResult = await serv.graphqlHandler(normalizedDigest);
-    console.log("handlerResult", handlerResult);
+    // console.log("handlerResult", handlerResult);
     const result = await convertHandlerResultToResult(handlerResult);
-    console.log("result", result);
+    // console.log("result", result);
 
     if (result?.type === "buffer") {
       const { buffer, headers, statusCode } = result;
