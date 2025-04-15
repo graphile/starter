@@ -7,11 +7,9 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "preserve",
-    "lib": [
-      "dom",
-      "es2017"
-    ],
+    "lib": ["dom", "es2017"],
     "target": "esnext",
+    "isolatedModules": true,
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "noFallthroughCasesInSwitch": true,
@@ -33,21 +31,14 @@
     "declarationMap": true,
     "baseUrl": ".",
     "paths": {
-      "@app/*": [
-        "@app/*"
-      ]
+      "@app/*": ["@app/*"]
     }
   },
   "include": [],
-  "exclude": [
-    "@app/e2e"
-  ],
+  "exclude": ["@app/e2e"],
   "references": [
     {
       "path": "@app/config"
-    },
-    {
-      "path": "@app/server"
     },
     {
       "path": "@app/worker"

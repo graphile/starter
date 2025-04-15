@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "cy": "cross-env NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" cypress",
+    "cy": "cross-env NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=@app/config/env\" cypress",
     "open": "npm run cy open",
     "run": "npm run cy run",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" jest --passWithNoTests"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=@app/config/env\" jest --passWithNoTests"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "gm": "cross-env NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" graphile-migrate",
+    "gm": "cross-env NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=@app/config/env\" graphile-migrate",
     "migrate": "npm run gm migrate",
     "watch": "npm run gm watch",
     "commit": "npm run gm commit",
@@ -11,15 +11,17 @@
     "reset": "npm run gm reset",
     "dump": "npm run gm migrate && npm run gm reset --shadow --erase && npm run gm migrate --shadow --forceActions",
     "wipe-if-demo": "./scripts/wipe-if-demo",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" jest"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules --require=@app/config/env\" jest"
   },
   "dependencies": {
     "cross-env": "^7.0.3",
     "graphile-migrate": "^1.4.1"
   },
   "devDependencies": {
-    "@types/pg": "^8.11.11",
+    "@types/pg": "^8.11.12",
     "graphile-worker": "^0.16.6",
+    "@jest/globals": "latest",
+    "ts-jest": "^29.3.2",
     "jest": "^29.7.0",
     "lodash": "^4.17.21",
     "pg": "^8.14.1"

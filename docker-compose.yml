@@ -128,9 +128,55 @@ services:
       postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/var/lib/postgresql/data/logs -c
       log_rotation_age=60 -c log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
 
+  pgadmin:
+    image: dpage/pgadmin4
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin:rw
+    ports:
+      - 5050:80 # http://localhost:5050/
+    env_file:
+      - docker/.env
+    depends_on:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_LISTEN_ADDRESS: 0.0.0.0
+    command:
+      - "/bin/sh"
+      - "-c"
+      - >
+        set -e && export DB_REGEX='^postgres://([^:]+):([^@]+)@([^:]+):([^/]+)/(.+)$' && if [[ "$$ROOT_DATABASE_URL" =~
+        $$DB_REGEX ]]; then
+          DB_USER="$${BASH_REMATCH[1]}"
+          DB_PASS="$${BASH_REMATCH[2]}"
+          DB_HOST="db"
+          DB_PORT="5432"
+          DB_NAME="$${BASH_REMATCH[5]}"
+        else
+          echo "Error: ROOT_DATABASE_URL does not match expected format"
+          exit 1
+        fi && /bin/echo "$${DB_HOST}:$${DB_PORT}:*:$${DB_USER}:$${DB_PASS}" > /tmp/pgpassfile && /bin/echo '{
+          "Servers": {
+            "1": {
+              "Name": "myservername",
+              "Group": "Servers",
+              "Host": "'$$DB_HOST'",
+              "Port": '$$DB_PORT',
+              "MaintenanceDB": "postgres",
+              "Username": "'$$DB_USER'",
+              "SSLMode": "prefer",
+              "PassFile": "/tmp/pgpassfile"
+            }
+          }
+        }' > /pgadmin4/servers.json && echo "======== /tmp/pgpassfile ========" && cat /tmp/pgpassfile && echo "========
+        /pgadmin4/servers.json ========" && cat /pgadmin4/servers.json && entrypoint.sh
+
 volumes:
   # Postgres' data
   db-volume:
+
+  pgadmin_data:
 
   # Node modules
   nm_root:

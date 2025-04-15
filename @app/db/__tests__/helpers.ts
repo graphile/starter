@@ -1,4 +1,10 @@
-import { getTasks, runTaskListOnce, SharedOptions } from "graphile-worker";
+import { beforeAll, beforeEach, expect } from "@jest/globals";
+import {
+  runOnce,
+  getTasks,
+  runTaskListOnce,
+  SharedOptions,
+} from "graphile-worker";
 import { mapValues } from "lodash";
 import { PoolClient } from "pg";
 
@@ -149,8 +155,8 @@ export const pruneUUIDs = (row: { [key: string]: unknown }) =>
     return ["uuid", "queue_name"].includes(k) && v.match(uuidRegexp)
       ? "[UUID]"
       : k === "gravatar" && val.match(/^[0-9a-f]{32}$/i)
-      ? "[gUUID]"
-      : v;
+        ? "[gUUID]"
+        : v;
   });
 
 export const pruneHashes = (row: { [key: string]: unknown }) =>
@@ -175,7 +181,9 @@ export const deepSnapshotSafe = (obj: { [key: string]: unknown }): any => {
 /******************************************************************************/
 
 export const clearJobs = async (client: PoolClient) => {
-  await asRoot(client, () => client.query("delete from graphile_worker.jobs"));
+  await asRoot(client, () =>
+    client.query("delete from graphile_worker._private_jobs")
+  );
 };
 
 export const getJobs = async (
@@ -184,7 +192,13 @@ export const getJobs = async (
 ) => {
   const { rows } = await asRoot(client, () =>
     client.query(
-      "select * from graphile_worker.jobs where $1::text is null or task_identifier = $1::text order by id asc",
+      `SELECT
+        j.*,
+        pj.payload as payload  -- Include the payload from private table
+       FROM graphile_worker.jobs j
+       JOIN graphile_worker._private_jobs pj ON j.id = pj.id
+       WHERE $1::text IS NULL OR j.task_identifier = $1::text
+       ORDER BY j.id ASC`,
       [taskIdentifier]
     )
   );
@@ -196,6 +210,9 @@ export const getJobs = async (
 export const runJobs = async (client: PoolClient) => {
   return asRoot(client, async (client) => {
     const sharedOptions: SharedOptions = {};
+    // requires --experimental-vm-modules
+    // or will throw
+    // Error processing '.../organization_invitations__send_invite.js': A dynamic import callback was invoked without --experimental-vm-modules
     const taskList = await getTasks(
       sharedOptions,
       `${__dirname}/../../worker/dist/tasks`
@@ -211,9 +228,10 @@ export const assertJobComplete = async (
   return asRoot(client, async (client) => {
     const {
       rows: [row],
-    } = await client.query("select * from graphile_worker.jobs where id = $1", [
-      job.id,
-    ]);
+    } = await client.query(
+      "select * from graphile_worker._private_jobs where id = $1",
+      [job.id]
+    );
     expect(row).toBeFalsy();
   });
 };
