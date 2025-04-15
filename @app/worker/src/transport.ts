@@ -1,5 +1,5 @@
 import { awsRegion } from "@app/config";
-import * as aws from "aws-sdk";
+import { SES } from "@aws-sdk/client-ses";
 import { promises as fsp } from "fs";
 import * as nodemailer from "nodemailer";
 
@@ -62,8 +62,11 @@ export default function getTransport(): Promise<nodemailer.Transporter> {
           throw new Error("Misconfiguration: no AWS_SECRET_ACCESS_KEY");
         }
         return nodemailer.createTransport({
-          SES: new aws.SES({
+          SES: new SES({
+            // The key apiVersion is no longer supported in v3, and can be removed.
+            // @deprecated The client uses the "latest" apiVersion.
             apiVersion: "2010-12-01",
+
             region: awsRegion,
           }),
         });

@@ -38,17 +38,12 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "dependencies": {
     "abort-controller": "^3.0.0",
-    "graphql": "^16.10.0"
+    "graphql": "^15.10.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.10",
-    "@babel/plugin-syntax-import-assertions": "^7.26.0",
-    "@babel/preset-env": "^7.26.9",
-    "@babel/preset-typescript": "^7.27.0",
     "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^8.29.1",
     "@typescript-eslint/parser": "^8.29.1",
-    "babel-jest": "^29.7.0",
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
     "depcheck": "^1.4.7",

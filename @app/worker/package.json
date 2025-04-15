@@ -15,13 +15,13 @@
     "@types/lodash": "^4.17.16",
     "@types/mjml": "^4.7.4",
     "@types/nodemailer": "^6.4.17",
-    "aws-sdk": "^2.1692.0",
+    "@aws-sdk/client-ses": "latest",
     "cross-env": "^7.0.3",
     "graphile-worker": "^0.16.6",
     "html-to-text": "^9.0.5",
     "lodash": "^4.17.21",
     "mjml": "^4.15.3",
-    "nodemailer": "^6.10.0",
+    "nodemailer": "^6.10.1",
     "tslib": "^2.8.1"
   },
   "devDependencies": {

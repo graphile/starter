@@ -19,7 +19,6 @@ const isDev = process.env.NODE_ENV === "development";
 
 export default async function installSSR(app: Express) {
   const fakeHttpServer = createServer();
-  console.log("asdfasdf");
   const nextApp = (next as any)({
     dev: isDev,
     dir: `${__dirname}/../../../../client`,
@@ -29,9 +28,8 @@ export default async function installSSR(app: Express) {
     // Trick Next.js into adding its upgrade handler here, so we can extract
     // it. Calling `getUpgradeHandler()` is insufficient because that doesn't
     // handle the assets.
-    // httpServer: fakeHttpServer,
+    httpServer: fakeHttpServer,
   });
-  console.log("asdfasdf2");
   const handlerPromise = (async () => {
     await nextApp.prepare();
     return nextApp.getRequestHandler();
@@ -41,8 +39,7 @@ export default async function installSSR(app: Express) {
     console.error(e);
     process.exit(1);
   });
-  app.get("*", async (req, res) => {
-    console.log("asdfasdf3");
+  app.get("*splat", async (req, res) => {
     const CSRF_TOKEN = res.getHeader("X-CSRF-Token");
 
     if (typeof CSRF_TOKEN !== "string") {

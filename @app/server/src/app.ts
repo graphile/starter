@@ -81,8 +81,8 @@ export async function makeApp({
       process.env.TRUST_PROXY === "1"
         ? true
         : process.env.TRUST_PROXY === "cloudflare"
-        ? ["loopback", "linklocal", "uniquelocal", ...cloudflareIps]
-        : process.env.TRUST_PROXY.split(",")
+          ? ["loopback", "linklocal", "uniquelocal", ...cloudflareIps]
+          : process.env.TRUST_PROXY.split(",")
     );
   }
 
@@ -124,7 +124,7 @@ export async function makeApp({
    */
   middleware.installDatabasePools(app);
   await middleware.installWorkerUtils(app);
-  await middleware.installHelmet(app);
+  // await middleware.installHelmet(app);
   middleware.installSameOrigin(app);
   await middleware.installSession(app);
   middleware.installCSRFProtection(app);

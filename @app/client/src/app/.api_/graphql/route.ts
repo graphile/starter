@@ -9,7 +9,7 @@ import {
 } from "postgraphile/grafserv";
 
 // PostGraphile plugins
-import { PgPostgisWktPlugin } from "postgraphile-postgis-wkt";
+// import { PgPostgisWktPlugin } from "postgraphile-postgis-wkt";
 
 // Next.js modules for requests and responses
 import { NextRequest } from "next/server";
@@ -24,7 +24,7 @@ if (!connectionString) {
 // PostGraphile configuration
 const preset = {
   extends: [PostGraphileAmberPreset],
-  plugins: [PgPostgisWktPlugin],
+  // plugins: [PgPostgisWktPlugin],
   pgServices: [
     makePgService({
       connectionString,

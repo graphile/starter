@@ -91,6 +91,22 @@ function CurrentUserUpdatedSubscription() {
   return null;
 }
 
+function RedirectToLogin() {
+  // XXX: useFullHref is using useSearchParams, useSearchParams requires Suspense around components that use it
+  const fullHref = useFullHref();
+  return <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />
+}
+
+function LinkToLogin() {
+  const fullHref = useFullHref();
+  return <Link
+    href={`/login?next=${encodeURIComponent(fullHref)}`}
+    data-cy="header-login-button"
+  >
+    Sign in
+  </Link>
+}
+
 export function SharedLayout({
   title,
   titleHref,
@@ -102,9 +118,6 @@ export function SharedLayout({
   children,
 }: SharedLayoutProps) {
   const router = useRouter();
-  // XXX: useFullHref is using useSearchParams, useSearchParams requires Suspense around components that use it
-  // TODO: remove Suspense from top level, and wrap only components that use fullHref variable
-  const fullHref = useFullHref();
   const client = useApolloClient();
   const [logout] = useLogoutMutation();
 
@@ -158,7 +171,7 @@ export function SharedLayout({
       !error &&
       forbidsLoggedOut
     ) {
-      return <Redirect href={`/login?next=${encodeURIComponent(fullHref)}`} />;
+      return <React.Suspense><RedirectToLogin /></React.Suspense>;
     }
 
     return noPad ? inner : <StandardWidth>{inner}</StandardWidth>;
@@ -267,12 +280,7 @@ export function SharedLayout({
                 </span>
               </Dropdown>
             ) : forbidsLoggedIn ? null : (
-              <Link
-                href={`/login?next=${encodeURIComponent(fullHref)}`}
-                data-cy="header-login-button"
-              >
-                Sign in
-              </Link>
+              <React.Suspense><LinkToLogin/></React.Suspense>
             )}
           </Col>
         </Row>
