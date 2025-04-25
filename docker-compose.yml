@@ -1,4 +1,3 @@
-version: "3.5"
 services:
   server:
     build:
@@ -17,19 +16,17 @@ services:
       - docker/.env
     volumes:
       - .:/work
-      # let's us run docker & docker-compose from inside container (used for yarn setup)
+      # let's us run docker & docker compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
       - nm_root:/work/node_modules
       - nm_app_client:/work/@app/client/node_modules
       - nm_app_config:/work/@app/config/node_modules
       - nm_app_db:/work/@app/db/node_modules
       - nm_app_e2e:/work/@app/e2e/node_modules
-      - nm_app_graphql:/work/@app/graphql/node_modules
+      - nm_app_graphql:/work/@/appgraphqlgenerated/node_modules
       - nm_app_server:/work/@app/server/node_modules
       - nm_app_worker:/work/@app/worker/node_modules
     working_dir: /work
-    networks:
-      - default
     ports:
       # The main server
       - "5678:5678"
@@ -62,14 +59,14 @@ services:
       #* same as service: server
       - .:/work
 
-      # let's us run docker & docker-compose from inside container (used for yarn setup)
+      # let's us run docker & docker compose from inside container (used for yarn setup)
       - /var/run/docker.sock:/var/run/docker.sock
       - nm_root:/work/node_modules
       - nm_app_client:/work/@app/client/node_modules
       - nm_app_config:/work/@app/config/node_modules
       - nm_app_db:/work/@app/db/node_modules
       - nm_app_e2e:/work/@app/e2e/node_modules
-      - nm_app_graphql:/work/@app/graphql/node_modules
+      - nm_app_graphql:/work/@/appgraphqlgenerated/node_modules
       - nm_app_server:/work/@app/server/node_modules
       - nm_app_worker:/work/@app/worker/node_modules
 
@@ -94,8 +91,6 @@ services:
       # - $HOME:/root/.home-localhost:ro
 
     working_dir: /work
-    networks:
-      - default
     ports:
       # The main server
       - "5678:5678"
@@ -110,7 +105,7 @@ services:
 
   # This runs the database that everything else connects to
   db:
-    image: postgres:14
+    image: postgres:latest
     env_file:
       - docker/.env
 
@@ -123,25 +118,65 @@ services:
     working_dir: /
 
     volumes:
+      # docker volume rm starter_db-volume
       - db-volume:/var/lib/postgresql/data
       - ./data:/data
     ports:
       - "6543:5432"
     restart: unless-stopped
-    networks:
-      - default
     command:
-      postgres -c logging_collector=on -c log_destination=stderr -c
-      log_directory=/var/lib/postgresql/data/logs -c log_rotation_age=60 -c
-      log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
+      postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/var/lib/postgresql/data/logs -c
+      log_rotation_age=60 -c log_truncate_on_rotation=on -c log_filename=server_log.hour.%H%M
 
-networks:
-  default:
-    # No metadata required right now.
+  pgadmin:
+    image: dpage/pgadmin4
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin:rw
+    ports:
+      - 5050:80 # http://localhost:5050/
+    env_file:
+      - docker/.env
+    depends_on:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_LISTEN_ADDRESS: 0.0.0.0
+    command:
+      - "/bin/sh"
+      - "-c"
+      - >
+        set -e && export DB_REGEX='^postgres://([^:]+):([^@]+)@([^:]+):([^/]+)/(.+)$' && if [[ "$$ROOT_DATABASE_URL" =~
+        $$DB_REGEX ]]; then
+          DB_USER="$${BASH_REMATCH[1]}"
+          DB_PASS="$${BASH_REMATCH[2]}"
+          DB_HOST="db"
+          DB_PORT="5432"
+          DB_NAME="$${BASH_REMATCH[5]}"
+        else
+          echo "Error: ROOT_DATABASE_URL does not match expected format"
+          exit 1
+        fi && /bin/echo "$${DB_HOST}:$${DB_PORT}:*:$${DB_USER}:$${DB_PASS}" > /tmp/pgpassfile && /bin/echo '{
+          "Servers": {
+            "1": {
+              "Name": "myservername",
+              "Group": "Servers",
+              "Host": "'$$DB_HOST'",
+              "Port": '$$DB_PORT',
+              "MaintenanceDB": "postgres",
+              "Username": "'$$DB_USER'",
+              "SSLMode": "prefer",
+              "PassFile": "/tmp/pgpassfile"
+            }
+          }
+        }' > /pgadmin4/servers.json && echo "======== /tmp/pgpassfile ========" && cat /tmp/pgpassfile && echo "========
+        /pgadmin4/servers.json ========" && cat /pgadmin4/servers.json && entrypoint.sh
 
 volumes:
   # Postgres' data
   db-volume:
+
+  pgadmin_data:
 
   # Node modules
   nm_root:

@@ -209,7 +209,7 @@ a table like this one:
 
 | Local mode                      | OR  | Docker mode                              |
 | ------------------------------- | :-: | ---------------------------------------- |
-| _command for local development_ | or  | _command for docker-compose development_ |
+| _command for local development_ | or  | _command for docker compose development_ |
 
 **Be careful not to mix and match Docker-mode vs local-mode for development.**
 You should make a choice and stick to it. (Developing locally but deploying with
@@ -250,7 +250,7 @@ keep them small!) Failing that, try the Docker mode :)
 Requires:
 
 - [`docker`](https://docs.docker.com/install/)
-- [`docker-compose`](https://docs.docker.com/compose/install/)
+- [`docker compose`](https://docs.docker.com/compose/install/)
 - Ensure you've allocated Docker **at least** 4GB of RAM; significantly more
   recommended
   - (Development only, production is much more efficient)
@@ -306,11 +306,11 @@ This main command runs a number of tasks:
 - runs the `jest` tests in watch mode, automatically re-running as the database
   or test files change
 
-**NOTE**: `docker-compose up server` also runs the PostgreSQL server that the
+**NOTE**: `docker compose up server` also runs the PostgreSQL server that the
 system connects to.
 
 You may also choose to develop locally, but use the PostgreSQL server via
-`docker-compose up -d db`.
+`docker compose up -d db`.
 
 Then for development you may need a console; you can open one with:
 
@@ -386,7 +386,7 @@ similar) and you are trying to connect to Amazon RDS or DigitalOcean databases
 (or probably other managed databases), make sure to replace
 `/data/amazon-rds-ca-cert.pem` with the CA certificate of your own database.
 This file is copied into your Docker image during build time and can therefore
-be referenced in your env variables `DATABASE_URL` and `AUTH_DATABASE_URL`:  
+be referenced in your env variables `DATABASE_URL` and `AUTH_DATABASE_URL`:
 `DATABASE_URL="postgres://name:password@host:port/dbname?ssl=true&sslrootcert=/app/data/amazon-rds-ca-cert.pem"`
 
 ## Production build for local mode

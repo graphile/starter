@@ -3,15 +3,15 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "cy": "cross-env NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" cypress",
-    "open": "yarn cy open",
-    "run": "yarn cy run",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} -r @app/config/env\" jest --passWithNoTests"
+    "cy": "cross-env NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=@app/config/env\" cypress",
+    "open": "npm run cy open",
+    "run": "npm run cy run",
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=@app/config/env\" jest --passWithNoTests"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "cypress": "^12.7.0",
-    "jest": "^29.4.3",
-    "webpack": "^5.94.0"
+    "cypress": "^14.3.0",
+    "jest": "^29.7.0",
+    "webpack": "^5.99.5"
   }
 }

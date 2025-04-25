@@ -7,7 +7,7 @@ ARG TARGET="server"
 ################################################################################
 # Build stage 1 - `yarn build`
 
-FROM node:16-alpine as builder
+FROM node:21-alpine as builder
 # Import our shared args
 ARG NODE_ENV
 ARG ROOT_URL
@@ -30,7 +30,7 @@ RUN yarn run build
 ################################################################################
 # Build stage 2 - COPY the relevant things (multiple steps)
 
-FROM node:16-alpine as clean
+FROM node:21-alpine as clean
 # Import our shared args
 ARG NODE_ENV
 ARG ROOT_URL
@@ -40,8 +40,8 @@ COPY --from=builder /app/package.json /app/yarn.lock /app/.yarnrc.yml /app/
 COPY --from=builder /app/.yarn/ /app/.yarn/
 COPY --from=builder /app/@app/config/ /app/@app/config/
 COPY --from=builder /app/@app/db/ /app/@app/db/
-COPY --from=builder /app/@app/graphql/ /app/@app/graphql/
-COPY --from=builder /app/@app/lib/ /app/@app/lib/
+COPY --from=builder /app/@/appgraphqlgenerated/ /app/@/appgraphqlgenerated/
+COPY --from=builder /app/@/applib/ /app/@/applib/
 COPY --from=builder /app/@app/components/package.json /app/@app/components/
 COPY --from=builder /app/@app/components/dist/ /app/@app/components/dist/
 COPY --from=builder /app/@app/client/package.json /app/@app/client/package.json

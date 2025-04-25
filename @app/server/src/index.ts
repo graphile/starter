@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+
 import { createServer, IncomingMessage } from "http";
 import { Duplex } from "stream";
 
-import { getShutdownActions, getUpgradeHandlers, makeApp } from "./app";
+import { getShutdownActions, getUpgradeHandlers, makeApp } from "./app.js";
 
-// @ts-ignore
-const packageJson = require("../../../package.json");
+// @ts-expect-error
+import packageJson from "../../../../package.json" with { type: "json" };
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -65,8 +65,8 @@ async function main() {
       typeof address === "string"
         ? address
         : address && address.port
-        ? String(address.port)
-        : String(PORT);
+          ? String(address.port)
+          : String(PORT);
     console.log();
     console.log(
       chalk.green(

@@ -11,7 +11,7 @@ async function readDotenv() {
     /* noop */
   }
   const config = buffer ? dotenv.parse(buffer) : null;
-  // also read from current env, because docker-compose already needs to know some of it
+  // also read from current env, because docker compose already needs to know some of it
   // eg. $PG_DUMP, $CONFIRM
   return { ...config, ...process.env };
 }
@@ -21,13 +21,13 @@ function encodeDotenvValue(str) {
     throw new Error(`'${str}' is not a string`);
   }
   if (str.trim() !== str) {
-    // `dotenv` would escape this with single/double quotes but that won't work in docker-compose
+    // `dotenv` would escape this with single/double quotes but that won't work in docker compose
     throw new Error(
       "We don't support leading/trailing whitespace in config variables"
     );
   }
   if (str.indexOf("\n") >= 0) {
-    // `dotenv` would escape this with single/double quotes and `\n` but that won't work in docker-compose
+    // `dotenv` would escape this with single/double quotes and `\n` but that won't work in docker compose
     throw new Error("We don't support newlines in config variables");
   }
   return str;

@@ -1,7 +1,7 @@
 import { gql, makeExtendSchemaPlugin, Resolvers } from "graphile-utils";
 
-import { OurGraphQLContext } from "../graphile.config";
-import { ERROR_MESSAGE_OVERRIDES } from "../utils/handleErrors";
+import { OurGraphQLContext } from "../graphile-config.js";
+import { ERROR_MESSAGE_OVERRIDES } from "../utils/handleErrors.js";
 
 const PassportLoginPlugin = makeExtendSchemaPlugin((build) => {
   const typeDefs = gql`

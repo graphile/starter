@@ -1,8 +1,8 @@
-import { urlencoded } from "body-parser";
+import bodyParser from "body-parser";
 import { Express, Request, RequestHandler, Response } from "express";
-import { Pool } from "pg";
+import pg from "pg";
 
-import { getRootPgPool } from "./installDatabasePools";
+import { getRootPgPool } from "./installDatabasePools.js";
 
 export default (app: Express) => {
   // Only enable this in test/development mode
@@ -85,7 +85,7 @@ export default (app: Express) => {
   };
   app.get(
     "/cypressServerCommand",
-    urlencoded({ extended: false }),
+    bodyParser.urlencoded({ extended: false }),
     handleCypressServerCommand
   );
 };
@@ -93,7 +93,7 @@ export default (app: Express) => {
 async function runCommand(
   req: Request,
   res: Response,
-  rootPgPool: Pool,
+  rootPgPool: pg.Pool,
   command: string,
   payload: { [key: string]: any }
 ): Promise<object | null> {
@@ -238,7 +238,7 @@ async function runCommand(
 }
 
 async function reallyCreateUser(
-  rootPgPool: Pool,
+  rootPgPool: pg.Pool,
   {
     username,
     email,
@@ -271,7 +271,7 @@ async function reallyCreateUser(
   return user;
 }
 
-async function createSession(rootPgPool: Pool, userId: string) {
+async function createSession(rootPgPool: pg.Pool, userId: string) {
   const {
     rows: [session],
   } = await rootPgPool.query(
@@ -285,7 +285,7 @@ async function createSession(rootPgPool: Pool, userId: string) {
   return session;
 }
 
-async function getUserEmailSecrets(rootPgPool: Pool, email: string) {
+async function getUserEmailSecrets(rootPgPool: pg.Pool, email: string) {
   const {
     rows: [userEmailSecrets],
   } = await rootPgPool.query(

@@ -1,10 +1,10 @@
 import { Express } from "express";
-import { get } from "lodash";
+import get from "lodash/get.js";
 import passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github2";
 
-import { getWebsocketMiddlewares } from "../app";
-import installPassportStrategy from "./installPassportStrategy";
+import { getWebsocketMiddlewares } from "../app.js";
+import installPassportStrategy from "./installPassportStrategy.js";
 
 interface DbSession {
   session_id: string;
@@ -34,7 +34,7 @@ export default async (app: Express) => {
   });
 
   if (process.env.GITHUB_KEY) {
-    await installPassportStrategy(
+    installPassportStrategy(
       app,
       "github",
       GitHubStrategy,

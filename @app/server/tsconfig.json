@@ -2,17 +2,35 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
     "declarationDir": "dist",
-    "lib": ["es2018", "esnext.asynciterable"],
-    "target": "es2018",
-    "module": "commonjs"
+    "lib": [
+      "es2018",
+      "esnext.asynciterable"
+    ],
+    "resolveJsonModule": true, // Allow importing JSON files
+    "esModuleInterop": true,
+    // "target": "ESnext",
+    "target": "esnext"
+    // "module": "NodeNext",
+    // "moduleResolution": "NodeNext"
+    // "module": "esnext",
+    // "moduleResolution": "bundler"
+    // "module": "commonjs"
   },
-  "include": ["src"],
-  "references": [{ "path": "../config" }],
+  "include": [
+    "src",
+    "scripts"
+  ],
+  "references": [
+    {
+      "path": "../config"
+    }
+  ],
   "ts-node": {
+    "experimentalSpecifierResolution": "node",
     "compilerOptions": {
       "rootDir": null
     }
