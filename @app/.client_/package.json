@@ -1,0 +1,41 @@
+{
+  "name": "@app/client",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "cd src && cross-env NODE_ENV=development NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=@app/config/env\" next dev --turbopack",
+    "build": "cd src && cross-env NODE_ENV=production NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=@app/config/env\" next build",
+    "build-serve": "npx serve@latest ./src/build",
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"${NODE_OPTIONS:-} --require=@app/config/env\" jest"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.0.1",
+    "@ant-design/pro-layout": "^7.8.3",
+    "@apollo/client": "3.4.17",
+    "@app/components": "0.0.0",
+    "@app/config": "0.0.0",
+    "@app/graphql": "0.0.0",
+    "@app/lib": "0.0.0",
+    "@types/lodash": "^4.14.191",
+    "@types/node": "^18.14.2",
+    "@types/nprogress": "^0.2.0",
+    "@types/react": "18.0.28",
+    "antd": "5.2.3",
+    "dayjs": "^1.11.7",
+    "graphql": "^15.8.0",
+    "lodash": "^4.17.21",
+    "net": "^1.0.2",
+    "next": "^15.3.0",
+    "nprogress": "^0.2.0",
+    "rc-field-form": "~1.27.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "slugify": "^1.6.5",
+    "tls": "^0.0.1",
+    "webpack": "^5.94.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0"
+  }
+}

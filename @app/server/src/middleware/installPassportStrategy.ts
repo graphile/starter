@@ -1,7 +1,8 @@
 import { Express, Request, RequestHandler } from "express";
 import passport from "passport";
 
-import { getRootPgPool } from "./installDatabasePools";
+import { getRootPgPool } from "./installDatabasePools.js";
+import { type SessionData } from "express-session";
 
 interface DbSession {
   uuid: string;
@@ -49,7 +50,7 @@ const setReturnTo: RequestHandler = (req, _res, next) => {
   }
   const returnTo =
     (req.query && req.query.next && String(req.query.next)) ||
-    req.session.returnTo;
+    (req.session as SessionData).returnTo;
   if (
     returnTo &&
     returnTo[0] === "/" &&
@@ -72,8 +73,8 @@ export default (
   getUserInformation: GetUserInformationFunction,
   tokenNames = ["accessToken", "refreshToken"],
   {
-    preRequest = (_req: Request) => {},
-    postRequest = (_req: Request) => {},
+    preRequest = (_req: Request) => { },
+    postRequest = (_req: Request) => { },
   } = {}
 ) => {
   const rootPgPool = getRootPgPool(app);

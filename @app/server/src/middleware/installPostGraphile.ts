@@ -6,9 +6,9 @@ import {
   getHttpServer,
   getUpgradeHandlers,
   getWebsocketMiddlewares,
-} from "../app";
-import { getPostGraphileOptions } from "../graphile.config";
-import { getAuthPgPool, getRootPgPool } from "./installDatabasePools";
+} from "../app.js";
+import { getPostGraphileOptions } from "../graphile-config.js";
+import { getAuthPgPool, getRootPgPool } from "./installDatabasePools.js";
 
 export default async function installPostGraphile(app: Express) {
   const websocketMiddlewares = getWebsocketMiddlewares(app);

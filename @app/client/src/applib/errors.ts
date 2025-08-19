@@ -1,0 +1,46 @@
+import { ApolloError } from "@apollo/client";
+import { GraphQLError, GraphQLFormattedError } from "graphql";
+
+export function extractError(error: null): null;
+export function extractError(error: Error): Error;
+export function extractError(
+  error: ApolloError
+): GraphQLFormattedError | GraphQLError;
+export function extractError(error: GraphQLError): GraphQLError;
+export function extractError(
+  error: null | Error | ApolloError | GraphQLError
+): null | Error | GraphQLFormattedError | GraphQLError {
+  return (
+    (error &&
+      "graphQLErrors" in error &&
+      error.graphQLErrors &&
+      error.graphQLErrors.length &&
+      error.graphQLErrors[0]) ||
+    error
+  );
+}
+
+export function getExceptionFromError(
+  error: null | Error | ApolloError | GraphQLError
+):
+  | (Error & {
+      code?: string;
+      fields?: string[];
+      extensions?: { code?: string; fields?: string[] };
+    })
+  | null {
+  // @ts-expect-error
+  const graphqlError: GraphQLError = extractError(error);
+  const exception =
+    graphqlError &&
+    graphqlError.extensions &&
+    graphqlError.extensions.exception;
+  return (exception || graphqlError || error) as Error | null;
+}
+
+export function getCodeFromError(
+  error: null | Error | ApolloError | GraphQLError
+): null | string {
+  const err = getExceptionFromError(error);
+  return err?.extensions?.code ?? err?.code ?? null;
+}

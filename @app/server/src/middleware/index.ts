@@ -1,17 +1,17 @@
-import installCSRFProtection from "./installCSRFProtection";
-import installCypressServerCommand from "./installCypressServerCommand";
-import installDatabasePools from "./installDatabasePools";
-import installErrorHandler from "./installErrorHandler";
-import installForceSSL from "./installForceSSL";
-import installHelmet from "./installHelmet";
-import installLogging from "./installLogging";
-import installPassport from "./installPassport";
-import installPostGraphile from "./installPostGraphile";
-import installSameOrigin from "./installSameOrigin";
-import installSession from "./installSession";
-import installSharedStatic from "./installSharedStatic";
-import installSSR from "./installSSR";
-import installWorkerUtils from "./installWorkerUtils";
+import installCSRFProtection from "./installCSRFProtection.js";
+import installCypressServerCommand from "./installCypressServerCommand.js";
+import installDatabasePools from "./installDatabasePools.js";
+import installErrorHandler from "./installErrorHandler.js";
+import installForceSSL from "./installForceSSL.js";
+import installHelmet from "./installHelmet.js";
+import installLogging from "./installLogging.js";
+import installPassport from "./installPassport.js";
+import installPostGraphile from "./installPostGraphile.js";
+import installSameOrigin from "./installSameOrigin.js";
+import installSession from "./installSession.js";
+import installSharedStatic from "./installSharedStatic.js";
+import installSSR from "./installSSR.js";
+import installWorkerUtils from "./installWorkerUtils.js";
 
 export {
   installCSRFProtection,

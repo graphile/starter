@@ -1,0 +1,134 @@
+"use client";
+import { GithubFilled } from "@ant-design/icons";
+import { PageHeader } from "@ant-design/pro-layout";
+import {
+  ErrorAlert,
+  SettingsLayout,
+  SocialLoginOptions,
+  SpinPadded,
+  Strong,
+} from "@/appcomponents";
+import {
+  useCurrentUserAuthenticationsQuery,
+  UserAuthentication,
+  useSharedQuery,
+  useUnlinkUserAuthenticationMutation,
+} from "@/appgraphqlgenerated";
+import { Avatar, Card, List, Modal, Spin } from "antd";
+import React, { Suspense, useCallback, useState } from "react";
+
+const AUTH_NAME_LOOKUP: Record<string, string | undefined> = {
+  github: "GitHub",
+  facebook: "Facebook",
+  twitter: "Twitter",
+};
+function authName(service: string) {
+  return AUTH_NAME_LOOKUP[service] || service;
+}
+
+const AUTH_ICON_LOOKUP: Record<string, React.JSX.Element | undefined> = {
+  github: <GithubFilled />,
+};
+function authAvatar(service: string) {
+  const icon = AUTH_ICON_LOOKUP[service] || null;
+  if (icon) {
+    return <Avatar size="large" icon={icon} />;
+  }
+}
+
+function UnlinkAccountButton({ id }: { id: string }) {
+  const [mutate] = useUnlinkUserAuthenticationMutation();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleOpenModal = useCallback(() => {
+    setModalOpen(true);
+  }, [setModalOpen]);
+  const handleCloseModal = useCallback(() => {
+    setModalOpen(false);
+  }, [setModalOpen]);
+  const handleUnlink = useCallback(async () => {
+    setModalOpen(false);
+    setDeleting(true);
+    try {
+      await mutate({ variables: { id } });
+    } catch (e: any) {
+      setDeleting(false);
+    }
+  }, [id, mutate]);
+
+  return (
+    <>
+      <Modal
+        title="Are you sure?"
+        open={modalOpen}
+        onCancel={handleCloseModal}
+        onOk={handleUnlink}
+      >
+        If you unlink this account you won&apos;t be able to log in with it any
+        more; please make sure your email is valid.
+      </Modal>
+      <a key="unlink" onClick={handleOpenModal}>
+        {deleting ? <Spin /> : "Unlink"}
+      </a>
+    </>
+  );
+}
+
+function renderAuth(
+  auth: Pick<UserAuthentication, "id" | "service" | "createdAt">
+) {
+  return (
+    <List.Item
+      key={auth.id}
+      actions={[<UnlinkAccountButton key="unlink" id={auth.id} />]}
+    >
+      <List.Item.Meta
+        title={<Strong>{authName(auth.service)}</Strong>}
+        description={`Added ${new Date(
+          Date.parse(auth.createdAt)
+        ).toLocaleString()}`}
+        avatar={authAvatar(auth.service)}
+      />
+    </List.Item>
+  );
+}
+
+export default function Settings_AccountsPage() {
+  return (
+    <Suspense>
+      <Settings_Accounts />
+    </Suspense>
+  );
+}
+
+function Settings_Accounts() {
+  const { data, loading, error } = useCurrentUserAuthenticationsQuery();
+
+  const linkedAccounts =
+    loading || !data || !data.currentUser ? (
+      <SpinPadded />
+    ) : (
+      <List
+        bordered
+        size="large"
+        dataSource={data.currentUser.authentications}
+        renderItem={renderAuth}
+      />
+    );
+
+  const query = useSharedQuery();
+
+  return (
+    <SettingsLayout href="/settings/accounts" query={query}>
+      <PageHeader title="Linked accounts" />
+      {error && !loading ? <ErrorAlert error={error} /> : linkedAccounts}
+      <Card style={{ marginTop: "2rem" }} title="Link another account">
+        <SocialLoginOptions
+          next="/settings/accounts"
+          buttonTextFromService={(service) => `Link ${service} account`}
+        />
+      </Card>
+    </SettingsLayout>
+  );
+}

@@ -1,11 +1,11 @@
 import ConnectPgSimple from "connect-pg-simple";
-import RedisStore from "connect-redis";
+import { RedisStore } from "connect-redis";
 import { Express, RequestHandler } from "express";
 import session from "express-session";
 import * as redis from "redis";
 
-import { getWebsocketMiddlewares } from "../app";
-import { getRootPgPool } from "./installDatabasePools";
+import { getWebsocketMiddlewares } from "../app.js";
+import { getRootPgPool } from "./installDatabasePools.js";
 
 const PgStore = ConnectPgSimple(session);
 
@@ -41,22 +41,22 @@ export default async (app: Express) => {
        *
        * https://medium.com/mtholla/managing-node-js-express-sessions-with-redis-94cd099d6f2f
        */
-      await createRedisStore()
+    await createRedisStore()
     : /*
        * Using PostgreSQL for session storage is easy to set up, but increases
        * the load on your database. We recommend that you graduate to using
        * redis for session storage when you're ready.
        */
-      new PgStore({
-        /*
-         * Note even though "connect-pg-simple" lists "pg@7.x" as a dependency,
-         * it doesn't `require("pg")` if we pass it a pool. It's usage of the pg
-         * API is small; so it's compatible with pg@8.x.
-         */
-        pool: rootPgPool,
-        schemaName: "app_private",
-        tableName: "connect_pg_simple_sessions",
-      });
+    new PgStore({
+      /*
+       * Note even though "connect-pg-simple" lists "pg@7.x" as a dependency,
+       * it doesn't `require("pg")` if we pass it a pool. It's usage of the pg
+       * API is small; so it's compatible with pg@8.x.
+       */
+      pool: rootPgPool,
+      schemaName: "app_private",
+      tableName: "connect_pg_simple_sessions",
+    });
 
   const sessionMiddleware = session({
     rolling: true,

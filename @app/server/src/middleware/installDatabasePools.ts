@@ -1,12 +1,13 @@
 import { Express } from "express";
-import { Pool } from "pg";
+import pg from "pg";
+const { Pool } = pg;
 
-import { getShutdownActions } from "../app";
+import { getShutdownActions } from "../app.js";
 
-export function getRootPgPool(app: Express): Pool {
+export function getRootPgPool(app: Express): pg.Pool {
   return app.get("rootPgPool");
 }
-export function getAuthPgPool(app: Express): Pool {
+export function getAuthPgPool(app: Express): pg.Pool {
   return app.get("authPgPool");
 }
 

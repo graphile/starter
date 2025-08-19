@@ -5,6 +5,7 @@ import {
   withRootDb,
   withUserDb,
 } from "../../helpers";
+import { it, expect } from "@jest/globals";
 
 it("can delete account with verified emails", () =>
   withUserDb(async (client, user) => {

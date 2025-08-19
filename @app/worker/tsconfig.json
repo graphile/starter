@@ -6,10 +6,17 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
     "declarationDir": "dist",
-    "lib": ["es2018", "esnext.asynciterable"],
-    "target": "es2018",
-    "module": "commonjs"
+    "lib": [
+      "es2018",
+      "esnext.asynciterable"
+    ]
   },
-  "include": ["src"],
-  "references": [{ "path": "../config" }]
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "../config"
+    }
+  ]
 }

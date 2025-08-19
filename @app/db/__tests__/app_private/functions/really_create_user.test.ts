@@ -1,3 +1,4 @@
+import { it, expect } from "@jest/globals";
 import { PoolClient } from "pg";
 
 import { snapshotSafe, withRootDb } from "../../helpers";

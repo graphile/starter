@@ -1,6 +1,7 @@
 import { ErrorRequestHandler, Express } from "express";
 import * as fs from "fs";
-import { template, TemplateExecutor } from "lodash";
+import { TemplateExecutor } from "lodash";
+import template from "lodash/template.js";
 import { resolve } from "path";
 
 const isDev = process.env.NODE_ENV === "development";

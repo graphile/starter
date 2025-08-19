@@ -27,13 +27,13 @@ async function main() {
 FORCE_COLOR=2
 
 # \`pg_dump\` is run from inside container, which doesn't have pg tools installed
-# so it needs a way to still run it. \`docker-compose run\` would start an
+# so it needs a way to still run it. \`docker compose run\` would start an
 # instance inside the current running container which doesn't work with volume
-# mappings, so we must use \`docker-compose exec\`. \`-T\` is needed because our
+# mappings, so we must use \`docker compose exec\`. \`-T\` is needed because our
 # \`.gmrc\` checks for interactive TTY.
-PG_DUMP="docker-compose exec -T db pg_dump"
+PG_DUMP="docker compose exec -T db pg_dump"
 
-# Drops tables without asking in \`yarn setup\`. Reasoning: 1) docker-compose is
+# Drops tables without asking in \`yarn setup\`. Reasoning: 1) docker compose is
 # not tty, 2) it's a dev env anyway.
 CONFIRM_DROP=y
 
@@ -49,7 +49,7 @@ ROOT_DATABASE_URL=postgres://postgres:${password}@db/postgres
     await fsp.writeFile(DOCKER_DOTENV_PATH, data);
   }
 
-  // The `docker-compose` project name defaults to the directory name containing
+  // The `docker compose` project name defaults to the directory name containing
   // `docker-compose.yml`, which is the root folder of our project. Let's call
   // that 'ROOT'. We're in ROOT/docker/scripts and we want to get the name of
   // ROOT:

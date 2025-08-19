@@ -1,5 +1,5 @@
 import { Express } from "express";
-import type { HelmetOptions } from "helmet" assert { "resolution-mode": "import" };
+import type { HelmetOptions } from "helmet";
 
 const tmpRootUrl = process.env.ROOT_URL;
 

@@ -1,3 +1,4 @@
+import { it, expect } from "@jest/globals";
 import { getSessions, withUserDb } from "../../helpers";
 
 it("deletes session when user logs out", () =>

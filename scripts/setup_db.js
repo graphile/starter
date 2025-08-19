@@ -136,7 +136,7 @@ runMain(async () => {
 ${
   projectName
     ? // Probably Docker setup
-      "  export UID; docker-compose up server"
+      "  export UID; docker compose up server"
     : `  ${yarnCmd} start`
 }`);
 });

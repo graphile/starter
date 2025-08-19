@@ -8,7 +8,7 @@ import {
 // graphile-utils doesn't export this yet
 import { GraphQLResolveInfo } from "graphql";
 
-import { OurGraphQLContext } from "../graphile.config";
+import { OurGraphQLContext } from "../graphile-config.js";
 type GraphileHelpers = any;
 type AugmentedGraphQLFieldResolver<
   TSource,
@@ -32,7 +32,7 @@ type AugmentedGraphQLFieldResolver<
  * limitation).
  */
 const currentUserTopicFromContext = async (
-  _args: {},
+  _args: object,
   context: { [key: string]: any },
   _resolveInfo: GraphQLResolveInfo
 ) => {
@@ -80,8 +80,8 @@ const SubscriptionsPlugin = makeExtendSchemaPlugin((build) => {
         Triggered when the logged in user's record is updated in some way.
         """
         currentUserUpdated: UserSubscriptionPayload @pgSubscription(topic: ${embed(
-          currentUserTopicFromContext
-        )})
+      currentUserTopicFromContext
+    )})
       }
     `,
     resolvers: {
@@ -111,7 +111,7 @@ function recordByIdFromTable(
   const { pgSql: sql } = build;
   return async (
     event: TgGraphQLSubscriptionPayload,
-    _args: {},
+    _args: object,
     _context: OurGraphQLContext,
     { graphile: { selectGraphQLResultFromTable } }
   ) => {

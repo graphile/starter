@@ -68,3 +68,6 @@ Our database tests are written in Jest, enabling you to call database functions
 or run SQL and perform your regular assertions against them. We've added a
 number of helpers to make this easier; read more in the
 [\_\_tests\_\_ README](./__tests__/README.md).
+
+To run only one test -
+`npm run test -- --testMatch "**/invite_to_organization*.ts"`
