@@ -7,33 +7,27 @@ Graphile ecosystem. Find out
 ## Featured
 
 - The Guild
-- Dovetail
-- Stellate
 - Steelhead
-- LatchBio
 
 ## Leaders
 
 - Robert Claypool
 - nigelrmtaylor
 - Principia Mentis
+- Trigger.dev
 - Axinom
 - Taiste
-- Notably
-- Trigger.dev
-- Cintra
 - BairesDev
 - Two Bit Solutions
+- Apollo
 - Dimply
 - Ndustrial
+- Cintra
 - Beacon
 - deliver.media
-- Spear AI
-- Seam
-- Apollo
 - Ravio
-- OpenPipe
-- dotcom-monitor
+- prodready
+- Locomote
 
 ## Supporters
 
@@ -44,25 +38,24 @@ Graphile ecosystem. Find out
 - Alvin Ali Khaled
 - Paul Melnikow
 - Keith Layne
-- Zymego
 - nullachtvierzehn
-- IFCHOR GROUP
-- Nate Smith
+- Zymego
+- garpulon
 - Vizcom
 - Ether
-- garpulon
 - The Outbound Collective
 - Charlie Hadden
 - Kiron Open Higher Education
+- Nate Smith
 - Andrew Joseph
-- SIED 70
+- SIED 70 - TE 70
 - Peter C. Romano
 - mateo
 - Dialo
-- Gus Becciu
 - kontakto-fi
 - Tailos, Inc.
 - sheilamosaik
-- Miguel O. Carvajal
-- Jovi De Croock
-- Graphite
+- Jody Hoon-Starr
+- Justin Carrus
+- WorkOS
+- Malachi Bergman
