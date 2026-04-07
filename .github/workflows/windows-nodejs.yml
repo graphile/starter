@@ -24,10 +24,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "16"
-      - name: Start Postgres 14
+      - name: Start Postgres 17
         run: |
-          sc config postgresql-x64-14 start=auto
-          net start postgresql-x64-14
+          sc config postgresql-x64-17 start=auto
+          net start postgresql-x64-17
       - name: Setup environment
         # Windows postgres auth is 'postgres'/'root' - see
         # https://github.com/actions/runner-images/blob/main/images/win/Windows2022-Readme.md#postgresql
