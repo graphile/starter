@@ -4,6 +4,7 @@ const runSync = (cmd, args, options = {}) => {
   const result = spawnSync(cmd, args, {
     stdio: ["inherit", "inherit", "inherit"],
     windowsHide: true,
+    shell: process.platform === "win32",
     ...options,
     env: {
       ...process.env,

@@ -1,5 +1,5 @@
-if (parseInt(process.version.split(".")[0], 10) < 10) {
-  throw new Error("This project requires Node.js >= 10.0.0");
+if (parseInt(process.version.split(".")[0], 24) < 24) {
+  throw new Error("This project requires Node.js >= 24.0.0");
 }
 
 const fsp = require("fs").promises;

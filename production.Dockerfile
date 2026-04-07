@@ -7,7 +7,7 @@ ARG TARGET="server"
 ################################################################################
 # Build stage 1 - `yarn build`
 
-FROM node:16-alpine as builder
+FROM node:24-alpine as builder
 # Import our shared args
 ARG NODE_ENV
 ARG ROOT_URL
@@ -30,7 +30,7 @@ RUN yarn run build
 ################################################################################
 # Build stage 2 - COPY the relevant things (multiple steps)
 
-FROM node:16-alpine as clean
+FROM node:24-alpine as clean
 # Import our shared args
 ARG NODE_ENV
 ARG ROOT_URL
@@ -67,7 +67,7 @@ RUN rm -Rf /app/node_modules /app/@app/*/node_modules
 ################################################################################
 # Build stage FINAL - COPY everything, once, and then do a clean `yarn install`
 
-FROM node:16-alpine
+FROM node:24-alpine
 
 EXPOSE $PORT
 WORKDIR /app/
