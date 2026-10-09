@@ -6,56 +6,44 @@ Graphile ecosystem. Find out
 
 ## Featured
 
-- The Guild
 - Steelhead
 
 ## Leaders
 
-- Robert Claypool
-- nigelrmtaylor
 - Principia Mentis
-- Trigger.dev
 - Axinom
 - Taiste
-- BairesDev
-- Two Bit Solutions
 - Apollo
+- Two Bit Solutions
 - Dimply
 - Ndustrial
 - Cintra
 - Beacon
-- deliver.media
-- Ravio
+- Outbank
+- Constructive
 - prodready
-- Locomote
+- Seaber
 
 ## Supporters
 
 - HR-ON
 - stlbucket
 - Simon Elliott
-- Matt Bretl
-- Alvin Ali Khaled
-- Paul Melnikow
-- Keith Layne
 - nullachtvierzehn
-- Zymego
+- Keith Layne
+- Alvin Ali Khaled
 - garpulon
+- Zymego
 - Vizcom
-- Ether
-- The Outbound Collective
-- Charlie Hadden
-- Kiron Open Higher Education
-- Nate Smith
 - Andrew Joseph
-- SIED 70 - TE 70
+- Ether
+- WorkOS
 - Peter C. Romano
-- mateo
-- Dialo
+- Jody Hoon-Starr
 - kontakto-fi
 - Tailos, Inc.
-- sheilamosaik
-- Jody Hoon-Starr
 - Justin Carrus
-- WorkOS
-- Malachi Bergman
+- Keweiqu
+- jjcroftiv
+- Mobly
+- ChilliCream
